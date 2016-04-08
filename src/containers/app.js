@@ -3,11 +3,12 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {asyncConnect} from 'redux-async-connect'
 import * as ActionCreators from '../actions'
-import {Dialog, TextField, FlatButton, RaisedButton,
+import {Dialog, TextField, FlatButton, RaisedButton, IconButton, Styles,
   Table, TableHeader, TableBody,
   TableRow, TableHeaderColumn, TableRowColumn} from 'material-ui'
   // const injectTapEventPlugin = require("react-tap-event-plugin");
   // injectTapEventPlugin();
+import {ActionDone} from 'material-ui/lib/svg-icons'
 
 function mapStateToProps(state) {
   return {hosts: state.hosts}
@@ -74,6 +75,11 @@ export default class App extends Component {
     const hostNodes = this.props.hosts.map((host, index) => {
       return (
         <TableRow key={index}>
+          <TableRowColumn style={styles.iconColumn}>
+            <IconButton>
+              <ActionDone color={Styles.Colors.green500} />
+            </IconButton>
+          </TableRowColumn>
           <TableRowColumn>{host.host}</TableRowColumn>
           <TableRowColumn>{host.ip}</TableRowColumn>
         </TableRow>
@@ -89,6 +95,7 @@ export default class App extends Component {
         <Table multiSelectable={true}>
           <TableHeader>
             <TableRow>
+              <TableHeaderColumn style={styles.iconColumn}>Enable</TableHeaderColumn>
               <TableHeaderColumn>Host</TableHeaderColumn>
               <TableHeaderColumn>IP</TableHeaderColumn>
             </TableRow>
@@ -99,5 +106,11 @@ export default class App extends Component {
         </Table>
       </div>
     )
+  }
+}
+
+const styles = {
+  iconColumn: {
+    width: '72px'
   }
 }

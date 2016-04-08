@@ -1,16 +1,18 @@
 import 'babel-polyfill'
 import fs from 'fs'
-import path from 'path'
+// import path from 'path'
 import webpack from 'webpack'
+import webpackTargetElectronRenderer from 'webpack-target-electron-renderer'
 
-export default {
+ const config = {
   debug: true,
   devtool: 'cheap-source-map',
-  target: 'electron',
+  target: 'electron-renderer',
   entry: './src/browser.js',
   output: {
     path: './src/',
     filename: 'bundle.js',
+    publicPath: '/',
     libraryTarget: 'commonjs2'
   },
   module: {
@@ -34,3 +36,7 @@ export default {
   //   }
   // }
 }
+
+config.target = webpackTargetElectronRenderer(config);
+
+export default config
