@@ -8,11 +8,11 @@ import webpackTargetElectronRenderer from 'webpack-target-electron-renderer'
   debug: true,
   devtool: 'cheap-source-map',
   target: 'electron-renderer',
-  entry: './src/browser.js',
+  entry: './src/renderer.js',
   output: {
-    path: './src/',
-    filename: 'bundle.js',
-    publicPath: '/',
+    path: './public/assets/',
+    filename: 'js/renderer.js',
+    publicPath: '/assets/',
     libraryTarget: 'commonjs2'
   },
   module: {

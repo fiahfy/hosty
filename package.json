@@ -4,14 +4,14 @@
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
-    "start": "npm run watch & electron bundle.js",
-    "start:hot": "npm run hot:client & HOT=1 electron bundle.js",
-    "hot:client": "webpack-dev-server --config webpack/browser.hot.babel.js",
+    "start": "npm run watch & electron main.js",
+    "start:hot": "npm run hot:renderer & npm run watch:main & HOT=1 electron main.js",
+    "hot:renderer": "webpack-dev-server --config webpack/renderer.hot.babel.js",
     "watch": "npm run build -- -w",
-    "watch:browser": "npm run build:browser -- -w",
+    "watch:renderer": "npm run build:renderer -- -w",
     "watch:main": "npm run build:main -- -w",
     "build": "webpack --config webpack/all.babel.js",
-    "build:browser": "webpack --config webpack/browser.babel.js",
+    "build:renderer": "webpack --config webpack/renderer.babel.js",
     "build:main": "webpack --config webpack/main.babel.js"
   },
   "repository": {
@@ -39,6 +39,7 @@
     "babel-preset-stage-0": "6.5.0",
     "electron-json-storage": "2.0.0",
     "electron-prebuilt": "0.37.4",
+    "electron-sudo": "3.0.4",
     "material-ui": "0.15.0-alpha.2",
     "react": "0.14.8",
     "react-dom": "0.14.8",

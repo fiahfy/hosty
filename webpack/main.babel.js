@@ -6,10 +6,10 @@ export default {
   debug: true,
   devtool: 'cheap-source-map',
   target: 'electron',
-  entry: './main.js',
+  entry: './src/main.js',
   output: {
-    path: '.',
-    filename: 'bundle.js',
+    path: './public/assets/',
+    filename: '../../main.js',
     libraryTarget: 'commonjs2'
   },
   module: {

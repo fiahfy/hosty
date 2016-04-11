@@ -1,9 +1,9 @@
 import 'babel-polyfill'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Root from './containers/root'
-import {configureStore} from './store'
-import history from './history'
+import Root from './renderer/containers/root'
+import {configureStore} from './renderer/store'
+import history from './renderer/history'
 
 const store = configureStore(history)
 

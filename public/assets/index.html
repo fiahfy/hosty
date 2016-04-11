@@ -9,7 +9,7 @@
     <script>
       (function() {
         const script = document.createElement('script');
-        script.src = process.env.HOT ? 'http://localhost:8080/bundle.js' : './bundle.js';
+        script.src = process.env.HOT ? 'http://localhost:8080/assets/js/renderer.js' : './js/renderer.js';
         document.write(script.outerHTML);
       }());
     </script>

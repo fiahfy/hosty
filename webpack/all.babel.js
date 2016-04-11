@@ -1,8 +1,8 @@
-import browserConfig from './browser.babel'
+import rendererConfig from './renderer.babel'
 import mainConfig from './main.babel'
 
 
 export default [
-  browserConfig,
+  rendererConfig,
   mainConfig
 ]
