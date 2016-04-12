@@ -1,6 +1,9 @@
 import fs from 'fs'
 import storage from 'electron-json-storage'
 import remote from 'remote'
+import sudo from 'electron-sudo'
+
+const app = remote.require('app')
 
 export const READED_HOSTS = 'READED_HOSTS'
 export const WRITED_HOSTS = 'WRITED_HOSTS'
@@ -9,50 +12,39 @@ export const ADD_HOST = 'ADD_HOST'
 const BEGIN_SECTION = '##test begin'
 const END_SECTION = '##test end'
 
+const HOSTS = '/etc/hosts'
+const TEMP_HOSTS = app.getPath('temp') + 'hosts'
+const HOSTS_CHARSET = 'utf8'
+
 export function readHosts() {
   return dispatch => {
     return new Promise((resolve, reject) => {
-      fs.readFile('/etc/hosts', 'utf8', (err, data) => {
+      fs.readFile(HOSTS, HOSTS_CHARSET, (err, data) => {
         if (err) {
           reject(err)
           return
         }
         resolve(data)
       })
-      // storage.get('hosts', (err, data) => {
-      //   if (err) {
-      //     reject(err)
-      //     return
-      //   }
-      //   if (!Array.isArray(data)) {
-      //     data = []
-      //   }
-      //   resolve(data)
-      // })
     })
       .then(data => {
+        const reg = new RegExp(String.raw`\n?${BEGIN_SECTION}\n([\s\S]*)\n${END_SECTION}\n?`, 'im')
+        const matches = data.match(reg)
         dispatch({
           type: READED_HOSTS,
-          hosts: parseHosts(data)
+          hosts: parseHosts(matches[1])
         })
       })
       .catch(err => {
         console.error(err)
       })
-    // .denodeify(fs.readFile)('/etc/hosts')
-    //   .then(data => {
-    //     dispatch({
-    //       type: READED_HOSTS,
-    //       hosts: data
-    //     })
-    //   })
   }
 }
 
 export function writeHosts(hosts) {
   return dispatch => {
     return new Promise((resolve, reject) => {
-      fs.readFile('/etc/hosts', 'utf8', (err, data) => {
+      fs.readFile(HOSTS, HOSTS_CHARSET, (err, data) => {
         if (err) {
           reject(err)
           return
@@ -61,13 +53,43 @@ export function writeHosts(hosts) {
       })
     })
       .then(data => {
-        console.log(data)
         const reg = new RegExp(String.raw`([\s\S]*\n?)${BEGIN_SECTION}\n[\s\S]*\n${END_SECTION}\n?([\s\S]*)`, 'im')
         const matches = data.match(reg)
-        const newData = matches[1] + buildHosts(hosts) + matches[2]
-        console.log(newData)
+        let newData = `${BEGIN_SECTION}\n` + buildHosts(hosts) + `\n${END_SECTION}\n`
+        newData = matches[1] + newData + matches[2]
         return new Promise((resolve, reject) => {
-          fs.writeFile('/etc/hosts', newData, 'utf8', err => {
+          fs.writeFile(TEMP_HOSTS, newData, 'utf8', err => {
+            if (err) {
+              reject(err)
+              return
+            }
+            resolve(hosts)
+          })
+        })
+      })
+      .then(hosts => {
+        return new Promise((resolve, reject) => {
+          const options = {
+            name: 'Your application name',
+            // icns: '/path/to/icns/file' // (optional, only for MacOS),
+            process: {
+              // options: {
+              //   // Can use custom environment variables for your privileged subprocess
+              //   env: {'VAR': 'VALUE'}
+              //   // ... and all other subprocess options described here
+              //   // https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback
+              // },
+              on: ps => {
+                // ps.stdout.on('data', data => {
+                //   resolve(hosts)
+                // })
+                setTimeout(function() {
+                  ps.kill()
+                }.bind(ps), 50000)
+              }
+            }
+          }
+          sudo.exec(`cp ${TEMP_HOSTS} ${HOSTS}`, options, err => {
             if (err) {
               reject(err)
               return
@@ -96,15 +118,10 @@ export function addHost(host) {
 }
 
 function parseHosts(data) {
-  const reg = new RegExp(String.raw`\n?${BEGIN_SECTION}\n([\s\S]*)\n${END_SECTION}\n?`, 'im')
-  const matches = data.match(reg)
-  console.log(data)
-  console.log(matches)
-  return (matches[1] || '')
+  return (data || '')
     .split('\n')
     .map(item => {
-      const matches = item.match(/^([#\s]*)([\d\.]+)\t(.*)/i)
-      console.log(matches)
+      const matches = item.match(/^([#\s]*)(.*)\t(.*)/i)
       if (!matches) {
         return null
       }
@@ -117,10 +134,9 @@ function parseHosts(data) {
 }
 
 function buildHosts(hosts) {
-  const data = hosts.map(item => {
+  return hosts.map(item => {
     return (item.enable ? '' : '#')
       + item.ip + '\t'
       + item.host
   }).join('\n')
-  return `${BEGIN_SECTION}\n${data}\n${END_SECTION}\n`
 }

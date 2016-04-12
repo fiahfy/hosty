@@ -28,29 +28,6 @@ export default class App extends Component {
   }
   handleOpenDialog() {
     this.setState({open: true})
-    var sudo = require('electron-sudo');
-    var options = {
-      name: 'Your application name',
-      // icns: '/path/to/icns/file' // (optional, only for MacOS),
-      process: {
-        options: {
-          // Can use custom environment variables for your privileged subprocess
-          env: {'VAR': 'VALUE'}
-          // ... and all other subprocess options described here
-          // https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback
-        },
-        on: function(ps) {
-          ps.stdout.on('data', function(data) {
-            console.log(data)
-
-          });
-          setTimeout(function() {
-            ps.kill()
-          }.bind(ps), 50000);
-        }
-      }
-    };
-    sudo.exec('echo hello', options, function(error) {});
   }
   handleCloseDialog() {
     this.setState({open: false})
@@ -98,11 +75,12 @@ export default class App extends Component {
     ];
 
     const hostNodes = this.props.hosts.map((host, index) => {
+      const color = host.enable ? Styles.Colors.green600 : Styles.Colors.grey400
       return (
         <TableRow key={index}>
           <TableRowColumn style={styles.iconColumn}>
-            <IconButton>
-              <ActionDone color={Styles.Colors.green500} />
+            <IconButton onClick={(e) => {e.stopPropagation()}}>
+              <ActionDone color={color} />
             </IconButton>
           </TableRowColumn>
           <TableRowColumn>{host.host}</TableRowColumn>
@@ -120,12 +98,12 @@ export default class App extends Component {
         <Table multiSelectable={true}>
           <TableHeader>
             <TableRow>
-              <TableHeaderColumn style={styles.iconColumn}>Enable</TableHeaderColumn>
+              <TableHeaderColumn style={styles.iconColumn}>Status</TableHeaderColumn>
               <TableHeaderColumn>Host</TableHeaderColumn>
               <TableHeaderColumn>IP</TableHeaderColumn>
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody showRowHover={true}>
             {hostNodes}
           </TableBody>
         </Table>
