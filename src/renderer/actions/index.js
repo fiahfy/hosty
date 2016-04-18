@@ -7,7 +7,8 @@ const app = remote.require('app')
 
 export const READED_HOSTS = 'READED_HOSTS'
 export const WRITED_HOSTS = 'WRITED_HOSTS'
-export const ADD_HOST = 'ADD_HOST'
+export const CREATE_HOST = 'CREATE_HOST'
+export const UPDATE_HOST = 'UPDATE_HOST'
 
 const BEGIN_SECTION = '##test begin'
 const END_SECTION = '##test end'
@@ -118,9 +119,17 @@ export function writeHosts(hosts) {
   }
 }
 
-export function addHost(host) {
+export function createHost(host) {
   return {
-    type: ADD_HOST,
+    type: CREATE_HOST,
+    host
+  }
+}
+
+export function updateHost(index, host) {
+  return {
+    type: UPDATE_HOST,
+    index,
     host
   }
 }

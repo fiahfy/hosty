@@ -6,8 +6,18 @@ function hosts(state = [], action) {
     return action.hosts
   case ActionTypes.WRITED_HOSTS:
     return action.hosts
-  case ActionTypes.ADD_HOST:
-    return state.concat(action.host)
+  case ActionTypes.CREATE_HOST: {
+    const {host} = action
+    return [...state, host]
+  }
+  case ActionTypes.UPDATE_HOST: {
+    const {index, host} = action
+    return [
+      ...state.slice(0, index),
+      host,
+      ...state.slice(index + 1)
+    ]
+  }
   default:
     return state
   }

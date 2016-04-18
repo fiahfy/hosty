@@ -41,6 +41,13 @@ export default class App extends Component {
     this.props.actions.writeHosts(hosts)
     this.handleCloseDialog()
   }
+  handleClickStatus(index, e) {
+    e.stopPropagation()
+    const {hosts} = this.props
+    hosts[index].enable = !hosts[index].enable
+    this.props.actions.updateHost(index, hosts[index])
+    // this.props.actions.writeHosts(hosts)
+  }
   renderDialog() {
     const actions = [
       <FlatButton
@@ -79,7 +86,7 @@ export default class App extends Component {
       return (
         <TableRow key={index}>
           <TableRowColumn style={styles.iconColumn}>
-            <IconButton onClick={(e) => {e.stopPropagation()}}>
+            <IconButton onClick={this.handleClickStatus.bind(this, index)}>
               <ActionDone color={color} />
             </IconButton>
           </TableRowColumn>
