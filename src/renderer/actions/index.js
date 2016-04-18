@@ -12,7 +12,8 @@ export const ADD_HOST = 'ADD_HOST'
 const BEGIN_SECTION = '##test begin'
 const END_SECTION = '##test end'
 
-const HOSTS = '/etc/hosts'
+// const HOSTS = '/etc/hosts'
+const HOSTS = process.cwd() + '/dummyHosts'
 const TEMP_HOSTS = app.getPath('temp') + 'hosts'
 const HOSTS_CHARSET = 'utf8'
 
@@ -30,9 +31,10 @@ export function readHosts() {
       .then(data => {
         const reg = new RegExp(String.raw`\n?${BEGIN_SECTION}\n([\s\S]*)\n${END_SECTION}\n?`, 'im')
         const matches = data.match(reg)
+        const hostsData = matches ? matches[1] : ''
         dispatch({
           type: READED_HOSTS,
-          hosts: parseHosts(matches[1])
+          hosts: parseHosts(hostsData)
         })
       })
       .catch(err => {
@@ -53,10 +55,16 @@ export function writeHosts(hosts) {
       })
     })
       .then(data => {
+        let newData = `${BEGIN_SECTION}\n` + buildHosts(hosts) + `\n${END_SECTION}\n`
+
         const reg = new RegExp(String.raw`([\s\S]*\n?)${BEGIN_SECTION}\n[\s\S]*\n${END_SECTION}\n?([\s\S]*)`, 'im')
         const matches = data.match(reg)
-        let newData = `${BEGIN_SECTION}\n` + buildHosts(hosts) + `\n${END_SECTION}\n`
-        newData = matches[1] + newData + matches[2]
+        if (matches) {
+          newData = matches[1] + newData + matches[2]
+        } else {
+          newData = data + '\n' + newData
+        }
+
         return new Promise((resolve, reject) => {
           fs.writeFile(TEMP_HOSTS, newData, 'utf8', err => {
             if (err) {
@@ -118,7 +126,7 @@ export function addHost(host) {
 }
 
 function parseHosts(data) {
-  return (data || '')
+  return data
     .split('\n')
     .map(item => {
       const matches = item.match(/^([#\s]*)(.*)\t(.*)/i)
