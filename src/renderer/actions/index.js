@@ -33,10 +33,11 @@ export function readHosts() {
         const reg = new RegExp(String.raw`\n?${BEGIN_SECTION}\n([\s\S]*)\n${END_SECTION}\n?`, 'im')
         const matches = data.match(reg)
         const hostsData = matches ? matches[1] : ''
-        dispatch({
-          type: READED_HOSTS,
-          hosts: parseHosts(hostsData)
-        })
+        // dispatch({
+        //   type: READED_HOSTS,
+        //   hosts: parseHosts(hostsData)
+        // })
+        return parseHosts(hostsData)
       })
       .catch(err => {
         console.error(err)

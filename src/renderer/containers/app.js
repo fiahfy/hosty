@@ -24,7 +24,10 @@ export default class App extends Component {
     open: false
   };
   componentDidMount() {
-    this.props.actions.readHosts()
+    // const r = this.props.actions.readHosts()
+    // console.log('r')
+    // console.log(r)
+    // r.then(() => { console.log(arguments);console.log('exit')})
   }
   handleOpenDialog() {
     this.setState({open: true})
@@ -34,18 +37,25 @@ export default class App extends Component {
   }
   handleAddHost() {
     const {hosts} = this.props
-    hosts.push({
+    // hosts.push({
+    //   host: this.refs.host.getValue(),
+    //   ip: this.refs.ip.getValue()
+    // })
+    // this.props.actions.writeHosts(hosts)
+    const host = {
       host: this.refs.host.getValue(),
       ip: this.refs.ip.getValue()
-    })
-    this.props.actions.writeHosts(hosts)
+    }
+    this.props.actions.createHost(host)
     this.handleCloseDialog()
   }
   handleClickStatus(index, e) {
     e.stopPropagation()
     const {hosts} = this.props
     hosts[index].enable = !hosts[index].enable
-    this.props.actions.updateHost(index, hosts[index])
+    const r = this.props.actions.updateHost(index, hosts[index])
+    // console.log('r')
+    // console.log(r)
     // this.props.actions.writeHosts(hosts)
   }
   renderDialog() {
@@ -76,12 +86,14 @@ export default class App extends Component {
     )
   }
   render() {
-    let hosts = [
-      {host: 'dummy.com',  ip: '0.0.0.0'},
-      {host: 'dummy2.com', ip: '0.0.0.1'},
-    ];
+    // let hosts = [
+    //   {host: 'dummy.com',  ip: '0.0.0.0'},
+    //   {host: 'dummy2.com', ip: '0.0.0.1'},
+    // ];
 
-    const hostNodes = this.props.hosts.map((host, index) => {
+    const {hosts} = this.props
+
+    const hostNodes = hosts.map((host, index) => {
       const color = host.enable ? Styles.Colors.green600 : Styles.Colors.grey400
       return (
         <TableRow key={index}>

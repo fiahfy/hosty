@@ -53,6 +53,8 @@
     "redux-devtools": "3.2.0",
     "redux-devtools-dock-monitor": "1.1.1",
     "redux-devtools-log-monitor": "1.0.9",
+    "redux-localstorage": "1.0.0-rc4",
+    "redux-localstorage-filter": "0.1.1",
     "redux-logger": "2.6.1",
     "redux-thunk": "2.0.1",
     "webpack": "1.12.14",
