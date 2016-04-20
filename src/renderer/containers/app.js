@@ -3,12 +3,10 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {asyncConnect} from 'redux-async-connect'
 import * as ActionCreators from '../actions'
-import {Dialog, TextField, FlatButton, RaisedButton, IconButton, Styles,
-  Table, TableHeader, TableBody,
-  TableRow, TableHeaderColumn, TableRowColumn} from 'material-ui'
+import {Dialog, TextField, FlatButton, RaisedButton} from 'material-ui'
   // const injectTapEventPlugin = require("react-tap-event-plugin");
   // injectTapEventPlugin();
-import {ActionDone} from 'material-ui/lib/svg-icons'
+import HostList from '../components/host-list'
 
 function mapStateToProps(state) {
   return {hosts: state.hosts}
@@ -24,10 +22,6 @@ export default class App extends Component {
     open: false
   };
   componentDidMount() {
-    // const r = this.props.actions.readHosts()
-    // console.log('r')
-    // console.log(r)
-    // r.then(() => { console.log(arguments);console.log('exit')})
   }
   handleOpenDialog() {
     this.setState({open: true})
@@ -37,26 +31,16 @@ export default class App extends Component {
   }
   handleAddHost() {
     const {hosts} = this.props
-    // hosts.push({
-    //   host: this.refs.host.getValue(),
-    //   ip: this.refs.ip.getValue()
-    // })
-    // this.props.actions.writeHosts(hosts)
     const host = {
-      host: this.refs.host.getValue(),
-      ip: this.refs.ip.getValue()
+      host:   this.refs.host.getValue(),
+      ip:     this.refs.ip.getValue(),
+      enable: true
     }
     this.props.actions.createHost(host)
     this.handleCloseDialog()
   }
-  handleClickStatus(index, e) {
-    e.stopPropagation()
-    const {hosts} = this.props
-    hosts[index].enable = !hosts[index].enable
-    const r = this.props.actions.updateHost(index, hosts[index])
-    // console.log('r')
-    // console.log(r)
-    // this.props.actions.writeHosts(hosts)
+  handleEditHost(index, host) {
+    this.props.actions.updateHost(index, host)
   }
   renderDialog() {
     const actions = [
@@ -80,59 +64,30 @@ export default class App extends Component {
         open={this.state.open}
         onRequestClose={::this.handleCloseDialog}
       >
-        <TextField id="host" ref="host" floatingLabelText="Host" hintText="example.com" fullWidth={true} />
-        <TextField id="ip" ref="ip" floatingLabelText="IP" hintText="111.111.111.111" fullWidth={true} />
+        <TextField id="host" ref="host" fullWidth={true}
+          floatingLabelText="Host" hintText="example.com" />
+        <TextField id="ip" ref="ip" fullWidth={true}
+          floatingLabelText="IP" hintText="111.111.111.111" />
       </Dialog>
     )
   }
   render() {
-    // let hosts = [
-    //   {host: 'dummy.com',  ip: '0.0.0.0'},
-    //   {host: 'dummy2.com', ip: '0.0.0.1'},
-    // ];
-
     const {hosts} = this.props
 
-    const hostNodes = hosts.map((host, index) => {
-      const color = host.enable ? Styles.Colors.green600 : Styles.Colors.grey400
-      return (
-        <TableRow key={index}>
-          <TableRowColumn style={styles.iconColumn}>
-            <IconButton onClick={this.handleClickStatus.bind(this, index)}>
-              <ActionDone color={color} />
-            </IconButton>
-          </TableRowColumn>
-          <TableRowColumn>{host.host}</TableRowColumn>
-          <TableRowColumn>{host.ip}</TableRowColumn>
-        </TableRow>
-      )
-    })
-
     return (
-      <div>
+      <div style={styles.app}>
         <div>
           <RaisedButton label="Add" onClick={::this.handleOpenDialog} />
           {this.renderDialog()}
         </div>
-        <Table multiSelectable={true}>
-          <TableHeader>
-            <TableRow>
-              <TableHeaderColumn style={styles.iconColumn}>Status</TableHeaderColumn>
-              <TableHeaderColumn>Host</TableHeaderColumn>
-              <TableHeaderColumn>IP</TableHeaderColumn>
-            </TableRow>
-          </TableHeader>
-          <TableBody showRowHover={true}>
-            {hostNodes}
-          </TableBody>
-        </Table>
+        <HostList hosts={hosts} onEditHost={::this.handleEditHost} />
       </div>
     )
   }
 }
 
 const styles = {
-  iconColumn: {
-    width: '72px'
+  app: {
+    WebkitUserSelect: 'none'
   }
 }
