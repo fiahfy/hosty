@@ -1,7 +1,9 @@
 import React, {Component, PropTypes} from 'react'
 import {Router} from 'react-router'
+import {syncHistoryWithStore} from 'react-router-redux'
 import {Provider} from 'react-redux'
-import {ReduxAsyncConnect} from 'redux-async-connect'
+import getMuiTheme from 'material-ui/styles/getMuiTheme'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import DevTools from './dev-tools'
 import App from './app'
 import history from '../history'
@@ -14,6 +16,8 @@ export default class Root extends Component {
   };
   render() {
     const {store, renderProps} = this.props
+
+    const syncHistory = syncHistoryWithStore(history, store)
     //
     // const hasDevTools = false
     // const devTools = hasDevTools ? <DevTools /> : null
@@ -38,7 +42,9 @@ export default class Root extends Component {
 
     return (
       <Provider store={store} key="provider">
-        <App />
+        <MuiThemeProvider muiTheme={getMuiTheme()}>
+          <App history={syncHistory} />
+        </MuiThemeProvider>
       </Provider>
     )
   }

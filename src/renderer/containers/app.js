@@ -1,11 +1,10 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {asyncConnect} from 'redux-async-connect'
-import * as ActionCreators from '../actions'
 import {Dialog, TextField, FlatButton, RaisedButton} from 'material-ui'
-  // const injectTapEventPlugin = require("react-tap-event-plugin");
-  // injectTapEventPlugin();
+// const injectTapEventPlugin = require("react-tap-event-plugin");
+// injectTapEventPlugin();
+import * as ActionCreators from '../actions'
 import HostList from '../components/host-list'
 
 function mapStateToProps(state) {

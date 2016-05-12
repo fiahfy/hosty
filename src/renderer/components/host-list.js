@@ -1,12 +1,11 @@
 import React, {Component} from 'react'
 import {
-  TextField, IconButton, Styles,
+  TextField, IconButton,
   Table, TableHeader, TableBody,
   TableRow, TableHeaderColumn, TableRowColumn
 } from 'material-ui'
-import {
-  ActionDone, NavigationArrowDropDown, NavigationArrowDropUp
-} from 'material-ui/lib/svg-icons'
+import * as SvgIcons from 'material-ui/svg-icons'
+import * as Styles from 'material-ui/styles'
 
 export default class HostList extends Component {
   state = {
@@ -58,24 +57,24 @@ export default class HostList extends Component {
     let hostOrderNode = null
     if (sort.key === 'host') {
       hostOrderNode = sort.order === 'asc'
-        ? <NavigationArrowDropDown style={styles.headerColumnIcon} />
-        : <NavigationArrowDropUp style={styles.headerColumnIcon} />
+        ? <SvgIcons.NavigationArrowDropDown style={styles.headerColumnIcon} />
+        : <SvgIcons.NavigationArrowDropUp style={styles.headerColumnIcon} />
     }
 
     let ipOrderNode = null
     if (sort.key === 'ip') {
       ipOrderNode = sort.order === 'asc'
-        ? <NavigationArrowDropDown style={styles.headerColumnIcon} />
-        : <NavigationArrowDropUp style={styles.headerColumnIcon} />
+        ? <SvgIcons.NavigationArrowDropDown style={styles.headerColumnIcon} />
+        : <SvgIcons.NavigationArrowDropUp style={styles.headerColumnIcon} />
     }
 
     const hostNodes = this.sortedHosts().map(host => {
-      const color = host.enable ? Styles.Colors.green600 : Styles.Colors.grey400
+      const color = host.enable ? Styles.colors.green600 : Styles.colors.grey400
       return (
         <TableRow key={host.index}>
           <TableRowColumn style={styles.iconColumn}>
             <IconButton onClick={this.handleToggleHostStatus.bind(this, host.index)}>
-              <ActionDone color={color} />
+              <SvgIcons.ActionDone color={color} />
             </IconButton>
           </TableRowColumn>
           <TableRowColumn>
