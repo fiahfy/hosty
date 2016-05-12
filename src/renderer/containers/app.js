@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {Dialog, TextField, FlatButton, RaisedButton} from 'material-ui'
+import {Dialog, TextField, FlatButton, RaisedButton, Toolbar, ToolbarGroup} from 'material-ui'
 // const injectTapEventPlugin = require("react-tap-event-plugin");
 // injectTapEventPlugin();
 import * as ActionCreators from '../actions'
@@ -75,11 +75,14 @@ export default class App extends Component {
 
     return (
       <div style={styles.app}>
-        <div>
-          <RaisedButton label="Add" onClick={::this.handleOpenDialog} />
-          {this.renderDialog()}
-        </div>
+      {this.renderDialog()}
         <HostList hosts={hosts} onEditHost={::this.handleEditHost} />
+        <Toolbar style={styles.toolbar}>
+          <ToolbarGroup firstChild={true}>
+            <RaisedButton label="Add" onClick={::this.handleOpenDialog} primary={true} style={styles.button} />
+            <RaisedButton label="Delete" onClick={::this.handleOpenDialog} secondary={true} style={styles.button} />
+          </ToolbarGroup>
+        </Toolbar>
       </div>
     )
   }
@@ -87,6 +90,16 @@ export default class App extends Component {
 
 const styles = {
   app: {
-    WebkitUserSelect: 'none'
+    WebkitUserSelect: 'none',
+    marginBottom: 56
+  },
+  button: {
+    margin: 12
+  },
+  toolbar: {
+    position: 'fixed',
+    bottom: 0,
+    left: 0,
+    right: 0
   }
 }
