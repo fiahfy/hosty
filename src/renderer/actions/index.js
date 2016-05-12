@@ -1,9 +1,9 @@
 import fs from 'fs'
 import storage from 'electron-json-storage'
-import remote from 'remote'
+import {remote} from 'electron'
 import sudo from 'electron-sudo'
 
-const app = remote.require('app')
+const app = remote.app
 
 export const READED_HOSTS = 'READED_HOSTS'
 export const WRITED_HOSTS = 'WRITED_HOSTS'

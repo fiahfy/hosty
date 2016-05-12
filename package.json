@@ -38,7 +38,7 @@
     "babel-preset-react": "6.5.0",
     "babel-preset-stage-0": "6.5.0",
     "electron-json-storage": "2.0.0",
-    "electron-prebuilt": "0.37.4",
+    "electron-prebuilt": "1.0.1",
     "electron-sudo": "3.0.5",
     "material-ui": "0.15.0",
     "react": "15.0.2",
@@ -61,6 +61,6 @@
   },
   "devDependencies": {
     "babel-preset-react-hmre": "1.1.1",
-    "webpack-dev-server": "1.14.0"
+    "webpack-dev-server": "1.14.1"
   }
 }
