@@ -41,6 +41,10 @@ export default class App extends Component {
   handleEditHost(index, host) {
     this.props.actions.updateHost(index, host)
   }
+  handleDeleteHosts() {
+    console.log(this.refs.hostList.selectedHosts())
+    // this.props.actions.deleteHosts(indexes)
+  }
   renderDialog() {
     const actions = [
       <FlatButton
@@ -75,12 +79,14 @@ export default class App extends Component {
 
     return (
       <div style={styles.app}>
-      {this.renderDialog()}
-        <HostList hosts={hosts} onEditHost={::this.handleEditHost} />
+        {this.renderDialog()}
+        <div style={styles.container}>
+          <HostList ref="hostList" hosts={hosts} onEditHost={::this.handleEditHost} />
+        </div>
         <Toolbar style={styles.toolbar}>
           <ToolbarGroup firstChild={true}>
             <RaisedButton label="Add" onClick={::this.handleOpenDialog} primary={true} style={styles.button} />
-            <RaisedButton label="Delete" onClick={::this.handleOpenDialog} secondary={true} style={styles.button} />
+            <RaisedButton label="Delete" onClick={::this.handleDeleteHosts} secondary={true} style={styles.button} />
           </ToolbarGroup>
         </Toolbar>
       </div>
@@ -91,7 +97,14 @@ export default class App extends Component {
 const styles = {
   app: {
     WebkitUserSelect: 'none',
-    marginBottom: 56
+    paddingBottom: 56,
+    overflow: 'hidden',
+    height: '100%',
+    boxSizing: 'border-box'
+  },
+  container: {
+    overflow: 'auto',
+    height: '100%'
   },
   button: {
     margin: 12

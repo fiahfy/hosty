@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component, PropTypes} from 'react'
 import {
   TextField, IconButton,
   Table, TableHeader, TableBody,
@@ -8,11 +8,19 @@ import * as SvgIcons from 'material-ui/svg-icons'
 import * as Styles from 'material-ui/styles'
 
 export default class HostList extends Component {
+  static propTypes = {
+    hosts: PropTypes.arrayOf(PropTypes.object)
+  };
+  static defaultProps = {
+    hosts: []
+  };
   state = {
     sort: {
       key: 'host',
       order: 'asc'
-    }
+    },
+    selectedIndexes: [],
+    allRowsSelected: false
   };
   handleToggleHostStatus(index, e) {
     e.stopPropagation()
@@ -40,6 +48,19 @@ export default class HostList extends Component {
     const newOrder = key !== newKey ? 'asc' : order !== 'asc' ? 'asc' : 'desc'
     this.setState({sort: {key: newKey, order: newOrder}})
   }
+  handleRowSelection(selectedRows) {
+    let selectedIndexes = []
+    let allRowsSelected = false
+    if (selectedRows === 'all') {
+      selectedIndexes = []
+      allRowsSelected = true
+    } else {
+      selectedIndexes = this.sortedHosts().filter((host, i) => {
+        return selectedRows.indexOf(i) !== -1
+      }).map(host => host.index)
+    }
+    this.setState({selectedIndexes, allRowsSelected})
+  }
   sortedHosts() {
     const {key, order} = this.state.sort
 
@@ -50,9 +71,18 @@ export default class HostList extends Component {
       return order === 'asc' ? a[key] > b[key] : a[key] < b[key]
     })
   }
+  selectedHosts() {
+    const {selectedIndexes, allRowsSelected} = this.state
+    if (allRowsSelected) {
+      return this.props.hosts
+    }
+    return this.props.hosts.filter(host => {
+      return selectedIndexes.indexOf(host.index) !== -1
+    })
+  }
   render() {
-    const {sort} = this.state
-    const {hosts} = this.props
+    const {sort, selectedIndexes, allRowsSelected} = this.state
+    const {hosts, onRowSelection} = this.props
 
     let hostOrderNode = null
     if (sort.key === 'host') {
@@ -71,7 +101,7 @@ export default class HostList extends Component {
     const hostNodes = this.sortedHosts().map(host => {
       const color = host.enable ? Styles.colors.green600 : Styles.colors.grey400
       return (
-        <TableRow key={host.index}>
+        <TableRow key={host.index} selected={selectedIndexes.indexOf(host.index) !== -1}>
           <TableRowColumn style={styles.iconColumn}>
             <IconButton onClick={this.handleToggleHostStatus.bind(this, host.index)}>
               <SvgIcons.ActionDone color={color} />
@@ -96,7 +126,7 @@ export default class HostList extends Component {
     })
 
     return (
-      <Table multiSelectable={true}>
+      <Table multiSelectable={true} onRowSelection={::this.handleRowSelection} allRowsSelected={allRowsSelected}>
         <TableHeader>
           <TableRow onCellClick={::this.handleClickHeader}>
             <TableHeaderColumn style={styles.iconColumn}>Status</TableHeaderColumn>
@@ -110,7 +140,7 @@ export default class HostList extends Component {
             </TableHeaderColumn>
           </TableRow>
         </TableHeader>
-        <TableBody showRowHover={false}>
+        <TableBody showRowHover={false} deselectOnClickaway={false}>
           {hostNodes}
         </TableBody>
       </Table>
