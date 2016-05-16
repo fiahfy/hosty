@@ -1,11 +1,12 @@
-import React, {Component} from 'react'
+import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {Dialog, TextField, FlatButton, RaisedButton, Toolbar, ToolbarGroup} from 'material-ui'
-// const injectTapEventPlugin = require("react-tap-event-plugin");
-// injectTapEventPlugin();
+import {RaisedButton, Toolbar, ToolbarGroup} from 'material-ui'
+// const injectTapEventPlugin = require("react-tap-event-plugin")
+// injectTapEventPlugin()
 import * as ActionCreators from '../actions'
 import HostList from '../components/host-list'
+import HostDialog from '../components/host-dialog'
 
 function mapStateToProps(state) {
   return {hosts: state.hosts}
@@ -17,11 +18,15 @@ function mapDispatchToProps(dispatch) {
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class App extends Component {
+  static propTypes = {
+    hosts: PropTypes.arrayOf(PropTypes.object)
+  };
+  static defaultProps = {
+    hosts: []
+  };
   state = {
     open: false
   };
-  componentDidMount() {
-  }
   handleOpenDialog() {
     this.setState({open: true})
   }
@@ -29,12 +34,12 @@ export default class App extends Component {
     this.setState({open: false})
   }
   handleAddHost() {
-    const {hosts} = this.props
     const host = {
-      host:   this.refs.host.getValue(),
-      ip:     this.refs.ip.getValue(),
+      host:   this.refs.hostDialog.getHost(),
+      ip:     this.refs.hostDialog.getIP(),
       enable: true
     }
+    this.refs.hostDialog.clear()
     this.props.actions.createHost(host)
     this.handleCloseDialog()
   }
@@ -42,46 +47,29 @@ export default class App extends Component {
     this.props.actions.updateHost(index, host)
   }
   handleDeleteHosts() {
-    console.log(this.refs.hostList.selectedHosts())
-    // this.props.actions.deleteHosts(indexes)
-  }
-  renderDialog() {
-    const actions = [
-      <FlatButton
-        label="Cancel"
-        secondary={true}
-        onClick={::this.handleCloseDialog}
-      />,
-      <FlatButton
-        label="Add"
-        primary={true}
-        onClick={::this.handleAddHost}
-      />,
-    ];
-
-    return (
-      <Dialog
-        title="Set Host Config"
-        actions={actions}
-        modal={false}
-        open={this.state.open}
-        onRequestClose={::this.handleCloseDialog}
-      >
-        <TextField id="host" ref="host" fullWidth={true}
-          floatingLabelText="Host" hintText="example.com" />
-        <TextField id="ip" ref="ip" fullWidth={true}
-          floatingLabelText="IP" hintText="111.111.111.111" />
-      </Dialog>
-    )
+    const indexes = this.refs.hostList.selectedHosts().map(host => host.index)
+    this.refs.hostList.unselect()
+    this.props.actions.deleteHosts(indexes)
   }
   render() {
     const {hosts} = this.props
+    const {open} = this.state
 
     return (
       <div style={styles.app}>
-        {this.renderDialog()}
+        <HostDialog
+          ref="hostDialog"
+          open={open}
+          onClickOK={::this.handleAddHost}
+          onClickCancel={::this.handleCloseDialog}
+          onRequestClose={::this.handleCloseDialog}
+        />
         <div style={styles.container}>
-          <HostList ref="hostList" hosts={hosts} onEditHost={::this.handleEditHost} />
+          <HostList
+            ref="hostList"
+            hosts={hosts}
+            onEditHost={::this.handleEditHost}
+          />
         </div>
         <Toolbar style={styles.toolbar}>
           <ToolbarGroup firstChild={true}>

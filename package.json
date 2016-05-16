@@ -56,6 +56,7 @@
     "redux-localstorage-filter": "0.1.1",
     "redux-logger": "2.6.1",
     "redux-thunk": "2.1.0",
+    "validator": "5.2.0",
     "webpack": "1.13.0",
     "webpack-target-electron-renderer": "0.4.0"
   },

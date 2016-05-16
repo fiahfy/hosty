@@ -18,6 +18,12 @@ function hosts(state = [], action) {
       ...state.slice(index + 1)
     ]
   }
+  case ActionTypes.DELETE_HOSTS: {
+    const {indexes} = action
+    return state.filter(host => {
+      return indexes.indexOf(host.index) === -1
+    })
+  }
   default:
     return state
   }

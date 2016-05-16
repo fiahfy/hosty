@@ -22,6 +22,21 @@ export default class HostList extends Component {
     selectedIndexes: [],
     allRowsSelected: false
   };
+  selectedHosts() {
+    const {selectedIndexes, allRowsSelected} = this.state
+    if (allRowsSelected) {
+      return this.props.hosts
+    }
+    return this.props.hosts.filter(host => {
+      return selectedIndexes.indexOf(host.index) !== -1
+    })
+  }
+  unselect() {
+    this.setState({
+      selectedIndexes: [],
+      allRowsSelected: false
+    })
+  }
   handleToggleHostStatus(index, e) {
     e.stopPropagation()
     const host = this.props.hosts[index]
@@ -69,15 +84,6 @@ export default class HostList extends Component {
       return host
     }).sort((a, b) => {
       return order === 'asc' ? a[key] > b[key] : a[key] < b[key]
-    })
-  }
-  selectedHosts() {
-    const {selectedIndexes, allRowsSelected} = this.state
-    if (allRowsSelected) {
-      return this.props.hosts
-    }
-    return this.props.hosts.filter(host => {
-      return selectedIndexes.indexOf(host.index) !== -1
     })
   }
   render() {

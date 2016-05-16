@@ -3,9 +3,9 @@ import {routerReducer} from 'react-router-redux'
 import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
 import ExecutionEnvironment from 'fbjs/lib/ExecutionEnvironment'
-import persistState, {mergePersistedState} from 'redux-localstorage';
-import adapter from 'redux-localstorage/lib/adapters/localStorage';
-import filter from 'redux-localstorage-filter';
+import persistState, {mergePersistedState} from 'redux-localstorage'
+import adapter from 'redux-localstorage/lib/adapters/localStorage'
+import filter from 'redux-localstorage-filter'
 import reducers from './reducers'
 import DevTools from './containers/dev-tools'
 
@@ -21,7 +21,7 @@ export function configureStore(initialState = {}) {
 
   const storage = compose(
     filter('hosts')
-  )(adapter(window.localStorage));
+  )(adapter(window.localStorage))
 
   const finalCreateStore = compose(
     applyMiddleware(thunk),
