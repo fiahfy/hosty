@@ -7,14 +7,16 @@ const app = remote.app
 
 export const READED_HOSTS = 'READED_HOSTS'
 export const WRITED_HOSTS = 'WRITED_HOSTS'
-export const CREATE_HOST = 'CREATE_HOST'
-export const UPDATE_HOST = 'UPDATE_HOST'
+export const CREATE_HOST  = 'CREATE_HOST'
+export const UPDATE_HOST  = 'UPDATE_HOST'
 export const DELETE_HOSTS = 'DELETE_HOSTS'
 
-const BEGIN_SECTION = '##test begin'
-const END_SECTION = '##test end'
+const BEGIN_SECTION = '##hosty begin'
+const END_SECTION   = '##hosty end'
 
-// const HOSTS = '/etc/hosts'
+// const HOSTS_OSX = '/etc/hosts'
+// const HOSTS_WINDOWS = 'C:¥Windows¥System32¥drivers¥etc¥hosts'
+// const HOSTS = process.platform === 'win32' ? HOSTS_WINDOWS : HOSTS_OSX
 const HOSTS = process.cwd() + '/dummyHosts'
 const TEMP_HOSTS = app.getPath('temp') + 'hosts'
 const HOSTS_CHARSET = 'utf8'
@@ -81,7 +83,7 @@ export function writeHosts(hosts) {
       .then(hosts => {
         return new Promise((resolve, reject) => {
           const options = {
-            name: 'Your application name',
+            name: app.getName(),
             // icns: '/path/to/icns/file' // (optional, only for MacOS),
             process: {
               // options: {

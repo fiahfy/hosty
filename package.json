@@ -1,7 +1,22 @@
 {
-  "name": "electron-quick-start",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "name": "Hosty",
+  "version": "0.0.1",
+  "description": "Application for hosts management",
+  "keywords": [
+    "Electron",
+    "hosts"
+  ],
+  "author": {
+    "name": "fiahfy",
+    "email": "d.fiahfy@gmail.com",
+    "url": "http://fiahfy.blogspot.com/"
+  },
+  "homepage": "http://fiahfy.blogspot.com/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fiahfy/hosty"
+  },
+  "private": true,
   "main": "main.js",
   "scripts": {
     "start": "npm run watch & electron main.js",
@@ -14,22 +29,6 @@
     "build:renderer": "webpack --config webpack/renderer.babel.js",
     "build:main": "webpack --config webpack/main.babel.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/atom/electron-quick-start.git"
-  },
-  "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial"
-  ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
-  "bugs": {
-    "url": "https://github.com/atom/electron-quick-start/issues"
-  },
-  "homepage": "https://github.com/atom/electron-quick-start#readme",
   "dependencies": {
     "babel-loader": "6.2.4",
     "babel-plugin-transform-decorators-legacy": "1.3.4",
