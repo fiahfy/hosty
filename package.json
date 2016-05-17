@@ -1,5 +1,6 @@
 {
-  "name": "Hosty",
+  "name": "hosty",
+  "productName": "Hosty",
   "version": "0.0.1",
   "description": "Application for hosts management",
   "keywords": [

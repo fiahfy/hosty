@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <meta charset="utf-8">
+    <title>Hosty</title>
     <style>
       html {
         height: 100%;
@@ -29,10 +29,10 @@
     <div id="app"></div>
     <script>
       (function() {
-        const script = document.createElement('script');
-        script.src = process.env.HOT ? 'http://localhost:8080/assets/js/renderer.js' : './js/renderer.js';
-        document.write(script.outerHTML);
-      }());
+        const script = document.createElement('script')
+        script.src = process.env.HOT ? 'http://localhost:8080/assets/js/renderer.js' : './js/renderer.js'
+        document.write(script.outerHTML)
+      }())
     </script>
-    </body>
+  </body>
 </html>

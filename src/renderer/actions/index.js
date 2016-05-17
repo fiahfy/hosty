@@ -1,4 +1,5 @@
 import fs from 'fs'
+import path from 'path'
 import storage from 'electron-json-storage'
 import {remote} from 'electron'
 import sudo from 'electron-sudo'
@@ -17,8 +18,8 @@ const END_SECTION   = '##hosty end'
 // const HOSTS_OSX = '/etc/hosts'
 // const HOSTS_WINDOWS = 'C:¥Windows¥System32¥drivers¥etc¥hosts'
 // const HOSTS = process.platform === 'win32' ? HOSTS_WINDOWS : HOSTS_OSX
-const HOSTS = process.cwd() + '/dummyHosts'
-const TEMP_HOSTS = app.getPath('temp') + 'hosts'
+const HOSTS = path.join(process.cwd(), 'dummyHosts')
+const TEMP_HOSTS = path.join(app.getPath('temp'), 'hosts')
 const HOSTS_CHARSET = 'utf8'
 
 export function readHosts() {
