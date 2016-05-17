@@ -39,7 +39,6 @@ export default class App extends Component {
       ip:     this.refs.hostDialog.getIP(),
       enable: true
     }
-    this.refs.hostDialog.clear()
     this.props.actions.createHost(host)
     this.handleCloseDialog()
   }

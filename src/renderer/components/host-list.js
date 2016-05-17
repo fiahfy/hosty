@@ -105,7 +105,7 @@ export default class HostList extends Component {
     }
 
     const hostNodes = this.sortedHosts().map(host => {
-      const color = host.enable ? Styles.colors.green600 : Styles.colors.grey400
+      const color = host.enable ? Styles.colors.green600 : Styles.colors.grey300
       return (
         <TableRow key={host.index} selected={selectedIndexes.indexOf(host.index) !== -1}>
           <TableRowColumn style={styles.iconColumn}>
@@ -156,7 +156,8 @@ export default class HostList extends Component {
 
 const styles = {
   iconColumn: {
-    width: '48px'
+    width: '48px',
+    textAlign: 'center'
   },
   headerSortableColumn: {
     cursor: 'pointer'
