@@ -1,0 +1,106 @@
+import React, {Component, PropTypes} from 'react'
+import {
+  TextField, IconButton,
+  TableRow, TableRowColumn
+} from 'material-ui'
+import * as SvgIcons from 'material-ui/svg-icons'
+import * as Styles from 'material-ui/styles'
+import validator from 'validator'
+
+export default class HostItem extends Component {
+  static propTypes = {
+    host:       PropTypes.object,
+    selected:   PropTypes.bool,
+    onEditHost: PropTypes.func
+  };
+  static defaultProps = {
+    host:       {},
+    selected:   false,
+    onEditHost: () => {}
+  };
+  handleToggleHostStatus(e) {
+    e.stopPropagation()
+    const {host, onEditHost} = this.props
+    const newHost = host
+    newHost.enable = !newHost.enable
+    this.props.onEditHost(newHost)
+  }
+  handleEditHost(e) {
+    const {host, onEditHost} = this.props
+    const {name, value} = e.target
+    const newHost = host
+    newHost[name] = value
+    this.props.onEditHost(newHost)
+  }
+  handleInputHost(e) {
+    if (e.keyCode === 13) {
+      e.target.blur()
+    }
+  }
+  render() {
+    const {host, selected, ...others} = this.props
+
+    let error = {}
+    if (!host.host.length) {
+      error.host = 'Missing Host'
+    }
+    if (!host.ip.length) {
+      error.ip = 'Missing IP'
+    } else if (!validator.isIP(host.ip)) {
+      error.ip = 'Invalid IP'
+    }
+
+    let icon = <SvgIcons.ActionDone color={Styles.colors.green600} />
+    if (error.host || error.ip) {
+      icon = <SvgIcons.AlertWarning color={Styles.colors.yellow600} />
+    } else if (!host.enable) {
+      icon = <SvgIcons.ActionDone color={Styles.colors.grey300} />
+    }
+
+    return (
+      <TableRow
+        key={host.index}
+        selected={selected}
+        {...others}
+      >
+        {others.children}
+        <TableRowColumn style={styles.iconColumn}>
+          <IconButton onClick={::this.handleToggleHostStatus}>
+            {icon}
+          </IconButton>
+        </TableRowColumn>
+        <TableRowColumn>
+          <TextField
+            name="host"
+            hintText="example.com"
+            underlineShow={false}
+            defaultValue={host.host}
+            onClick={e => e.stopPropagation()}
+            onBlur={::this.handleEditHost}
+            onKeyDown={::this.handleInputHost}
+            errorText={error.host}
+          />
+        </TableRowColumn>
+        <TableRowColumn>
+          <TextField
+            name="ip"
+            hintText="111.111.111.111"
+            underlineShow={false}
+            defaultValue={host.ip}
+            onClick={e => e.stopPropagation()}
+            onBlur={::this.handleEditHost}
+            onKeyDown={::this.handleInputHost}
+            errorText={error.ip}
+          />
+        </TableRowColumn>
+      </TableRow>
+    )
+  }
+}
+
+const styles = {
+  iconColumn: {
+    width: '48px',
+    textAlign: 'center'
+  }
+}

@@ -5,14 +5,17 @@ import {
   TableRow, TableHeaderColumn, TableRowColumn
 } from 'material-ui'
 import * as SvgIcons from 'material-ui/svg-icons'
-import * as Styles from 'material-ui/styles'
+import validator from 'validator'
+import HostItem from './host-item'
 
 export default class HostList extends Component {
   static propTypes = {
-    hosts: PropTypes.arrayOf(PropTypes.object)
+    hosts:      PropTypes.arrayOf(PropTypes.object),
+    onEditHost: PropTypes.func
   };
   static defaultProps = {
-    hosts: []
+    hosts: [],
+    onEditHost: () => {}
   };
   state = {
     sort: {
@@ -37,22 +40,8 @@ export default class HostList extends Component {
       allRowsSelected: false
     })
   }
-  handleToggleHostStatus(index, e) {
-    e.stopPropagation()
-    const host = this.props.hosts[index]
-    host.enable = !host.enable
+  handleEditHost(host) {
     this.props.onEditHost(host.index, host)
-  }
-  handleEditHost(index, e) {
-    const {name, value} = e.target
-    const host = this.props.hosts[index]
-    host[name] = value
-    this.props.onEditHost(host.index, host)
-  }
-  handleInputHost(e) {
-    if (e.keyCode === 13) {
-      e.target.blur()
-    }
   }
   handleClickHeader(e, rowId, columnId) {
     if (columnId < 2) {
@@ -86,68 +75,55 @@ export default class HostList extends Component {
       return order === 'asc' ? a[key] > b[key] : a[key] < b[key]
     })
   }
-  render() {
-    const {sort, selectedIndexes, allRowsSelected} = this.state
-    const {hosts, onRowSelection} = this.props
+  renderSortArrow(key) {
+    const {sort} = this.state
 
-    let hostOrderNode = null
-    if (sort.key === 'host') {
-      hostOrderNode = sort.order === 'asc'
-        ? <SvgIcons.NavigationArrowDropDown style={styles.headerColumnIcon} />
-        : <SvgIcons.NavigationArrowDropUp style={styles.headerColumnIcon} />
+    if (key !== sort.key) {
+      return null
     }
 
-    let ipOrderNode = null
-    if (sort.key === 'ip') {
-      ipOrderNode = sort.order === 'asc'
-        ? <SvgIcons.NavigationArrowDropDown style={styles.headerColumnIcon} />
-        : <SvgIcons.NavigationArrowDropUp style={styles.headerColumnIcon} />
-    }
+    return sort.order === 'asc'
+      ? <SvgIcons.NavigationArrowDropDown style={styles.headerColumnIcon} />
+      : <SvgIcons.NavigationArrowDropUp style={styles.headerColumnIcon} />
+  }
+  renderHostNodes() {
+    const {selectedIndexes} = this.state
 
-    const hostNodes = this.sortedHosts().map(host => {
-      const color = host.enable ? Styles.colors.green600 : Styles.colors.grey300
+    return this.sortedHosts().map(host => {
       return (
-        <TableRow key={host.index} selected={selectedIndexes.indexOf(host.index) !== -1}>
-          <TableRowColumn style={styles.iconColumn}>
-            <IconButton onClick={this.handleToggleHostStatus.bind(this, host.index)}>
-              <SvgIcons.ActionDone color={color} />
-            </IconButton>
-          </TableRowColumn>
-          <TableRowColumn>
-            <TextField name="host" hintText="example.com" underlineShow={false}
-              defaultValue={host.host}
-              onClick={e => e.stopPropagation()}
-              onBlur={this.handleEditHost.bind(this, host.index)}
-              onKeyDown={::this.handleInputHost} />
-          </TableRowColumn>
-          <TableRowColumn>
-            <TextField name="ip" hintText="111.111.111.111" underlineShow={false}
-              defaultValue={host.ip}
-              onClick={e => e.stopPropagation()}
-              onBlur={this.handleEditHost.bind(this, host.index)}
-              onKeyDown={::this.handleInputHost} />
-          </TableRowColumn>
-        </TableRow>
+        <HostItem
+          key={host.index}
+          host={host}
+          selected={selectedIndexes.indexOf(host.index) !== -1}
+          onEditHost={::this.handleEditHost}
+        />
       )
     })
+  }
+  render() {
+    const {allRowsSelected} = this.state
 
     return (
-      <Table multiSelectable={true} onRowSelection={::this.handleRowSelection} allRowsSelected={allRowsSelected}>
+      <Table
+        multiSelectable={true}
+        onRowSelection={::this.handleRowSelection}
+        allRowsSelected={allRowsSelected}
+      >
         <TableHeader>
           <TableRow onCellClick={::this.handleClickHeader}>
             <TableHeaderColumn style={styles.iconColumn}>Status</TableHeaderColumn>
             <TableHeaderColumn style={styles.headerSortableColumn}>
               <div style={styles.headerColumnText}>Host</div>
-              {hostOrderNode}
+              {this.renderSortArrow('host')}
             </TableHeaderColumn>
             <TableHeaderColumn style={styles.headerSortableColumn}>
               <div style={styles.headerColumnText}>IP</div>
-              {ipOrderNode}
+              {this.renderSortArrow('ip')}
             </TableHeaderColumn>
           </TableRow>
         </TableHeader>
         <TableBody showRowHover={false} deselectOnClickaway={false}>
-          {hostNodes}
+          {this.renderHostNodes()}
         </TableBody>
       </Table>
     )
