@@ -55,6 +55,7 @@
     "redux-localstorage": "1.0.0-rc4",
     "redux-localstorage-filter": "0.1.1",
     "redux-logger": "2.6.1",
+    "redux-persist": "3.2.2",
     "redux-thunk": "2.1.0",
     "validator": "5.3.0",
     "webpack": "1.13.1",
