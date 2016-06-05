@@ -1,6 +1,7 @@
-import {app, shell, BrowserWindow, Menu} from 'electron'
+import {app, shell, dialog, ipcMain, BrowserWindow, Menu} from 'electron'
 import fs from 'fs'
 import path from 'path'
+import HostsManager from './renderer/utils/hosts-manager'
 
 const INIT_FILE = 'init.json'
 const INIT_PATH = path.join(app.getPath('userData'), INIT_FILE)
@@ -77,6 +78,25 @@ function writeInitFile(data) {
 
 function createMenu() {
   const template = [
+    {
+      label: 'File',
+      submenu: [
+        {
+          label: 'Import'
+        },
+        {
+          label: 'Export',
+          click: () => {
+            dialog.showSaveDialog({}, path => {
+              ipcMain.once('receiveHosts', (event, arg) => {
+                fs.writeFileSync(path, HostsManager.buildHosts(arg) + '\n')
+              })
+              mainWindow.webContents.send('sendHosts');
+            })
+          }
+        }
+      ]
+    },
     {
       label: 'Edit',
       submenu: [

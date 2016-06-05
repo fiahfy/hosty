@@ -40,6 +40,7 @@
     "electron-json-storage": "2.0.0",
     "electron-prebuilt": "1.2.1",
     "electron-sudo": "3.0.5",
+    "is-electron-renderer": "2.0.0",
     "material-ui": "0.15.0",
     "react": "15.1.0",
     "react-dom": "15.1.0",
