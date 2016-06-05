@@ -98,7 +98,7 @@ export default class HostDialog extends Component {
 
     return (
       <Dialog
-        title="Set Host Config"
+        title="Input Host Config"
         actions={actions}
         modal={false}
         open={open}

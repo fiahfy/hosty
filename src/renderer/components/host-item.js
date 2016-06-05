@@ -21,16 +21,16 @@ export default class HostItem extends Component {
   handleToggleHostStatus(e) {
     e.stopPropagation()
     const {host, onEditHost} = this.props
-    const newHost = host
+    const newHost = Object.assign({}, host)
     newHost.enable = !newHost.enable
-    this.props.onEditHost(newHost)
+    onEditHost(newHost)
   }
   handleEditHost(e) {
     const {host, onEditHost} = this.props
     const {name, value} = e.target
-    const newHost = host
+    const newHost = Object.assign({}, host)
     newHost[name] = value
-    this.props.onEditHost(newHost)
+    onEditHost(newHost)
   }
   handleInputHost(e) {
     if (e.keyCode === 13) {
@@ -73,7 +73,7 @@ export default class HostItem extends Component {
           <TextField
             name="host"
             hintText="example.com"
-            underlineShow={false}
+            underlineShow={!!error.host}
             defaultValue={host.host}
             onClick={e => e.stopPropagation()}
             onBlur={::this.handleEditHost}
@@ -85,7 +85,7 @@ export default class HostItem extends Component {
           <TextField
             name="ip"
             hintText="111.111.111.111"
-            underlineShow={false}
+            underlineShow={!!error.ip}
             defaultValue={host.ip}
             onClick={e => e.stopPropagation()}
             onBlur={::this.handleEditHost}

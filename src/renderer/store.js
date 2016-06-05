@@ -6,9 +6,10 @@ import ExecutionEnvironment from 'fbjs/lib/ExecutionEnvironment'
 // import persistState, {mergePersistedState} from 'redux-localstorage'
 // import adapter from 'redux-localstorage/lib/adapters/localStorage'
 // import filter from 'redux-localstorage-filter'
-import {persistStore, autoRehydrate} from 'redux-persist'
+import {persistStore, autoRehydrate, createPersistor} from 'redux-persist'
 import reducers from './reducers'
 import DevTools from './containers/dev-tools'
+import hostsManagementMiddleware from './middlewares/hosts-management-middleware'
 
 const voidMiddleware = () => next => action => {
   next(action)
@@ -20,15 +21,11 @@ export function configureStore(initialState = {}) {
     reduxLoggerMiddleware = createLogger()
   }
 
-  // const storage = compose(
-  //   filter('hosts')
-  // )(adapter(window.localStorage))
-
   const finalCreateStore = compose(
     applyMiddleware(thunk),
     applyMiddleware(reduxLoggerMiddleware),
-    // persistState(storage, 'my-storage-key'),
     autoRehydrate(),
+    applyMiddleware(hostsManagementMiddleware),
     DevTools.instrument()
   )(createStore)
 
@@ -40,9 +37,7 @@ export function configureStore(initialState = {}) {
     initialState
   )
 
-  persistStore(store, {whitelist: ['hosts']}, () => {
-    console.log('autoRehydrate completed')
-  })
+  persistStore(store, {whitelist: ['hosts']})
 
   if (module.hot) {
     module.hot.accept('./reducers', () => {
