@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import {app as mainApp, remote} from 'electron'
-import sudo from 'electron-sudo'
+import runas from 'runas'
 import validator from 'validator'
 import isRenderer from 'is-electron-renderer'
 
@@ -53,33 +53,8 @@ export default class HostsManager {
       })
       .then(hosts => {
         return new Promise((resolve, reject) => {
-          const options = {
-            name: app.getName(),
-            // icns: '/path/to/icns/file' // (optional, only for MacOS),
-            process: {
-              // options: {
-              //   // Can use custom environment variables for your privileged subprocess
-              //   env: {'VAR': 'VALUE'}
-              //   // ... and all other subprocess options described here
-              //   // https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback
-              // },
-              on: ps => {
-                // ps.stdout.on('data', data => {
-                //   resolve(hosts)
-                // })
-                setTimeout(function() {
-                  ps.kill()
-                }.bind(ps), 50000)
-              }
-            }
-          }
-          sudo.exec(`cp ${TEMP_HOSTS} ${HOSTS}`, options, err => {
-            if (err) {
-              reject(err)
-              return
-            }
-            resolve(hosts)
-          })
+          runas('cp', [TEMP_HOSTS, HOSTS], {admin: !DEBUG_HOSTS})
+          resolve(hosts)
         })
       })
       .catch(err => {
