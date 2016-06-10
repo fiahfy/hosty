@@ -26,5 +26,9 @@ export default {
     ]
   },
   externals: fs.readdirSync('node_modules')
-  .filter(dir => '.bin' !== dir)
+  .filter(dir => '.bin' !== dir),
+  node: {
+    __filename: false,
+    __dirname: false,
+  }
 }

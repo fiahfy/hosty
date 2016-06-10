@@ -21,7 +21,7 @@
   "main": "main.js",
   "scripts": {
     "start": "npm run watch & electron main.js",
-    "start:hot": "npm run hot:renderer & npm run watch:main & HOT=1 electron main.js",
+    "start:hot": "npm run hot:renderer & npm run build; HOT=1 electron main.js",
     "hot:renderer": "webpack-dev-server --config webpack/renderer.hot.babel.js",
     "watch": "npm run build -- -w",
     "watch:renderer": "npm run build:renderer -- -w",
