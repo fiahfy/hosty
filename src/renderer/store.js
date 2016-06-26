@@ -37,7 +37,7 @@ export function configureStore(initialState = {}) {
     initialState
   )
 
-  persistStore(store, {whitelist: ['hosts']})
+  persistStore(store, {whitelist: ['groups']})
 
   if (module.hot) {
     module.hot.accept('./reducers', () => {

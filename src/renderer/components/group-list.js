@@ -6,34 +6,34 @@ import {
 } from 'material-ui'
 import * as SvgIcons from 'material-ui/svg-icons'
 import validator from 'validator'
-import HostItem from './host-item'
+import GroupItem from './group-item'
 
-export default class HostList extends Component {
+export default class GroupList extends Component {
   static propTypes = {
-    hosts:      PropTypes.arrayOf(PropTypes.object),
-    onEditHost: PropTypes.func
+    groups:      PropTypes.arrayOf(PropTypes.object),
+    onEditGroup: PropTypes.func
   };
   static defaultProps = {
-    hosts:      [],
-    onEditHost: () => {}
+    hosts:       [],
+    onEditGroup: () => {}
   };
   state = {
     sort: {
-      key: 'host',
+      key: 'name',
       order: 'asc'
     },
     sortedMap: new Map,
     selectedIds: [],
     allRowsSelected: false
   };
-  selectedHosts() {
-    const {hosts} = this.props
+  selectedGroups() {
+    const {groups} = this.props
     const {selectedIds, allRowsSelected} = this.state
     if (allRowsSelected) {
-      return hosts
+      return groups
     }
-    return hosts.filter(host => {
-      return selectedIds.includes(host.id)
+    return groups.filter(group => {
+      return selectedIds.includes(group.id)
     })
   }
   unselect() {
@@ -42,26 +42,26 @@ export default class HostList extends Component {
       allRowsSelected: false
     })
   }
-  handleEditHost(host) {
-    this.props.onEditHost(host.id, host)
+  handleEditGroup(group) {
+    this.props.onEditGroup(group.id, group)
   }
   handleClickHeader(e, rowId, columnId) {
     if (columnId < 2) {
       return
     }
-    const {hosts} = this.props
+    const {groups} = this.props
     const {sort} = this.state
-    const key = columnId === 2 ? 'host' : 'ip'
+    const key = 'name'
     const order = sort.key !== key ? 'asc' : sort.order !== 'asc' ? 'asc' : 'desc'
 
     const sortedMap = new Map
-    hosts.sort((a, b) => {
+    groups.sort((a, b) => {
       const flag = order === 'asc'
       if (!a[key]) { return flag }
       if (!b[key]) { return !flag }
       return flag ? a[key] > b[key] : a[key] < b[key]
-    }).map((host, i) => {
-      sortedMap.set(host.id, i)
+    }).map((group, i) => {
+      sortedMap.set(group.id, i)
     })
 
     this.setState({sort: {key, order}, sortedMap})
@@ -73,17 +73,17 @@ export default class HostList extends Component {
       selectedIds = []
       allRowsSelected = true
     } else {
-      selectedIds = this.sortedHosts().filter((host, i) => {
+      selectedIds = this.sortedGroups().filter((group, i) => {
         return selectedRows.includes(i)
-      }).map(host => host.id)
+      }).map(group => group.id)
     }
     this.setState({selectedIds, allRowsSelected})
   }
-  sortedHosts() {
-    const {hosts} = this.props
+  sortedGroups() {
+    const {groups} = this.props
     const {sortedMap} = this.state
 
-    return hosts.sort((a, b) => {
+    return groups.sort((a, b) => {
       return sortedMap.get(a.id)  > sortedMap.get(b.id)
     })
   }
@@ -98,16 +98,16 @@ export default class HostList extends Component {
       ? <SvgIcons.NavigationArrowDropDown style={styles.headerColumnIcon} />
       : <SvgIcons.NavigationArrowDropUp style={styles.headerColumnIcon} />
   }
-  renderHostNodes() {
+  renderGroupNodes() {
     const {selectedIds} = this.state
 
-    return this.sortedHosts().map(host => {
+    return this.sortedGroups().map(group => {
       return (
-        <HostItem
-          key={host.id}
-          host={host}
-          selected={selectedIds.includes(host.id)}
-          onEditHost={::this.handleEditHost}
+        <GroupItem
+          key={group.id}
+          group={group}
+          selected={selectedIds.includes(group.id)}
+          onEditGroup={::this.handleEditGroup}
         />
       )
     })
@@ -125,17 +125,13 @@ export default class HostList extends Component {
           <TableRow onCellClick={::this.handleClickHeader}>
             <TableHeaderColumn style={styles.iconColumn}>Status</TableHeaderColumn>
             <TableHeaderColumn style={styles.headerSortableColumn}>
-              <div style={styles.headerColumnText}>Host</div>
-              {this.renderSortArrow('host')}
-            </TableHeaderColumn>
-            <TableHeaderColumn style={styles.headerSortableColumn}>
-              <div style={styles.headerColumnText}>IP</div>
-              {this.renderSortArrow('ip')}
+              <div style={styles.headerColumnText}>Group</div>
+              {this.renderSortArrow('name')}
             </TableHeaderColumn>
           </TableRow>
         </TableHeader>
         <TableBody showRowHover={false} deselectOnClickaway={false}>
-          {this.renderHostNodes()}
+          {this.renderGroupNodes()}
         </TableBody>
       </Table>
     )

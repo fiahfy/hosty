@@ -41,10 +41,10 @@ export default class HostItem extends Component {
     const {host, selected, ...others} = this.props
 
     let error = {}
-    if (!host.host.length) {
+    if (!host.host || !host.host.length) {
       error.host = 'Missing Host'
     }
-    if (!host.ip.length) {
+    if (!host.ip || !host.ip.length) {
       error.ip = 'Missing IP'
     } else if (!validator.isIP(host.ip)) {
       error.ip = 'Invalid IP'
@@ -79,18 +79,20 @@ export default class HostItem extends Component {
             onBlur={::this.handleEditHost}
             onKeyDown={::this.handleInputHost}
             errorText={error.host}
+            fullWidth={true}
           />
         </TableRowColumn>
         <TableRowColumn>
           <TextField
             name="ip"
-            hintText="111.111.111.111"
+            hintText="192.0.2.0"
             underlineShow={!!error.ip}
             defaultValue={host.ip}
             onClick={e => e.stopPropagation()}
             onBlur={::this.handleEditHost}
             onKeyDown={::this.handleInputHost}
             errorText={error.ip}
+            fullWidth={true}
           />
         </TableRowColumn>
       </TableRow>
@@ -100,7 +102,9 @@ export default class HostItem extends Component {
 
 const styles = {
   iconColumn: {
-    width: '48px',
-    textAlign: 'center'
+    width: 48,
+    textAlign: 'center',
+    paddingLeft: 0,
+    paddingRight: 0
   }
 }

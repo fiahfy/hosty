@@ -20,7 +20,7 @@ const HOSTS_CHARSET = 'utf8'
 
 
 export default class HostsManager {
-  static save(hosts) {
+  static save(groups) {
     return new Promise((resolve, reject) => {
       fs.readFile(HOSTS, HOSTS_CHARSET, (err, data) => {
         if (err) {
@@ -31,7 +31,7 @@ export default class HostsManager {
       })
     })
       .then(data => {
-        let newData = `${BEGIN_SECTION}\n` + HostsManager.buildHosts(hosts) + `\n${END_SECTION}\n`
+        let newData = `${BEGIN_SECTION}\n` + HostsManager.buildHosts(groups) + `\n${END_SECTION}\n`
 
         const reg = new RegExp(String.raw`([\s\S]*\n?)${BEGIN_SECTION}\n[\s\S]*\n${END_SECTION}\n?([\s\S]*)`, 'im')
         const matches = data.match(reg)
@@ -47,25 +47,27 @@ export default class HostsManager {
               reject(err)
               return
             }
-            resolve(hosts)
+            resolve(groups)
           })
         })
       })
-      .then(hosts => {
+      .then(groups => {
         return new Promise((resolve, reject) => {
           runas('cp', [TEMP_HOSTS, HOSTS], {admin: !DEBUG_HOSTS})
-          resolve(hosts)
+          resolve(groups)
         })
       })
       .catch(err => {
         console.error(err)
       })
   }
-  static buildHosts(hosts) {
-    return hosts.filter(host => isValidHost(host)).map(item => {
-      return (item.enable ? '' : '#')
-        + item.ip + '\t'
-        + item.host
+  static buildHosts(groups) {
+    return groups.map(group => {
+      return group.hosts.filter(host => isValidHost(host)).map(item => {
+        return (group.enable && item.enable ? '' : '#')
+          + item.ip + '\t'
+          + item.host
+      }).join('\n')
     }).join('\n')
   }
   static parseHosts(data) {
@@ -86,10 +88,10 @@ export default class HostsManager {
 }
 
 function isValidHost(host) {
-  if (!host.host.length) {
+  if (!host.host || !host.host.length) {
     return false
   }
-  if (!host.ip.length) {
+  if (!host.ip || !host.ip.length) {
     return false
   }
   if (!validator.isIP(host.ip)) {
