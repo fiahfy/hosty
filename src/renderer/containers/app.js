@@ -73,7 +73,7 @@ export default class App extends Component {
 
     return (
       <div style={styles.app}>
-        <Drawer open={true} ref="drawer">
+        <Drawer open={true} ref="drawer" className="group-container">
           <GroupList
             ref="groupList"
             groups={groups}
