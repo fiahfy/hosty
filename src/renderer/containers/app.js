@@ -29,8 +29,11 @@ export default class App extends Component {
     groups: []
   };
   state = {
-    groupId: 1
+    groupId: null
   };
+  handleSelectGroup(id) {
+    this.setState({groupId: id})
+  }
   handleAddGroup() {
     this.props.actions.createGroup({
       name: '',
@@ -61,15 +64,6 @@ export default class App extends Component {
     this.refs.hostList.unselect()
     this.props.actions.deleteHosts(this.state.groupId, ids)
   }
-  componentDidMount() {
-    console.log(ReactDOM.findDOMNode(this.refs.drawer))
-    // ReactDOM.findDOMNode(this.refs.drawer)
-    window.addEventListener('scroll', (e) => {
-console.log('scroll')
-  e.stopPropagation()
-  e.preventDefault()
-    }, false)
-  }
   render() {
     const {groups} = this.props
     const group = groups.filter(group => {
@@ -84,6 +78,7 @@ console.log('scroll')
             ref="groupList"
             groups={groups}
             onEditGroup={::this.handleEditGroup}
+            onSelectGroup={::this.handleSelectGroup}
           />
           <Toolbar style={styles.groupToolbar}>
             <ToolbarGroup firstChild={true}>

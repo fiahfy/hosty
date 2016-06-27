@@ -10,12 +10,14 @@ import GroupItem from './group-item'
 
 export default class GroupList extends Component {
   static propTypes = {
-    groups:      PropTypes.arrayOf(PropTypes.object),
-    onEditGroup: PropTypes.func
+    groups:        PropTypes.arrayOf(PropTypes.object),
+    onEditGroup:   PropTypes.func,
+    onSelectGroup: PropTypes.func
   };
   static defaultProps = {
-    hosts:       [],
-    onEditGroup: () => {}
+    hosts:         [],
+    onEditGroup:   () => {},
+    onSelectGroup: () => {}
   };
   state = {
     sort: {
@@ -67,6 +69,8 @@ export default class GroupList extends Component {
     this.setState({sort: {key, order}, sortedMap})
   }
   handleRowSelection(selectedRows) {
+    const {onSelectGroup} = this.props
+
     let selectedIds = []
     let allRowsSelected = false
     if (selectedRows === 'all') {
@@ -77,6 +81,7 @@ export default class GroupList extends Component {
         return selectedRows.includes(i)
       }).map(group => group.id)
     }
+    onSelectGroup(selectedIds[0])
     this.setState({selectedIds, allRowsSelected})
   }
   sortedGroups() {
@@ -117,11 +122,11 @@ export default class GroupList extends Component {
 
     return (
       <Table
-        multiSelectable={true}
+        multiSelectable={false}
         onRowSelection={::this.handleRowSelection}
         allRowsSelected={allRowsSelected}
       >
-        <TableHeader>
+        <TableHeader displaySelectAll={false}>
           <TableRow onCellClick={::this.handleClickHeader}>
             <TableHeaderColumn style={styles.iconColumn}>Status</TableHeaderColumn>
             <TableHeaderColumn style={styles.headerSortableColumn}>

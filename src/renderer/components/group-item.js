@@ -18,6 +18,9 @@ export default class GroupItem extends Component {
     selected:    false,
     onEditGroup: () => {}
   };
+  state = {
+    editableField: null
+  };
   handleToggleGroupStatus(e) {
     e.stopPropagation()
     const {group, onEditGroup} = this.props
@@ -31,56 +34,77 @@ export default class GroupItem extends Component {
     const newGroup = Object.assign({}, group)
     newGroup[name] = value
     onEditGroup(newGroup)
+    this.setState({editableField: null})
   }
   handleInputGroup(e) {
     if (e.keyCode === 13) {
       e.target.blur()
     }
   }
-  render() {
-    const {group, selected, ...others} = this.props
+  renderNameField() {
+    const {group} = this.props
+    const {editableField} = this.state
+    const defaultValue = 'Group name'
 
-    let error = {}
-    // if (!host.host || !host.host.length) {
-    //   error.host = 'Missing Host'
-    // }
-    // if (!host.ip || !host.ip.length) {
-    //   error.ip = 'Missing IP'
-    // } else if (!validator.isIP(host.ip)) {
-    //   error.ip = 'Invalid IP'
-    // }
-
-    let icon = <SvgIcons.ActionDone color={Styles.colors.green600} />
-    if (error.name) {
-      icon = <SvgIcons.AlertWarning color={Styles.colors.yellow600} />
-    } else if (!group.enable) {
-      icon = <SvgIcons.ActionDone color={Styles.colors.grey300} />
+    if (editableField !== 'name') {
+      const value = group.name || defaultValue
+      const color = group.name ? 'inherit' : 'rgba(0, 0, 0, 0.298039)'
+      return (
+        <div
+          style={{...styles.fieldLabel, color}}
+          onDoubleClick={e => this.setState({editableField: 'name'})}
+        >{value}</div>
+      )
     }
 
     return (
+      <TextField
+        autoFocus={true}
+        name="name"
+        hintText={defaultValue}
+        underlineShow={true}
+        defaultValue={group.name}
+        onClick={e => e.stopPropagation()}
+        onBlur={::this.handleEditGroup}
+        onKeyDown={::this.handleInputGroup}
+        fullWidth={true}
+      />
+    )
+  }
+  renderIcon() {
+    const {group} = this.props
+
+    let errors = []
+
+    let icon = <SvgIcons.ActionDone color={Styles.colors.grey400} />
+    if (group.enable) {
+      icon = errors.length
+        ? <SvgIcons.AlertWarning color={Styles.colors.yellow600} />
+        : <SvgIcons.ActionDone color={Styles.colors.green600} />
+    }
+
+    return (
+      <IconButton onClick={::this.handleToggleGroupStatus}>
+        {icon}
+      </IconButton>
+    )
+  }
+  render() {
+    const {group, selected, ...others} = this.props
+
+    return (
       <TableRow
-        key={group.index}
+        key={group.id}
         selected={selected}
+        style={styles.row}
         {...others}
       >
         {others.children}
         <TableRowColumn style={styles.iconColumn}>
-          <IconButton onClick={::this.handleToggleGroupStatus}>
-            {icon}
-          </IconButton>
+          {this.renderIcon()}
         </TableRowColumn>
         <TableRowColumn>
-          <TextField
-            name="name"
-            hintText="Group Name"
-            underlineShow={!!error.name}
-            defaultValue={group.name}
-            onClick={e => e.stopPropagation()}
-            onBlur={::this.handleEditGroup}
-            onKeyDown={::this.handleInputGroup}
-            errorText={error.name}
-            fullWidth={true}
-          />
+          {this.renderNameField()}
         </TableRowColumn>
       </TableRow>
     )
@@ -88,10 +112,18 @@ export default class GroupItem extends Component {
 }
 
 const styles = {
+  row: {
+    cursor: 'pointer'
+  },
   iconColumn: {
     width: 48,
     textAlign: 'center',
     paddingLeft: 0,
     paddingRight: 0
+  },
+  fieldLabel: {
+    height: '100%',
+    lineHeight: '48px',
+    fontSize: 16
   }
 }

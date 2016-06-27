@@ -44,32 +44,29 @@ export default class HostItem extends Component {
   renderHostField() {
     const {host} = this.props
     const {editableField} = this.state
+    const defaultValue = 'example.com'
 
     if (editableField !== 'host') {
-      return <div style={{height: '100%'}} onDoubleClick={e => this.setState({editableField: 'host'})}>{host.host}</div>
+      const value = host.host || defaultValue
+      const color = host.host ? 'inherit' : 'rgba(0, 0, 0, 0.298039)'
+      return (
+        <div
+          style={{...styles.fieldLabel, color}}
+          onDoubleClick={e => this.setState({editableField: 'host'})}
+        >{value}</div>
+      )
     }
-
-        let error = {}
-        if (!host.host || !host.host.length) {
-          error.host = 'Missing Host'
-        }
-        if (!host.ip || !host.ip.length) {
-          error.ip = 'Missing IP'
-        } else if (!validator.isIP(host.ip)) {
-          error.ip = 'Invalid IP'
-        }
 
     return (
       <TextField
         autoFocus={true}
         name="host"
-        hintText="example.com"
-        underlineShow={!!error.host}
+        hintText={defaultValue}
+        underlineShow={true}
         defaultValue={host.host}
         onClick={e => e.stopPropagation()}
         onBlur={::this.handleEditHost}
         onKeyDown={::this.handleInputHost}
-        errorText={error.host}
         fullWidth={true}
       />
     )
@@ -77,67 +74,72 @@ export default class HostItem extends Component {
   renderIPField() {
     const {host} = this.props
     const {editableField} = this.state
+    const defaultValue = '192.0.2.0'
 
     if (editableField !== 'ip') {
-      return <div style={{height: '100%'}} onDoubleClick={e => this.setState({editableField: 'ip'})}>{host.ip}</div>
+      const value = host.ip || defaultValue
+      const color = host.ip ? 'inherit' : 'rgba(0, 0, 0, 0.298039)'
+      return (
+        <div
+        style={{...styles.fieldLabel, color}}
+          onDoubleClick={e => this.setState({editableField: 'ip'})}
+        >{value}</div>
+      )
     }
-
-        let error = {}
-        if (!host.host || !host.host.length) {
-          error.host = 'Missing Host'
-        }
-        if (!host.ip || !host.ip.length) {
-          error.ip = 'Missing IP'
-        } else if (!validator.isIP(host.ip)) {
-          error.ip = 'Invalid IP'
-        }
 
     return (
       <TextField
         autoFocus={true}
         name="ip"
-        hintText="192.0.2.0"
-        underlineShow={!!error.ip}
+        hintText={defaultValue}
+        underlineShow={true}
         defaultValue={host.ip}
         onClick={e => e.stopPropagation()}
         onBlur={::this.handleEditHost}
         onKeyDown={::this.handleInputHost}
-        errorText={error.ip}
         fullWidth={true}
       />
+    )
+  }
+  renderIcon() {
+    const {host} = this.props
+
+    let errors = []
+    if (!host.host || !host.host.length) {
+      errors.push('Missing Host')
+    }
+    if (!host.ip || !host.ip.length) {
+      errors.push('Missing IP')
+    } else if (!validator.isIP(host.ip)) {
+      errors.push('Invalid IP')
+    }
+
+    let icon = <SvgIcons.ActionDone color={Styles.colors.grey300} />
+    if (host.enable) {
+      icon = errors.length
+        ? <SvgIcons.AlertWarning color={Styles.colors.yellow600} />
+        : <SvgIcons.ActionDone color={Styles.colors.green600} />
+    }
+
+    return (
+      <IconButton onClick={::this.handleToggleHostStatus}>
+        {icon}
+      </IconButton>
     )
   }
   render() {
     const {host, selected, ...others} = this.props
 
-    let error = {}
-    if (!host.host || !host.host.length) {
-      error.host = 'Missing Host'
-    }
-    if (!host.ip || !host.ip.length) {
-      error.ip = 'Missing IP'
-    } else if (!validator.isIP(host.ip)) {
-      error.ip = 'Invalid IP'
-    }
-
-    let icon = <SvgIcons.ActionDone color={Styles.colors.green600} />
-    if (error.host || error.ip) {
-      icon = <SvgIcons.AlertWarning color={Styles.colors.yellow600} />
-    } else if (!host.enable) {
-      icon = <SvgIcons.ActionDone color={Styles.colors.grey300} />
-    }
-
     return (
       <TableRow
-        key={host.index}
+        key={host.id}
         selected={selected}
+        style={styles.row}
         {...others}
       >
         {others.children}
         <TableRowColumn style={styles.iconColumn}>
-          <IconButton onClick={::this.handleToggleHostStatus}>
-            {icon}
-          </IconButton>
+          {this.renderIcon()}
         </TableRowColumn>
         <TableRowColumn>
           {this.renderHostField()}
@@ -151,10 +153,18 @@ export default class HostItem extends Component {
 }
 
 const styles = {
+  row: {
+    cursor: 'pointer'
+  },
   iconColumn: {
     width: 48,
     textAlign: 'center',
     paddingLeft: 0,
     paddingRight: 0
+  },
+  fieldLabel: {
+    height: '100%',
+    lineHeight: '48px',
+    fontSize: 16
   }
 }
