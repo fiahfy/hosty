@@ -1,9 +1,9 @@
 import webpack from 'webpack'
 import config from './renderer.babel'
 
-let newConfig = Object.assign({}, config)
+const newConfig = Object.assign({}, config)
 newConfig.output.publicPath = 'http://localhost:8080/assets/'
-newConfig.plugins = [new webpack.HotModuleReplacementPlugin()]
+newConfig.plugins.push(new webpack.HotModuleReplacementPlugin())
 newConfig.module.loaders[0].query.presets.push('react-hmre')
 newConfig.devServer = {
   port:   8080,

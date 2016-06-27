@@ -29,7 +29,7 @@
     "build": "webpack --config webpack/all.babel.js",
     "build:renderer": "webpack --config webpack/renderer.babel.js",
     "build:main": "webpack --config webpack/main.babel.js",
-    "package": "npm run build; electron-packager . --platform=darwin,win32 --arch=x64 --overwrite"
+    "package": "DEBUG=0 npm run build; electron-packager . --platform=darwin,win32 --arch=x64 --overwrite"
   },
   "dependencies": {
     "babel-loader": "6.2.4",
