@@ -55,11 +55,11 @@ export default class HostList extends Component {
     const order = sort.key !== key ? 'asc' : sort.order !== 'asc' ? 'asc' : 'desc'
 
     const sortedMap = new Map
-    hosts.sort((a, b) => {
+    hosts.slice().sort((a, b) => {
       const flag = order === 'asc'
-      if (!a[key]) { return flag }
-      if (!b[key]) { return !flag }
-      return flag ? a[key] > b[key] : a[key] < b[key]
+      if (!a[key]) { return flag ? 1 : -1 }
+      if (!b[key]) { return !flag ? 1 : -1 }
+      return (flag ? a[key] > b[key] : a[key] < b[key]) ? 1 : -1
     }).map((host, i) => {
       sortedMap.set(host.id, i)
     })
@@ -83,8 +83,8 @@ export default class HostList extends Component {
     const {hosts} = this.props
     const {sortedMap} = this.state
 
-    return hosts.sort((a, b) => {
-      return sortedMap.get(a.id)  > sortedMap.get(b.id)
+    return hosts.slice().sort((a, b) => {
+      return sortedMap.get(a.id)  > sortedMap.get(b.id) ? 1 : -1
     })
   }
   renderSortArrow(key) {

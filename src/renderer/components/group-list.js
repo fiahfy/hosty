@@ -57,11 +57,11 @@ export default class GroupList extends Component {
     const order = sort.key !== key ? 'asc' : sort.order !== 'asc' ? 'asc' : 'desc'
 
     const sortedMap = new Map
-    groups.sort((a, b) => {
+    groups.slice().sort((a, b) => {
       const flag = order === 'asc'
-      if (!a[key]) { return flag }
-      if (!b[key]) { return !flag }
-      return flag ? a[key] > b[key] : a[key] < b[key]
+      if (!a[key]) { return flag ? 1 : -1 }
+      if (!b[key]) { return !flag ? 1 : -1 }
+      return (flag ? a[key] > b[key] : a[key] < b[key]) ? 1 : -1
     }).map((group, i) => {
       sortedMap.set(group.id, i)
     })
@@ -88,8 +88,8 @@ export default class GroupList extends Component {
     const {groups} = this.props
     const {sortedMap} = this.state
 
-    return groups.sort((a, b) => {
-      return sortedMap.get(a.id)  > sortedMap.get(b.id)
+    return groups.slice().sort((a, b) => {
+      return sortedMap.get(a.id)  > sortedMap.get(b.id) ? 1 : -1
     })
   }
   renderSortArrow(key) {
