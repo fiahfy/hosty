@@ -2,7 +2,7 @@
   "name": "hosty",
   "productName": "Hosty",
   "version": "0.0.1",
-  "description": "Application for hosts management",
+  "description": "The application for managing hosts file",
   "keywords": [
     "Electron",
     "hosts"
