@@ -35,11 +35,7 @@ export default class App extends Component {
     this.setState({groupId: id})
   }
   handleAddGroup() {
-    this.props.actions.createGroup({
-      name: '',
-      hosts: [],
-      enable: false
-    })
+    this.props.actions.createGroup({})
   }
   handleEditGroup(id, group) {
     this.props.actions.updateGroup(id, group)
@@ -50,11 +46,7 @@ export default class App extends Component {
     this.props.actions.deleteGroups(ids)
   }
   handleAddHost() {
-    this.props.actions.createHost(this.state.groupId, {
-      host: '',
-      ip: '',
-      enable: false
-    })
+    this.props.actions.createHost(this.state.groupId, {})
   }
   handleEditHost(id, host) {
     this.props.actions.updateHost(this.state.groupId, id, host)

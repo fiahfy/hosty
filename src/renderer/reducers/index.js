@@ -32,6 +32,9 @@ function groups(state = [], action) {
       if (currentGroup.id !== groupId) {
         return currentGroup
       }
+      if (!currentGroup.hosts) {
+        currentGroup.hosts = []
+      }
       const maxId = currentGroup.hosts.reduce((previous, currentHost) => {
         return currentHost.id > previous ? currentHost.id : previous
       }, 0)
@@ -46,6 +49,9 @@ function groups(state = [], action) {
       if (currentGroup.id !== groupId) {
         return currentGroup
       }
+      if (!currentGroup.hosts) {
+        currentGroup.hosts = []
+      }
       currentGroup.hosts = currentGroup.hosts.map(currentHost => {
         return currentHost.id !== id ? currentHost : host
       })
@@ -57,6 +63,9 @@ function groups(state = [], action) {
     return state.map(currentGroup => {
       if (currentGroup.id !== groupId) {
         return currentGroup
+      }
+      if (!currentGroup.hosts) {
+        currentGroup.hosts = []
       }
       currentGroup.hosts = currentGroup.hosts.filter(currentHost => {
         return !ids.includes(currentHost.id)

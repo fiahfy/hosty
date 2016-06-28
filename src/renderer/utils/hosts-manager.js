@@ -63,6 +63,9 @@ export default class HostsManager {
   }
   static buildHosts(groups) {
     return groups.map(group => {
+      if (!group.hosts) {
+        return ''
+      }
       return group.hosts.filter(host => isValidHost(host)).map(item => {
         return (group.enable && item.enable ? '' : '#')
           + item.ip + '\t'
