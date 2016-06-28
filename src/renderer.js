@@ -13,15 +13,27 @@ ReactDOM.render(
   document.querySelector('#app')
 )
 
-ipcRenderer.on('sendHosts', (event, arg) => {
+ipcRenderer.on('receiveHostsForImport', (event, arg) => {
+  const groups = loadHosts()
+  const maxId = groups.reduce((previous, group) => {
+    return group.id > previous ? group.id : previous
+  }, 0)
+  saveHosts([...groups, {id: maxId + 1, hosts: arg}])
+})
+
+ipcRenderer.on('sendHostsForExport', (event, arg) => {
   const hosts = loadHosts()
-  event.sender.send('receiveHosts', hosts)
+  event.sender.send('receiveHostsForExport', hosts)
 })
 
 function loadHosts() {
   try {
-    return JSON.parse(localStorage.getItem(keyPrefix + 'hosts'))
+    return JSON.parse(localStorage.getItem(keyPrefix + 'groups'))
   } catch (e) {
     return []
   }
+}
+
+function saveHosts(hosts) {
+  localStorage.setItem(keyPrefix + 'groups', JSON.stringify(hosts))
 }
