@@ -114,11 +114,11 @@ export default class HostItem extends Component {
       errors.push('Invalid IP')
     }
 
-    let icon = <SvgIcons.ActionDone color={Styles.colors.grey300} />
-    if (host.enable) {
-      icon = errors.length
-        ? <SvgIcons.AlertWarning color={Styles.colors.yellow600} />
-        : <SvgIcons.ActionDone color={Styles.colors.green600} />
+    let icon = <SvgIcons.DeviceSignalCellularConnectedNoInternet4Bar color={Styles.colors.yellow700} />
+    if (!errors.length) {
+      icon = host.enable
+        ? <SvgIcons.DeviceSignalCellular4Bar color={Styles.colors.green600} />
+        : <SvgIcons.DeviceSignalCellularOff color={Styles.colors.grey400} />
     }
 
     return (

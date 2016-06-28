@@ -76,11 +76,11 @@ export default class GroupItem extends Component {
 
     let errors = []
 
-    let icon = <SvgIcons.ActionDone color={Styles.colors.grey400} />
-    if (group.enable) {
-      icon = errors.length
-        ? <SvgIcons.AlertWarning color={Styles.colors.yellow600} />
-        : <SvgIcons.ActionDone color={Styles.colors.green600} />
+    let icon = <SvgIcons.DeviceSignalCellularConnectedNoInternet4Bar color={Styles.colors.yellow700} />
+    if (!errors.length) {
+      icon = group.enable
+        ? <SvgIcons.DeviceSignalCellular4Bar color={Styles.colors.green600} />
+        : <SvgIcons.DeviceSignalCellularOff color={Styles.colors.grey400} />
     }
 
     return (
