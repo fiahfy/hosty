@@ -10,7 +10,7 @@ const app = isRenderer ? remote.app : mainApp
 const BEGIN_SECTION = '##hosty begin'
 const END_SECTION   = '##hosty end'
 
-const DEBUG_HOSTS = true
+const DEBUG_HOSTS = process.env.NODE_ENV === 'development'
 const HOSTS_OSX = '/etc/hosts'
 const HOSTS_WINDOWS = 'C:¥Windows¥System32¥drivers¥etc¥hosts'
 const HOSTS_DUMMY = path.join(process.cwd(), 'dummyHosts')
