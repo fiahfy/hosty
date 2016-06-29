@@ -1,10 +1,11 @@
 import 'babel-polyfill'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import {keyPrefix} from 'redux-persist/constants'
+import {bindActionCreators} from 'redux'
 import {ipcRenderer} from 'electron'
 import Root from './renderer/containers/root'
 import {configureStore} from './renderer/store'
+import * as ActionCreators from './renderer/actions'
 
 const store = configureStore()
 
@@ -14,26 +15,14 @@ ReactDOM.render(
 )
 
 ipcRenderer.on('receiveHostsForImport', (event, arg) => {
-  const groups = loadHosts()
-  const maxId = groups.reduce((previous, group) => {
-    return group.id > previous ? group.id : previous
-  }, 0)
-  saveHosts([...groups, {id: maxId + 1, hosts: arg}])
+  const actions = bindActionCreators(ActionCreators, store.dispatch)
+  const hosts = arg.map((host, i) => {
+    host.id = i + 1
+    return host
+  })
+  actions.createGroup({hosts})
 })
 
 ipcRenderer.on('sendHostsForExport', (event, arg) => {
-  const hosts = loadHosts()
-  event.sender.send('receiveHostsForExport', hosts)
+  event.sender.send('receiveHostsForExport', store.getState().groups)
 })
-
-function loadHosts() {
-  try {
-    return JSON.parse(localStorage.getItem(keyPrefix + 'groups'))
-  } catch (e) {
-    return []
-  }
-}
-
-function saveHosts(hosts) {
-  localStorage.setItem(keyPrefix + 'groups', JSON.stringify(hosts))
-}

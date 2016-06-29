@@ -83,23 +83,21 @@ function createMenu() {
     {
       label: 'File',
       submenu: [
-        // {
-        //   label: 'Import Hosts File to New Group...',
-        //   accelerator: 'CmdOrCtrl+I',
-        //   click: () => {
-        //     dialog.showOpenDialog({}, pathes => {
-        //       if (!pathes) {
-        //         return
-        //       }
-        //       const path = pathes[0]
-        //       const data = fs.readFileSync(path, 'utf8')
-        //       console.log(path)
-        //       console.log(data)
-        //       const hosts = HostsManager.parseHosts(data)
-        //       mainWindow.webContents.send('receiveHostsForImport', hosts);
-        //     })
-        //   }
-        // },
+        {
+          label: 'Import Hosts File to New Group...',
+          accelerator: 'CmdOrCtrl+I',
+          click: () => {
+            dialog.showOpenDialog({}, pathes => {
+              if (!pathes) {
+                return
+              }
+              const path = pathes[0]
+              const data = fs.readFileSync(path, 'utf8')
+              const hosts = HostsManager.parseHosts(data)
+              mainWindow.webContents.send('receiveHostsForImport', hosts);
+            })
+          }
+        },
         {
           label: 'Export Hosts File...',
           accelerator: 'CmdOrCtrl+E',
