@@ -124,6 +124,8 @@ const styles = {
   fieldLabel: {
     height: '100%',
     lineHeight: '48px',
-    fontSize: 16
+    fontSize: 16,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis'
   }
 }

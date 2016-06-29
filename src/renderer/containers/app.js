@@ -65,7 +65,12 @@ export default class App extends Component {
 
     return (
       <div style={styles.app}>
-        <Drawer open={true} ref="drawer" className="group-container">
+        <Drawer
+          open={true}
+          width={320}
+          ref="drawer"
+          className="group-container"
+        >
           <GroupList
             ref="groupList"
             groups={groups}
@@ -110,18 +115,18 @@ const styles = {
     boxSizing: 'border-box'
   },
   button: {
-    marginLeft: 20,
-    marginRight: 20
+    // marginLeft: 20,
+    // marginRight: 20
   },
   hostContainer: {
     overflow: 'auto',
     height: '100%',
-    paddingLeft: 256
+    paddingLeft: 320
   },
   hostToolbar: {
     position: 'fixed',
     bottom: 0,
-    left: 256,
+    left: 320,
     right: 0
   },
   groupToolbar: {
