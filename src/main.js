@@ -84,8 +84,23 @@ function createMenu() {
       label: 'File',
       submenu: [
         {
-          label: 'Import Hosts File to New Group...',
+          label: 'Import Hosty Setting File...',
           accelerator: 'CmdOrCtrl+I',
+          click: () => {
+            dialog.showOpenDialog({filters: [{name: 'Hosty Setting File', extensions: ['hosty']}]}, pathes => {
+              if (!pathes) {
+                return
+              }
+              const path = pathes[0]
+              const data = fs.readFileSync(path, 'utf8')
+              const groups = JSON.parse(data)
+              mainWindow.webContents.send('receiveGroupsFromMain', groups);
+            })
+          }
+        },
+        {
+          label: 'Import Hosts File to New Group...',
+          accelerator: 'Shift+CmdOrCtrl+I',
           click: () => {
             dialog.showOpenDialog({}, pathes => {
               if (!pathes) {
@@ -94,22 +109,43 @@ function createMenu() {
               const path = pathes[0]
               const data = fs.readFileSync(path, 'utf8')
               const hosts = HostsManager.parseHosts(data)
-              mainWindow.webContents.send('receiveHostsForImport', hosts);
+              mainWindow.webContents.send('receiveHostsFromMain', hosts);
+            })
+          }
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Export Hosty Setting File...',
+          accelerator: 'CmdOrCtrl+E',
+          click: () => {
+            dialog.showSaveDialog({filters: [{name: 'Hosty Setting File', extensions: ['hosty']}]}, path => {
+              if (!path) {
+                return
+              }
+              ipcMain.once('receiveGroupsFromRenderer', (event, arg) => {
+                if (path.lastIndexOf('.hosty') + '.hosty'.length !== path.length) {
+                  path += '.hosty'
+                }
+                fs.writeFileSync(path, JSON.stringify(arg) + '\n', 'utf8')
+              })
+              mainWindow.webContents.send('sendGroupsToMain');
             })
           }
         },
         {
           label: 'Export Hosts File...',
-          accelerator: 'CmdOrCtrl+E',
+          accelerator: 'Shift+CmdOrCtrl+E',
           click: () => {
             dialog.showSaveDialog({}, path => {
               if (!path) {
                 return
               }
-              ipcMain.once('receiveHostsForExport', (event, arg) => {
+              ipcMain.once('receiveGroupsFromRenderer', (event, arg) => {
                 fs.writeFileSync(path, HostsManager.buildHosts(arg) + '\n', 'utf8')
               })
-              mainWindow.webContents.send('sendHostsForExport');
+              mainWindow.webContents.send('sendGroupsToMain');
             })
           }
         }

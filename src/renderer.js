@@ -14,7 +14,7 @@ ReactDOM.render(
   document.querySelector('#app')
 )
 
-ipcRenderer.on('receiveHostsForImport', (event, arg) => {
+ipcRenderer.on('receiveHostsFromMain', (event, arg) => {
   const actions = bindActionCreators(ActionCreators, store.dispatch)
   const hosts = arg.map((host, i) => {
     host.id = i + 1
@@ -23,6 +23,11 @@ ipcRenderer.on('receiveHostsForImport', (event, arg) => {
   actions.createGroup({hosts})
 })
 
-ipcRenderer.on('sendHostsForExport', (event, arg) => {
-  event.sender.send('receiveHostsForExport', store.getState().groups)
+ipcRenderer.on('receiveGroupsFromMain', (event, arg) => {
+  const actions = bindActionCreators(ActionCreators, store.dispatch)
+  actions.initializeGroups(arg)
+})
+
+ipcRenderer.on('sendGroupsToMain', (event, arg) => {
+  event.sender.send('receiveGroupsFromRenderer', store.getState().groups)
 })

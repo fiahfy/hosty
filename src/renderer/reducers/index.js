@@ -6,6 +6,10 @@ function groups(state = [], action) {
   //   return action.hosts
   // case ActionTypes.WRITED_HOSTS:
   //   return action.hosts
+  case ActionTypes.INITIALIZE_GROUPS: {
+    const {groups} = action
+    return groups
+  }
   case ActionTypes.CREATE_GROUP: {
     const {group} = action
     const maxId = state.reduce((previous, currentGroup) => {

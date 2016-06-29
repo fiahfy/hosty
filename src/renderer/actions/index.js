@@ -1,11 +1,17 @@
-export const READED_HOSTS = 'READED_HOSTS'
-export const WRITED_HOSTS = 'WRITED_HOSTS'
-export const CREATE_HOST  = 'CREATE_HOST'
-export const UPDATE_HOST  = 'UPDATE_HOST'
-export const DELETE_HOSTS = 'DELETE_HOSTS'
-export const CREATE_GROUP  = 'CREATE_GROUP'
-export const UPDATE_GROUP  = 'UPDATE_GROUP'
+export const INITIALIZE_GROUPS = 'INITIALIZE_GROUPS'
+export const CREATE_GROUP = 'CREATE_GROUP'
+export const UPDATE_GROUP = 'UPDATE_GROUP'
 export const DELETE_GROUPS = 'DELETE_GROUPS'
+export const CREATE_HOST = 'CREATE_HOST'
+export const UPDATE_HOST = 'UPDATE_HOST'
+export const DELETE_HOSTS = 'DELETE_HOSTS'
+
+export function initializeGroups(groups) {
+  return {
+    type: INITIALIZE_GROUPS,
+    groups
+  }
+}
 
 export function createGroup(group) {
   return {
