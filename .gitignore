@@ -40,4 +40,5 @@ node_modules
 dummyHosts
 hosts
 Hosty-*
+*.hosty
 !.gitkeep
