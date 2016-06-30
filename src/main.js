@@ -84,7 +84,7 @@ function createMenu() {
       label: 'File',
       submenu: [
         {
-          label: 'Import Hosty Setting File...',
+          label: 'Import Hosty File...',
           accelerator: 'CmdOrCtrl+I',
           click: () => {
             dialog.showOpenDialog({filters: [{name: 'Hosty Setting File', extensions: ['hosty']}]}, pathes => {
@@ -117,7 +117,7 @@ function createMenu() {
           type: 'separator'
         },
         {
-          label: 'Export Hosty Setting File...',
+          label: 'Export Hosty File...',
           accelerator: 'CmdOrCtrl+E',
           click: () => {
             dialog.showSaveDialog({filters: [{name: 'Hosty Setting File', extensions: ['hosty']}]}, path => {

@@ -23,3 +23,7 @@ $ npm run start:hot
 ```
 $ npm run package
 ```
+
+##Credit
+###Icon
+H File by Viktor Vorobyev from the Noun Project
