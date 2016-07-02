@@ -3,11 +3,10 @@ import {routerReducer} from 'react-router-redux'
 import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
 import ExecutionEnvironment from 'fbjs/lib/ExecutionEnvironment'
-import persistState, {mergePersistedState} from 'redux-localstorage'
-import adapter from 'redux-localstorage/lib/adapters/localStorage'
-import filter from 'redux-localstorage-filter'
+import {persistStore, autoRehydrate, createPersistor} from 'redux-persist'
 import reducers from './reducers'
 import DevTools from './containers/dev-tools'
+import hostsManagementMiddleware from './middlewares/hosts-management-middleware'
 
 const voidMiddleware = () => next => action => {
   next(action)
@@ -15,30 +14,27 @@ const voidMiddleware = () => next => action => {
 
 export function configureStore(initialState = {}) {
   let reduxLoggerMiddleware = voidMiddleware
-  if (ExecutionEnvironment.canUseDOM) {
+  if (process.env.NODE_ENV === 'development') {
     reduxLoggerMiddleware = createLogger()
   }
-
-  const storage = compose(
-    filter('hosts')
-  )(adapter(window.localStorage))
 
   const finalCreateStore = compose(
     applyMiddleware(thunk),
     applyMiddleware(reduxLoggerMiddleware),
-    persistState(storage, 'my-storage-key'),
+    autoRehydrate(),
+    applyMiddleware(hostsManagementMiddleware),
     DevTools.instrument()
   )(createStore)
 
   const store = finalCreateStore(
-    compose(
-      mergePersistedState()
-    )(combineReducers({
+    combineReducers({
       routing: routerReducer,
       ...reducers
-    })),
+    }),
     initialState
   )
+
+  persistStore(store, {whitelist: ['groups']})
 
   if (module.hot) {
     module.hot.accept('./reducers', () => {

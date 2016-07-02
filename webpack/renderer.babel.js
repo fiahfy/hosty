@@ -1,12 +1,15 @@
 import 'babel-polyfill'
 import fs from 'fs'
-// import path from 'path'
 import webpack from 'webpack'
 import webpackTargetElectronRenderer from 'webpack-target-electron-renderer'
 
- const config = {
-  debug: true,
-  devtool: 'cheap-source-map',
+const debug = process.env.DEBUG != 0
+const devtool = debug ? 'cheap-source-map' : 'source-map'
+const env = debug ? 'development' : 'production'
+
+const config = {
+  debug: debug,
+  devtool: devtool,
   target: 'electron-renderer',
   entry: './src/renderer.js',
   output: {
@@ -15,6 +18,11 @@ import webpackTargetElectronRenderer from 'webpack-target-electron-renderer'
     publicPath: '/assets/',
     libraryTarget: 'commonjs2'
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(env)
+    })
+  ],
   module: {
     loaders: [
       {
@@ -29,12 +37,7 @@ import webpackTargetElectronRenderer from 'webpack-target-electron-renderer'
     ]
   },
   externals: fs.readdirSync('node_modules')
-  .filter(dir => '.bin' !== dir),
-  // resolve: {
-  //   alias: {
-  //     react: path.resolve('./node_modules/react'),
-  //   }
-  // }
+  .filter(dir => '.bin' !== dir)
 }
 
 config.target = webpackTargetElectronRenderer(config);

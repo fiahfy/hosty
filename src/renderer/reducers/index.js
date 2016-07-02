@@ -1,27 +1,80 @@
 import * as ActionTypes from '../actions'
 
-function hosts(state = [], action) {
+function groups(state = [], action) {
   switch (action.type) {
   // case ActionTypes.READED_HOSTS:
   //   return action.hosts
   // case ActionTypes.WRITED_HOSTS:
   //   return action.hosts
+  case ActionTypes.INITIALIZE_GROUPS: {
+    const {groups} = action
+    return groups
+  }
+  case ActionTypes.CREATE_GROUP: {
+    const {group} = action
+    const maxId = state.reduce((previous, currentGroup) => {
+      return currentGroup.id > previous ? currentGroup.id : previous
+    }, 0)
+    group.id = maxId + 1
+    return [...state, group]
+  }
+  case ActionTypes.UPDATE_GROUP: {
+    const {id, group} = action
+    return state.map(currentGroup => {
+      return currentGroup.id !== id ? currentGroup : group
+    })
+  }
+  case ActionTypes.DELETE_GROUPS: {
+    const {ids} = action
+    return state.filter(currentGroup => {
+      return !ids.includes(currentGroup.id)
+    })
+  }
   case ActionTypes.CREATE_HOST: {
-    const {host} = action
-    return [...state, host]
+    const {groupId, host} = action
+    return state.map(currentGroup => {
+      if (currentGroup.id !== groupId) {
+        return currentGroup
+      }
+      if (!currentGroup.hosts) {
+        currentGroup.hosts = []
+      }
+      const maxId = currentGroup.hosts.reduce((previous, currentHost) => {
+        return currentHost.id > previous ? currentHost.id : previous
+      }, 0)
+      host.id = maxId + 1
+      currentGroup.hosts = [...currentGroup.hosts, host]
+      return currentGroup
+    })
   }
   case ActionTypes.UPDATE_HOST: {
-    const {index, host} = action
-    return [
-      ...state.slice(0, index),
-      host,
-      ...state.slice(index + 1)
-    ]
+    const {groupId, id, host} = action
+    return state.map(currentGroup => {
+      if (currentGroup.id !== groupId) {
+        return currentGroup
+      }
+      if (!currentGroup.hosts) {
+        currentGroup.hosts = []
+      }
+      currentGroup.hosts = currentGroup.hosts.map(currentHost => {
+        return currentHost.id !== id ? currentHost : host
+      })
+      return currentGroup
+    })
   }
   case ActionTypes.DELETE_HOSTS: {
-    const {indexes} = action
-    return state.filter(host => {
-      return indexes.indexOf(host.index) === -1
+    const {groupId, ids} = action
+    return state.map(currentGroup => {
+      if (currentGroup.id !== groupId) {
+        return currentGroup
+      }
+      if (!currentGroup.hosts) {
+        currentGroup.hosts = []
+      }
+      currentGroup.hosts = currentGroup.hosts.filter(currentHost => {
+        return !ids.includes(currentHost.id)
+      })
+      return currentGroup
     })
   }
   default:
@@ -30,5 +83,5 @@ function hosts(state = [], action) {
 }
 
 export default {
-  hosts
+  groups
 }

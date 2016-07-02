@@ -1,15 +1,19 @@
 import React, {Component, PropTypes} from 'react'
+import ReactDOM from 'react-dom'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {RaisedButton, Toolbar, ToolbarGroup} from 'material-ui'
+import {
+  RaisedButton, Toolbar, ToolbarGroup,
+  Drawer
+} from 'material-ui'
 // const injectTapEventPlugin = require("react-tap-event-plugin")
 // injectTapEventPlugin()
 import * as ActionCreators from '../actions'
 import HostList from '../components/host-list'
-import HostDialog from '../components/host-dialog'
+import GroupList from '../components/group-list'
 
 function mapStateToProps(state) {
-  return {hosts: state.hosts}
+  return {groups: state.groups}
 }
 
 function mapDispatchToProps(dispatch) {
@@ -19,63 +23,84 @@ function mapDispatchToProps(dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class App extends Component {
   static propTypes = {
-    hosts: PropTypes.arrayOf(PropTypes.object)
+    groups: PropTypes.arrayOf(PropTypes.object)
   };
   static defaultProps = {
-    hosts: []
+    groups: []
   };
   state = {
-    open: false
+    groupId: null
   };
-  handleOpenDialog() {
-    this.setState({open: true})
+  handleSelectGroup(id) {
+    this.setState({groupId: id})
   }
-  handleCloseDialog() {
-    this.setState({open: false})
+  handleAddGroup() {
+    this.props.actions.createGroup({})
+  }
+  handleEditGroup(id, group) {
+    this.props.actions.updateGroup(id, group)
+  }
+  handleDeleteGroups() {
+    const ids = this.refs.groupList.selectedGroups().map(group => group.id)
+    this.refs.groupList.unselect()
+    this.props.actions.deleteGroups(ids)
   }
   handleAddHost() {
-    const host = {
-      host:   this.refs.hostDialog.getHost(),
-      ip:     this.refs.hostDialog.getIP(),
-      enable: true
-    }
-    this.props.actions.createHost(host)
-    this.handleCloseDialog()
+    this.props.actions.createHost(this.state.groupId, {})
   }
-  handleEditHost(index, host) {
-    this.props.actions.updateHost(index, host)
+  handleEditHost(id, host) {
+    this.props.actions.updateHost(this.state.groupId, id, host)
   }
   handleDeleteHosts() {
-    const indexes = this.refs.hostList.selectedHosts().map(host => host.index)
+    const ids = this.refs.hostList.selectedHosts().map(host => host.id)
     this.refs.hostList.unselect()
-    this.props.actions.deleteHosts(indexes)
+    this.props.actions.deleteHosts(this.state.groupId, ids)
   }
   render() {
-    const {hosts} = this.props
-    const {open} = this.state
+    const {groups} = this.props
+    const group = groups.filter(group => {
+      return group.id === this.state.groupId
+    })[0]
+    const hosts = group ? group.hosts : []
 
     return (
       <div style={styles.app}>
-        <HostDialog
-          ref="hostDialog"
-          open={open}
-          onClickOK={::this.handleAddHost}
-          onClickCancel={::this.handleCloseDialog}
-          onRequestClose={::this.handleCloseDialog}
-        />
-        <div style={styles.container}>
+        <Drawer
+          open={true}
+          width={256}
+          ref="drawer"
+          className="group-container"
+        >
+          <GroupList
+            ref="groupList"
+            groups={groups}
+            onEditGroup={::this.handleEditGroup}
+            onSelectGroup={::this.handleSelectGroup}
+          />
+          <Toolbar style={styles.groupToolbar}>
+            <ToolbarGroup firstChild={true}>
+              <RaisedButton label="Add" onClick={::this.handleAddGroup}
+                primary={true} style={styles.button} />
+              <RaisedButton label="Delete" onClick={::this.handleDeleteGroups}
+                secondary={true} style={styles.button} />
+            </ToolbarGroup>
+          </Toolbar>
+        </Drawer>
+        <div style={styles.hostContainer} className="host-container">
           <HostList
             ref="hostList"
             hosts={hosts}
             onEditHost={::this.handleEditHost}
           />
+          <Toolbar style={styles.hostToolbar}>
+            <ToolbarGroup firstChild={true}>
+              <RaisedButton label="Add" onClick={::this.handleAddHost}
+                primary={true} style={styles.button} />
+              <RaisedButton label="Delete" onClick={::this.handleDeleteHosts}
+                secondary={true} style={styles.button} />
+            </ToolbarGroup>
+          </Toolbar>
         </div>
-        <Toolbar style={styles.toolbar}>
-          <ToolbarGroup firstChild={true}>
-            <RaisedButton label="Add" onClick={::this.handleOpenDialog} primary={true} style={styles.button} />
-            <RaisedButton label="Delete" onClick={::this.handleDeleteHosts} secondary={true} style={styles.button} />
-          </ToolbarGroup>
-        </Toolbar>
       </div>
     )
   }
@@ -83,20 +108,28 @@ export default class App extends Component {
 
 const styles = {
   app: {
-    WebkitUserSelect: 'none',
-    paddingBottom: 56,
+    // WebkitUserSelect: 'none',
+    // paddingBottom: 56,
     overflow: 'hidden',
     height: '100%',
     boxSizing: 'border-box'
   },
-  container: {
-    overflow: 'auto',
-    height: '100%'
-  },
   button: {
-    margin: 12
+    marginLeft: 20,
+    marginRight: 20
   },
-  toolbar: {
+  hostContainer: {
+    overflow: 'auto',
+    height: '100%',
+    paddingLeft: 256
+  },
+  hostToolbar: {
+    position: 'fixed',
+    bottom: 0,
+    left: 256,
+    right: 0
+  },
+  groupToolbar: {
     position: 'fixed',
     bottom: 0,
     left: 0,

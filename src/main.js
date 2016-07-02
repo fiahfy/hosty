@@ -1,6 +1,7 @@
-import {app, shell, BrowserWindow, Menu} from 'electron'
+import {app, shell, dialog, ipcMain, BrowserWindow, Menu} from 'electron'
 import fs from 'fs'
 import path from 'path'
+import HostsManager from './renderer/utils/hosts-manager'
 
 const INIT_FILE = 'init.json'
 const INIT_PATH = path.join(app.getPath('userData'), INIT_FILE)
@@ -42,10 +43,12 @@ function createWindow() {
   mainWindow = new BrowserWindow(options)
 
   // and load the index.html of the app.
-  mainWindow.loadURL('file://' + process.cwd() + '/public/assets/index.html')
+  mainWindow.loadURL(`file://${__dirname}/public/assets/index.html`)
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  if (process.env.NODE_ENV === 'development') {
+    // Open the DevTools.
+    mainWindow.webContents.openDevTools()
+  }
 
   createMenu()
 
@@ -77,6 +80,77 @@ function writeInitFile(data) {
 
 function createMenu() {
   const template = [
+    {
+      label: 'File',
+      submenu: [
+        {
+          label: 'Import Hosty File...',
+          accelerator: 'CmdOrCtrl+I',
+          click: () => {
+            dialog.showOpenDialog({filters: [{name: 'Hosty Setting File', extensions: ['hosty']}]}, pathes => {
+              if (!pathes) {
+                return
+              }
+              const path = pathes[0]
+              const data = fs.readFileSync(path, 'utf8')
+              const groups = JSON.parse(data)
+              mainWindow.webContents.send('receiveGroupsFromMain', groups);
+            })
+          }
+        },
+        {
+          label: 'Import Hosts File to New Group...',
+          accelerator: 'Shift+CmdOrCtrl+I',
+          click: () => {
+            dialog.showOpenDialog({}, pathes => {
+              if (!pathes) {
+                return
+              }
+              const path = pathes[0]
+              const data = fs.readFileSync(path, 'utf8')
+              const hosts = HostsManager.parseHosts(data)
+              mainWindow.webContents.send('receiveHostsFromMain', hosts);
+            })
+          }
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Export Hosty File...',
+          accelerator: 'CmdOrCtrl+E',
+          click: () => {
+            dialog.showSaveDialog({filters: [{name: 'Hosty Setting File', extensions: ['hosty']}]}, path => {
+              if (!path) {
+                return
+              }
+              ipcMain.once('receiveGroupsFromRenderer', (event, arg) => {
+                if (path.lastIndexOf('.hosty') + '.hosty'.length !== path.length) {
+                  path += '.hosty'
+                }
+                fs.writeFileSync(path, JSON.stringify(arg) + '\n', 'utf8')
+              })
+              mainWindow.webContents.send('sendGroupsToMain');
+            })
+          }
+        },
+        {
+          label: 'Export Hosts File...',
+          accelerator: 'Shift+CmdOrCtrl+E',
+          click: () => {
+            dialog.showSaveDialog({}, path => {
+              if (!path) {
+                return
+              }
+              ipcMain.once('receiveGroupsFromRenderer', (event, arg) => {
+                fs.writeFileSync(path, HostsManager.buildHosts(arg) + '\n', 'utf8')
+              })
+              mainWindow.webContents.send('sendGroupsToMain');
+            })
+          }
+        }
+      ]
+    },
     {
       label: 'Edit',
       submenu: [
