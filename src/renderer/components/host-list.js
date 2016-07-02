@@ -7,6 +7,7 @@ import {
 import * as SvgIcons from 'material-ui/svg-icons'
 import validator from 'validator'
 import HostItem from './host-item'
+import isUpdateNeeded from '../utils/is-update-needed'
 
 export default class HostList extends Component {
   static propTypes = {
@@ -26,6 +27,9 @@ export default class HostList extends Component {
     selectedIds: [],
     allRowsSelected: false
   };
+  shouldComponentUpdate(nextProps, nextState) {
+    return isUpdateNeeded(this, nextProps, nextState)
+  }
   selectedHosts() {
     const {hosts} = this.props
     const {selectedIds, allRowsSelected} = this.state
@@ -57,8 +61,12 @@ export default class HostList extends Component {
     const sortedMap = new Map
     hosts.slice().sort((a, b) => {
       const flag = order === 'asc'
-      if (!a[key]) { return flag ? 1 : -1 }
-      if (!b[key]) { return !flag ? 1 : -1 }
+      if (!a[key]) {
+        return flag ? 1 : -1
+      }
+      if (!b[key]) {
+        return !flag ? 1 : -1
+      }
       return (flag ? a[key] > b[key] : a[key] < b[key]) ? 1 : -1
     }).map((host, i) => {
       sortedMap.set(host.id, i)
@@ -84,6 +92,12 @@ export default class HostList extends Component {
     const {sortedMap} = this.state
 
     return hosts.slice().sort((a, b) => {
+      if (!sortedMap.has(a.id)) {
+        return 1
+      }
+      if (!sortedMap.has(b.id)) {
+        return -1
+      }
       return sortedMap.get(a.id)  > sortedMap.get(b.id) ? 1 : -1
     })
   }

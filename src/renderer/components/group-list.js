@@ -7,6 +7,7 @@ import {
 import * as SvgIcons from 'material-ui/svg-icons'
 import validator from 'validator'
 import GroupItem from './group-item'
+import isUpdateNeeded from '../utils/is-update-needed'
 
 export default class GroupList extends Component {
   static propTypes = {
@@ -28,6 +29,9 @@ export default class GroupList extends Component {
     selectedIds: [],
     allRowsSelected: false
   };
+  shouldComponentUpdate(nextProps, nextState) {
+    return isUpdateNeeded(this, nextProps, nextState)
+  }
   selectedGroups() {
     const {groups} = this.props
     const {selectedIds, allRowsSelected} = this.state
@@ -59,8 +63,12 @@ export default class GroupList extends Component {
     const sortedMap = new Map
     groups.slice().sort((a, b) => {
       const flag = order === 'asc'
-      if (!a[key]) { return flag ? 1 : -1 }
-      if (!b[key]) { return !flag ? 1 : -1 }
+      if (!a[key]) {
+        return flag ? 1 : -1
+      }
+      if (!b[key]) {
+        return !flag ? 1 : -1
+      }
       return (flag ? a[key] > b[key] : a[key] < b[key]) ? 1 : -1
     }).map((group, i) => {
       sortedMap.set(group.id, i)
@@ -89,6 +97,12 @@ export default class GroupList extends Component {
     const {sortedMap} = this.state
 
     return groups.slice().sort((a, b) => {
+      if (!sortedMap.has(a.id)) {
+        return 1
+      }
+      if (!sortedMap.has(b.id)) {
+        return -1
+      }
       return sortedMap.get(a.id)  > sortedMap.get(b.id) ? 1 : -1
     })
   }

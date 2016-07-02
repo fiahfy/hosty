@@ -6,6 +6,7 @@ import {
 import * as SvgIcons from 'material-ui/svg-icons'
 import * as Styles from 'material-ui/styles'
 import validator from 'validator'
+import isUpdateNeeded from '../utils/is-update-needed'
 
 export default class GroupItem extends Component {
   static propTypes = {
@@ -21,6 +22,9 @@ export default class GroupItem extends Component {
   state = {
     editableField: null
   };
+  shouldComponentUpdate(nextProps, nextState) {
+    return isUpdateNeeded(this, nextProps, nextState)
+  }
   handleToggleGroupStatus(e) {
     e.stopPropagation()
     const {group, onEditGroup} = this.props

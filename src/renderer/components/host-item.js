@@ -6,6 +6,7 @@ import {
 import * as SvgIcons from 'material-ui/svg-icons'
 import * as Styles from 'material-ui/styles'
 import validator from 'validator'
+import isUpdateNeeded from '../utils/is-update-needed'
 
 export default class HostItem extends Component {
   static propTypes = {
@@ -21,6 +22,9 @@ export default class HostItem extends Component {
   state = {
     editableField: null
   };
+  shouldComponentUpdate(nextProps, nextState) {
+    return isUpdateNeeded(this, nextProps, nextState)
+  }
   handleToggleHostStatus(e) {
     e.stopPropagation()
     const {host, onEditHost} = this.props
