@@ -153,7 +153,7 @@ export default class GroupList extends Component {
           </TableRow>
         </TableHeader>
         <TableBody
-          showRowHover={false}
+          showRowHover={true}
           deselectOnClickaway={false}
           displayRowCheckbox={false}
         >
