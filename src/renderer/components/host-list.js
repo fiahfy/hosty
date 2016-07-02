@@ -135,7 +135,10 @@ export default class HostList extends Component {
         onRowSelection={::this.handleRowSelection}
         allRowsSelected={allRowsSelected}
       >
-        <TableHeader>
+        <TableHeader
+          displaySelectAll={false}
+          adjustForCheckbox={false}
+        >
           <TableRow onCellClick={::this.handleClickHeader}>
             <TableHeaderColumn style={styles.iconColumn}>Status</TableHeaderColumn>
             <TableHeaderColumn style={styles.headerSortableColumn}>
@@ -148,7 +151,11 @@ export default class HostList extends Component {
             </TableHeaderColumn>
           </TableRow>
         </TableHeader>
-        <TableBody showRowHover={false} deselectOnClickaway={false}>
+        <TableBody
+          showRowHover={false}
+          deselectOnClickaway={false}
+          displayRowCheckbox={false}
+        >
           {this.renderHostNodes()}
         </TableBody>
       </Table>
@@ -160,7 +167,6 @@ const styles = {
   iconColumn: {
     width: 48,
     textAlign: 'center',
-    paddingLeft: 0,
     paddingRight: 0
   },
   headerSortableColumn: {

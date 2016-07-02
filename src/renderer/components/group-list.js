@@ -140,7 +140,10 @@ export default class GroupList extends Component {
         onRowSelection={::this.handleRowSelection}
         allRowsSelected={allRowsSelected}
       >
-        <TableHeader displaySelectAll={false}>
+        <TableHeader
+          displaySelectAll={false}
+          adjustForCheckbox={false}
+        >
           <TableRow onCellClick={::this.handleClickHeader}>
             <TableHeaderColumn style={styles.iconColumn}>Status</TableHeaderColumn>
             <TableHeaderColumn style={styles.headerSortableColumn}>
@@ -149,7 +152,11 @@ export default class GroupList extends Component {
             </TableHeaderColumn>
           </TableRow>
         </TableHeader>
-        <TableBody showRowHover={false} deselectOnClickaway={false}>
+        <TableBody
+          showRowHover={false}
+          deselectOnClickaway={false}
+          displayRowCheckbox={false}
+        >
           {this.renderGroupNodes()}
         </TableBody>
       </Table>
@@ -161,7 +168,6 @@ const styles = {
   iconColumn: {
     width: 48,
     textAlign: 'center',
-    paddingLeft: 0,
     paddingRight: 0
   },
   headerSortableColumn: {

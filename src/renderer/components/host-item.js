@@ -163,7 +163,6 @@ const styles = {
   iconColumn: {
     width: 48,
     textAlign: 'center',
-    paddingLeft: 0,
     paddingRight: 0
   },
   fieldLabel: {
