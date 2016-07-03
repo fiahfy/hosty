@@ -68,7 +68,6 @@ export default class App extends Component {
       const params = path.parse(file.path)
       const data = fs.readFileSync(file.path, 'utf8')
       let hosts = HostsManager.parseHosts(data)
-      console.log(hosts)
       if (!hosts.length) {
         return
       }
