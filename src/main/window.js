@@ -58,18 +58,19 @@ export default class Window {
             }
           },
           {
-            label: 'Import Hosts File to New Group...',
+            label: 'Import Hosts Files to New Groups...',
             accelerator: 'Shift+CmdOrCtrl+I',
             click: () => {
-              dialog.showOpenDialog({}, pathes => {
+              dialog.showOpenDialog({properties: ['openFile', 'multiSelections']}, pathes => {
                 if (!pathes) {
                   return
                 }
-                const selectedPath = pathes[0]
-                const params = path.parse(selectedPath)
-                const data = fs.readFileSync(selectedPath, 'utf8')
-                const hosts = HostsManager.parseHosts(data)
-                this.browserWindow.webContents.send('receiveHostsFromMain', {name: params.name, hosts});
+                pathes.forEach(selectedPath => {
+                  const params = path.parse(selectedPath)
+                  const data = fs.readFileSync(selectedPath, 'utf8')
+                  const hosts = HostsManager.parseHosts(data)
+                  this.browserWindow.webContents.send('receiveHostsFromMain', {name: params.name, hosts});
+                })
               })
             }
           },
