@@ -24,6 +24,9 @@ $ npm run start:hot
 $ npm run package
 ```
 
+##Download
+* https://github.com/fiahfy/hosty/releases
+
 ##Credit
 ###Icon
 H File by Viktor Vorobyev from the Noun Project
