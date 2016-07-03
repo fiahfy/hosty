@@ -5,7 +5,7 @@ ORG_SIZE="512"
 ORG_FILE="icon_${ORG_SIZE}x${ORG_SIZE}.png"
 
 cd $(dirname $0)
-cd ../static/hosty.iconset
+cd ../public/assets/img/hosty.iconset
 
 for SIZE in $SIZES
 do
