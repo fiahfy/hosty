@@ -6,6 +6,9 @@ import {ipcRenderer} from 'electron'
 import Root from './renderer/containers/root'
 import {configureStore} from './renderer/store'
 import * as ActionCreators from './renderer/actions'
+import HostsManager from './renderer/utils/hosts-manager'
+
+HostsManager.createSymlink()
 
 const store = configureStore()
 
