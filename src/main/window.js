@@ -53,7 +53,7 @@ export default class Window {
                 const path = pathes[0]
                 const data = fs.readFileSync(path, 'utf8')
                 const groups = JSON.parse(data)
-                this.browserWindow.webContents.send('receiveGroupsFromMain', groups);
+                this.browserWindow.webContents.send('receiveGroupsFromMain', {groups});
               })
             }
           },
@@ -65,10 +65,11 @@ export default class Window {
                 if (!pathes) {
                   return
                 }
-                const path = pathes[0]
-                const data = fs.readFileSync(path, 'utf8')
+                const selectedPath = pathes[0]
+                const params = path.parse(selectedPath)
+                const data = fs.readFileSync(selectedPath, 'utf8')
                 const hosts = HostsManager.parseHosts(data)
-                this.browserWindow.webContents.send('receiveHostsFromMain', hosts);
+                this.browserWindow.webContents.send('receiveHostsFromMain', {name: params.name, hosts});
               })
             }
           },
@@ -79,15 +80,16 @@ export default class Window {
             label: 'Export Hosty File...',
             accelerator: 'CmdOrCtrl+E',
             click: () => {
-              dialog.showSaveDialog({filters: [{name: 'Hosty Setting File', extensions: ['hosty']}]}, path => {
-                if (!path) {
+              dialog.showSaveDialog({filters: [{name: 'Hosty Setting File', extensions: ['hosty']}]}, selectedPath => {
+                if (!selectedPath) {
                   return
                 }
-                ipcMain.once('receiveGroupsFromRenderer', (event, arg) => {
-                  if (path.lastIndexOf('.hosty') + '.hosty'.length !== path.length) {
-                    path += '.hosty'
+                ipcMain.once('receiveGroupsFromRenderer', (event, {groups}) => {
+                  const params = path.parse(selectedPath)
+                  if (params.ext !== '.hosty') {
+                    selectedPath += '.hosty'
                   }
-                  fs.writeFileSync(path, JSON.stringify(arg) + '\n', 'utf8')
+                  fs.writeFileSync(selectedPath, JSON.stringify(groups) + '\n', 'utf8')
                 })
                 this.browserWindow.webContents.send('sendGroupsToMain');
               })
@@ -101,8 +103,8 @@ export default class Window {
                 if (!path) {
                   return
                 }
-                ipcMain.once('receiveGroupsFromRenderer', (event, arg) => {
-                  fs.writeFileSync(path, HostsManager.buildHosts(arg) + '\n', 'utf8')
+                ipcMain.once('receiveGroupsFromRenderer', (event, {groups}) => {
+                  fs.writeFileSync(path, HostsManager.buildHosts(groups) + '\n', 'utf8')
                 })
                 this.browserWindow.webContents.send('sendGroupsToMain');
               })
