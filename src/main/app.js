@@ -38,14 +38,18 @@ export default class Application {
       this.createWindow()
     })
 
+    app.on('activate', () => {
+      this.createWindow()
+    })
+
     app.on('window-all-closed', () => {
       if (process.platform !== 'darwin') {
         app.quit()
       }
     })
 
-    app.on('activate', () => {
-      this.createWindow()
+    app.on('will-quit', () => {
+      HostsManager.clear()
     })
   }
 }

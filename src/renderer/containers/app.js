@@ -6,11 +6,14 @@ import {
   RaisedButton, Toolbar, ToolbarGroup,
   Drawer
 } from 'material-ui'
+import fs from 'fs'
+import path from 'path'
 // const injectTapEventPlugin = require("react-tap-event-plugin")
 // injectTapEventPlugin()
 import * as ActionCreators from '../actions'
 import HostList from '../components/host-list'
 import GroupList from '../components/group-list'
+import HostsManager from '../utils/hosts-manager'
 
 function mapStateToProps(state) {
   return {groups: state.groups}
@@ -56,6 +59,30 @@ export default class App extends Component {
     this.refs.hostList.unselect()
     this.props.actions.deleteHosts(this.state.groupId, ids)
   }
+  handleDrop(e) {
+    const {actions} = this.props
+    e.preventDefault()
+    e.stopPropagation()
+
+    Array.from(e.dataTransfer.files).forEach(file => {
+      const params = path.parse(file.path)
+      const data = fs.readFileSync(file.path, 'utf8')
+      let hosts = HostsManager.parseHosts(data)
+      if (!hosts.length) {
+        return
+      }
+      hosts = hosts.map((host, i) => {
+        host.id = i + 1
+        return host
+      })
+      actions.createGroup({name: params.name, hosts})
+    })
+  }
+  handleDragOver(e) {
+    e.preventDefault()
+    e.stopPropagation()
+    e.dataTransfer.dropEffect = 'copy'
+  }
   render() {
     const {groups} = this.props
     const group = groups.filter(group => {
@@ -64,7 +91,7 @@ export default class App extends Component {
     const hosts = group ? group.hosts : []
 
     return (
-      <div style={styles.app}>
+      <div style={styles.app} onDragOver={::this.handleDragOver} onDrop={::this.handleDrop}>
         <Drawer
           open={true}
           width={256}

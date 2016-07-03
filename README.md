@@ -1,6 +1,6 @@
 # Hosty
 
-This is an Electron application for hosts management.
+This is an Electron application for hosts file management.
 
 ### Setup
 ```

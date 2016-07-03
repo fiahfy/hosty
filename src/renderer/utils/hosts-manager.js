@@ -7,8 +7,8 @@ import isRenderer from 'is-electron-renderer'
 
 const app = isRenderer ? remote.app : mainApp
 
-const BEGIN_SECTION = '##hosty begin'
-const END_SECTION   = '##hosty end'
+const BEGIN_SECTION = '## hosty begin ##'
+const END_SECTION   = '## hosty end ##'
 
 const DEBUG_HOSTS = process.env.NODE_ENV === 'development'
 const HOSTS_OSX = '/etc/hosts'
@@ -73,15 +73,12 @@ export default class HostsManager {
           })
         })
       })
-      // .then(groups => {
-      //   return new Promise((resolve, reject) => {
-      //     runas('cp', [TEMP_HOSTS, HOSTS], {admin: !DEBUG_HOSTS})
-      //     resolve(groups)
-      //   })
-      // })
       .catch(err => {
         console.error(err)
       })
+  }
+  static clear() {
+    this.save([])
   }
   static buildHosts(groups) {
     return groups.map(group => {

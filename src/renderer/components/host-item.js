@@ -41,6 +41,18 @@ export default class HostItem extends Component {
     this.setState({editableField: null})
   }
   handleInputHost(e) {
+    if (e.keyCode === 9 && !e.shiftKey && this.state.editableField === 'host') {
+      e.preventDefault()
+      e.target.blur()
+      this.setState({editableField: 'ip'})
+      return
+    }
+    if (e.keyCode === 9 && e.shiftKey && this.state.editableField === 'ip') {
+      e.preventDefault()
+      e.target.blur()
+      this.setState({editableField: 'host'})
+      return
+    }
     if (e.keyCode === 13) {
       e.target.blur()
     }

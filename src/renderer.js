@@ -17,20 +17,21 @@ ReactDOM.render(
   document.querySelector('#app')
 )
 
-ipcRenderer.on('receiveHostsFromMain', (event, arg) => {
+ipcRenderer.on('receiveHostsFromMain', (event, {name, hosts}) => {
   const actions = bindActionCreators(ActionCreators, store.dispatch)
-  const hosts = arg.map((host, i) => {
+  hosts = hosts.map((host, i) => {
     host.id = i + 1
     return host
   })
-  actions.createGroup({hosts})
+  actions.createGroup({name, hosts})
 })
 
-ipcRenderer.on('receiveGroupsFromMain', (event, arg) => {
+ipcRenderer.on('receiveGroupsFromMain', (event, {groups}) => {
   const actions = bindActionCreators(ActionCreators, store.dispatch)
-  actions.initializeGroups(arg)
+  actions.initializeGroups(groups)
 })
 
 ipcRenderer.on('sendGroupsToMain', (event, arg) => {
-  event.sender.send('receiveGroupsFromRenderer', store.getState().groups)
+  const groups = store.getState().groups
+  event.sender.send('receiveGroupsFromRenderer', {groups})
 })
