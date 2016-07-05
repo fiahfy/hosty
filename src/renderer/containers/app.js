@@ -1,10 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {
-  RaisedButton, Toolbar, ToolbarGroup,
-  Drawer
-} from 'material-ui'
+import {RaisedButton, Toolbar, ToolbarGroup, Drawer} from 'material-ui'
 import fs from 'fs'
 import path from 'path'
 import * as ActionCreators from '../actions'

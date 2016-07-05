@@ -1,14 +1,13 @@
 import 'babel-polyfill'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import {bindActionCreators} from 'redux'
-import {ipcRenderer} from 'electron'
 import Root from './renderer/containers/root'
 import {configureStore} from './renderer/store'
+
+import {ipcRenderer} from 'electron'
+import {bindActionCreators} from 'redux'
 import * as ActionCreators from './renderer/actions'
 import HostsManager from './renderer/utils/hosts-manager'
-
-HostsManager.createSymlink()
 
 const store = configureStore()
 
@@ -16,6 +15,8 @@ ReactDOM.render(
   <Root store={store} />,
   document.querySelector('#app')
 )
+
+HostsManager.createSymlink()
 
 ipcRenderer.on('receiveHostsFromMain', (event, {name, hosts}) => {
   const actions = bindActionCreators(ActionCreators, store.dispatch)
@@ -32,6 +33,6 @@ ipcRenderer.on('receiveGroupsFromMain', (event, {groups}) => {
 })
 
 ipcRenderer.on('sendGroupsToMain', (event, arg) => {
-  const groups = store.getState().groups
+  const groups = store.getState()['groups']
   event.sender.send('receiveGroupsFromRenderer', {groups})
 })
