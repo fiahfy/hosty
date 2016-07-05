@@ -1,5 +1,4 @@
 import {createStore, applyMiddleware, compose, combineReducers} from 'redux'
-import {routerReducer} from 'react-router-redux'
 import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
 import ExecutionEnvironment from 'fbjs/lib/ExecutionEnvironment'
@@ -26,13 +25,7 @@ export function configureStore(initialState = {}) {
     DevTools.instrument()
   )(createStore)
 
-  const store = finalCreateStore(
-    combineReducers({
-      routing: routerReducer,
-      ...reducers
-    }),
-    initialState
-  )
+  const store = finalCreateStore(combineReducers(reducers), initialState)
 
   persistStore(store, {whitelist: ['groups']})
 
