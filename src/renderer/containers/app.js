@@ -77,27 +77,56 @@ export default class App extends Component {
     e.stopPropagation()
     e.dataTransfer.dropEffect = 'copy'
   }
-  render() {
+  renderGroupList() {
     const {groups} = this.props
+
+    return (
+      <GroupList
+        ref="groupList"
+        groups={groups}
+        onEditGroup={::this.handleEditGroup}
+        onSelectGroup={::this.handleSelectGroup}
+      />
+    )
+  }
+  renderHostList() {
+    const {groups} = this.props
+    const {groupId} = this.state
+
+    if (!groupId) {
+      return <div style={{width: '100%', height: '100%', display: 'table', paddingBottom: 56}}>
+      <div style={{display: 'table-cell', textAlign: 'center', verticalAlign: 'middle',
+      position: 'relative'
+    }}>unselected</div></div>
+    }
+
     const group = groups.filter(group => {
-      return group.id === this.state.groupId
+      return group.id === groupId
     })[0]
     const hosts = group ? group.hosts : []
 
     return (
-      <div style={styles.app} onDragOver={::this.handleDragOver} onDrop={::this.handleDrop}>
+      <HostList
+        ref="hostList"
+        hosts={hosts}
+        onEditHost={::this.handleEditHost}
+      />
+    )
+  }
+  render() {
+    return (
+      <div
+        style={styles.app}
+        onDragOver={::this.handleDragOver}
+        onDrop={::this.handleDrop}
+      >
         <Drawer
           open={true}
           width={256}
           ref="drawer"
           className="group-container"
         >
-          <GroupList
-            ref="groupList"
-            groups={groups}
-            onEditGroup={::this.handleEditGroup}
-            onSelectGroup={::this.handleSelectGroup}
-          />
+          {this.renderGroupList()}
           <Toolbar style={styles.groupToolbar}>
             <ToolbarGroup firstChild={true}>
               <RaisedButton label="Add" onClick={::this.handleAddGroup}
@@ -108,11 +137,7 @@ export default class App extends Component {
           </Toolbar>
         </Drawer>
         <div style={styles.hostContainer} className="host-container">
-          <HostList
-            ref="hostList"
-            hosts={hosts}
-            onEditHost={::this.handleEditHost}
-          />
+          {this.renderHostList()}
           <Toolbar style={styles.hostToolbar}>
             <ToolbarGroup firstChild={true}>
               <RaisedButton label="Add" onClick={::this.handleAddHost}
