@@ -47,7 +47,6 @@
     "react-dom": "15.1.0",
     "react-helmet": "3.1.0",
     "react-redux": "4.4.5",
-    "react-tap-event-plugin": "1.0.0",
     "redux": "3.5.2",
     "redux-devtools": "3.3.1",
     "redux-devtools-dock-monitor": "1.1.1",

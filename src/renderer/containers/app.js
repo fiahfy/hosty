@@ -7,8 +7,6 @@ import {
 } from 'material-ui'
 import fs from 'fs'
 import path from 'path'
-// const injectTapEventPlugin = require("react-tap-event-plugin")
-// injectTapEventPlugin()
 import * as ActionCreators from '../actions'
 import HostList from '../components/host-list'
 import GroupList from '../components/group-list'
