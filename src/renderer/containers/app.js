@@ -10,6 +10,8 @@ import GroupList from '../components/group-list'
 import HostsManager from '../utils/hosts-manager'
 
 function mapStateToProps(state) {
+  // TOOD:
+  console.log(arguments)
   return {groups: state.groups}
 }
 
@@ -19,8 +21,12 @@ function mapDispatchToProps(dispatch) {
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class App extends Component {
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  };
   static propTypes = {
-    groups: PropTypes.arrayOf(PropTypes.object)
+    groups:  PropTypes.arrayOf(PropTypes.object),
+    actions: PropTypes.object
   };
   static defaultProps = {
     groups: []
@@ -29,7 +35,10 @@ export default class App extends Component {
     groupId: null
   };
   handleSelectGroup(id) {
-    this.setState({groupId: id})
+    // TOOD:
+    console.log(this.props)
+    // this.setState({groupId: id})
+    this.context.router.push({query: {id: id}})
   }
   handleAddGroup() {
     this.props.actions.createGroup({})
@@ -43,15 +52,15 @@ export default class App extends Component {
     this.props.actions.deleteGroups(ids)
   }
   handleAddHost() {
-    this.props.actions.createHost(this.state.groupId, {})
+    this.props.actions.createHost(this.props.location.query.id, {})
   }
   handleEditHost(id, host) {
-    this.props.actions.updateHost(this.state.groupId, id, host)
+    this.props.actions.updateHost(this.state.location.query.id, id, host)
   }
   handleDeleteHosts() {
     const ids = this.refs.hostList.selectedHosts().map(host => host.id)
     this.refs.hostList.unselect()
-    this.props.actions.deleteHosts(this.state.groupId, ids)
+    this.props.actions.deleteHosts(this.state.location.query.id, ids)
   }
   handleDrop(e) {
     const {actions} = this.props
@@ -91,7 +100,8 @@ export default class App extends Component {
   }
   renderHostList() {
     const {groups} = this.props
-    const {groupId} = this.state
+    // const {groupId} = this.state
+    const groupId = +this.props.location.query.id
 
     if (!groupId) {
       return <div style={{width: '100%', height: '100%', display: 'table', paddingBottom: 56}}>
@@ -99,7 +109,7 @@ export default class App extends Component {
       position: 'relative'
     }}>unselected</div></div>
     }
-
+console.log(groups, groupId)
     const group = groups.filter(group => {
       return group.id === groupId
     })[0]
@@ -114,6 +124,8 @@ export default class App extends Component {
     )
   }
   render() {
+    // TOOD:
+    // return <div onClick={::this.handleSelectGroup}>hoge</div>
     return (
       <div
         style={styles.app}

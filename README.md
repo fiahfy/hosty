@@ -25,7 +25,7 @@ $ npm run package
 ```
 
 ##Download
-* https://github.com/fiahfy/hosty/releases
+https://github.com/fiahfy/hosty/releases
 
 ##Credit
 ###Icon
