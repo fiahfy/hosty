@@ -94,10 +94,11 @@ export default class App extends Component {
     const groupId = Number(location.query.id)
 
     if (!groupId) {
-      return <div style={{width: '100%', height: '100%', display: 'table', paddingBottom: 56}}>
-      <div style={{display: 'table-cell', textAlign: 'center', verticalAlign: 'middle',
-      position: 'relative'
-    }}>unselected</div></div>
+      return (
+        <div style={styles.messageContainer}>
+          <div style={styles.message}>Select Group</div>
+        </div>
+      )
     }
 
     const group = groups.filter(group => {
@@ -180,5 +181,18 @@ const styles = {
     bottom: 0,
     left: 0,
     right: 0
+  },
+  messageContainer: {
+    width: '100%',
+    height: '100%',
+    display: 'table',
+    paddingBottom: 56
+  },
+  message: {
+    display: 'table-cell',
+    textAlign: 'center',
+    verticalAlign: 'middle',
+    position: 'relative',
+    color: 'grey'
   }
 }
