@@ -24,7 +24,7 @@ const router = routerMiddleware(history)
 const enhancer = compose(
   applyMiddleware(thunk, router, createReduxLoggerMiddleware(), hostsManagementMiddleware),
   autoRehydrate(),
-  // DevTools.instrument()  // TOOD:
+  // DevTools.instrument()  // TODO:
 )
 
 const rootReducer = combineReducers({

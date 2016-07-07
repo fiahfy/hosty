@@ -10,8 +10,6 @@ import GroupList from '../components/group-list'
 import HostsManager from '../utils/hosts-manager'
 
 function mapStateToProps(state) {
-  // TOOD:
-  console.log(arguments)
   return {groups: state.groups}
 }
 
@@ -25,19 +23,14 @@ export default class App extends Component {
     router: PropTypes.object.isRequired
   };
   static propTypes = {
-    groups:  PropTypes.arrayOf(PropTypes.object),
-    actions: PropTypes.object
+    location: PropTypes.object,
+    actions:  PropTypes.object,
+    groups:   PropTypes.arrayOf(PropTypes.object)
   };
   static defaultProps = {
     groups: []
   };
-  state = {
-    groupId: null
-  };
   handleSelectGroup(id) {
-    // TOOD:
-    console.log(this.props)
-    // this.setState({groupId: id})
     this.context.router.push({query: {id: id}})
   }
   handleAddGroup() {
@@ -52,18 +45,17 @@ export default class App extends Component {
     this.props.actions.deleteGroups(ids)
   }
   handleAddHost() {
-    this.props.actions.createHost(this.props.location.query.id, {})
+    this.props.actions.createHost(Number(this.props.location.query.id), {})
   }
   handleEditHost(id, host) {
-    this.props.actions.updateHost(this.state.location.query.id, id, host)
+    this.props.actions.updateHost(Number(this.props.location.query.id), id, host)
   }
   handleDeleteHosts() {
     const ids = this.refs.hostList.selectedHosts().map(host => host.id)
     this.refs.hostList.unselect()
-    this.props.actions.deleteHosts(this.state.location.query.id, ids)
+    this.props.actions.deleteHosts(Number(this.props.location.query.id), ids)
   }
   handleDrop(e) {
-    const {actions} = this.props
     e.preventDefault()
     e.stopPropagation()
 
@@ -78,7 +70,7 @@ export default class App extends Component {
         host.id = i + 1
         return host
       })
-      actions.createGroup({name: params.name, hosts})
+      this.props.actions.createGroup({name: params.name, hosts})
     })
   }
   handleDragOver(e) {
@@ -87,21 +79,19 @@ export default class App extends Component {
     e.dataTransfer.dropEffect = 'copy'
   }
   renderGroupList() {
-    const {groups} = this.props
-
     return (
       <GroupList
         ref="groupList"
-        groups={groups}
+        groups={this.props.groups}
+        selectedId={Number(this.props.location.query.id)}
         onEditGroup={::this.handleEditGroup}
         onSelectGroup={::this.handleSelectGroup}
       />
     )
   }
   renderHostList() {
-    const {groups} = this.props
-    // const {groupId} = this.state
-    const groupId = +this.props.location.query.id
+    const {groups, location} = this.props
+    const groupId = Number(location.query.id)
 
     if (!groupId) {
       return <div style={{width: '100%', height: '100%', display: 'table', paddingBottom: 56}}>
@@ -109,7 +99,7 @@ export default class App extends Component {
       position: 'relative'
     }}>unselected</div></div>
     }
-console.log(groups, groupId)
+
     const group = groups.filter(group => {
       return group.id === groupId
     })[0]
@@ -124,8 +114,6 @@ console.log(groups, groupId)
     )
   }
   render() {
-    // TOOD:
-    // return <div onClick={::this.handleSelectGroup}>hoge</div>
     return (
       <div
         style={styles.app}

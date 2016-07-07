@@ -12,6 +12,7 @@ import isUpdateNeeded from '../utils/is-update-needed'
 export default class GroupList extends Component {
   static propTypes = {
     groups:        PropTypes.arrayOf(PropTypes.object),
+    selectedId:    PropTypes.number,
     onEditGroup:   PropTypes.func,
     onSelectGroup: PropTypes.func
   };
@@ -29,6 +30,10 @@ export default class GroupList extends Component {
     selectedIds: [],
     allRowsSelected: false
   };
+  constructor(props) {
+    super(props)
+    this.state.selectedIds = [props.selectedId]
+  }
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState)
   }
