@@ -92,7 +92,7 @@ export default class HostsManager {
         return null
       }
       return data
-    }).join('\n')
+    }).filter(item => !!item).join('\n')
   }
   buildHosts(hosts) {
     return hosts.filter(host => isValidHost(host)).map(item => {
