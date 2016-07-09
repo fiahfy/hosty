@@ -31,7 +31,7 @@
     "build:main": "webpack --config webpack/main.babel.js",
     "package": "npm run package:mac",
     "package:mac": "DEBUG=0 npm run build; electron-packager . --overwrite --asar --platform=darwin --arch=x64 --icon=public/assets/img/hosty.icns",
-    "package:win": "DEBUG=0 npm run build; electron-packager . --overwrite --asar --platform=win32 --arch=x64"
+    "package:win": "DEBUG=0 npm run build; electron-packager . --overwrite --asar --platform=win32 --arch=x64 --icon=public/assets/img/hosty.ico"
   },
   "dependencies": {
     "babel-loader": "6.2.4",
@@ -42,6 +42,7 @@
     "babel-preset-stage-0": "6.5.0",
     "electron-packager": "7.2.0",
     "electron-prebuilt": "1.2.6",
+    "electron-rebuild": "1.1.5",
     "history": "3.0.0",
     "is-electron-renderer": "2.0.0",
     "material-ui": "0.15.0",

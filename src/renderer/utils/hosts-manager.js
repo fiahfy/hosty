@@ -23,13 +23,15 @@ const HostsFile = new (class  {
     try {
       return fs.readFileSync(USER_HOSTS, HOSTS_CHARSET)
     } catch (e) {
-      return ''
+      throw e
     }
   }
   write(data) {
     try {
       fs.writeFileSync(USER_HOSTS, data, HOSTS_CHARSET)
-    } catch (e) {}
+    } catch (e) {
+      throw e
+    }
   }
 })
 
