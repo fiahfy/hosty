@@ -1,7 +1,7 @@
 import 'babel-polyfill'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Root from './renderer/containers/root'
+import Root from './renderer/root'
 import {configureStore} from './renderer/store'
 
 import {ipcRenderer} from 'electron'
@@ -16,6 +16,7 @@ ReactDOM.render(
   document.querySelector('#app')
 )
 
+// TODO:
 HostsManager.createSymlink()
 
 ipcRenderer.on('receiveHostsFromMain', (event, {name, hosts}) => {

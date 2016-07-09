@@ -1,31 +1,39 @@
+import {routerMiddleware, routerReducer as routing} from 'react-router-redux'
 import {createStore, applyMiddleware, compose, combineReducers} from 'redux'
 import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
-import ExecutionEnvironment from 'fbjs/lib/ExecutionEnvironment'
 import {persistStore, autoRehydrate, createPersistor} from 'redux-persist'
 import reducers from './reducers'
-import DevTools from './containers/dev-tools'
+// import DevTools from './containers/dev-tools'
 import hostsManagementMiddleware from './middlewares/hosts-management-middleware'
+import history from './history'
 
 const voidMiddleware = () => next => action => {
-  next(action)
+  return next(action)
 }
 
-export function configureStore(initialState = {}) {
-  let reduxLoggerMiddleware = voidMiddleware
+function createReduxLoggerMiddleware() {
   if (process.env.NODE_ENV === 'development') {
-    reduxLoggerMiddleware = createLogger()
+    return createLogger()
   }
+  return voidMiddleware
+}
 
-  const finalCreateStore = compose(
-    applyMiddleware(thunk),
-    applyMiddleware(reduxLoggerMiddleware),
-    autoRehydrate(),
-    applyMiddleware(hostsManagementMiddleware),
-    DevTools.instrument()
-  )(createStore)
+const router = routerMiddleware(history)
 
-  const store = finalCreateStore(combineReducers(reducers), initialState)
+const enhancer = compose(
+  applyMiddleware(thunk, router, createReduxLoggerMiddleware(), hostsManagementMiddleware),
+  autoRehydrate(),
+  // DevTools.instrument()  // TODO:
+)
+
+const rootReducer = combineReducers({
+  ...reducers,
+  routing
+})
+
+export function configureStore(initialState = {}) {
+  const store = createStore(rootReducer, initialState, enhancer)
 
   persistStore(store, {whitelist: ['groups']})
 

@@ -101,7 +101,7 @@ export default class Window {
                   return
                 }
                 ipcMain.once('receiveGroupsFromRenderer', (event, {groups}) => {
-                  fs.writeFileSync(path, HostsManager.buildHosts(groups) + '\n', 'utf8')
+                  fs.writeFileSync(path, HostsManager.buildGroups(groups) + '\n', 'utf8')
                 })
                 this.browserWindow.webContents.send('sendGroupsToMain');
               })
