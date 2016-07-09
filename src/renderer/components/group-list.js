@@ -45,18 +45,15 @@ export default class GroupList extends Component {
     this.setState({selectedIds: [nextProps.groupId]})
     this.sort(nextProps.groups, this.state.sortOptions)
   }
+  getSelectedGroups() {
+    return this.props.groups.filter(group => this.state.selectedIds.includes(group.id))
+  }
   focusLastGroup() {
     const groups = this.sortedGroups()
     const group = groups[groups.length-1]
     this.refs[group.id].focus()
   }
-  selectedGroups() {
-    const {groups} = this.props
-    const {selectedIds} = this.state
-
-    return groups.filter(group => selectedIds.includes(group.id))
-  }
-  unselect() {
+  unselectAll() {
     this.setState({selectedIds: []})
   }
   sort(groups, options) {

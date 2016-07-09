@@ -41,8 +41,8 @@ export default class GroupContainer extends Component {
     this.props.actions.updateGroup(id, group)
   }
   handleDeleteGroups() {
-    const ids = this.refs.groupList.selectedGroups().map(group => group.id)
-    this.refs.groupList.unselect()
+    const ids = this.refs.groupList.getSelectedGroups().map(group => group.id)
+    this.refs.groupList.unselectAll()
     this.props.actions.deleteGroups(ids)
     this.context.router.push({query: {id: 0}})
   }

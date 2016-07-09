@@ -47,18 +47,15 @@ export default class HostList extends Component {
     this.setState({selectedIds: []})
     this.sort(nextProps.hosts, this.state.sortOptions)
   }
+  getSelectedHosts() {
+    return this.props.hosts.filter(host => this.state.selectedIds.includes(host.id))
+  }
   focusLastHost() {
     const hosts = this.sortedHosts()
     const host = hosts[hosts.length-1]
     this.refs[host.id].focus()
   }
-  selectedHosts() {
-    const {hosts} = this.props
-    const {selectedIds} = this.state
-
-    return hosts.filter(host => selectedIds.includes(host.id))
-  }
-  unselect() {
+  unselectAll() {
     this.setState({selectedIds: []})
   }
   sort(hosts, options) {
@@ -102,7 +99,7 @@ export default class HostList extends Component {
         .filter((host, i) => selectedRows.includes(i))
     const selectedIds = selectedHosts.map(host => host.id)
 
-    this.setState({selectedIds, allRowsSelected})
+    this.setState({selectedIds})
     this.props.onSelectHosts(selectedHosts)
   }
   sortedHosts() {
