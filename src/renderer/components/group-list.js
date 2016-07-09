@@ -9,65 +9,57 @@ import validator from 'validator'
 import GroupItem from './group-item'
 import isUpdateNeeded from '../utils/is-update-needed'
 
+const SORT_KEY_NAME = 'name'
+const SORT_ORDER_ASC = 'asc'
+const SORT_ORDER_DESC = 'desc'
+
 export default class GroupList extends Component {
   static propTypes = {
-    groups:        PropTypes.arrayOf(PropTypes.object),
-    selectedId:    PropTypes.number,
-    onEditGroup:   PropTypes.func,
-    onSelectGroup: PropTypes.func
+    groupId:        PropTypes.number,
+    groups:         PropTypes.arrayOf(PropTypes.object),
+    onEditGroup:    PropTypes.func,
+    onSelectGroups: PropTypes.func
   };
   static defaultProps = {
-    hosts:         [],
-    onEditGroup:   () => {},
-    onSelectGroup: () => {}
+    groupId:        0,
+    groups:         [],
+    onEditGroup:    () => {},
+    onSelectGroups: () => {}
   };
   state = {
-    sort: {
-      key: 'name',
-      order: 'asc'
+    sortOptions: {
+      key:   SORT_KEY_NAME,
+      order: SORT_ORDER_ASC
     },
     sortedMap: new Map,
-    selectedIds: [],
-    allRowsSelected: false
+    selectedIds: []
   };
-  constructor(props) {
-    super(props)
-    this.state.selectedIds = [props.selectedId]
-  }
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState)
   }
-  selectedGroups() {
-    const {groups} = this.props
-    const {selectedIds, allRowsSelected} = this.state
-    if (allRowsSelected) {
-      return groups
-    }
-    return groups.filter(group => {
-      return selectedIds.includes(group.id)
-    })
-  }
-  unselect() {
-    this.setState({
-      selectedIds: [],
-      allRowsSelected: false
-    })
-  }
-  handleEditGroup(group) {
-    this.props.onEditGroup(group.id, group)
-  }
-  handleClickHeader(e, rowId, columnId) {
-    if (columnId < 2) {
+  componentWillReceiveProps(nextProps) {
+    if (this.props.groupId === nextProps.groupId && this.props.groups.length) {
       return
     }
+
+    this.setState({selectedIds: [nextProps.groupId]})
+    this.sort(nextProps.groups, this.state.sortOptions)
+  }
+  selectedGroups() {
     const {groups} = this.props
-    const {sort} = this.state
-    const key = 'name'
-    const order = sort.key !== key ? 'asc' : sort.order !== 'asc' ? 'asc' : 'desc'
+    const {selectedIds} = this.state
+
+    return groups.filter(group => selectedIds.includes(group.id))
+  }
+  unselect() {
+    this.setState({selectedIds: []})
+  }
+  sort(groups, options) {
+    const {key, order} = options
 
     const sortedMap = new Map
-    groups.slice().sort((a, b) => {
-      const flag = order === 'asc'
+    groups.concat().sort((a, b) => {
+      const flag = order === SORT_ORDER_ASC
       if (!a[key]) {
         return flag ? 1 : -1
       }
@@ -79,29 +71,37 @@ export default class GroupList extends Component {
       sortedMap.set(group.id, i)
     })
 
-    this.setState({sort: {key, order}, sortedMap})
+    this.setState({sortOptions: options, sortedMap})
+  }
+  handleEditGroup(group) {
+    this.props.onEditGroup(group.id, group)
+  }
+  handleClickHeader(e, rowId, columnId) {
+    const {key, order} = this.state.sortOptions
+
+    const columns = [,,SORT_KEY_NAME]
+    const newKey = columns[columnId]
+    if (!newKey) {
+      return
+    }
+    const newOrder = key !== newKey
+      ? SORT_ORDER_ASC
+      : order !== SORT_ORDER_ASC ? SORT_ORDER_ASC : SORT_ORDER_DESC
+
+    this.sort(this.props.groups, {key: newKey, order: newOrder})
   }
   handleRowSelection(selectedRows) {
-    const {onSelectGroup} = this.props
+    const selectedGroups = this.sortedGroups()
+        .filter((group, i) => selectedRows.includes(i))
+    const selectedIds = selectedGroups.map(group => group.id)
 
-    let selectedIds = []
-    let allRowsSelected = false
-    if (selectedRows === 'all') {
-      selectedIds = []
-      allRowsSelected = true
-    } else {
-      selectedIds = this.sortedGroups().filter((group, i) => {
-        return selectedRows.includes(i)
-      }).map(group => group.id)
-    }
-    onSelectGroup(selectedIds[0])
-    this.setState({selectedIds, allRowsSelected})
+    this.setState({selectedIds})
+    this.props.onSelectGroups(selectedGroups)
   }
   sortedGroups() {
-    const {groups} = this.props
     const {sortedMap} = this.state
 
-    return groups.slice().sort((a, b) => {
+    return this.props.groups.concat().sort((a, b) => {
       if (!sortedMap.has(a.id)) {
         return 1
       }
@@ -111,49 +111,47 @@ export default class GroupList extends Component {
       return sortedMap.get(a.id)  > sortedMap.get(b.id) ? 1 : -1
     })
   }
-  renderSortArrow(key) {
-    const {sort} = this.state
+  renderSortArrow(targetKey) {
+    const {key, order} = this.state.sortOptions
 
-    if (key !== sort.key) {
+    if (targetKey !== key) {
       return null
     }
 
-    return sort.order === 'asc'
+    return order === SORT_ORDER_ASC
       ? <SvgIcons.NavigationArrowDropDown style={styles.headerColumnIcon} />
       : <SvgIcons.NavigationArrowDropUp style={styles.headerColumnIcon} />
   }
   renderGroupNodes() {
-    const {selectedIds} = this.state
-
     return this.sortedGroups().map(group => {
       return (
         <GroupItem
           key={group.id}
           group={group}
-          selected={selectedIds.includes(group.id)}
+          selected={this.state.selectedIds.includes(group.id)}
           onEditGroup={::this.handleEditGroup}
         />
       )
     })
   }
   render() {
-    const {allRowsSelected} = this.state
-
     return (
       <Table
         multiSelectable={false}
+        allRowsSelected={false}
         onRowSelection={::this.handleRowSelection}
-        allRowsSelected={allRowsSelected}
       >
         <TableHeader
           displaySelectAll={false}
           adjustForCheckbox={false}
         >
           <TableRow onCellClick={::this.handleClickHeader}>
-            <TableHeaderColumn style={styles.iconColumn}>Status</TableHeaderColumn>
+            <TableHeaderColumn style={styles.iconColumn}>
+              Status
+            </TableHeaderColumn>
             <TableHeaderColumn style={styles.headerSortableColumn}>
               <div style={styles.headerColumnText}>Group</div>
-              {this.renderSortArrow('name')}
+              {this.renderSortArrow(SORT_KEY_NAME)}
             </TableHeaderColumn>
           </TableRow>
         </TableHeader>

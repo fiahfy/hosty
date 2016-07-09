@@ -9,19 +9,28 @@ import validator from 'validator'
 import HostItem from './host-item'
 import isUpdateNeeded from '../utils/is-update-needed'
 
+const SORT_KEY_HOST = 'host'
+const SORT_KEY_IP = 'ip'
+const SORT_ORDER_ASC = 'asc'
+const SORT_ORDER_DESC = 'desc'
+
 export default class HostList extends Component {
   static propTypes = {
-    hosts:      PropTypes.arrayOf(PropTypes.object),
-    onEditHost: PropTypes.func
+    groupId:       PropTypes.number,
+    hosts:         PropTypes.arrayOf(PropTypes.object),
+    onEditHost:    PropTypes.func,
+    onSelectHosts: PropTypes.func
   };
   static defaultProps = {
-    hosts:      [],
-    onEditHost: () => {}
+    groupId:       0,
+    hosts:         [],
+    onEditHost:    () => {},
+    onSelectHosts: () => {}
   };
   state = {
-    sort: {
-      key: 'host',
-      order: 'asc'
+    sortOptions: {
+      key:   SORT_KEY_HOST,
+      order: SORT_ORDER_ASC
     },
     sortedMap: new Map,
     selectedIds: [],
@@ -30,15 +39,22 @@ export default class HostList extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState)
   }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.groupId === nextProps.groupId && this.props.hosts.length) {
+      return
+    }
+
+    this.setState({selectedIds: []})
+    this.sort(nextProps.hosts, this.state.sortOptions)
+  }
   selectedHosts() {
     const {hosts} = this.props
     const {selectedIds, allRowsSelected} = this.state
+
     if (allRowsSelected) {
       return hosts
     }
-    return hosts.filter(host => {
-      return selectedIds.includes(host.id)
-    })
+    return hosts.filter(host => selectedIds.includes(host.id))
   }
   unselect() {
     this.setState({
@@ -46,21 +62,12 @@ export default class HostList extends Component {
       allRowsSelected: false
     })
   }
-  handleEditHost(host) {
-    this.props.onEditHost(host.id, host)
-  }
-  handleClickHeader(e, rowId, columnId) {
-    if (columnId < 2) {
-      return
-    }
-    const {hosts} = this.props
-    const {sort} = this.state
-    const key = columnId === 2 ? 'host' : 'ip'
-    const order = sort.key !== key ? 'asc' : sort.order !== 'asc' ? 'asc' : 'desc'
+  sort(hosts, options) {
+    const {key, order} = options
 
     const sortedMap = new Map
-    hosts.slice().sort((a, b) => {
-      const flag = order === 'asc'
+    hosts.concat().sort((a, b) => {
+      const flag = order === SORT_ORDER_ASC
       if (!a[key]) {
         return flag ? 1 : -1
       }
@@ -72,26 +79,44 @@ export default class HostList extends Component {
       sortedMap.set(host.id, i)
     })
 
-    this.setState({sort: {key, order}, sortedMap})
+    this.setState({sortOptions: options, sortedMap})
+  }
+  handleEditHost(host) {
+    this.props.onEditHost(host.id, host)
+  }
+  handleClickHeader(e, rowId, columnId) {
+    const {key, order} = this.state.sortOptions
+
+    const columns = [,,SORT_KEY_HOST, SORT_KEY_IP]
+    const newKey = columns[columnId]
+    if (!newKey) {
+      return
+    }
+    const newOrder = key !== newKey
+      ? SORT_ORDER_ASC
+      : order !== SORT_ORDER_ASC ? SORT_ORDER_ASC : SORT_ORDER_DESC
+
+    this.sort(this.props.hosts, {key: newKey, order: newOrder})
   }
   handleRowSelection(selectedRows) {
-    let selectedIds = []
+    const {onSelectHosts} = this.props
+
+    let selectedHosts = []
     let allRowsSelected = false
     if (selectedRows === 'all') {
-      selectedIds = []
       allRowsSelected = true
     } else {
-      selectedIds = this.sortedHosts().filter((host, i) => {
-        return selectedRows.includes(i)
-      }).map(host => host.id)
+      selectedHosts = this.sortedHosts()
+        .filter((host, i) => selectedRows.includes(i))
     }
+    const selectedIds = selectedHosts.map(host => host.id)
     this.setState({selectedIds, allRowsSelected})
+    this.props.onSelectHosts(selectedHosts)
   }
   sortedHosts() {
-    const {hosts} = this.props
     const {sortedMap} = this.state
 
-    return hosts.slice().sort((a, b) => {
+    return this.props.hosts.concat().sort((a, b) => {
       if (!sortedMap.has(a.id)) {
         return 1
       }
@@ -101,26 +126,24 @@ export default class HostList extends Component {
       return sortedMap.get(a.id)  > sortedMap.get(b.id) ? 1 : -1
     })
   }
-  renderSortArrow(key) {
-    const {sort} = this.state
+  renderSortArrow(targetKey) {
+    const {key, order} = this.state.sortOptions
 
-    if (key !== sort.key) {
+    if (targetKey !== key) {
       return null
     }
 
-    return sort.order === 'asc'
+    return order === SORT_ORDER_ASC
       ? <SvgIcons.NavigationArrowDropDown style={styles.headerColumnIcon} />
       : <SvgIcons.NavigationArrowDropUp style={styles.headerColumnIcon} />
   }
   renderHostNodes() {
-    const {selectedIds} = this.state
-
     return this.sortedHosts().map(host => {
       return (
         <HostItem
           key={host.id}
           host={host}
-          selected={selectedIds.includes(host.id)}
+          selected={this.state.selectedIds.includes(host.id)}
           onEditHost={::this.handleEditHost}
         />
       )
@@ -140,14 +163,16 @@ export default class HostList extends Component {
           adjustForCheckbox={false}
         >
           <TableRow onCellClick={::this.handleClickHeader}>
-            <TableHeaderColumn style={styles.iconColumn}>Status</TableHeaderColumn>
+            <TableHeaderColumn style={styles.iconColumn}>
+              Status
+            </TableHeaderColumn>
             <TableHeaderColumn style={styles.headerSortableColumn}>
               <div style={styles.headerColumnText}>Host</div>
-              {this.renderSortArrow('host')}
+              {this.renderSortArrow(SORT_KEY_HOST)}
             </TableHeaderColumn>
             <TableHeaderColumn style={styles.headerSortableColumn}>
               <div style={styles.headerColumnText}>IP</div>
-              {this.renderSortArrow('ip')}
+              {this.renderSortArrow(SORT_KEY_IP)}
             </TableHeaderColumn>
           </TableRow>
         </TableHeader>

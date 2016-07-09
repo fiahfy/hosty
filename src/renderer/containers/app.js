@@ -23,14 +23,16 @@ export default class App extends Component {
     router: PropTypes.object.isRequired
   };
   static propTypes = {
-    location: PropTypes.object,
-    actions:  PropTypes.object,
+    location: PropTypes.object.isRequired,
+    actions:  PropTypes.object.isRequired,
     groups:   PropTypes.arrayOf(PropTypes.object)
   };
   static defaultProps = {
     groups: []
   };
-  handleSelectGroup(id) {
+  handleSelectGroups(groups) {
+    const group = groups[0]
+    const id = group ? group.id : 0
     this.context.router.push({query: {id: id}})
   }
   handleAddGroup() {
@@ -79,13 +81,16 @@ export default class App extends Component {
     e.dataTransfer.dropEffect = 'copy'
   }
   renderGroupList() {
+    const {groups, location} = this.props
+    const groupId = Number(location.query.id)
+
     return (
       <GroupList
         ref="groupList"
-        groups={this.props.groups}
-        selectedId={Number(this.props.location.query.id)}
+        groupId={groupId}
+        groups={groups}
         onEditGroup={::this.handleEditGroup}
-        onSelectGroup={::this.handleSelectGroup}
+        onSelectGroups={::this.handleSelectGroups}
       />
     )
   }
@@ -109,6 +114,7 @@ export default class App extends Component {
     return (
       <HostList
         ref="hostList"
+        groupId={groupId}
         hosts={hosts}
         onEditHost={::this.handleEditHost}
       />
