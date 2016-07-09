@@ -44,14 +44,6 @@ export default class HostContainer extends Component {
     const {groups, location} = this.props
     const groupId = Number(location.query.id)
 
-    if (!groupId) {
-      return (
-        <div style={styles.messageContainer}>
-          <div style={styles.message}>Select Group</div>
-        </div>
-      )
-    }
-
     const group = groups.filter(group => {
       return group.id === groupId
     })[0]
@@ -67,6 +59,16 @@ export default class HostContainer extends Component {
     )
   }
   render() {
+    const groupId = Number(this.props.location.query.id)
+
+    if (!groupId) {
+      return (
+        <div style={styles.messageContainer}>
+          <div style={styles.message}>Select Group</div>
+        </div>
+      )
+    }
+
     return (
       <div>
         {this.renderHostList()}
@@ -97,8 +99,7 @@ const styles = {
   messageContainer: {
     width: '100%',
     height: '100%',
-    display: 'table',
-    paddingBottom: 56
+    display: 'table'
   },
   message: {
     display: 'table-cell',
