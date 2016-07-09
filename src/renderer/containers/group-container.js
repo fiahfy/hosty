@@ -29,10 +29,13 @@ export default class GroupContainer extends Component {
   handleSelectGroups(groups) {
     const group = groups[0]
     const id = group ? group.id : 0
-    this.context.router.push({query: {id: id}})
+    this.context.router.push({query: {id}})
   }
   handleAddGroup() {
-    this.props.actions.createGroup({})
+    this.props.actions.createGroup({enable: true})
+    window.setTimeout(() => {
+      this.refs.groupList.focusLastGroup()
+    }, 0)
   }
   handleEditGroup(id, group) {
     this.props.actions.updateGroup(id, group)
@@ -41,6 +44,7 @@ export default class GroupContainer extends Component {
     const ids = this.refs.groupList.selectedGroups().map(group => group.id)
     this.refs.groupList.unselect()
     this.props.actions.deleteGroups(ids)
+    this.context.router.push({query: {id: 0}})
   }
   renderGroupList() {
     const {groups, location} = this.props

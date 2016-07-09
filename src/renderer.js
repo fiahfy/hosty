@@ -25,7 +25,7 @@ ipcRenderer.on('receiveHostsFromMain', (event, {name, hosts}) => {
     host.id = i + 1
     return host
   })
-  actions.createGroup({name, hosts})
+  actions.createGroup({enable: true, name, hosts})
 })
 
 ipcRenderer.on('receiveGroupsFromMain', (event, {groups}) => {

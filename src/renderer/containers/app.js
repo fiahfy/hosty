@@ -37,7 +37,7 @@ export default class App extends Component {
         host.id = i + 1
         return host
       })
-      this.props.actions.createGroup({name: params.name, hosts})
+      this.props.actions.createGroup({enable: true, name: params.name, hosts})
     })
   }
   handleDragOver(e) {

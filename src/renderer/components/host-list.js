@@ -47,20 +47,19 @@ export default class HostList extends Component {
     this.setState({selectedIds: []})
     this.sort(nextProps.hosts, this.state.sortOptions)
   }
+  focusLastHost() {
+    const hosts = this.sortedHosts()
+    const host = hosts[hosts.length-1]
+    this.refs[host.id].focus()
+  }
   selectedHosts() {
     const {hosts} = this.props
-    const {selectedIds, allRowsSelected} = this.state
+    const {selectedIds} = this.state
 
-    if (allRowsSelected) {
-      return hosts
-    }
     return hosts.filter(host => selectedIds.includes(host.id))
   }
   unselect() {
-    this.setState({
-      selectedIds: [],
-      allRowsSelected: false
-    })
+    this.setState({selectedIds: []})
   }
   sort(hosts, options) {
     const {key, order} = options
@@ -99,17 +98,10 @@ export default class HostList extends Component {
     this.sort(this.props.hosts, {key: newKey, order: newOrder})
   }
   handleRowSelection(selectedRows) {
-    const {onSelectHosts} = this.props
-
-    let selectedHosts = []
-    let allRowsSelected = false
-    if (selectedRows === 'all') {
-      allRowsSelected = true
-    } else {
-      selectedHosts = this.sortedHosts()
+    const selectedHosts = this.sortedHosts()
         .filter((host, i) => selectedRows.includes(i))
-    }
     const selectedIds = selectedHosts.map(host => host.id)
+
     this.setState({selectedIds, allRowsSelected})
     this.props.onSelectHosts(selectedHosts)
   }
@@ -123,7 +115,7 @@ export default class HostList extends Component {
       if (!sortedMap.has(b.id)) {
         return -1
       }
-      return sortedMap.get(a.id)  > sortedMap.get(b.id) ? 1 : -1
+      return sortedMap.get(a.id) > sortedMap.get(b.id) ? 1 : -1
     })
   }
   renderSortArrow(targetKey) {
@@ -141,6 +133,7 @@ export default class HostList extends Component {
     return this.sortedHosts().map(host => {
       return (
         <HostItem
+          ref={host.id}
           key={host.id}
           host={host}
           selected={this.state.selectedIds.includes(host.id)}
@@ -150,13 +143,11 @@ export default class HostList extends Component {
     })
   }
   render() {
-    const {allRowsSelected} = this.state
-
     return (
       <Table
         multiSelectable={true}
+        allRowsSelected={false}
         onRowSelection={::this.handleRowSelection}
-        allRowsSelected={allRowsSelected}
       >
         <TableHeader
           displaySelectAll={false}

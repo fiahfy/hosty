@@ -27,7 +27,10 @@ export default class HostContainer extends Component {
     groups: []
   };
   handleAddHost() {
-    this.props.actions.createHost(Number(this.props.location.query.id), {})
+    this.props.actions.createHost(Number(this.props.location.query.id), {enable: true})
+    window.setTimeout(() => {
+      this.refs.hostList.focusLastHost()
+    }, 0)
   }
   handleEditHost(id, host) {
     this.props.actions.updateHost(Number(this.props.location.query.id), id, host)
