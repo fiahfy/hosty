@@ -1,8 +1,3 @@
-import {browserHistory, createMemoryHistory} from 'react-router'
-import ExecutionEnvironment from 'fbjs/lib/ExecutionEnvironment'
+import {hashHistory} from 'react-router'
 
-function createBrowserHistory() {
-  return browserHistory
-}
-
-export default (ExecutionEnvironment.canUseDOM ? createBrowserHistory() : createMemoryHistory())
+export default hashHistory

@@ -10,6 +10,7 @@
       body {
         margin: 0;
         height: 100%;
+        font-family: Roboto, sans-serif;
       }
       #app {
         height: 100%;
@@ -24,29 +25,34 @@
         text-align: center;
         vertical-align: middle;
         display: table-cell;
-        font-family: Roboto, sans-serif;
       }
-      .group-container>div:first-child>div:first-child {
+      .sidebar>div>div {
         height: 100%!important;
       }
-      .group-container>div:first-child>div:first-child>div:first-child {
+      .sidebar>div>div>div:first-child {
+        height: 100%!important;
+      }
+      .sidebar>div>div>div:first-child>div:first-child {
         position: fixed;
         z-index: 1;
       }
-      .group-container>div:first-child>div:first-child>div:nth-child(2) {
+      .sidebar>div>div>div:first-child>div:nth-child(2) {
         margin-top: 59px;
         margin-bottom: 56px;
         box-sizing: border-box;
         height: calc(100% - 115px)!important;
       }
-      .host-container>div:first-child {
+      .content>div {
         height: 100%!important;
       }
-      .host-container>div:first-child>div:first-child {
+      .content>div>div:first-child {
+        height: 100%!important;
+      }
+      .content>div>div:first-child>div:first-child {
         position: fixed;
         z-index: 1;
       }
-      .host-container>div:first-child>div:nth-child(2) {
+      .content>div>div:first-child>div:nth-child(2) {
         margin-top: 59px;
         margin-bottom: 56px;
         box-sizing: border-box;

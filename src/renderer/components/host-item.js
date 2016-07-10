@@ -25,6 +25,9 @@ export default class HostItem extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState)
   }
+  focus() {
+    this.setState({editableField: 'host'})
+  }
   handleToggleHostStatus(e) {
     e.stopPropagation()
     const {host, onEditHost} = this.props
@@ -180,6 +183,8 @@ const styles = {
   fieldLabel: {
     height: '100%',
     lineHeight: '48px',
-    fontSize: 16
+    fontSize: 16,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis'
   }
 }

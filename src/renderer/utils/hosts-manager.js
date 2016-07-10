@@ -18,9 +18,25 @@ const HOSTS = DEBUG_HOSTS ? HOSTS_DUMMY : process.platform === 'win32' ? HOSTS_W
 const USER_HOSTS = path.join(app.getPath('userData'), 'hosts')
 const HOSTS_CHARSET = 'utf8'
 
+const HostsFile = new (class  {
+  read() {
+    try {
+      return fs.readFileSync(USER_HOSTS, HOSTS_CHARSET)
+    } catch (e) {
+      throw e
+    }
+  }
+  write(data) {
+    try {
+      fs.writeFileSync(USER_HOSTS, data, HOSTS_CHARSET)
+    } catch (e) {
+      throw e
+    }
+  }
+})
 
 export default class HostsManager {
-  static createSymlink() {
+  createSymlink() {
     try {
       const stats = fs.lstatSync(HOSTS)
       if (stats.isSymbolicLink()) {
@@ -42,57 +58,52 @@ export default class HostsManager {
       throw new Error(`Failed to symlink ${USER_HOSTS} to ${HOSTS}`)
     }
   }
-  static save(groups) {
-    return new Promise((resolve, reject) => {
-      fs.readFile(USER_HOSTS, HOSTS_CHARSET, (err, data) => {
-        if (err) {
-          reject(err)
-          return
-        }
-        resolve(data)
-      })
-    })
-      .then(data => {
-        let newData = `${BEGIN_SECTION}\n` + HostsManager.buildHosts(groups) + `\n${END_SECTION}\n`
+  save(groups) {
+    const data = HostsFile.read()
 
-        const reg = new RegExp(String.raw`([\s\S]*\n?)${BEGIN_SECTION}\n[\s\S]*\n${END_SECTION}\n?([\s\S]*)`, 'im')
-        const matches = data.match(reg)
-        if (matches) {
-          newData = matches[1] + newData + matches[2]
-        } else {
-          newData = data + '\n' + newData
-        }
+    let newData = `${BEGIN_SECTION}\n` + this.buildGroups(groups) + `\n${END_SECTION}\n`
 
-        return new Promise((resolve, reject) => {
-          fs.writeFile(USER_HOSTS, newData, 'utf8', err => {
-            if (err) {
-              reject(err)
-              return
-            }
-            resolve(groups)
-          })
-        })
-      })
-      .catch(err => {
-        console.error(err)
-      })
+    const reg = new RegExp(String.raw`([\s\S]*\n?)${BEGIN_SECTION}\n[\s\S]*\n${END_SECTION}\n?([\s\S]*)`, 'im')
+    const matches = data.match(reg)
+    if (matches) {
+      newData = matches[1] + newData + matches[2]
+    } else {
+      newData = data + '\n' + newData
+    }
+
+    HostsFile.write(newData)
   }
-  static clear() {
+  clear() {
     this.save([])
   }
-  static buildHosts(groups) {
+  buildGroups(groups) {
     return groups.map(group => {
       if (!group.hosts) {
-        return ''
+        return null
       }
-      return group.hosts.filter(host => isValidHost(host)).map(item => {
-        return (group.enable && item.enable ? '' : '#')
-          + item.ip + '\t'
-          + item.host
-      }).join('\n')
+      let hosts = group.hosts.concat()
+      if (!group.enable) {
+        hosts = hosts.map(host => {
+          const newHost = Object.assign({}, host)
+          newHost.enable = false
+          return newHost
+        })
+      }
+      const data = this.buildHosts(hosts)
+      if (!data) {
+        return null
+      }
+      return data
+    }).filter(item => !!item).join('\n')
+  }
+  buildHosts(hosts) {
+    return hosts.filter(host => isValidHost(host)).map(item => {
+      return (item.enable ? '' : '#')
+        + item.ip + '\t'
+        + item.host
     }).join('\n')
   }
-  static parseHosts(data) {
+  parseHosts(data) {
     return data
       .split('\n')
       .map(item => {
@@ -108,6 +119,8 @@ export default class HostsManager {
       }).filter(item => !!item)
   }
 }
+
+export default new HostsManager
 
 function isValidHost(host) {
   if (!host.host || !host.host.length) {

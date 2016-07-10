@@ -28,11 +28,7 @@ export default class Window {
       this.application.saveWindowSettings(settings)
     })
 
-    // Emitted when the window is closed.
     this.browserWindow.on('closed', () => {
-      // Dereference the window object, usually you would store windows
-      // in an array if your app supports multi windows, this is the time
-      // when you should delete the corresponding element.
       this.browserWindow = null
       this.application.removeWindow()
     })
@@ -105,7 +101,7 @@ export default class Window {
                   return
                 }
                 ipcMain.once('receiveGroupsFromRenderer', (event, {groups}) => {
-                  fs.writeFileSync(path, HostsManager.buildHosts(groups) + '\n', 'utf8')
+                  fs.writeFileSync(path, HostsManager.buildGroups(groups) + '\n', 'utf8')
                 })
                 this.browserWindow.webContents.send('sendGroupsToMain');
               })

@@ -25,6 +25,9 @@ export default class GroupItem extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState)
   }
+  focus() {
+    this.setState({editableField: 'name'})
+  }
   handleToggleGroupStatus(e) {
     e.stopPropagation()
     const {group, onEditGroup} = this.props
