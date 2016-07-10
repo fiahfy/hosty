@@ -56,11 +56,15 @@ export default class GroupItem extends Component {
     if (editableField !== 'name') {
       const value = group.name || defaultValue
       const color = group.name ? 'inherit' : 'rgba(0, 0, 0, 0.298039)'
+      const count = group.hosts ? group.hosts.length : 0
       return (
         <div
           style={{...styles.fieldLabel, color}}
           onDoubleClick={e => this.setState({editableField: 'name'})}
-        >{value}</div>
+        >
+          {value}
+          <small style={styles.fieldSmall}>({count})</small>
+        </div>
       )
     }
 
@@ -132,6 +136,13 @@ const styles = {
     lineHeight: '48px',
     fontSize: 16,
     overflow: 'hidden',
-    textOverflow: 'ellipsis'
+    textOverflow: 'ellipsis',
+    position: 'relative',
+    paddingRight: 35
+  },
+  fieldSmall: {
+    position: 'absolute',
+    right: 0,
+    color: 'black'
   }
 }

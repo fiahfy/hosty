@@ -92,10 +92,18 @@ export default class GroupContainer extends Component {
         {this.renderGroupList()}
         <Toolbar style={styles.toolbar}>
           <ToolbarGroup firstChild={true}>
-            <RaisedButton label="Add" onClick={::this.handleAddGroup}
-              primary={true} style={styles.button} />
-            <RaisedButton label="Delete" onClick={::this.handleDeleteGroups}
-              secondary={true} style={styles.button} />
+            <RaisedButton
+              label="Add"
+              onClick={::this.handleAddGroup}
+              primary={true}
+              style={styles.button}
+            />
+            <RaisedButton
+              label="Delete"
+              onClick={::this.handleDeleteGroups}
+              secondary={true}
+              style={styles.button}
+            />
           </ToolbarGroup>
         </Toolbar>
       </div>

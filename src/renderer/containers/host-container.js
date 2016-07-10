@@ -98,10 +98,18 @@ export default class HostContainer extends Component {
         {this.renderHostList()}
         <Toolbar style={styles.toolbar}>
           <ToolbarGroup firstChild={true}>
-            <RaisedButton label="Add" onClick={::this.handleAddHost}
-              primary={true} style={styles.button} />
-            <RaisedButton label="Delete" onClick={::this.handleDeleteHosts}
-              secondary={true} style={styles.button} />
+            <RaisedButton
+              label="Add"
+              onClick={::this.handleAddHost}
+              primary={true}
+              style={styles.button}
+            />
+            <RaisedButton
+              label="Delete"
+              onClick={::this.handleDeleteHosts}
+              secondary={true}
+              style={styles.button}
+            />
           </ToolbarGroup>
         </Toolbar>
       </div>
