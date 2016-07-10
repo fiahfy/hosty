@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {Drawer} from 'material-ui'
+import {Drawer, Snackbar} from 'material-ui'
 import fs from 'fs'
 import path from 'path'
 import * as ActionCreators from '../actions'
@@ -10,7 +10,7 @@ import HostContainer from '../containers/host-container'
 import HostsManager from '../utils/hosts-manager'
 
 function mapStateToProps(state) {
-  return {}
+  return {messages: state.messages}
 }
 
 function mapDispatchToProps(dispatch) {
@@ -20,7 +20,11 @@ function mapDispatchToProps(dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class App extends Component {
   static propTypes = {
+    messages: PropTypes.arrayOf(PropTypes.object),
     actions:  PropTypes.object.isRequired
+  };
+  static defaultProps = {
+    messages: []
   };
   handleDrop(e) {
     e.preventDefault()
@@ -38,12 +42,36 @@ export default class App extends Component {
         return host
       })
       this.props.actions.createGroup({enable: true, name: params.name, hosts})
+      this.props.actions.createMessage({text: 'Imported Hosts File'})
     })
   }
   handleDragOver(e) {
     e.preventDefault()
     e.stopPropagation()
     e.dataTransfer.dropEffect = 'copy'
+  }
+  handleRequestClose() {
+    this.props.actions.clearMessages()
+  }
+  renderSnackbar() {
+    const {messages} = this.props
+
+    let open = false
+    let text = ''
+    if (messages.length) {
+      open = true
+      text = messages[0].text
+    }
+
+    return (
+      <Snackbar
+        open={open}
+        message={text}
+        autoHideDuration={4000}
+        bodyStyle={styles.snackbar}
+        onRequestClose={::this.handleRequestClose}
+      />
+    )
   }
   render() {
     const {sidebar, content} = this.props
@@ -65,6 +93,7 @@ export default class App extends Component {
         <div style={styles.content} className="content">
           {content}
         </div>
+        {this.renderSnackbar()}
       </div>
     )
   }
@@ -82,5 +111,8 @@ const styles = {
     overflow: 'auto',
     height: '100%',
     paddingLeft: 256
+  },
+  snackbar: {
+    textAlign: 'center'
   }
 }

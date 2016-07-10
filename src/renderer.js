@@ -19,21 +19,28 @@ ReactDOM.render(
 // TODO:
 HostsManager.createSymlink()
 
-ipcRenderer.on('receiveHostsFromMain', (event, {name, hosts}) => {
+ipcRenderer.on('sendGroup', (event, {group}) => {
   const actions = bindActionCreators(ActionCreators, store.dispatch)
-  hosts = hosts.map((host, i) => {
+  const hosts = group.hosts.map((host, i) => {
     host.id = i + 1
     return host
   })
-  actions.createGroup({enable: true, name, hosts})
+  actions.createGroup({enable: true, name: group.name, hosts})
+  actions.createMessage({text: 'Imported Hosts File'})
 })
 
-ipcRenderer.on('receiveGroupsFromMain', (event, {groups}) => {
+ipcRenderer.on('sendGroups', (event, {groups}) => {
   const actions = bindActionCreators(ActionCreators, store.dispatch)
   actions.initializeGroups(groups)
+  actions.createMessage({text: 'Imported Hosty File'})
 })
 
-ipcRenderer.on('sendGroupsToMain', (event, arg) => {
+ipcRenderer.on('requestGroups', (event) => {
   const groups = store.getState()['groups']
-  event.sender.send('receiveGroupsFromRenderer', {groups})
+  event.sender.send('sendGroups', {groups})
+})
+
+ipcRenderer.on('sendMessage', (event, {message}) => {
+  const actions = bindActionCreators(ActionCreators, store.dispatch)
+  actions.createMessage(message)
 })

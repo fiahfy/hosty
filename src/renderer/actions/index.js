@@ -6,6 +6,9 @@ export const CREATE_HOST = 'CREATE_HOST'
 export const UPDATE_HOST = 'UPDATE_HOST'
 export const DELETE_HOSTS = 'DELETE_HOSTS'
 
+export const CREATE_MESSAGE = 'CREATE_MESSAGE'
+export const CLEAR_MESSAGES = 'CLEAR_MESSAGES'
+
 export function initializeGroups(groups) {
   return {
     type: INITIALIZE_GROUPS,
@@ -57,5 +60,18 @@ export function deleteHosts(groupId, ids) {
     type: DELETE_HOSTS,
     groupId,
     ids
+  }
+}
+
+export function createMessage(message) {
+  return {
+    type: CREATE_MESSAGE,
+    message
+  }
+}
+
+export function clearMessages() {
+  return {
+    type: CLEAR_MESSAGES
   }
 }

@@ -2,10 +2,6 @@ import * as ActionTypes from '../actions'
 
 function groups(state = [], action) {
   switch (action.type) {
-  // case ActionTypes.READED_HOSTS:
-  //   return action.hosts
-  // case ActionTypes.WRITED_HOSTS:
-  //   return action.hosts
   case ActionTypes.INITIALIZE_GROUPS: {
     const {groups} = action
     return groups
@@ -82,6 +78,22 @@ function groups(state = [], action) {
   }
 }
 
+function messages(state = [], action) {
+  switch (action.type) {
+  case ActionTypes.CREATE_MESSAGE: {
+    const {message} = action
+    message.id = (new Date).getTime()
+    return [...state, message]
+  }
+  case ActionTypes.CLEAR_MESSAGES: {
+    return []
+  }
+  default:
+    return state
+  }
+}
+
 export default {
-  groups
+  groups,
+  messages
 }

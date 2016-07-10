@@ -42,14 +42,14 @@ export default class Window {
             label: 'Import Hosty File...',
             accelerator: 'CmdOrCtrl+I',
             click: () => {
-              dialog.showOpenDialog({filters: [{name: 'Hosty Setting File', extensions: ['hosty']}]}, pathes => {
+              dialog.showOpenDialog({filters: [{name: 'Hosty File', extensions: ['hosty']}]}, pathes => {
                 if (!pathes) {
                   return
                 }
                 const path = pathes[0]
                 const data = fs.readFileSync(path, 'utf8')
                 const groups = JSON.parse(data)
-                this.browserWindow.webContents.send('receiveGroupsFromMain', {groups});
+                this.browserWindow.webContents.send('sendGroups', {groups});
               })
             }
           },
@@ -65,7 +65,8 @@ export default class Window {
                   const params = path.parse(selectedPath)
                   const data = fs.readFileSync(selectedPath, 'utf8')
                   const hosts = HostsManager.parseHosts(data)
-                  this.browserWindow.webContents.send('receiveHostsFromMain', {name: params.name, hosts});
+                  const group = {name: params.name, hosts}
+                  this.browserWindow.webContents.send('sendGroup', {group});
                 })
               })
             }
@@ -77,18 +78,21 @@ export default class Window {
             label: 'Export Hosty File...',
             accelerator: 'CmdOrCtrl+E',
             click: () => {
-              dialog.showSaveDialog({filters: [{name: 'Hosty Setting File', extensions: ['hosty']}]}, selectedPath => {
+              dialog.showSaveDialog({filters: [{name: 'Hosty File', extensions: ['hosty']}]}, selectedPath => {
                 if (!selectedPath) {
                   return
                 }
-                ipcMain.once('receiveGroupsFromRenderer', (event, {groups}) => {
+                ipcMain.once('sendGroups', (event, {groups}) => {
                   const params = path.parse(selectedPath)
                   if (params.ext !== '.hosty') {
                     selectedPath += '.hosty'
                   }
                   fs.writeFileSync(selectedPath, JSON.stringify(groups) + '\n', 'utf8')
+                  this.browserWindow.webContents.send('sendMessage', {
+                    message: {text: 'Exported Hosty File'}
+                  })
                 })
-                this.browserWindow.webContents.send('sendGroupsToMain');
+                this.browserWindow.webContents.send('requestGroups');
               })
             }
           },
@@ -100,10 +104,13 @@ export default class Window {
                 if (!path) {
                   return
                 }
-                ipcMain.once('receiveGroupsFromRenderer', (event, {groups}) => {
+                ipcMain.once('sendGroups', (event, {groups}) => {
                   fs.writeFileSync(path, HostsManager.buildGroups(groups) + '\n', 'utf8')
+                  this.browserWindow.webContents.send('sendMessage', {
+                    message: {text: 'Exported Hosts File'}
+                  })
                 })
-                this.browserWindow.webContents.send('sendGroupsToMain');
+                this.browserWindow.webContents.send('requestGroups');
               })
             }
           }
