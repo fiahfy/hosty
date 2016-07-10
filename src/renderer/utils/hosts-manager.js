@@ -12,7 +12,7 @@ const END_SECTION   = '## hosty end ##'
 
 const DEBUG_HOSTS = process.env.NODE_ENV === 'development'
 const HOSTS_OSX = '/etc/hosts'
-const HOSTS_WINDOWS = 'C:¥Windows¥System32¥drivers¥etc¥hosts'
+const HOSTS_WINDOWS = 'C:¥¥Windows¥¥System32¥¥drivers¥¥etc¥¥hosts'
 const HOSTS_DUMMY = path.join(process.cwd(), 'dummyHosts')
 const HOSTS = DEBUG_HOSTS ? HOSTS_DUMMY : process.platform === 'win32' ? HOSTS_WINDOWS : HOSTS_OSX
 const USER_HOSTS = path.join(app.getPath('userData'), 'hosts')
@@ -37,24 +37,27 @@ const HostsFile = new (class  {
 
 export default class HostsManager {
   createSymlink() {
+    const options = {admin: !DEBUG_HOSTS}
     try {
       const stats = fs.lstatSync(HOSTS)
       if (stats.isSymbolicLink()) {
         return
       }
     } catch (e) {
-      throw new Error(`${HOSTS} is nothing`)
+      if (runas('touch', [HOSTS], options)) {
+        throw new Error(`Failed to touch ${HOSTS}`)
+      }
     }
-    if (runas('/bin/cp', ['-f', HOSTS, USER_HOSTS], {admin: !DEBUG_HOSTS})) {
+    if (runas('cp', ['-f', HOSTS, USER_HOSTS], options)) {
       throw new Error(`Failed to copy ${HOSTS} to ${USER_HOSTS}`)
     }
-    if (runas('/bin/chmod', ['666', USER_HOSTS], {admin: !DEBUG_HOSTS})) {
+    if (runas('chmod', ['666', USER_HOSTS], options)) {
       throw new Error(`Failed to chmod ${USER_HOSTS}`)
     }
-    if (runas('/bin/rm', [HOSTS], {admin: !DEBUG_HOSTS})) {
+    if (runas('rm', [HOSTS], options)) {
       throw new Error(`Failed to delete ${HOSTS}`)
     }
-    if (runas('/bin/ln', ['-s', USER_HOSTS, HOSTS], {admin: !DEBUG_HOSTS})) {
+    if (runas('ln', ['-s', USER_HOSTS, HOSTS], options)) {
       throw new Error(`Failed to symlink ${USER_HOSTS} to ${HOSTS}`)
     }
   }
