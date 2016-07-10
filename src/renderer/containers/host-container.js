@@ -36,9 +36,33 @@ export default class HostContainer extends Component {
     this.props.actions.updateHost(Number(this.props.location.query.id), id, host)
   }
   handleDeleteHosts() {
-    const ids = this.refs.hostList.getSelectedHosts().map(host => host.id)
+    const ids = this.refs.hostList.getSortedHosts().map(host => host.id)
+    const selectedIds = this.refs.hostList.getSelectedHosts().map(host => host.id)
     this.refs.hostList.unselectAll()
-    this.props.actions.deleteHosts(Number(this.props.location.query.id), ids)
+    this.props.actions.deleteHosts(Number(this.props.location.query.id), selectedIds)
+    window.setTimeout(() => {
+      if (selectedIds.length !== 1) {
+        return
+      }
+      const currentId = selectedIds[0]
+      let [previous, next, isFound] = [0, 0, false]
+      ids.forEach(id => {
+        if (isFound && !next) {
+          next = id
+        }
+        if (id === currentId) {
+          isFound = true
+        }
+        if (!isFound) {
+          previous = id
+        }
+      })
+      const targetId = next ? next : previous
+      if (!targetId) {
+        return
+      }
+      this.refs.hostList.select([targetId])
+    }, 0)
   }
   renderHostList() {
     const {groups, location} = this.props

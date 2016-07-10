@@ -38,20 +38,40 @@ export default class GroupList extends Component {
     return isUpdateNeeded(this, nextProps, nextState)
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.groupId === nextProps.groupId && this.props.groups.length) {
+    this.setState({selectedIds: [nextProps.groupId]})
+
+    if (this.props.groups.length) {
       return
     }
 
-    this.setState({selectedIds: [nextProps.groupId]})
     this.sort(nextProps.groups, this.state.sortOptions)
   }
   getSelectedGroups() {
-    return this.props.groups.filter(group => this.state.selectedIds.includes(group.id))
+    return this.getSortedGroups().filter(group => this.state.selectedIds.includes(group.id))
+  }
+  getSortedGroups() {
+    const {sortedMap} = this.state
+
+    return this.props.groups.concat().sort((a, b) => {
+      if (!sortedMap.has(a.id) && !sortedMap.has(b.id)) {
+        return (a.id > b.id) ? 1 : -1
+      }
+      if (!sortedMap.has(a.id)) {
+        return 1
+      }
+      if (!sortedMap.has(b.id)) {
+        return -1
+      }
+      return sortedMap.get(a.id) > sortedMap.get(b.id) ? 1 : -1
+    })
   }
   focusLastGroup() {
-    const groups = this.sortedGroups()
+    const groups = this.getSortedGroups()
     const group = groups[groups.length-1]
     this.refs[group.id].focus()
+  }
+  select(ids) {
+    this.setState({selectedIds: ids})
   }
   unselectAll() {
     this.setState({selectedIds: []})
@@ -93,25 +113,12 @@ export default class GroupList extends Component {
     this.sort(this.props.groups, {key: newKey, order: newOrder})
   }
   handleRowSelection(selectedRows) {
-    const selectedGroups = this.sortedGroups()
+    const selectedGroups = this.getSortedGroups()
         .filter((group, i) => selectedRows.includes(i))
     const selectedIds = selectedGroups.map(group => group.id)
 
     this.setState({selectedIds})
     this.props.onSelectGroups(selectedGroups)
-  }
-  sortedGroups() {
-    const {sortedMap} = this.state
-
-    return this.props.groups.concat().sort((a, b) => {
-      if (!sortedMap.has(a.id)) {
-        return 1
-      }
-      if (!sortedMap.has(b.id)) {
-        return -1
-      }
-      return sortedMap.get(a.id) > sortedMap.get(b.id) ? 1 : -1
-    })
   }
   renderSortArrow(targetKey) {
     const {key, order} = this.state.sortOptions
@@ -125,7 +132,7 @@ export default class GroupList extends Component {
       : <SvgIcons.NavigationArrowDropUp style={styles.headerColumnIcon} />
   }
   renderGroupNodes() {
-    return this.sortedGroups().map(group => {
+    return this.getSortedGroups().map(group => {
       return (
         <GroupItem
           ref={group.id}

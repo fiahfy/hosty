@@ -35,16 +35,42 @@ export default class GroupContainer extends Component {
     this.props.actions.createGroup({enable: true})
     window.setTimeout(() => {
       this.refs.groupList.focusLastGroup()
+      const groups = this.refs.groupList.getSortedGroups()
+      const group = groups[groups.length - 1]
+      this.context.router.push({query: {id: group.id}})
     }, 0)
   }
   handleEditGroup(id, group) {
     this.props.actions.updateGroup(id, group)
   }
   handleDeleteGroups() {
-    const ids = this.refs.groupList.getSelectedGroups().map(group => group.id)
-    this.refs.groupList.unselectAll()
-    this.props.actions.deleteGroups(ids)
+    const ids = this.refs.groupList.getSortedGroups().map(group => group.id)
+    const selectedIds = this.refs.groupList.getSelectedGroups().map(group => group.id)
     this.context.router.push({query: {id: 0}})
+    this.props.actions.deleteGroups(selectedIds)
+    window.setTimeout(() => {
+      if (selectedIds.length !== 1) {
+        return
+      }
+      const currentId = selectedIds[0]
+      let [previous, next, isFound] = [0, 0, false]
+      ids.forEach(id => {
+        if (isFound && !next) {
+          next = id
+        }
+        if (id === currentId) {
+          isFound = true
+        }
+        if (!isFound) {
+          previous = id
+        }
+      })
+      const targetId = next ? next : previous
+      if (!targetId) {
+        return
+      }
+      this.context.router.push({query: {id: targetId}})
+    }, 0)
   }
   renderGroupList() {
     const {groups, location} = this.props

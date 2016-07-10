@@ -48,12 +48,31 @@ export default class HostList extends Component {
     this.sort(nextProps.hosts, this.state.sortOptions)
   }
   getSelectedHosts() {
-    return this.props.hosts.filter(host => this.state.selectedIds.includes(host.id))
+    return this.getSortedHosts().filter(host => this.state.selectedIds.includes(host.id))
+  }
+  getSortedHosts() {
+    const {sortedMap} = this.state
+
+    return this.props.hosts.concat().sort((a, b) => {
+      if (!sortedMap.has(a.id) && !sortedMap.has(b.id)) {
+        return (a.id > b.id) ? 1 : -1
+      }
+      if (!sortedMap.has(a.id)) {
+        return 1
+      }
+      if (!sortedMap.has(b.id)) {
+        return -1
+      }
+      return sortedMap.get(a.id) > sortedMap.get(b.id) ? 1 : -1
+    })
   }
   focusLastHost() {
-    const hosts = this.sortedHosts()
+    const hosts = this.getSortedHosts()
     const host = hosts[hosts.length-1]
     this.refs[host.id].focus()
+  }
+  select(ids) {
+    this.setState({selectedIds: ids})
   }
   unselectAll() {
     this.setState({selectedIds: []})
@@ -95,25 +114,12 @@ export default class HostList extends Component {
     this.sort(this.props.hosts, {key: newKey, order: newOrder})
   }
   handleRowSelection(selectedRows) {
-    const selectedHosts = this.sortedHosts()
+    const selectedHosts = this.getSortedHosts()
         .filter((host, i) => selectedRows.includes(i))
     const selectedIds = selectedHosts.map(host => host.id)
 
     this.setState({selectedIds})
     this.props.onSelectHosts(selectedHosts)
-  }
-  sortedHosts() {
-    const {sortedMap} = this.state
-
-    return this.props.hosts.concat().sort((a, b) => {
-      if (!sortedMap.has(a.id)) {
-        return 1
-      }
-      if (!sortedMap.has(b.id)) {
-        return -1
-      }
-      return sortedMap.get(a.id) > sortedMap.get(b.id) ? 1 : -1
-    })
   }
   renderSortArrow(targetKey) {
     const {key, order} = this.state.sortOptions
@@ -127,7 +133,7 @@ export default class HostList extends Component {
       : <SvgIcons.NavigationArrowDropUp style={styles.headerColumnIcon} />
   }
   renderHostNodes() {
-    return this.sortedHosts().map(host => {
+    return this.getSortedHosts().map(host => {
       return (
         <HostItem
           ref={host.id}
