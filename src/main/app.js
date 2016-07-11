@@ -31,7 +31,9 @@ export default class Application {
     }
   }
   saveWindowSettings(settings) {
-    fs.writeFileSync(WINDOW_INIT_FILE, JSON.stringify(settings))
+    try {
+      fs.writeFileSync(WINDOW_INIT_FILE, JSON.stringify(settings))
+    } catch (e) {}
   }
   handleEvents() {
     app.on('ready', () => {

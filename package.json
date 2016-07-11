@@ -30,8 +30,8 @@
     "build:renderer": "webpack --config webpack/renderer.babel.js",
     "build:main": "webpack --config webpack/main.babel.js",
     "package": "npm run package:mac",
-    "package:mac": "DEBUG=0 npm run build; electron-packager . --overwrite --asar --platform=darwin --arch=x64 --icon=public/assets/img/hosty.icns",
-    "package:win": "DEBUG=0 npm run build; electron-packager . --overwrite --asar --platform=win32 --arch=x64 --icon=public/assets/img/hosty.ico"
+    "package:mac": "DEBUG=0 npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --platform=darwin --arch=x64 --icon=public/assets/img/hosty.icns",
+    "package:win": "DEBUG=0 npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --platform=win32 --arch=x64 --icon=public/assets/img/hosty.ico"
   },
   "dependencies": {
     "babel-loader": "6.2.4",
