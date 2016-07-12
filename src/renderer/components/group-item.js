@@ -56,6 +56,7 @@ export default class GroupItem extends Component {
     if (editableField !== 'name') {
       const value = group.name || defaultValue
       const color = group.name ? 'inherit' : 'rgba(0, 0, 0, 0.298039)'
+      // const count = !group.enable ? 0 : group.hosts ? group.hosts.filter(host => host.enable).length : 0
       const count = group.hosts ? group.hosts.length : 0
       return (
         <div
@@ -87,7 +88,9 @@ export default class GroupItem extends Component {
 
     let errors = []
 
-    let icon = <SvgIcons.DeviceSignalCellularConnectedNoInternet4Bar color={Styles.colors.yellow700} />
+    let icon = <SvgIcons.DeviceSignalCellularConnectedNoInternet4Bar
+                 color={Styles.colors.yellow700}
+               />
     if (!errors.length) {
       icon = group.enable
         ? <SvgIcons.DeviceSignalCellular4Bar color={Styles.colors.green600} />
@@ -143,6 +146,6 @@ const styles = {
   fieldSmall: {
     position: 'absolute',
     right: 0,
-    color: 'black'
+    color: 'gray'
   }
 }

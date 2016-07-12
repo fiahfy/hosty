@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {RaisedButton, Toolbar, ToolbarGroup} from 'material-ui'
 import * as ActionCreators from '../actions'
 import GroupList from '../components/group-list'
 
@@ -31,6 +30,9 @@ export default class GroupContainer extends Component {
     const id = group ? group.id : 0
     this.context.router.push({query: {id}})
   }
+  handleEditGroup(id, group) {
+    this.props.actions.updateGroup(id, group)
+  }
   handleAddGroup() {
     this.props.actions.createGroup({enable: true})
     window.setTimeout(() => {
@@ -39,9 +41,6 @@ export default class GroupContainer extends Component {
       const group = groups[groups.length - 1]
       this.context.router.push({query: {id: group.id}})
     }, 0)
-  }
-  handleEditGroup(id, group) {
-    this.props.actions.updateGroup(id, group)
   }
   handleDeleteGroups() {
     const ids = this.refs.groupList.getSortedGroups().map(group => group.id)
@@ -83,6 +82,8 @@ export default class GroupContainer extends Component {
         groups={groups}
         onEditGroup={::this.handleEditGroup}
         onSelectGroups={::this.handleSelectGroups}
+        onAddGroup={::this.handleAddGroup}
+        onDeleteGroups={::this.handleDeleteGroups}
       />
     )
   }
@@ -90,36 +91,7 @@ export default class GroupContainer extends Component {
     return (
       <div>
         {this.renderGroupList()}
-        <Toolbar style={styles.toolbar}>
-          <ToolbarGroup firstChild={true}>
-            <RaisedButton
-              label="Add"
-              onClick={::this.handleAddGroup}
-              primary={true}
-              style={styles.button}
-            />
-            <RaisedButton
-              label="Delete"
-              onClick={::this.handleDeleteGroups}
-              secondary={true}
-              style={styles.button}
-            />
-          </ToolbarGroup>
-        </Toolbar>
       </div>
     )
-  }
-}
-
-const styles = {
-  button: {
-    marginLeft: 20,
-    marginRight: 20
-  },
-  toolbar: {
-    position: 'fixed',
-    bottom: 0,
-    left: 0,
-    right: 0
   }
 }

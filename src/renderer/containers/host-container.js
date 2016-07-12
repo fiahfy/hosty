@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {RaisedButton, Toolbar, ToolbarGroup} from 'material-ui'
 import * as ActionCreators from '../actions'
 import HostList from '../components/host-list'
 
@@ -26,14 +25,14 @@ export default class HostContainer extends Component {
   static defaultProps = {
     groups: []
   };
+  handleEditHost(id, host) {
+    this.props.actions.updateHost(Number(this.props.location.query.id), id, host)
+  }
   handleAddHost() {
     this.props.actions.createHost(Number(this.props.location.query.id), {enable: true})
     window.setTimeout(() => {
       this.refs.hostList.focusLastHost()
     }, 0)
-  }
-  handleEditHost(id, host) {
-    this.props.actions.updateHost(Number(this.props.location.query.id), id, host)
   }
   handleDeleteHosts() {
     const ids = this.refs.hostList.getSortedHosts().map(host => host.id)
@@ -79,6 +78,8 @@ export default class HostContainer extends Component {
         groupId={groupId}
         hosts={hosts}
         onEditHost={::this.handleEditHost}
+        onAddHost={::this.handleAddHost}
+        onDeleteHosts={::this.handleDeleteHosts}
       />
     )
   }
@@ -96,38 +97,12 @@ export default class HostContainer extends Component {
     return (
       <div>
         {this.renderHostList()}
-        <Toolbar style={styles.toolbar}>
-          <ToolbarGroup firstChild={true}>
-            <RaisedButton
-              label="Add"
-              onClick={::this.handleAddHost}
-              primary={true}
-              style={styles.button}
-            />
-            <RaisedButton
-              label="Delete"
-              onClick={::this.handleDeleteHosts}
-              secondary={true}
-              style={styles.button}
-            />
-          </ToolbarGroup>
-        </Toolbar>
       </div>
     )
   }
 }
 
 const styles = {
-  button: {
-    marginLeft: 20,
-    marginRight: 20
-  },
-  toolbar: {
-    position: 'fixed',
-    bottom: 0,
-    left: 256,
-    right: 0
-  },
   messageContainer: {
     width: '100%',
     height: '100%',

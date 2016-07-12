@@ -32,15 +32,16 @@ function groups(state = [], action) {
       if (currentGroup.id !== groupId) {
         return currentGroup
       }
-      if (!currentGroup.hosts) {
-        currentGroup.hosts = []
+      const newGroup = Object.assign({}, currentGroup)
+      if (!newGroup.hosts) {
+        newGroup.hosts = []
       }
-      const maxId = currentGroup.hosts.reduce((previous, currentHost) => {
+      const maxId = newGroup.hosts.reduce((previous, currentHost) => {
         return currentHost.id > previous ? currentHost.id : previous
       }, 0)
       host.id = maxId + 1
-      currentGroup.hosts = [...currentGroup.hosts, host]
-      return currentGroup
+      newGroup.hosts = [...newGroup.hosts, host]
+      return newGroup
     })
   }
   case ActionTypes.UPDATE_HOST: {
@@ -49,13 +50,14 @@ function groups(state = [], action) {
       if (currentGroup.id !== groupId) {
         return currentGroup
       }
-      if (!currentGroup.hosts) {
-        currentGroup.hosts = []
+      const newGroup = Object.assign({}, currentGroup)
+      if (!newGroup.hosts) {
+        newGroup.hosts = []
       }
-      currentGroup.hosts = currentGroup.hosts.map(currentHost => {
+      newGroup.hosts = newGroup.hosts.map(currentHost => {
         return currentHost.id !== id ? currentHost : host
       })
-      return currentGroup
+      return newGroup
     })
   }
   case ActionTypes.DELETE_HOSTS: {
@@ -64,13 +66,14 @@ function groups(state = [], action) {
       if (currentGroup.id !== groupId) {
         return currentGroup
       }
-      if (!currentGroup.hosts) {
-        currentGroup.hosts = []
+      const newGroup = Object.assign({}, currentGroup)
+      if (!newGroup.hosts) {
+        newGroup.hosts = []
       }
-      currentGroup.hosts = currentGroup.hosts.filter(currentHost => {
+      newGroup.hosts = newGroup.hosts.filter(currentHost => {
         return !ids.includes(currentHost.id)
       })
-      return currentGroup
+      return newGroup
     })
   }
   default:

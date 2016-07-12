@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import {
-  TextField, IconButton,
-  Table, TableHeader, TableBody,
+  TextField, IconButton, FlatButton,
+  Table, TableHeader, TableBody, TableFooter,
   TableRow, TableHeaderColumn, TableRowColumn
 } from 'material-ui'
 import * as SvgIcons from 'material-ui/svg-icons'
@@ -156,7 +156,7 @@ export default class GroupList extends Component {
           adjustForCheckbox={false}
         >
           <TableRow onCellClick={::this.handleClickHeader}>
-            <TableHeaderColumn style={styles.iconColumn}>
+            <TableHeaderColumn style={styles.headerIconColumn}>
               Status
             </TableHeaderColumn>
             <TableHeaderColumn style={styles.headerSortableColumn}>
@@ -172,13 +172,33 @@ export default class GroupList extends Component {
         >
           {this.renderGroupNodes()}
         </TableBody>
+        <TableFooter
+          adjustForCheckbox={true}
+        >
+          <TableRow>
+            <TableRowColumn colSpan="2">
+              <FlatButton
+                label="Add"
+                onClick={this.props.onAddGroup}
+                primary={true}
+                style={styles.button}
+              />
+              <FlatButton
+                label="Delete"
+                onClick={this.props.onDeleteGroups}
+                secondary={true}
+                style={styles.button}
+              />
+            </TableRowColumn>
+          </TableRow>
+        </TableFooter>
       </Table>
     )
   }
 }
 
 const styles = {
-  iconColumn: {
+  headerIconColumn: {
     width: 48,
     textAlign: 'center',
     paddingRight: 0
@@ -192,5 +212,9 @@ const styles = {
   },
   headerColumnIcon: {
     verticalAlign: 'middle'
+  },
+  button: {
+    marginLeft: 20,
+    marginRight: 20
   }
 }
