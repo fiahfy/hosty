@@ -73,7 +73,7 @@ export default class GroupList extends Component {
   select(ids) {
     this.setState({selectedIds: ids})
   }
-  unselectAll() {
+  deselectAll() {
     this.setState({selectedIds: []})
   }
   sort(groups, options) {

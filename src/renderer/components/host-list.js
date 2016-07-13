@@ -73,7 +73,7 @@ export default class HostList extends Component {
   select(ids) {
     this.setState({selectedIds: ids})
   }
-  unselectAll() {
+  deselectAll() {
     this.setState({selectedIds: []})
   }
   sort(hosts, options) {

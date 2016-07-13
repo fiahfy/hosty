@@ -37,7 +37,7 @@ export default class HostContainer extends Component {
   handleDeleteHosts() {
     const ids = this.refs.hostList.getSortedHosts().map(host => host.id)
     const selectedIds = this.refs.hostList.getSelectedHosts().map(host => host.id)
-    this.refs.hostList.unselectAll()
+    this.refs.hostList.deselectAll()
     this.props.actions.deleteHosts(Number(this.props.location.query.id), selectedIds)
     window.setTimeout(() => {
       if (selectedIds.length !== 1) {
