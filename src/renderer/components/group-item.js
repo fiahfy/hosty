@@ -3,9 +3,9 @@ import {
   TextField, IconButton,
   TableRow, TableRowColumn
 } from 'material-ui'
-import * as SvgIcons from 'material-ui/svg-icons'
-import * as Styles from 'material-ui/styles'
 import validator from 'validator'
+import HostStatusIcon from './host-status-icon'
+import EditableTextField from './editable-text-field'
 import isUpdateNeeded from '../utils/is-update-needed'
 
 export default class GroupItem extends Component {
@@ -19,106 +19,64 @@ export default class GroupItem extends Component {
     selected:    false,
     onEditGroup: () => {}
   };
-  state = {
-    editableField: null
-  };
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState)
   }
   focus() {
-    this.setState({editableField: 'name'})
+    this.refs.nameTextField.focus()
   }
-  handleToggleGroupStatus(e) {
+  handleClickIconButton(e) {
     e.stopPropagation()
     const {group, onEditGroup} = this.props
     const newGroup = Object.assign({}, group)
     newGroup.enable = !newGroup.enable
     onEditGroup(newGroup)
   }
-  handleEditGroup(e) {
+  handleBlur(e) {
     const {group, onEditGroup} = this.props
     const {name, value} = e.target
     const newGroup = Object.assign({}, group)
     newGroup[name] = value
     onEditGroup(newGroup)
-    this.setState({editableField: null})
   }
-  handleInputGroup(e) {
+  handleKeyDown(e) {
     if (e.keyCode === 13) {
       e.target.blur()
     }
   }
-  renderNameField() {
-    const {group} = this.props
-    const {editableField} = this.state
-    const defaultValue = 'Group name'
-
-    if (editableField !== 'name') {
-      const value = group.name || defaultValue
-      const color = group.name ? 'inherit' : 'rgba(0, 0, 0, 0.298039)'
-      // const count = !group.enable ? 0 : group.hosts ? group.hosts.filter(host => host.enable).length : 0
-      const count = group.hosts ? group.hosts.length : 0
-      return (
-        <div
-          style={{...styles.fieldLabel, color}}
-          onDoubleClick={e => this.setState({editableField: 'name'})}
-        >
-          {value}
-          <small style={styles.fieldSmall}>({count})</small>
-        </div>
-      )
-    }
-
-    return (
-      <TextField
-        autoFocus={true}
-        name="name"
-        hintText={defaultValue}
-        underlineShow={true}
-        defaultValue={group.name}
-        onClick={e => e.stopPropagation()}
-        onBlur={::this.handleEditGroup}
-        onKeyDown={::this.handleInputGroup}
-        fullWidth={true}
-      />
-    )
-  }
-  renderIcon() {
-    const {group} = this.props
-
-    let errors = []
-
-    let icon = <SvgIcons.DeviceSignalCellularConnectedNoInternet4Bar
-                 color={Styles.colors.yellow700}
-               />
-    if (!errors.length) {
-      icon = group.enable
-        ? <SvgIcons.DeviceSignalCellular4Bar color={Styles.colors.green600} />
-        : <SvgIcons.DeviceSignalCellularOff color={Styles.colors.grey400} />
-    }
-
-    return (
-      <IconButton onClick={::this.handleToggleGroupStatus}>
-        {icon}
-      </IconButton>
-    )
-  }
   render() {
     const {group, selected, ...others} = this.props
+
+    let errors = []
 
     return (
       <TableRow
         key={group.id}
-        selected={selected}
         style={styles.row}
+        selected={selected}
         {...others}
       >
         {others.children}
         <TableRowColumn style={styles.iconColumn}>
-          {this.renderIcon()}
+          <IconButton onClick={::this.handleClickIconButton}>
+            <HostStatusIcon
+              invalid={!!errors.length}
+              enable={group.enable}
+            />
+          </IconButton>
         </TableRowColumn>
         <TableRowColumn>
-          {this.renderNameField()}
+          <EditableTextField
+            name="name"
+            ref="nameTextField"
+            hintText="Group name"
+            defaultValue={group.name}
+            underlineShow={true}
+            fullWidth={true}
+            autoFocus={true}
+            onBlur={::this.handleBlur}
+            onKeyDown={::this.handleKeyDown}
+          />
         </TableRowColumn>
       </TableRow>
     )
@@ -133,19 +91,5 @@ const styles = {
     width: 48,
     textAlign: 'center',
     paddingRight: 0
-  },
-  fieldLabel: {
-    height: '100%',
-    lineHeight: '48px',
-    fontSize: 16,
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    position: 'relative',
-    paddingRight: 35
-  },
-  fieldSmall: {
-    position: 'absolute',
-    right: 0,
-    color: 'gray'
   }
 }
