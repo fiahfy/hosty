@@ -4,9 +4,9 @@ import {
   Table, TableHeader, TableBody, TableFooter,
   TableRow, TableHeaderColumn, TableRowColumn
 } from 'material-ui'
-import * as SvgIcons from 'material-ui/svg-icons'
 import validator from 'validator'
 import HostItem from './host-item'
+import SortOrderIcon from './sort-order-icon'
 import isUpdateNeeded from '../utils/is-update-needed'
 
 const SORT_KEY_HOST = 'host'
@@ -120,29 +120,82 @@ export default class HostList extends Component {
     this.setState({selectedIds})
     this.props.onSelectHosts(selectedHosts)
   }
-  renderSortArrow(targetKey) {
+  renderHeader() {
     const {key, order} = this.state.sortOptions
 
-    if (targetKey !== key) {
-      return null
-    }
-
-    return order === SORT_ORDER_ASC
-      ? <SvgIcons.NavigationArrowDropDown style={styles.headerColumnIcon} />
-      : <SvgIcons.NavigationArrowDropUp style={styles.headerColumnIcon} />
+    return (
+      <TableHeader
+        displaySelectAll={false}
+        adjustForCheckbox={false}
+      >
+        <TableRow onCellClick={::this.handleClickHeader}>
+          <TableHeaderColumn style={styles.headerIconColumn}>
+            Status
+          </TableHeaderColumn>
+          <TableHeaderColumn style={styles.headerSortableColumn}>
+            <div style={styles.headerColumnText}>Host</div>
+            <SortOrderIcon
+              style={styles.headerColumnIcon}
+              hidden={key !== SORT_KEY_HOST}
+              asc={order === SORT_ORDER_ASC}
+            />
+          </TableHeaderColumn>
+          <TableHeaderColumn style={styles.headerSortableColumn}>
+            <div style={styles.headerColumnText}>IP</div>
+            <SortOrderIcon
+              style={styles.headerColumnIcon}
+              hidden={key !== SORT_KEY_IP}
+              asc={order === SORT_ORDER_ASC}
+            />
+          </TableHeaderColumn>
+        </TableRow>
+      </TableHeader>
+    )
   }
-  renderHostNodes() {
-    return this.getSortedHosts().map(host => {
-      return (
-        <HostItem
-          ref={host.id}
-          key={host.id}
-          host={host}
-          selected={this.state.selectedIds.includes(host.id)}
-          onEditHost={::this.handleEditHost}
-        />
-      )
-    })
+  renderBody() {
+    return (
+      <TableBody
+        showRowHover={true}
+        deselectOnClickaway={false}
+        displayRowCheckbox={false}
+      >
+        {this.getSortedHosts().map(host => {
+          return (
+            <HostItem
+              ref={host.id}
+              key={host.id}
+              host={host}
+              selected={this.state.selectedIds.includes(host.id)}
+              onEditHost={::this.handleEditHost}
+            />
+          )
+        })}
+      </TableBody>
+    )
+  }
+  renderFooter() {
+    return (
+      <TableFooter
+        adjustForCheckbox={true}
+      >
+        <TableRow>
+          <TableRowColumn colSpan="3">
+            <FlatButton
+              label="Add"
+              onClick={this.props.onAddHost}
+              primary={true}
+              style={styles.button}
+            />
+            <FlatButton
+              label="Delete"
+              onClick={this.props.onDeleteHosts}
+              secondary={true}
+              style={styles.button}
+            />
+          </TableRowColumn>
+        </TableRow>
+      </TableFooter>
+    )
   }
   render() {
     return (
@@ -151,51 +204,9 @@ export default class HostList extends Component {
         allRowsSelected={false}
         onRowSelection={::this.handleRowSelection}
       >
-        <TableHeader
-          displaySelectAll={false}
-          adjustForCheckbox={false}
-        >
-          <TableRow onCellClick={::this.handleClickHeader}>
-            <TableHeaderColumn style={styles.headerIconColumn}>
-              Status
-            </TableHeaderColumn>
-            <TableHeaderColumn style={styles.headerSortableColumn}>
-              <div style={styles.headerColumnText}>Host</div>
-              {this.renderSortArrow(SORT_KEY_HOST)}
-            </TableHeaderColumn>
-            <TableHeaderColumn style={styles.headerSortableColumn}>
-              <div style={styles.headerColumnText}>IP</div>
-              {this.renderSortArrow(SORT_KEY_IP)}
-            </TableHeaderColumn>
-          </TableRow>
-        </TableHeader>
-        <TableBody
-          showRowHover={true}
-          deselectOnClickaway={false}
-          displayRowCheckbox={false}
-        >
-          {this.renderHostNodes()}
-        </TableBody>
-        <TableFooter
-          adjustForCheckbox={true}
-        >
-          <TableRow>
-            <TableRowColumn colSpan="3">
-              <FlatButton
-                label="Add"
-                onClick={this.props.onAddHost}
-                primary={true}
-                style={styles.button}
-              />
-              <FlatButton
-                label="Delete"
-                onClick={this.props.onDeleteHosts}
-                secondary={true}
-                style={styles.button}
-              />
-            </TableRowColumn>
-          </TableRow>
-        </TableFooter>
+        {this.renderHeader()}
+        {this.renderBody()}
+        {this.renderFooter()}
       </Table>
     )
   }

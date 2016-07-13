@@ -4,9 +4,9 @@ import {
   Table, TableHeader, TableBody, TableFooter,
   TableRow, TableHeaderColumn, TableRowColumn
 } from 'material-ui'
-import * as SvgIcons from 'material-ui/svg-icons'
 import validator from 'validator'
 import GroupItem from './group-item'
+import SortOrderIcon from './sort-order-icon'
 import isUpdateNeeded from '../utils/is-update-needed'
 
 const SORT_KEY_NAME = 'name'
@@ -120,29 +120,74 @@ export default class GroupList extends Component {
     this.setState({selectedIds})
     this.props.onSelectGroups(selectedGroups)
   }
-  renderSortArrow(targetKey) {
+  renderHeader() {
     const {key, order} = this.state.sortOptions
 
-    if (targetKey !== key) {
-      return null
-    }
-
-    return order === SORT_ORDER_ASC
-      ? <SvgIcons.NavigationArrowDropDown style={styles.headerColumnIcon} />
-      : <SvgIcons.NavigationArrowDropUp style={styles.headerColumnIcon} />
+    return (
+      <TableHeader
+        displaySelectAll={false}
+        adjustForCheckbox={false}
+      >
+        <TableRow onCellClick={::this.handleClickHeader}>
+          <TableHeaderColumn style={styles.headerIconColumn}>
+            Status
+          </TableHeaderColumn>
+          <TableHeaderColumn style={styles.headerSortableColumn}>
+            <div style={styles.headerColumnText}>Group</div>
+            <SortOrderIcon
+              style={styles.headerColumnIcon}
+              hidden={key !== SORT_KEY_NAME}
+              asc={order === SORT_ORDER_ASC}
+            />
+          </TableHeaderColumn>
+        </TableRow>
+      </TableHeader>
+    )
   }
-  renderGroupNodes() {
-    return this.getSortedGroups().map(group => {
-      return (
-        <GroupItem
-          ref={group.id}
-          key={group.id}
-          group={group}
-          selected={this.state.selectedIds.includes(group.id)}
-          onEditGroup={::this.handleEditGroup}
-        />
-      )
-    })
+  renderBody() {
+    return (
+      <TableBody
+        showRowHover={true}
+        deselectOnClickaway={false}
+        displayRowCheckbox={false}
+      >
+        {this.getSortedGroups().map(group => {
+          return (
+            <GroupItem
+              ref={group.id}
+              key={group.id}
+              group={group}
+              selected={this.state.selectedIds.includes(group.id)}
+              onEditGroup={::this.handleEditGroup}
+            />
+          )
+        })}
+      </TableBody>
+    )
+  }
+  renderFooter() {
+    return (
+      <TableFooter
+        adjustForCheckbox={true}
+      >
+        <TableRow>
+          <TableRowColumn colSpan="2">
+            <FlatButton
+              label="Add"
+              onClick={this.props.onAddGroup}
+              primary={true}
+              style={styles.button}
+            />
+            <FlatButton
+              label="Delete"
+              onClick={this.props.onDeleteGroups}
+              secondary={true}
+              style={styles.button}
+            />
+          </TableRowColumn>
+        </TableRow>
+      </TableFooter>
+    )
   }
   render() {
     return (
@@ -151,47 +196,9 @@ export default class GroupList extends Component {
         allRowsSelected={false}
         onRowSelection={::this.handleRowSelection}
       >
-        <TableHeader
-          displaySelectAll={false}
-          adjustForCheckbox={false}
-        >
-          <TableRow onCellClick={::this.handleClickHeader}>
-            <TableHeaderColumn style={styles.headerIconColumn}>
-              Status
-            </TableHeaderColumn>
-            <TableHeaderColumn style={styles.headerSortableColumn}>
-              <div style={styles.headerColumnText}>Group</div>
-              {this.renderSortArrow(SORT_KEY_NAME)}
-            </TableHeaderColumn>
-          </TableRow>
-        </TableHeader>
-        <TableBody
-          showRowHover={true}
-          deselectOnClickaway={false}
-          displayRowCheckbox={false}
-        >
-          {this.renderGroupNodes()}
-        </TableBody>
-        <TableFooter
-          adjustForCheckbox={true}
-        >
-          <TableRow>
-            <TableRowColumn colSpan="2">
-              <FlatButton
-                label="Add"
-                onClick={this.props.onAddGroup}
-                primary={true}
-                style={styles.button}
-              />
-              <FlatButton
-                label="Delete"
-                onClick={this.props.onDeleteGroups}
-                secondary={true}
-                style={styles.button}
-              />
-            </TableRowColumn>
-          </TableRow>
-        </TableFooter>
+        {this.renderHeader()}
+        {this.renderBody()}
+        {this.renderFooter()}
       </Table>
     )
   }
