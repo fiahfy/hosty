@@ -7,7 +7,8 @@ import {configureStore} from './renderer/store'
 import {ipcRenderer} from 'electron'
 import {bindActionCreators} from 'redux'
 import * as ActionCreators from './renderer/actions'
-import HostsManager from './renderer/utils/hosts-manager'
+import HostGroup from './renderer/utils/host-group'
+import HostsFileManager from './renderer/utils/hosts-file-manager'
 
 const store = configureStore()
 
@@ -17,26 +18,31 @@ ReactDOM.render(
 )
 
 // TODO:
-HostsManager.createSymlink()
+HostsFileManager.createSymlink()
 
-ipcRenderer.on('sendGroup', (event, {group}) => {
-  const actions = bindActionCreators(ActionCreators, store.dispatch)
-  const hosts = group.hosts.map((host, i) => {
-    host.id = i + 1
-    return host
-  })
-  actions.createGroup({enable: true, name: group.name, hosts})
-  actions.createMessage({text: 'Imported Hosts File'})
-})
+ipcRenderer.on('sendGroups', (event, {mode, groups}) => {
+  if (mode === 'add') {
+    const actions = bindActionCreators(ActionCreators, store.dispatch)
+    groups.forEach(group => {
+      actions.createGroup(group)
+    })
 
-ipcRenderer.on('sendGroups', (event, {groups}) => {
-  const actions = bindActionCreators(ActionCreators, store.dispatch)
-  actions.initializeGroups(groups)
-  actions.createMessage({text: 'Imported Hosty File'})
+    const groupLength = groups.length
+    const hostLength = HostGroup.getHostLength(groups)
+    actions.createMessage({text: `Added ${groupLength} group(s), ${hostLength} host(s)`})
+
+  } else if (mode === 'import') {
+    const actions = bindActionCreators(ActionCreators, store.dispatch)
+    actions.initializeGroups(groups)
+
+    const groupLength = groups.length
+    const hostLength = HostGroup.getHostLength(groups)
+    actions.createMessage({text: `Imported ${groupLength} group(s), ${hostLength} host(s)`})
+  }
 })
 
 ipcRenderer.on('requestGroups', (event) => {
-  const groups = store.getState()['groups']
+  const groups = store.getState().groups
   event.sender.send('sendGroups', {groups})
 })
 

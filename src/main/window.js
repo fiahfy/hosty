@@ -1,7 +1,8 @@
 import {app, shell, dialog, ipcMain, BrowserWindow, Menu} from 'electron'
 import fs from 'fs'
 import path from 'path'
-import HostsManager from '../renderer/utils/hosts-manager'
+import HostGroup from '../renderer/utils/host-group'
+import Host from '../renderer/utils/host'
 
 export default class Window {
   constructor(application) {
@@ -46,28 +47,40 @@ export default class Window {
                 if (!pathes) {
                   return
                 }
+
                 const path = pathes[0]
                 const data = fs.readFileSync(path, 'utf8')
                 const groups = JSON.parse(data)
-                this.browserWindow.webContents.send('sendGroups', {groups});
+                this.browserWindow.webContents.send('sendGroups', {mode: 'import', groups});
               })
             }
           },
           {
-            label: 'Import Hosts Files to New Groups...',
+            label: 'Add Groups from Hosts Files...',
             accelerator: 'Shift+CmdOrCtrl+I',
             click: () => {
               dialog.showOpenDialog({properties: ['openFile', 'multiSelections']}, pathes => {
                 if (!pathes) {
                   return
                 }
-                pathes.forEach(selectedPath => {
-                  const params = path.parse(selectedPath)
-                  const data = fs.readFileSync(selectedPath, 'utf8')
-                  const hosts = HostsManager.parseHosts(data)
-                  const group = {name: params.name, hosts}
-                  this.browserWindow.webContents.send('sendGroup', {group});
-                })
+
+                const groups = pathes
+                  .map(selectedPath => {
+                    const params = path.parse(selectedPath)
+                    const data = fs.readFileSync(selectedPath, 'utf8')
+                    let hosts = Host.parse(data)
+                    if (!hosts.length) {
+                      return null
+                    }
+                    hosts = hosts.map((host, i) => {
+                      host.id = i + 1
+                      return host
+                    })
+                    return {enable: true, name: params.name, hosts}
+                  })
+                  .filter(item => !!item)
+
+                this.browserWindow.webContents.send('sendGroups', {mode: 'add', groups});
               })
             }
           },
@@ -82,14 +95,18 @@ export default class Window {
                 if (!selectedPath) {
                   return
                 }
+
                 ipcMain.once('sendGroups', (event, {groups}) => {
                   const params = path.parse(selectedPath)
                   if (params.ext !== '.hosty') {
                     selectedPath += '.hosty'
                   }
+
                   fs.writeFileSync(selectedPath, JSON.stringify(groups) + '\n', 'utf8')
+                  const groupLength = groups.length
+                  const hostLength = HostGroup.getHostLength(groups)
                   this.browserWindow.webContents.send('sendMessage', {
-                    message: {text: 'Exported Hosty File'}
+                    message: {text: `Exported ${groupLength} group(s), ${hostLength} host(s)`}
                   })
                 })
                 this.browserWindow.webContents.send('requestGroups');
@@ -104,10 +121,13 @@ export default class Window {
                 if (!path) {
                   return
                 }
+
                 ipcMain.once('sendGroups', (event, {groups}) => {
-                  fs.writeFileSync(path, HostsManager.buildGroups(groups) + '\n', 'utf8')
+                  fs.writeFileSync(path, HostGroup.build(groups) + '\n', 'utf8')
+                  const groupLength = groups.length
+                  const hostLength = HostGroup.getHostLength(groups)
                   this.browserWindow.webContents.send('sendMessage', {
-                    message: {text: 'Exported Hosts File'}
+                    message: {text: `Exported ${groupLength} group(s), ${hostLength} host(s)`}
                   })
                 })
                 this.browserWindow.webContents.send('requestGroups');

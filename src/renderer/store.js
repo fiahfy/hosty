@@ -5,7 +5,7 @@ import createLogger from 'redux-logger'
 import {persistStore, autoRehydrate, createPersistor} from 'redux-persist'
 import reducers from './reducers'
 // import DevTools from './containers/dev-tools'
-import hostsManagementMiddleware from './middlewares/hosts-management-middleware'
+import hostsFileMiddleware from './middlewares/hosts-file-middleware'
 import history from './history'
 
 const voidMiddleware = () => next => action => {
@@ -22,7 +22,7 @@ function createReduxLoggerMiddleware() {
 const router = routerMiddleware(history)
 
 const enhancer = compose(
-  applyMiddleware(thunk, router, createReduxLoggerMiddleware(), hostsManagementMiddleware),
+  applyMiddleware(thunk, router, createReduxLoggerMiddleware(), hostsFileMiddleware),
   autoRehydrate(),
   // DevTools.instrument()  // TODO:
 )

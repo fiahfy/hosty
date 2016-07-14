@@ -7,7 +7,8 @@ import path from 'path'
 import * as ActionCreators from '../actions'
 import GroupContainer from '../containers/group-container'
 import HostContainer from '../containers/host-container'
-import HostsManager from '../utils/hosts-manager'
+import HostGroup from '../utils/host-group'
+import Host from '../utils/host'
 
 function mapStateToProps(state) {
   return {messages: state.messages}
@@ -30,20 +31,29 @@ export default class App extends Component {
     e.preventDefault()
     e.stopPropagation()
 
-    Array.from(e.dataTransfer.files).forEach(file => {
-      const params = path.parse(file.path)
-      const data = fs.readFileSync(file.path, 'utf8')
-      let hosts = HostsManager.parseHosts(data)
-      if (!hosts.length) {
-        return
-      }
-      hosts = hosts.map((host, i) => {
-        host.id = i + 1
-        return host
+    const groups = Array.from(e.dataTransfer.files)
+      .map(file => {
+        const params = path.parse(file.path)
+        const data = fs.readFileSync(file.path, 'utf8')
+        let hosts = Host.parse(data)
+        if (!hosts.length) {
+          return
+        }
+        hosts = hosts.map((host, i) => {
+          host.id = i + 1
+          return host
+        })
+        return {enable: true, name: params.name, hosts}
       })
-      this.props.actions.createGroup({enable: true, name: params.name, hosts})
-      this.props.actions.createMessage({text: 'Imported Hosts File'})
+      .filter(item => !!item)
+
+    groups.forEach(group => {
+      this.props.actions.createGroup(group)
     })
+
+    const groupLength = groups.length
+    const hostLength = HostGroup.getHostLength(groups)
+    this.props.actions.createMessage({text: `Added ${groupLength} group(s), ${hostLength} host(s)`})
   }
   handleDragOver(e) {
     e.preventDefault()

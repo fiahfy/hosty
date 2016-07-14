@@ -2,7 +2,7 @@ import {app} from 'electron'
 import fs from 'fs'
 import path from 'path'
 import Window from './window'
-import HostsManager from '../renderer/utils/hosts-manager'
+import HostsFileManager from '../renderer/utils/hosts-file-manager'
 
 const WINDOW_INIT_FILE = path.join(app.getPath('userData'), 'window.json')
 
@@ -51,7 +51,7 @@ export default class Application {
     })
 
     app.on('will-quit', () => {
-      HostsManager.clear()
+      HostsFileManager.clear()
     })
   }
 }

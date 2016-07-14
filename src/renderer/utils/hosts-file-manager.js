@@ -2,8 +2,8 @@ import fs from 'fs'
 import path from 'path'
 import {app as mainApp, remote} from 'electron'
 import runas from 'runas'
-import validator from 'validator'
 import isRenderer from 'is-electron-renderer'
+import HostGroup from './host-group'
 
 const app = isRenderer ? remote.app : mainApp
 
@@ -35,7 +35,7 @@ const HostsFile = new (class  {
   }
 })
 
-export default class HostsManager {
+export default class HostsFileManager {
   createSymlink() {
     const options = {admin: !DEBUG_HOSTS}
     try {
@@ -64,7 +64,7 @@ export default class HostsManager {
   save(groups) {
     const data = HostsFile.read()
 
-    let newData = `${BEGIN_SECTION}\n` + this.buildGroups(groups) + `\n${END_SECTION}\n`
+    let newData = `${BEGIN_SECTION}\n` + HostGroup.build(groups) + `\n${END_SECTION}\n`
 
     const reg = new RegExp(String.raw`([\s\S]*\n?)${BEGIN_SECTION}\n[\s\S]*\n${END_SECTION}\n?([\s\S]*)`, 'im')
     const matches = data.match(reg)
@@ -79,61 +79,6 @@ export default class HostsManager {
   clear() {
     this.save([])
   }
-  buildGroups(groups) {
-    return groups.map(group => {
-      if (!group.hosts) {
-        return null
-      }
-      let hosts = group.hosts.concat()
-      if (!group.enable) {
-        hosts = hosts.map(host => {
-          const newHost = Object.assign({}, host)
-          newHost.enable = false
-          return newHost
-        })
-      }
-      const data = this.buildHosts(hosts)
-      if (!data) {
-        return null
-      }
-      return data
-    }).filter(item => !!item).join('\n')
-  }
-  buildHosts(hosts) {
-    return hosts.filter(host => isValidHost(host)).map(item => {
-      return (item.enable ? '' : '#')
-        + item.ip + '\t'
-        + item.host
-    }).join('\n')
-  }
-  parseHosts(data) {
-    return data
-      .split('\n')
-      .map(item => {
-        const matches = item.match(/^([#\s]*)(.*)\t(.*)/i)
-        if (!matches) {
-          return null
-        }
-        return {
-          enable: !matches[1],
-          ip: matches[2],
-          host: matches[3]
-        }
-      }).filter(item => !!item)
-  }
 }
 
-export default new HostsManager
-
-function isValidHost(host) {
-  if (!host.host || !host.host.length) {
-    return false
-  }
-  if (!host.ip || !host.ip.length) {
-    return false
-  }
-  if (!validator.isIP(host.ip)) {
-    return false
-  }
-  return true
-}
+export default new HostsFileManager
