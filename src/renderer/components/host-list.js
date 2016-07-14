@@ -174,6 +174,8 @@ export default class HostList extends Component {
     )
   }
   renderFooter() {
+    const disabled = !this.state.selectedIds.length
+
     return (
       <TableFooter
         adjustForCheckbox={true}
@@ -182,15 +184,16 @@ export default class HostList extends Component {
           <TableRowColumn colSpan="3">
             <FlatButton
               label="Add"
-              onClick={this.props.onAddHost}
-              primary={true}
               style={styles.button}
+              primary={true}
+              onClick={this.props.onAddHost}
             />
             <FlatButton
               label="Delete"
-              onClick={this.props.onDeleteHosts}
-              secondary={true}
               style={styles.button}
+              secondary={true}
+              onClick={this.props.onDeleteHosts}
+              disabled={disabled}
             />
           </TableRowColumn>
         </TableRow>

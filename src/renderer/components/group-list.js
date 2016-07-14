@@ -38,7 +38,8 @@ export default class GroupList extends Component {
     return isUpdateNeeded(this, nextProps, nextState)
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({selectedIds: [nextProps.groupId]})
+    const selectedIds = nextProps.groupId ? [nextProps.groupId] : []
+    this.setState({selectedIds})
 
     if (this.props.groups.length) {
       return
@@ -166,6 +167,8 @@ export default class GroupList extends Component {
     )
   }
   renderFooter() {
+    const disabled = !this.state.selectedIds.length
+
     return (
       <TableFooter
         adjustForCheckbox={true}
@@ -174,15 +177,16 @@ export default class GroupList extends Component {
           <TableRowColumn colSpan="2">
             <FlatButton
               label="Add"
-              onClick={this.props.onAddGroup}
-              primary={true}
               style={styles.button}
+              primary={true}
+              onClick={this.props.onAddGroup}
             />
             <FlatButton
               label="Delete"
-              onClick={this.props.onDeleteGroups}
-              secondary={true}
               style={styles.button}
+              secondary={true}
+              onClick={this.props.onDeleteGroups}
+              disabled={disabled}
             />
           </TableRowColumn>
         </TableRow>
