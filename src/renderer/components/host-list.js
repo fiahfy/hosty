@@ -200,7 +200,7 @@ export default class HostList extends Component {
   render() {
     return (
       <Table
-        multiSelectable={true}
+        multiSelectable={false}
         allRowsSelected={false}
         onRowSelection={::this.handleRowSelection}
       >

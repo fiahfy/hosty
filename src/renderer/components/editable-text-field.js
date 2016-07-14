@@ -3,8 +3,11 @@ import {TextField} from 'material-ui'
 import * as Styles from 'material-ui/styles'
 
 export default class EditableTextField extends Component {
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired
+  };
   static propTypes = {
-    onClick: PropTypes.func,
+    onBlur:  PropTypes.func,
     onClick: PropTypes.func
   };
   static defaultProps = {
@@ -37,7 +40,8 @@ export default class EditableTextField extends Component {
 
     if (!editable) {
       const value = defaultValue || hintText
-      const color = defaultValue ? 'inherit' : Styles.colors.grey400
+      const style = this.context.muiTheme.textField
+      const color = defaultValue ? style.textColor : style.hintColor
       return (
         <div
           style={{...styles.label, color}}
@@ -53,6 +57,7 @@ export default class EditableTextField extends Component {
         ref="textField"
         hintText={hintText}
         defaultValue={defaultValue}
+        autoFocus={true}
         onBlur={::this.handleBlur}
         onClick={::this.handleClick}
         onDoubleClick={e => {e.stopPropagation()}}

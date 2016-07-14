@@ -45,7 +45,7 @@ export default class GroupItem extends Component {
     }
   }
   render() {
-    const {group, selected, ...others} = this.props
+    const {group, selected, onRowClick, ...others} = this.props
 
     let errors = []
 
@@ -54,6 +54,12 @@ export default class GroupItem extends Component {
         key={group.id}
         style={styles.row}
         selected={selected}
+        onRowClick={(...args) => {
+          if (window.getSelection().toString().length) {
+            return
+          }
+          onRowClick(...args)
+        }}
         {...others}
       >
         {others.children}
@@ -71,9 +77,7 @@ export default class GroupItem extends Component {
             ref="nameTextField"
             hintText="Group name"
             defaultValue={group.name}
-            underlineShow={true}
             fullWidth={true}
-            autoFocus={true}
             onBlur={::this.handleBlur}
             onKeyDown={::this.handleKeyDown}
           />

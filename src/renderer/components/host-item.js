@@ -57,7 +57,7 @@ export default class HostItem extends Component {
     }
   }
   render() {
-    const {host, selected, ...others} = this.props
+    const {host, selected, onRowClick, ...others} = this.props
 
     let errors = []
     if (!host.host || !host.host.length) {
@@ -74,6 +74,12 @@ export default class HostItem extends Component {
         key={host.id}
         selected={selected}
         style={styles.row}
+        onRowClick={(...args) => {
+          if (window.getSelection().toString().length) {
+            return
+          }
+          onRowClick(...args)
+        }}
         {...others}
       >
         {others.children}
@@ -91,9 +97,7 @@ export default class HostItem extends Component {
             ref="hostTextField"
             hintText="example.com"
             defaultValue={host.host}
-            underlineShow={true}
             fullWidth={true}
-            autoFocus={true}
             onBlur={::this.handleBlur}
             onKeyDown={::this.handleKeyDown}
           />
@@ -104,9 +108,7 @@ export default class HostItem extends Component {
             ref="ipTextField"
             hintText="192.0.2.0"
             defaultValue={host.ip}
-            underlineShow={true}
             fullWidth={true}
-            autoFocus={true}
             onBlur={::this.handleBlur}
             onKeyDown={::this.handleKeyDown}
           />
