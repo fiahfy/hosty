@@ -1,10 +1,9 @@
 import React, { Component, PropTypes } from 'react'
 import {
-  TextField, IconButton, FlatButton,
+  FlatButton,
   Table, TableHeader, TableBody, TableFooter,
   TableRow, TableHeaderColumn, TableRowColumn,
 } from 'material-ui'
-import validator from 'validator'
 import GroupItem from './group-item'
 import SortOrderIcon from './sort-order-icon'
 import isUpdateNeeded from '../utils/is-update-needed'
@@ -15,28 +14,29 @@ const SORT_ORDER_DESC = 'desc'
 
 export default class GroupList extends Component {
   static propTypes = {
-    groupId:        PropTypes.number,
-    groups:         PropTypes.arrayOf(PropTypes.object),
-    onEditGroup:    PropTypes.func,
+    groupId: PropTypes.number,
+    groups: PropTypes.arrayOf(PropTypes.object),
+    onAddGroup: PropTypes.func,
+    onEditGroup: PropTypes.func,
+    onDeleteGroups: PropTypes.func,
     onSelectGroups: PropTypes.func,
   };
   static defaultProps = {
-    groupId:        0,
-    groups:         [],
-    onEditGroup:    () => {},
+    groupId: 0,
+    groups: [],
+    onAddGroup: () => {},
+    onEditGroup: () => {},
+    onDeleteGroups: () => {},
     onSelectGroups: () => {},
   };
   state = {
     sortOptions: {
-      key:   SORT_KEY_NAME,
+      key: SORT_KEY_NAME,
       order: SORT_ORDER_ASC,
     },
     sortedMap: new Map,
     selectedIds: [],
   };
-  shouldComponentUpdate(nextProps, nextState) {
-    return isUpdateNeeded(this, nextProps, nextState)
-  }
   componentWillReceiveProps(nextProps) {
     const selectedIds = nextProps.groupId ? [nextProps.groupId] : []
     this.setState({ selectedIds })
@@ -46,6 +46,9 @@ export default class GroupList extends Component {
     }
 
     this.sort(nextProps.groups, this.state.sortOptions)
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    return isUpdateNeeded(this, nextProps, nextState)
   }
   getSelectedGroups() {
     return this.getSortedGroups().filter(group => this.state.selectedIds.includes(group.id))
@@ -90,7 +93,7 @@ export default class GroupList extends Component {
         return !flag ? 1 : -1
       }
       return (flag ? a[key] > b[key] : a[key] < b[key]) ? 1 : -1
-    }).map((group, i) => {
+    }).forEach((group, i) => {
       sortedMap.set(group.id, i)
     })
 
@@ -102,15 +105,17 @@ export default class GroupList extends Component {
   handleClickHeader(e, rowId, columnId) {
     const { key, order } = this.state.sortOptions
 
-    const columns = [,, SORT_KEY_NAME]
+    const columns = [null, null, SORT_KEY_NAME]
     const newKey = columns[columnId]
     if (!newKey) {
       return
     }
-    const newOrder = key !== newKey
-      ? SORT_ORDER_ASC
-      : order !== SORT_ORDER_ASC ? SORT_ORDER_ASC : SORT_ORDER_DESC
-
+    let newOrder
+    if (key !== newKey || order !== SORT_ORDER_ASC) {
+      newOrder = SORT_ORDER_ASC
+    } else {
+      newOrder = SORT_ORDER_DESC
+    }
     this.sort(this.props.groups, { key: newKey, order: newOrder })
   }
   handleRowSelection(selectedRows) {
@@ -152,17 +157,15 @@ export default class GroupList extends Component {
         deselectOnClickaway={false}
         displayRowCheckbox={false}
       >
-        {this.getSortedGroups().map(group => {
-          return (
-            <GroupItem
-              ref={group.id}
-              key={group.id}
-              group={group}
-              selected={this.state.selectedIds.includes(group.id)}
-              onEditGroup={::this.handleEditGroup}
-            />
-          )
-        })}
+        {this.getSortedGroups().map(group => (
+          <GroupItem
+            ref={group.id}
+            key={group.id}
+            group={group}
+            selected={this.state.selectedIds.includes(group.id)}
+            onEditGroup={::this.handleEditGroup}
+          />
+        ))}
       </TableBody>
     )
   }

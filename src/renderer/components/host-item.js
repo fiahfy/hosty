@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import {
-  TextField, IconButton,
+  IconButton,
   TableRow, TableRowColumn,
 } from 'material-ui'
 import validator from 'validator'
@@ -10,13 +10,14 @@ import isUpdateNeeded from '../utils/is-update-needed'
 
 export default class HostItem extends Component {
   static propTypes = {
-    host:       PropTypes.object,
-    selected:   PropTypes.bool,
+    ...TableRow.propTypes,
+    host: PropTypes.object,
+    selected: PropTypes.bool,
     onEditHost: PropTypes.func,
   };
   static defaultProps = {
-    host:       {},
-    selected:   false,
+    host: {},
+    selected: false,
     onEditHost: () => {},
   };
   shouldComponentUpdate(nextProps, nextState) {
@@ -57,9 +58,10 @@ export default class HostItem extends Component {
     }
   }
   render() {
-    const { host, selected, onEditGroup, onRowClick, ...others } = this.props
+    const { host, selected, onRowClick, ...others } = this.props
+    delete others.onEditHost
 
-    let errors = []
+    const errors = []
     if (!host.host || !host.host.length) {
       errors.push('Missing Host')
     }

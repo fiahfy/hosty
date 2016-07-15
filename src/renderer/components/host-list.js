@@ -1,10 +1,9 @@
 import React, { Component, PropTypes } from 'react'
 import {
-  TextField, IconButton, FlatButton,
+  FlatButton,
   Table, TableHeader, TableBody, TableFooter,
   TableRow, TableHeaderColumn, TableRowColumn,
 } from 'material-ui'
-import validator from 'validator'
 import HostItem from './host-item'
 import SortOrderIcon from './sort-order-icon'
 import isUpdateNeeded from '../utils/is-update-needed'
@@ -16,28 +15,29 @@ const SORT_ORDER_DESC = 'desc'
 
 export default class HostList extends Component {
   static propTypes = {
-    groupId:       PropTypes.number,
-    hosts:         PropTypes.arrayOf(PropTypes.object),
-    onEditHost:    PropTypes.func,
+    groupId: PropTypes.number,
+    hosts: PropTypes.arrayOf(PropTypes.object),
+    onAddHost: PropTypes.func,
+    onEditHost: PropTypes.func,
+    onDeleteHosts: PropTypes.func,
     onSelectHosts: PropTypes.func,
   };
   static defaultProps = {
-    groupId:       0,
-    hosts:         [],
-    onEditHost:    () => {},
+    groupId: 0,
+    hosts: [],
+    onAddHost: () => {},
+    onEditHost: () => {},
+    onDeleteHosts: () => {},
     onSelectHosts: () => {},
   };
   state = {
     sortOptions: {
-      key:   SORT_KEY_HOST,
+      key: SORT_KEY_HOST,
       order: SORT_ORDER_ASC,
     },
     sortedMap: new Map,
     selectedIds: [],
   };
-  shouldComponentUpdate(nextProps, nextState) {
-    return isUpdateNeeded(this, nextProps, nextState)
-  }
   componentWillReceiveProps(nextProps) {
     if (this.props.groupId === nextProps.groupId && this.props.hosts.length) {
       return
@@ -45,6 +45,9 @@ export default class HostList extends Component {
 
     this.setState({ selectedIds: [] })
     this.sort(nextProps.hosts, this.state.sortOptions)
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    return isUpdateNeeded(this, nextProps, nextState)
   }
   getSelectedHosts() {
     return this.getSortedHosts().filter(host => this.state.selectedIds.includes(host.id))
@@ -89,7 +92,7 @@ export default class HostList extends Component {
         return !flag ? 1 : -1
       }
       return (flag ? a[key] > b[key] : a[key] < b[key]) ? 1 : -1
-    }).map((host, i) => {
+    }).forEach((host, i) => {
       sortedMap.set(host.id, i)
     })
 
@@ -101,15 +104,17 @@ export default class HostList extends Component {
   handleClickHeader(e, rowId, columnId) {
     const { key, order } = this.state.sortOptions
 
-    const columns = [,, SORT_KEY_HOST, SORT_KEY_IP]
+    const columns = [null, null, SORT_KEY_HOST, SORT_KEY_IP]
     const newKey = columns[columnId]
     if (!newKey) {
       return
     }
-    const newOrder = key !== newKey
-      ? SORT_ORDER_ASC
-      : order !== SORT_ORDER_ASC ? SORT_ORDER_ASC : SORT_ORDER_DESC
-
+    let newOrder
+    if (key !== newKey || order !== SORT_ORDER_ASC) {
+      newOrder = SORT_ORDER_ASC
+    } else {
+      newOrder = SORT_ORDER_DESC
+    }
     this.sort(this.props.hosts, { key: newKey, order: newOrder })
   }
   handleRowSelection(selectedRows) {
@@ -159,17 +164,15 @@ export default class HostList extends Component {
         deselectOnClickaway={false}
         displayRowCheckbox={false}
       >
-        {this.getSortedHosts().map(host => {
-          return (
-            <HostItem
-              ref={host.id}
-              key={host.id}
-              host={host}
-              selected={this.state.selectedIds.includes(host.id)}
-              onEditHost={::this.handleEditHost}
-            />
-          )
-        })}
+        {this.getSortedHosts().map(host => (
+          <HostItem
+            ref={host.id}
+            key={host.id}
+            host={host}
+            selected={this.state.selectedIds.includes(host.id)}
+            onEditHost={::this.handleEditHost}
+          />
+        ))}
       </TableBody>
     )
   }

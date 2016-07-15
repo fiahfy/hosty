@@ -3,7 +3,7 @@ export default function isUpdateNeeded(component, nextProps, nextState) {
     && isEqualObject(component.state, nextState))
 }
 
-function isEqualObject(a, b, keys) {
+function isEqualObject(a, b) {
   const newA = Object.assign({}, a)
   const newB = Object.assign({}, b)
   delete newA.children

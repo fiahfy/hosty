@@ -19,8 +19,8 @@ export default class GroupContainer extends Component {
   };
   static propTypes = {
     location: PropTypes.object.isRequired,
-    actions:  PropTypes.object.isRequired,
-    groups:   PropTypes.arrayOf(PropTypes.object),
+    actions: PropTypes.object.isRequired,
+    groups: PropTypes.arrayOf(PropTypes.object),
   };
   static defaultProps = {
     groups: [],
@@ -64,7 +64,7 @@ export default class GroupContainer extends Component {
           previous = id
         }
       })
-      const targetId = next ? next : previous
+      const targetId = next || previous
       if (!targetId) {
         return
       }

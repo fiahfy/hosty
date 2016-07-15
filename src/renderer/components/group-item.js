@@ -1,22 +1,22 @@
 import React, { Component, PropTypes } from 'react'
 import {
-  TextField, IconButton,
+  IconButton,
   TableRow, TableRowColumn,
 } from 'material-ui'
-import validator from 'validator'
 import HostStatusIcon from './host-status-icon'
 import EditableTextField from './editable-text-field'
 import isUpdateNeeded from '../utils/is-update-needed'
 
 export default class GroupItem extends Component {
   static propTypes = {
-    group:       PropTypes.object,
-    selected:    PropTypes.bool,
+    ...TableRow.propTypes,
+    group: PropTypes.object,
+    selected: PropTypes.bool,
     onEditGroup: PropTypes.func,
   };
   static defaultProps = {
-    group:       {},
-    selected:    false,
+    group: {},
+    selected: false,
     onEditGroup: () => {},
   };
   shouldComponentUpdate(nextProps, nextState) {
@@ -45,9 +45,10 @@ export default class GroupItem extends Component {
     }
   }
   render() {
-    const { group, selected, onEditGroup, onRowClick, ...others } = this.props
+    const { group, selected, onRowClick, ...others } = this.props
+    delete others.onEditGroup
 
-    let errors = []
+    const errors = []
 
     return (
       <TableRow

@@ -12,13 +12,13 @@ export default function SortOrderIcon(props) {
 }
 
 SortOrderIcon.propTypes = {
-  hidden: React.PropTypes.bool,
-  asc:    React.PropTypes.bool,
-  style:  React.PropTypes.object,
+  hidden: PropTypes.bool,
+  asc: PropTypes.bool,
+  style: PropTypes.object,
 }
 
 SortOrderIcon.defaultProps = {
   hidden: false,
-  asc:    true,
-  style:  {},
+  asc: true,
+  style: {},
 }

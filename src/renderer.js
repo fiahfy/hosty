@@ -34,7 +34,6 @@ ipcRenderer.on('sendGroups', (event, { mode, groups }) => {
     const groupLength = groups.length
     const hostLength = HostGroup.getHostLength(groups)
     actions.createMessage({ text: `Added ${groupLength} group(s), ${hostLength} host(s)` })
-
   } else if (mode === 'import') {
     const actions = bindActionCreators(ActionCreators, store.dispatch)
     actions.initializeGroups(groups)

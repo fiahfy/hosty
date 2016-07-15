@@ -1,4 +1,3 @@
-import validator from 'validator'
 import Host from './host'
 
 export default class HostGroup {
@@ -29,8 +28,8 @@ export default class HostGroup {
   static getHostLength(groups) {
     const newGroups = Array.isArray(groups) ? groups : [groups]
     return newGroups
-      .reduce((previous, current) => {
-        return previous + (current.hosts ? current.hosts.length : 0)
-      }, 0)
+      .reduce((previous, current) => (
+        previous + (current.hosts ? current.hosts.length : 0)
+      ), 0)
   }
 }

@@ -5,8 +5,6 @@ import { Drawer, Snackbar } from 'material-ui'
 import fs from 'fs'
 import path from 'path'
 import * as ActionCreators from '../actions'
-import GroupContainer from '../containers/group-container'
-import HostContainer from '../containers/host-container'
 import HostGroup from '../utils/host-group'
 import Host from '../utils/host'
 
@@ -22,7 +20,9 @@ function mapDispatchToProps(dispatch) {
 export default class App extends Component {
   static propTypes = {
     messages: PropTypes.arrayOf(PropTypes.object),
-    actions:  PropTypes.object.isRequired,
+    actions: PropTypes.object.isRequired,
+    sidebar: PropTypes.node.isRequired,
+    content: PropTypes.node.isRequired,
   };
   static defaultProps = {
     messages: [],
@@ -37,11 +37,12 @@ export default class App extends Component {
         const data = fs.readFileSync(file.path, 'utf8')
         let hosts = Host.parse(data)
         if (!hosts.length) {
-          return
+          return null
         }
         hosts = hosts.map((host, i) => {
-          host.id = i + 1
-          return host
+          const newHost = Object.assing({}, host)
+          newHost.id = i + 1
+          return newHost
         })
         return { enable: true, name: params.name, hosts }
       })
@@ -53,12 +54,14 @@ export default class App extends Component {
 
     const groupLength = groups.length
     const hostLength = HostGroup.getHostLength(groups)
-    this.props.actions.createMessage({ text: `Added ${groupLength} group(s), ${hostLength} host(s)` })
+    this.props.actions.createMessage(
+      { text: `Added ${groupLength} group(s), ${hostLength} host(s)` }
+    )
   }
   handleDragOver(e) {
     e.preventDefault()
     e.stopPropagation()
-    e.dataTransfer.dropEffect = 'copy'
+    e.dataTransfer.dropEffect = 'copy' // eslint-disable-line no-param-reassign
   }
   handleRequestClose() {
     this.props.actions.clearMessages()

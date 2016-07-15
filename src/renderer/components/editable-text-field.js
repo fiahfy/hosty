@@ -1,17 +1,17 @@
 import React, { Component, PropTypes } from 'react'
 import { TextField } from 'material-ui'
-import * as Styles from 'material-ui/styles'
 
 export default class EditableTextField extends Component {
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired,
   };
   static propTypes = {
-    onBlur:  PropTypes.func,
+    ...TextField.propTypes,
+    onBlur: PropTypes.func,
     onClick: PropTypes.func,
   };
   static defaultProps = {
-    onBlur:  () => {},
+    onBlur: () => {},
     onClick: () => {},
   };
   state = {
@@ -31,11 +31,13 @@ export default class EditableTextField extends Component {
     e.stopPropagation()
     this.props.onClick(e)
   }
-  handleDoubleClick(e) {
+  handleDoubleClick() {
     this.setState({ editable: true })
   }
   render() {
-    const { hintText, defaultValue, onBlur, onClick, ...others } = this.props
+    const { hintText, defaultValue, ...others } = this.props
+    delete others.onBlur
+    delete others.onClick
     const { editable } = this.state
 
     if (!editable) {

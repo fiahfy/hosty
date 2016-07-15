@@ -17,11 +17,11 @@ export default function HostStatusIcon(props) {
 }
 
 HostStatusIcon.propTypes = {
-  invalid: React.PropTypes.bool,
-  enable:  React.PropTypes.bool,
+  invalid: PropTypes.bool,
+  enable: PropTypes.bool,
 }
 
 HostStatusIcon.defaultProps = {
   invalid: false,
-  enable:  false,
+  enable: false,
 }

@@ -14,7 +14,10 @@ const DEBUG_HOSTS = process.env.NODE_ENV === 'development'
 const HOSTS_OSX = '/etc/hosts'
 const HOSTS_WINDOWS = 'C:¥¥Windows¥¥System32¥¥drivers¥¥etc¥¥hosts'
 const HOSTS_DUMMY = path.join(process.cwd(), 'dummyHosts')
-const HOSTS = DEBUG_HOSTS ? HOSTS_DUMMY : process.platform === 'win32' ? HOSTS_WINDOWS : HOSTS_OSX
+let HOSTS = process.platform === 'win32' ? HOSTS_WINDOWS : HOSTS_OSX
+if (DEBUG_HOSTS) {
+  HOSTS = HOSTS_DUMMY
+}
 const USER_HOSTS = path.join(app.getPath('userData'), 'hosts')
 const HOSTS_CHARSET = 'utf8'
 
@@ -35,7 +38,7 @@ const HostsFile = new (class {
   }
 })
 
-export default class HostsFileManager {
+class HostsFileManager {
   createSymlink() {
     const options = { admin: !DEBUG_HOSTS }
     try {
@@ -64,14 +67,17 @@ export default class HostsFileManager {
   save(groups) {
     const data = HostsFile.read()
 
-    let newData = `${BEGIN_SECTION}\n` + HostGroup.build(groups) + `\n${END_SECTION}\n`
+    let newData = `${BEGIN_SECTION}\n${HostGroup.build(groups)}\n${END_SECTION}\n`
 
-    const reg = new RegExp(String.raw`([\s\S]*\n?)${BEGIN_SECTION}\n[\s\S]*\n${END_SECTION}\n?([\s\S]*)`, 'im')
+    const reg = new RegExp(
+      String.raw`([\s\S]*\n?)${BEGIN_SECTION}\n[\s\S]*\n${END_SECTION}\n?([\s\S]*)`,
+      'im'
+    )
     const matches = data.match(reg)
     if (matches) {
       newData = matches[1] + newData + matches[2]
     } else {
-      newData = data + '\n' + newData
+      newData = `${data}\n${newData}`
     }
 
     HostsFile.write(newData)

@@ -2,15 +2,13 @@ import { routerMiddleware, routerReducer as routing } from 'react-router-redux'
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
-import { persistStore, autoRehydrate, createPersistor } from 'redux-persist'
+import { persistStore, autoRehydrate } from 'redux-persist'
 import reducers from './reducers'
 // import DevTools from './containers/dev-tools'
 import hostsFileMiddleware from './middlewares/hosts-file-middleware'
 import history from './history'
 
-const voidMiddleware = () => next => action => {
-  return next(action)
-}
+const voidMiddleware = () => next => action => next(action)
 
 function createReduxLoggerMiddleware() {
   if (process.env.NODE_ENV === 'development') {
@@ -39,7 +37,7 @@ export function configureStore(initialState = {}) {
 
   if (module.hot) {
     module.hot.accept('./reducers', () => {
-      const nextRootReducer = require('./reducers').default
+      const nextRootReducer = require('./reducers').default // eslint-disable-line global-require
       store.replaceReducer(nextRootReducer)
     })
   }
