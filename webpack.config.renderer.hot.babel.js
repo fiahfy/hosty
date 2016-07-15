@@ -1,5 +1,5 @@
 import webpack from 'webpack'
-import rendererConfig from './renderer.babel'
+import rendererConfig from './webpack.config.renderer.babel'
 
 let [babelLoader, ...otherLoaders] = rendererConfig.module.loaders
 babelLoader = {
