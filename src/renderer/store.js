@@ -1,8 +1,8 @@
-import {routerMiddleware, routerReducer as routing} from 'react-router-redux'
-import {createStore, applyMiddleware, compose, combineReducers} from 'redux'
+import { routerMiddleware, routerReducer as routing } from 'react-router-redux'
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
-import {persistStore, autoRehydrate, createPersistor} from 'redux-persist'
+import { persistStore, autoRehydrate, createPersistor } from 'redux-persist'
 import reducers from './reducers'
 // import DevTools from './containers/dev-tools'
 import hostsFileMiddleware from './middlewares/hosts-file-middleware'
@@ -29,13 +29,13 @@ const enhancer = compose(
 
 const rootReducer = combineReducers({
   ...reducers,
-  routing
+  routing,
 })
 
 export function configureStore(initialState = {}) {
   const store = createStore(rootReducer, initialState, enhancer)
 
-  persistStore(store, {whitelist: ['groups']})
+  persistStore(store, { whitelist: ['groups'] })
 
   if (module.hot) {
     module.hot.accept('./reducers', () => {

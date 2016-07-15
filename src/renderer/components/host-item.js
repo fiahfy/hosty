@@ -1,7 +1,7 @@
-import React, {Component, PropTypes} from 'react'
+import React, { Component, PropTypes } from 'react'
 import {
   TextField, IconButton,
-  TableRow, TableRowColumn
+  TableRow, TableRowColumn,
 } from 'material-ui'
 import validator from 'validator'
 import HostStatusIcon from './host-status-icon'
@@ -12,12 +12,12 @@ export default class HostItem extends Component {
   static propTypes = {
     host:       PropTypes.object,
     selected:   PropTypes.bool,
-    onEditHost: PropTypes.func
+    onEditHost: PropTypes.func,
   };
   static defaultProps = {
     host:       {},
     selected:   false,
-    onEditHost: () => {}
+    onEditHost: () => {},
   };
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState)
@@ -27,14 +27,14 @@ export default class HostItem extends Component {
   }
   handleClickIconButton(e) {
     e.stopPropagation()
-    const {host, onEditHost} = this.props
+    const { host, onEditHost } = this.props
     const newHost = Object.assign({}, host)
     newHost.enable = !newHost.enable
     onEditHost(newHost)
   }
   handleBlur(e) {
-    const {host, onEditHost} = this.props
-    const {name, value} = e.target
+    const { host, onEditHost } = this.props
+    const { name, value } = e.target
     const newHost = Object.assign({}, host)
     newHost[name] = value
     onEditHost(newHost)
@@ -57,7 +57,7 @@ export default class HostItem extends Component {
     }
   }
   render() {
-    const {host, selected, onEditGroup, onRowClick, ...others} = this.props
+    const { host, selected, onEditGroup, onRowClick, ...others } = this.props
 
     let errors = []
     if (!host.host || !host.host.length) {
@@ -97,7 +97,7 @@ export default class HostItem extends Component {
             ref="hostTextField"
             hintText="example.com"
             defaultValue={host.host}
-            fullWidth={true}
+            fullWidth
             onBlur={::this.handleBlur}
             onKeyDown={::this.handleKeyDown}
           />
@@ -108,7 +108,7 @@ export default class HostItem extends Component {
             ref="ipTextField"
             hintText="192.0.2.0"
             defaultValue={host.ip}
-            fullWidth={true}
+            fullWidth
             onBlur={::this.handleBlur}
             onKeyDown={::this.handleKeyDown}
           />
@@ -120,11 +120,11 @@ export default class HostItem extends Component {
 
 const styles = {
   row: {
-    cursor: 'pointer'
+    cursor: 'pointer',
   },
   iconColumn: {
     width: 48,
     textAlign: 'center',
-    paddingRight: 0
-  }
+    paddingRight: 0,
+  },
 }

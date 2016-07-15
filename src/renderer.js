@@ -2,10 +2,10 @@ import 'babel-polyfill'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Root from './renderer/root'
-import {configureStore} from './renderer/store'
+import { configureStore } from './renderer/store'
 
-import {ipcRenderer} from 'electron'
-import {bindActionCreators} from 'redux'
+import { ipcRenderer } from 'electron'
+import { bindActionCreators } from 'redux'
 import * as ActionCreators from './renderer/actions'
 import HostGroup from './renderer/utils/host-group'
 import HostsFileManager from './renderer/utils/hosts-file-manager'
@@ -24,7 +24,7 @@ ReactDOM.render(
 // TODO:
 HostsFileManager.createSymlink()
 
-ipcRenderer.on('sendGroups', (event, {mode, groups}) => {
+ipcRenderer.on('sendGroups', (event, { mode, groups }) => {
   if (mode === 'add') {
     const actions = bindActionCreators(ActionCreators, store.dispatch)
     groups.forEach(group => {
@@ -33,7 +33,7 @@ ipcRenderer.on('sendGroups', (event, {mode, groups}) => {
 
     const groupLength = groups.length
     const hostLength = HostGroup.getHostLength(groups)
-    actions.createMessage({text: `Added ${groupLength} group(s), ${hostLength} host(s)`})
+    actions.createMessage({ text: `Added ${groupLength} group(s), ${hostLength} host(s)` })
 
   } else if (mode === 'import') {
     const actions = bindActionCreators(ActionCreators, store.dispatch)
@@ -41,16 +41,16 @@ ipcRenderer.on('sendGroups', (event, {mode, groups}) => {
 
     const groupLength = groups.length
     const hostLength = HostGroup.getHostLength(groups)
-    actions.createMessage({text: `Imported ${groupLength} group(s), ${hostLength} host(s)`})
+    actions.createMessage({ text: `Imported ${groupLength} group(s), ${hostLength} host(s)` })
   }
 })
 
 ipcRenderer.on('requestGroups', (event) => {
   const groups = store.getState().groups
-  event.sender.send('sendGroups', {groups})
+  event.sender.send('sendGroups', { groups })
 })
 
-ipcRenderer.on('sendMessage', (event, {message}) => {
+ipcRenderer.on('sendMessage', (event, { message }) => {
   const actions = bindActionCreators(ActionCreators, store.dispatch)
   actions.createMessage(message)
 })

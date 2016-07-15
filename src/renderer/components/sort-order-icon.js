@@ -1,8 +1,8 @@
-import React, {PropTypes} from 'react'
+import React, { PropTypes } from 'react'
 import * as SvgIcons from 'material-ui/svg-icons'
 
 export default function SortOrderIcon(props) {
-  const {hidden, asc, style} = props
+  const { hidden, asc, style } = props
   if (hidden) {
     return null
   }
@@ -14,11 +14,11 @@ export default function SortOrderIcon(props) {
 SortOrderIcon.propTypes = {
   hidden: React.PropTypes.bool,
   asc:    React.PropTypes.bool,
-  style:  React.PropTypes.object
+  style:  React.PropTypes.object,
 }
 
 SortOrderIcon.defaultProps = {
   hidden: false,
   asc:    true,
-  style:  {}
+  style:  {},
 }

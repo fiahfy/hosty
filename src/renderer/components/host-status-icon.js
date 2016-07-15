@@ -1,9 +1,9 @@
-import React, {PropTypes} from 'react'
+import React, { PropTypes } from 'react'
 import * as SvgIcons from 'material-ui/svg-icons'
 import * as Styles from 'material-ui/styles'
 
 export default function HostStatusIcon(props) {
-  const {invalid, enable} = props
+  const { invalid, enable } = props
   if (invalid) {
     return (
       <SvgIcons.DeviceSignalCellularConnectedNoInternet4Bar
@@ -18,10 +18,10 @@ export default function HostStatusIcon(props) {
 
 HostStatusIcon.propTypes = {
   invalid: React.PropTypes.bool,
-  enable:  React.PropTypes.bool
+  enable:  React.PropTypes.bool,
 }
 
 HostStatusIcon.defaultProps = {
   invalid: false,
-  enable:  false
+  enable:  false,
 }

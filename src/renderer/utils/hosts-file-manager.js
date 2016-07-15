@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import {app as mainApp, remote} from 'electron'
+import { app as mainApp, remote } from 'electron'
 import runas from 'runas'
 import isRenderer from 'is-electron-renderer'
 import HostGroup from './host-group'
@@ -8,7 +8,7 @@ import HostGroup from './host-group'
 const app = isRenderer ? remote.app : mainApp
 
 const BEGIN_SECTION = '## hosty begin ##'
-const END_SECTION   = '## hosty end ##'
+const END_SECTION = '## hosty end ##'
 
 const DEBUG_HOSTS = process.env.NODE_ENV === 'development'
 const HOSTS_OSX = '/etc/hosts'
@@ -18,7 +18,7 @@ const HOSTS = DEBUG_HOSTS ? HOSTS_DUMMY : process.platform === 'win32' ? HOSTS_W
 const USER_HOSTS = path.join(app.getPath('userData'), 'hosts')
 const HOSTS_CHARSET = 'utf8'
 
-const HostsFile = new (class  {
+const HostsFile = new (class {
   read() {
     try {
       return fs.readFileSync(USER_HOSTS, HOSTS_CHARSET)
@@ -37,7 +37,7 @@ const HostsFile = new (class  {
 
 export default class HostsFileManager {
   createSymlink() {
-    const options = {admin: !DEBUG_HOSTS}
+    const options = { admin: !DEBUG_HOSTS }
     try {
       const stats = fs.lstatSync(HOSTS)
       if (stats.isSymbolicLink()) {

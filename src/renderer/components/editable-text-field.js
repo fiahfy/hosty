@@ -1,30 +1,30 @@
-import React, {Component, PropTypes} from 'react'
-import {TextField} from 'material-ui'
+import React, { Component, PropTypes } from 'react'
+import { TextField } from 'material-ui'
 import * as Styles from 'material-ui/styles'
 
 export default class EditableTextField extends Component {
   static contextTypes = {
-    muiTheme: PropTypes.object.isRequired
+    muiTheme: PropTypes.object.isRequired,
   };
   static propTypes = {
     onBlur:  PropTypes.func,
-    onClick: PropTypes.func
+    onClick: PropTypes.func,
   };
   static defaultProps = {
     onBlur:  () => {},
-    onClick: () => {}
+    onClick: () => {},
   };
   state = {
-    editable: false
+    editable: false,
   };
   isFocused() {
     return this.state.editable
   }
   focus() {
-    this.setState({editable: true})
+    this.setState({ editable: true })
   }
   handleBlur(e) {
-    this.setState({editable: false})
+    this.setState({ editable: false })
     this.props.onBlur(e)
   }
   handleClick(e) {
@@ -32,11 +32,11 @@ export default class EditableTextField extends Component {
     this.props.onClick(e)
   }
   handleDoubleClick(e) {
-    this.setState({editable: true})
+    this.setState({ editable: true })
   }
   render() {
-    const {hintText, defaultValue, onBlur, onClick, ...others} = this.props
-    const {editable} = this.state
+    const { hintText, defaultValue, onBlur, onClick, ...others } = this.props
+    const { editable } = this.state
 
     if (!editable) {
       const value = defaultValue || hintText
@@ -44,7 +44,7 @@ export default class EditableTextField extends Component {
       const color = defaultValue ? style.textColor : style.hintColor
       return (
         <div
-          style={{...styles.label, color}}
+          style={{ ...styles.label, color }}
           onDoubleClick={::this.handleDoubleClick}
         >
           {value}
@@ -57,10 +57,10 @@ export default class EditableTextField extends Component {
         ref="textField"
         hintText={hintText}
         defaultValue={defaultValue}
-        autoFocus={true}
+        autoFocus
         onBlur={::this.handleBlur}
         onClick={::this.handleClick}
-        onDoubleClick={e => {e.stopPropagation()}}
+        onDoubleClick={e => { e.stopPropagation() }}
         {...others}
       />
     )
@@ -73,6 +73,6 @@ const styles = {
     lineHeight: '48px',
     fontSize: 16,
     overflow: 'hidden',
-    textOverflow: 'ellipsis'
-  }
+    textOverflow: 'ellipsis',
+  },
 }

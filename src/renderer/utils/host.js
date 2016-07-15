@@ -23,7 +23,7 @@ export default class Host {
         return {
           enable: !matches[1],
           ip:     matches[2],
-          host:   matches[3]
+          host:   matches[3],
         }
       })
       .filter(item => !!item)

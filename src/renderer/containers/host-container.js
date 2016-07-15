@@ -1,35 +1,35 @@
-import React, {Component, PropTypes} from 'react'
-import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux'
+import React, { Component, PropTypes } from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import * as ActionCreators from '../actions'
 import HostList from '../components/host-list'
 
 function mapStateToProps(state) {
-  return {groups: state.groups}
+  return { groups: state.groups }
 }
 
 function mapDispatchToProps(dispatch) {
-  return {actions: bindActionCreators(ActionCreators, dispatch)}
+  return { actions: bindActionCreators(ActionCreators, dispatch) }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class HostContainer extends Component {
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   };
   static propTypes = {
     location: PropTypes.object.isRequired,
     actions:  PropTypes.object.isRequired,
-    groups:   PropTypes.arrayOf(PropTypes.object)
+    groups:   PropTypes.arrayOf(PropTypes.object),
   };
   static defaultProps = {
-    groups: []
+    groups: [],
   };
   handleEditHost(id, host) {
     this.props.actions.updateHost(Number(this.props.location.query.id), id, host)
   }
   handleAddHost() {
-    this.props.actions.createHost(Number(this.props.location.query.id), {enable: true})
+    this.props.actions.createHost(Number(this.props.location.query.id), { enable: true })
     window.setTimeout(() => {
       this.refs.hostList.focusLastHost()
     }, 0)
@@ -64,7 +64,7 @@ export default class HostContainer extends Component {
     }, 0)
   }
   renderHostList() {
-    const {groups, location} = this.props
+    const { groups, location } = this.props
     const groupId = Number(location.query.id)
 
     const group = groups.filter(group => {
@@ -106,13 +106,13 @@ const styles = {
   messageContainer: {
     width: '100%',
     height: '100%',
-    display: 'table'
+    display: 'table',
   },
   message: {
     display: 'table-cell',
     textAlign: 'center',
     verticalAlign: 'middle',
     position: 'relative',
-    color: 'grey'
-  }
+    color: 'grey',
+  },
 }

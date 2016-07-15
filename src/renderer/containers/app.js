@@ -1,7 +1,7 @@
-import React, {Component, PropTypes} from 'react'
-import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux'
-import {Drawer, Snackbar} from 'material-ui'
+import React, { Component, PropTypes } from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { Drawer, Snackbar } from 'material-ui'
 import fs from 'fs'
 import path from 'path'
 import * as ActionCreators from '../actions'
@@ -11,21 +11,21 @@ import HostGroup from '../utils/host-group'
 import Host from '../utils/host'
 
 function mapStateToProps(state) {
-  return {messages: state.messages}
+  return { messages: state.messages }
 }
 
 function mapDispatchToProps(dispatch) {
-  return {actions: bindActionCreators(ActionCreators, dispatch)}
+  return { actions: bindActionCreators(ActionCreators, dispatch) }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class App extends Component {
   static propTypes = {
     messages: PropTypes.arrayOf(PropTypes.object),
-    actions:  PropTypes.object.isRequired
+    actions:  PropTypes.object.isRequired,
   };
   static defaultProps = {
-    messages: []
+    messages: [],
   };
   handleDrop(e) {
     e.preventDefault()
@@ -43,7 +43,7 @@ export default class App extends Component {
           host.id = i + 1
           return host
         })
-        return {enable: true, name: params.name, hosts}
+        return { enable: true, name: params.name, hosts }
       })
       .filter(item => !!item)
 
@@ -53,7 +53,7 @@ export default class App extends Component {
 
     const groupLength = groups.length
     const hostLength = HostGroup.getHostLength(groups)
-    this.props.actions.createMessage({text: `Added ${groupLength} group(s), ${hostLength} host(s)`})
+    this.props.actions.createMessage({ text: `Added ${groupLength} group(s), ${hostLength} host(s)` })
   }
   handleDragOver(e) {
     e.preventDefault()
@@ -64,7 +64,7 @@ export default class App extends Component {
     this.props.actions.clearMessages()
   }
   renderSnackbar() {
-    const {messages} = this.props
+    const { messages } = this.props
 
     let open = false
     let text = ''
@@ -84,7 +84,7 @@ export default class App extends Component {
     )
   }
   render() {
-    const {sidebar, content} = this.props
+    const { sidebar, content } = this.props
 
     return (
       <div
@@ -93,7 +93,7 @@ export default class App extends Component {
         onDrop={::this.handleDrop}
       >
         <Drawer
-          open={true}
+          open
           width={256}
           ref="drawer"
           className="sidebar"
@@ -115,14 +115,14 @@ const styles = {
     // paddingBottom: 56,
     overflow: 'hidden',
     height: '100%',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
   },
   content: {
     overflow: 'auto',
     height: '100%',
-    paddingLeft: 256
+    paddingLeft: 256,
   },
   snackbar: {
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 }

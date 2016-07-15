@@ -1,4 +1,4 @@
-import {app} from 'electron'
+import { app } from 'electron'
 import fs from 'fs'
 import path from 'path'
 import Window from './window'
@@ -33,7 +33,9 @@ export default class Application {
   saveWindowSettings(settings) {
     try {
       fs.writeFileSync(WINDOW_INIT_FILE, JSON.stringify(settings))
-    } catch (e) {}
+    } catch (e) {
+      //
+    }
   }
   handleEvents() {
     app.on('ready', () => {

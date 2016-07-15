@@ -1,7 +1,7 @@
-import React, {Component, PropTypes} from 'react'
+import React, { Component, PropTypes } from 'react'
 import {
   TextField, IconButton,
-  TableRow, TableRowColumn
+  TableRow, TableRowColumn,
 } from 'material-ui'
 import validator from 'validator'
 import HostStatusIcon from './host-status-icon'
@@ -12,12 +12,12 @@ export default class GroupItem extends Component {
   static propTypes = {
     group:       PropTypes.object,
     selected:    PropTypes.bool,
-    onEditGroup: PropTypes.func
+    onEditGroup: PropTypes.func,
   };
   static defaultProps = {
     group:       {},
     selected:    false,
-    onEditGroup: () => {}
+    onEditGroup: () => {},
   };
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState)
@@ -27,14 +27,14 @@ export default class GroupItem extends Component {
   }
   handleClickIconButton(e) {
     e.stopPropagation()
-    const {group, onEditGroup} = this.props
+    const { group, onEditGroup } = this.props
     const newGroup = Object.assign({}, group)
     newGroup.enable = !newGroup.enable
     onEditGroup(newGroup)
   }
   handleBlur(e) {
-    const {group, onEditGroup} = this.props
-    const {name, value} = e.target
+    const { group, onEditGroup } = this.props
+    const { name, value } = e.target
     const newGroup = Object.assign({}, group)
     newGroup[name] = value
     onEditGroup(newGroup)
@@ -45,7 +45,7 @@ export default class GroupItem extends Component {
     }
   }
   render() {
-    const {group, selected, onEditGroup, onRowClick, ...others} = this.props
+    const { group, selected, onEditGroup, onRowClick, ...others } = this.props
 
     let errors = []
 
@@ -77,7 +77,7 @@ export default class GroupItem extends Component {
             ref="nameTextField"
             hintText="Group name"
             defaultValue={group.name}
-            fullWidth={true}
+            fullWidth
             onBlur={::this.handleBlur}
             onKeyDown={::this.handleKeyDown}
           />
@@ -89,11 +89,11 @@ export default class GroupItem extends Component {
 
 const styles = {
   row: {
-    cursor: 'pointer'
+    cursor: 'pointer',
   },
   iconColumn: {
     width: 48,
     textAlign: 'center',
-    paddingRight: 0
-  }
+    paddingRight: 0,
+  },
 }

@@ -1,8 +1,8 @@
-import React, {Component, PropTypes} from 'react'
+import React, { Component, PropTypes } from 'react'
 import {
   TextField, IconButton, FlatButton,
   Table, TableHeader, TableBody, TableFooter,
-  TableRow, TableHeaderColumn, TableRowColumn
+  TableRow, TableHeaderColumn, TableRowColumn,
 } from 'material-ui'
 import validator from 'validator'
 import GroupItem from './group-item'
@@ -18,28 +18,28 @@ export default class GroupList extends Component {
     groupId:        PropTypes.number,
     groups:         PropTypes.arrayOf(PropTypes.object),
     onEditGroup:    PropTypes.func,
-    onSelectGroups: PropTypes.func
+    onSelectGroups: PropTypes.func,
   };
   static defaultProps = {
     groupId:        0,
     groups:         [],
     onEditGroup:    () => {},
-    onSelectGroups: () => {}
+    onSelectGroups: () => {},
   };
   state = {
     sortOptions: {
       key:   SORT_KEY_NAME,
-      order: SORT_ORDER_ASC
+      order: SORT_ORDER_ASC,
     },
     sortedMap: new Map,
-    selectedIds: []
+    selectedIds: [],
   };
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState)
   }
   componentWillReceiveProps(nextProps) {
     const selectedIds = nextProps.groupId ? [nextProps.groupId] : []
-    this.setState({selectedIds})
+    this.setState({ selectedIds })
 
     if (this.props.groups.length) {
       return
@@ -51,7 +51,7 @@ export default class GroupList extends Component {
     return this.getSortedGroups().filter(group => this.state.selectedIds.includes(group.id))
   }
   getSortedGroups() {
-    const {sortedMap} = this.state
+    const { sortedMap } = this.state
 
     return this.props.groups.concat().sort((a, b) => {
       if (!sortedMap.has(a.id) && !sortedMap.has(b.id)) {
@@ -68,17 +68,17 @@ export default class GroupList extends Component {
   }
   focusLastGroup() {
     const groups = this.getSortedGroups()
-    const group = groups[groups.length-1]
+    const group = groups[groups.length - 1]
     this.refs[group.id].focus()
   }
   select(ids) {
-    this.setState({selectedIds: ids})
+    this.setState({ selectedIds: ids })
   }
   deselectAll() {
-    this.setState({selectedIds: []})
+    this.setState({ selectedIds: [] })
   }
   sort(groups, options) {
-    const {key, order} = options
+    const { key, order } = options
 
     const sortedMap = new Map
     groups.concat().sort((a, b) => {
@@ -94,15 +94,15 @@ export default class GroupList extends Component {
       sortedMap.set(group.id, i)
     })
 
-    this.setState({sortOptions: options, sortedMap})
+    this.setState({ sortOptions: options, sortedMap })
   }
   handleEditGroup(group) {
     this.props.onEditGroup(group.id, group)
   }
   handleClickHeader(e, rowId, columnId) {
-    const {key, order} = this.state.sortOptions
+    const { key, order } = this.state.sortOptions
 
-    const columns = [,,SORT_KEY_NAME]
+    const columns = [,, SORT_KEY_NAME]
     const newKey = columns[columnId]
     if (!newKey) {
       return
@@ -111,18 +111,18 @@ export default class GroupList extends Component {
       ? SORT_ORDER_ASC
       : order !== SORT_ORDER_ASC ? SORT_ORDER_ASC : SORT_ORDER_DESC
 
-    this.sort(this.props.groups, {key: newKey, order: newOrder})
+    this.sort(this.props.groups, { key: newKey, order: newOrder })
   }
   handleRowSelection(selectedRows) {
     const selectedGroups = this.getSortedGroups()
         .filter((group, i) => selectedRows.includes(i))
     const selectedIds = selectedGroups.map(group => group.id)
 
-    this.setState({selectedIds})
+    this.setState({ selectedIds })
     this.props.onSelectGroups(selectedGroups)
   }
   renderHeader() {
-    const {key, order} = this.state.sortOptions
+    const { key, order } = this.state.sortOptions
 
     return (
       <TableHeader
@@ -148,7 +148,7 @@ export default class GroupList extends Component {
   renderBody() {
     return (
       <TableBody
-        showRowHover={true}
+        showRowHover
         deselectOnClickaway={false}
         displayRowCheckbox={false}
       >
@@ -171,20 +171,20 @@ export default class GroupList extends Component {
 
     return (
       <TableFooter
-        adjustForCheckbox={true}
+        adjustForCheckbox
       >
         <TableRow>
           <TableRowColumn colSpan="2">
             <FlatButton
               label="Add"
               style={styles.button}
-              primary={true}
+              primary
               onClick={this.props.onAddGroup}
             />
             <FlatButton
               label="Delete"
               style={styles.button}
-              secondary={true}
+              secondary
               onClick={this.props.onDeleteGroups}
               disabled={disabled}
             />
@@ -212,20 +212,20 @@ const styles = {
   headerIconColumn: {
     width: 48,
     textAlign: 'center',
-    paddingRight: 0
+    paddingRight: 0,
   },
   headerSortableColumn: {
-    cursor: 'pointer'
+    cursor: 'pointer',
   },
   headerColumnText: {
     display: 'inline-block',
-    verticalAlign: 'middle'
+    verticalAlign: 'middle',
   },
   headerColumnIcon: {
-    verticalAlign: 'middle'
+    verticalAlign: 'middle',
   },
   button: {
     marginLeft: 20,
-    marginRight: 20
-  }
+    marginRight: 20,
+  },
 }

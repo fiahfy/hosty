@@ -1,8 +1,8 @@
-import React, {Component, PropTypes} from 'react'
+import React, { Component, PropTypes } from 'react'
 import {
   TextField, IconButton, FlatButton,
   Table, TableHeader, TableBody, TableFooter,
-  TableRow, TableHeaderColumn, TableRowColumn
+  TableRow, TableHeaderColumn, TableRowColumn,
 } from 'material-ui'
 import validator from 'validator'
 import HostItem from './host-item'
@@ -19,21 +19,21 @@ export default class HostList extends Component {
     groupId:       PropTypes.number,
     hosts:         PropTypes.arrayOf(PropTypes.object),
     onEditHost:    PropTypes.func,
-    onSelectHosts: PropTypes.func
+    onSelectHosts: PropTypes.func,
   };
   static defaultProps = {
     groupId:       0,
     hosts:         [],
     onEditHost:    () => {},
-    onSelectHosts: () => {}
+    onSelectHosts: () => {},
   };
   state = {
     sortOptions: {
       key:   SORT_KEY_HOST,
-      order: SORT_ORDER_ASC
+      order: SORT_ORDER_ASC,
     },
     sortedMap: new Map,
-    selectedIds: []
+    selectedIds: [],
   };
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState)
@@ -43,14 +43,14 @@ export default class HostList extends Component {
       return
     }
 
-    this.setState({selectedIds: []})
+    this.setState({ selectedIds: [] })
     this.sort(nextProps.hosts, this.state.sortOptions)
   }
   getSelectedHosts() {
     return this.getSortedHosts().filter(host => this.state.selectedIds.includes(host.id))
   }
   getSortedHosts() {
-    const {sortedMap} = this.state
+    const { sortedMap } = this.state
 
     return this.props.hosts.concat().sort((a, b) => {
       if (!sortedMap.has(a.id) && !sortedMap.has(b.id)) {
@@ -67,17 +67,17 @@ export default class HostList extends Component {
   }
   focusLastHost() {
     const hosts = this.getSortedHosts()
-    const host = hosts[hosts.length-1]
+    const host = hosts[hosts.length - 1]
     this.refs[host.id].focus()
   }
   select(ids) {
-    this.setState({selectedIds: ids})
+    this.setState({ selectedIds: ids })
   }
   deselectAll() {
-    this.setState({selectedIds: []})
+    this.setState({ selectedIds: [] })
   }
   sort(hosts, options) {
-    const {key, order} = options
+    const { key, order } = options
 
     const sortedMap = new Map
     hosts.concat().sort((a, b) => {
@@ -93,15 +93,15 @@ export default class HostList extends Component {
       sortedMap.set(host.id, i)
     })
 
-    this.setState({sortOptions: options, sortedMap})
+    this.setState({ sortOptions: options, sortedMap })
   }
   handleEditHost(host) {
     this.props.onEditHost(host.id, host)
   }
   handleClickHeader(e, rowId, columnId) {
-    const {key, order} = this.state.sortOptions
+    const { key, order } = this.state.sortOptions
 
-    const columns = [,,SORT_KEY_HOST, SORT_KEY_IP]
+    const columns = [,, SORT_KEY_HOST, SORT_KEY_IP]
     const newKey = columns[columnId]
     if (!newKey) {
       return
@@ -110,18 +110,18 @@ export default class HostList extends Component {
       ? SORT_ORDER_ASC
       : order !== SORT_ORDER_ASC ? SORT_ORDER_ASC : SORT_ORDER_DESC
 
-    this.sort(this.props.hosts, {key: newKey, order: newOrder})
+    this.sort(this.props.hosts, { key: newKey, order: newOrder })
   }
   handleRowSelection(selectedRows) {
     const selectedHosts = this.getSortedHosts()
         .filter((host, i) => selectedRows.includes(i))
     const selectedIds = selectedHosts.map(host => host.id)
 
-    this.setState({selectedIds})
+    this.setState({ selectedIds })
     this.props.onSelectHosts(selectedHosts)
   }
   renderHeader() {
-    const {key, order} = this.state.sortOptions
+    const { key, order } = this.state.sortOptions
 
     return (
       <TableHeader
@@ -155,7 +155,7 @@ export default class HostList extends Component {
   renderBody() {
     return (
       <TableBody
-        showRowHover={true}
+        showRowHover
         deselectOnClickaway={false}
         displayRowCheckbox={false}
       >
@@ -178,20 +178,20 @@ export default class HostList extends Component {
 
     return (
       <TableFooter
-        adjustForCheckbox={true}
+        adjustForCheckbox
       >
         <TableRow>
           <TableRowColumn colSpan="3">
             <FlatButton
               label="Add"
               style={styles.button}
-              primary={true}
+              primary
               onClick={this.props.onAddHost}
             />
             <FlatButton
               label="Delete"
               style={styles.button}
-              secondary={true}
+              secondary
               onClick={this.props.onDeleteHosts}
               disabled={disabled}
             />
@@ -219,20 +219,20 @@ const styles = {
   headerIconColumn: {
     width: 48,
     textAlign: 'center',
-    paddingRight: 0
+    paddingRight: 0,
   },
   headerSortableColumn: {
-    cursor: 'pointer'
+    cursor: 'pointer',
   },
   headerColumnText: {
     display: 'inline-block',
-    verticalAlign: 'middle'
+    verticalAlign: 'middle',
   },
   headerColumnIcon: {
-    verticalAlign: 'middle'
+    verticalAlign: 'middle',
   },
   button: {
     marginLeft: 20,
-    marginRight: 20
-  }
+    marginRight: 20,
+  },
 }
