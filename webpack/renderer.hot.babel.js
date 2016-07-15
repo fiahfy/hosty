@@ -1,19 +1,38 @@
 import webpack from 'webpack'
-import config from './renderer.babel'
+import rendererConfig from './renderer.babel'
 
-const newConfig = Object.assign({}, config)
-newConfig.output.publicPath = 'http://localhost:8080/assets/'
-newConfig.plugins.push(new webpack.HotModuleReplacementPlugin())
-newConfig.module.loaders[0].query.presets.push('react-hmre')
-newConfig.devServer = {
-  port:   8080,
-  inline: true,
-  hot:    true,
-  // proxy: [{
-  //   path: /^((?!\/assets\/).)*$/,
-  //   target: 'http://localhost:3000',
-  //   secure: false
-  // }]
+let [babelLoader, ...otherLoaders] = rendererConfig.module.loaders
+babelLoader = {
+  ...babelLoader,
+  query: {
+    ...babelLoader.query,
+    presets: [
+      ...babelLoader.query.presets,
+      'react-hmre'
+    ]
+  }
 }
 
-export default newConfig
+export default {
+  ...rendererConfig,
+  output: {
+    ...rendererConfig.output,
+    publicPath: 'http://localhost:8080/assets/'
+  },
+  plugins: [
+    ...rendererConfig.plugins,
+    new webpack.HotModuleReplacementPlugin()
+  ],
+  module: {
+    ...rendererConfig.module,
+    loaders: [
+      babelLoader,
+      ...otherLoaders
+    ]
+  },
+  devServer: {
+    port:   8080,
+    inline: true,
+    hot:    true,
+  }
+}

@@ -4,21 +4,24 @@
   "version": "0.0.3",
   "description": "Electron application for hosts file management",
   "keywords": [
-    "Electron",
+    "electron",
+    "react",
+    "redux",
+    "material-ui",
+    "webpack",
     "hosts"
   ],
+  "homepage": "https://github.com/fiahfy/hosty#readme",
   "author": {
     "name": "fiahfy",
     "email": "d.fiahfy@gmail.com",
     "url": "http://fiahfy.blogspot.com/"
   },
-  "homepage": "http://fiahfy.blogspot.com/",
+  "main": "main.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/fiahfy/hosty"
   },
-  "private": true,
-  "main": "main.js",
   "scripts": {
     "start": "npm run watch & npm run build:main; electron main.js",
     "start:hot": "npm run hot:renderer & npm run build:main; HOT=1 electron main.js",
@@ -30,8 +33,9 @@
     "build:renderer": "webpack --config webpack/renderer.babel.js",
     "build:main": "webpack --config webpack/main.babel.js",
     "package": "npm run package:mac",
-    "package:mac": "DEBUG=0 npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --platform=darwin --arch=x64 --icon=public/assets/img/hosty.icns",
-    "package:win": "DEBUG=0 npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --platform=win32 --arch=x64 --icon=public/assets/img/hosty.ico"
+    "package:mac": "NODE_ENV=production npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --platform=darwin --arch=x64 --icon=public/assets/img/hosty.icns",
+    "package:win": "NODE_ENV=production npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --platform=win32 --arch=x64 --icon=public/assets/img/hosty.ico",
+    "lint": "eslint src"
   },
   "dependencies": {
     "babel-loader": "6.2.4",
@@ -62,11 +66,17 @@
     "redux-thunk": "2.1.0",
     "runas": "3.1.1",
     "validator": "5.4.0",
-    "webpack": "1.13.1",
-    "webpack-target-electron-renderer": "0.4.0"
+    "webpack": "1.13.1"
   },
   "devDependencies": {
+    "babel-eslint": "6.1.2",
     "babel-preset-react-hmre": "1.1.1",
+    "eslint": "^3.0.1",
+    "eslint-config-airbnb": "^9.0.1",
+    "eslint-plugin-import": "^1.10.3",
+    "eslint-plugin-jsx-a11y": "^2.0.1",
+    "eslint-plugin-react": "^5.2.2",
     "webpack-dev-server": "1.14.1"
-  }
+  },
+  "private": true
 }
