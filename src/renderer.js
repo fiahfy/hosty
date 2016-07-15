@@ -10,6 +10,10 @@ import * as ActionCreators from './renderer/actions'
 import HostGroup from './renderer/utils/host-group'
 import HostsFileManager from './renderer/utils/hosts-file-manager'
 
+// @see http://stackoverflow.com/a/34015469/988941
+import injectTapEventPlugin from 'react-tap-event-plugin'
+injectTapEventPlugin()
+
 const store = configureStore()
 
 ReactDOM.render(

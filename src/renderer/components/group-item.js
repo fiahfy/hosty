@@ -45,7 +45,7 @@ export default class GroupItem extends Component {
     }
   }
   render() {
-    const {group, selected, onRowClick, ...others} = this.props
+    const {group, selected, onEditGroup, onRowClick, ...others} = this.props
 
     let errors = []
 

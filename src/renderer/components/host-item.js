@@ -57,7 +57,7 @@ export default class HostItem extends Component {
     }
   }
   render() {
-    const {host, selected, onRowClick, ...others} = this.props
+    const {host, selected, onEditGroup, onRowClick, ...others} = this.props
 
     let errors = []
     if (!host.host || !host.host.length) {
