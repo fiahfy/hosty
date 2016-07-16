@@ -1,44 +1,43 @@
-import React, {Component, PropTypes} from 'react'
-import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux'
-import {RaisedButton, Toolbar, ToolbarGroup} from 'material-ui'
+import React, { Component, PropTypes } from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import * as ActionCreators from '../actions'
 import HostList from '../components/host-list'
 
 function mapStateToProps(state) {
-  return {groups: state.groups}
+  return { groups: state.groups }
 }
 
 function mapDispatchToProps(dispatch) {
-  return {actions: bindActionCreators(ActionCreators, dispatch)}
+  return { actions: bindActionCreators(ActionCreators, dispatch) }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class HostContainer extends Component {
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   };
   static propTypes = {
     location: PropTypes.object.isRequired,
-    actions:  PropTypes.object.isRequired,
-    groups:   PropTypes.arrayOf(PropTypes.object)
+    actions: PropTypes.object.isRequired,
+    groups: PropTypes.arrayOf(PropTypes.object),
   };
   static defaultProps = {
-    groups: []
+    groups: [],
   };
+  handleEditHost(id, host) {
+    this.props.actions.updateHost(Number(this.props.location.query.id), id, host)
+  }
   handleAddHost() {
-    this.props.actions.createHost(Number(this.props.location.query.id), {enable: true})
+    this.props.actions.createHost(Number(this.props.location.query.id), { enable: true })
     window.setTimeout(() => {
       this.refs.hostList.focusLastHost()
     }, 0)
   }
-  handleEditHost(id, host) {
-    this.props.actions.updateHost(Number(this.props.location.query.id), id, host)
-  }
   handleDeleteHosts() {
     const ids = this.refs.hostList.getSortedHosts().map(host => host.id)
     const selectedIds = this.refs.hostList.getSelectedHosts().map(host => host.id)
-    this.refs.hostList.unselectAll()
+    this.refs.hostList.deselectAll()
     this.props.actions.deleteHosts(Number(this.props.location.query.id), selectedIds)
     window.setTimeout(() => {
       if (selectedIds.length !== 1) {
@@ -57,7 +56,7 @@ export default class HostContainer extends Component {
           previous = id
         }
       })
-      const targetId = next ? next : previous
+      const targetId = next || previous
       if (!targetId) {
         return
       }
@@ -65,12 +64,10 @@ export default class HostContainer extends Component {
     }, 0)
   }
   renderHostList() {
-    const {groups, location} = this.props
+    const { groups, location } = this.props
     const groupId = Number(location.query.id)
 
-    const group = groups.filter(group => {
-      return group.id === groupId
-    })[0]
+    const group = groups.filter(currentGroup => currentGroup.id === groupId)[0]
     const hosts = group ? group.hosts : []
 
     return (
@@ -79,6 +76,8 @@ export default class HostContainer extends Component {
         groupId={groupId}
         hosts={hosts}
         onEditHost={::this.handleEditHost}
+        onAddHost={::this.handleAddHost}
+        onDeleteHosts={::this.handleDeleteHosts}
       />
     )
   }
@@ -96,40 +95,22 @@ export default class HostContainer extends Component {
     return (
       <div>
         {this.renderHostList()}
-        <Toolbar style={styles.toolbar}>
-          <ToolbarGroup firstChild={true}>
-            <RaisedButton label="Add" onClick={::this.handleAddHost}
-              primary={true} style={styles.button} />
-            <RaisedButton label="Delete" onClick={::this.handleDeleteHosts}
-              secondary={true} style={styles.button} />
-          </ToolbarGroup>
-        </Toolbar>
       </div>
     )
   }
 }
 
 const styles = {
-  button: {
-    marginLeft: 20,
-    marginRight: 20
-  },
-  toolbar: {
-    position: 'fixed',
-    bottom: 0,
-    left: 256,
-    right: 0
-  },
   messageContainer: {
     width: '100%',
     height: '100%',
-    display: 'table'
+    display: 'table',
   },
   message: {
     display: 'table-cell',
     textAlign: 'center',
     verticalAlign: 'middle',
     position: 'relative',
-    color: 'grey'
-  }
+    color: 'grey',
+  },
 }

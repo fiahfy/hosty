@@ -1,8 +1,8 @@
-import {app} from 'electron'
+import { app } from 'electron'
 import fs from 'fs'
 import path from 'path'
 import Window from './window'
-import HostsManager from '../renderer/utils/hosts-manager'
+import HostsFileManager from '../renderer/utils/hosts-file-manager'
 
 const WINDOW_INIT_FILE = path.join(app.getPath('userData'), 'window.json')
 
@@ -31,7 +31,11 @@ export default class Application {
     }
   }
   saveWindowSettings(settings) {
-    fs.writeFileSync(WINDOW_INIT_FILE, JSON.stringify(settings))
+    try {
+      fs.writeFileSync(WINDOW_INIT_FILE, JSON.stringify(settings))
+    } catch (e) {
+      //
+    }
   }
   handleEvents() {
     app.on('ready', () => {
@@ -49,7 +53,7 @@ export default class Application {
     })
 
     app.on('will-quit', () => {
-      HostsManager.clear()
+      HostsFileManager.clear()
     })
   }
 }

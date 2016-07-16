@@ -6,17 +6,20 @@ export const CREATE_HOST = 'CREATE_HOST'
 export const UPDATE_HOST = 'UPDATE_HOST'
 export const DELETE_HOSTS = 'DELETE_HOSTS'
 
+export const CREATE_MESSAGE = 'CREATE_MESSAGE'
+export const CLEAR_MESSAGES = 'CLEAR_MESSAGES'
+
 export function initializeGroups(groups) {
   return {
     type: INITIALIZE_GROUPS,
-    groups
+    groups,
   }
 }
 
 export function createGroup(group) {
   return {
     type: CREATE_GROUP,
-    group
+    group,
   }
 }
 
@@ -24,14 +27,14 @@ export function updateGroup(id, group) {
   return {
     type: UPDATE_GROUP,
     id,
-    group
+    group,
   }
 }
 
 export function deleteGroups(ids) {
   return {
     type: DELETE_GROUPS,
-    ids
+    ids,
   }
 }
 
@@ -39,7 +42,7 @@ export function createHost(groupId, host) {
   return {
     type: CREATE_HOST,
     groupId,
-    host
+    host,
   }
 }
 
@@ -48,7 +51,7 @@ export function updateHost(groupId, id, host) {
     type: UPDATE_HOST,
     groupId,
     id,
-    host
+    host,
   }
 }
 
@@ -56,6 +59,19 @@ export function deleteHosts(groupId, ids) {
   return {
     type: DELETE_HOSTS,
     groupId,
-    ids
+    ids,
+  }
+}
+
+export function createMessage(message) {
+  return {
+    type: CREATE_MESSAGE,
+    message,
+  }
+}
+
+export function clearMessages() {
+  return {
+    type: CLEAR_MESSAGES,
   }
 }

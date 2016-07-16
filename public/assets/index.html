@@ -33,14 +33,26 @@
         height: 100%!important;
       }
       .sidebar>div>div>div:first-child>div:first-child {
-        position: fixed;
-        z-index: 1;
+        position: fixed!important;
+        z-index: 1!important;
       }
       .sidebar>div>div>div:first-child>div:nth-child(2) {
-        margin-top: 59px;
-        margin-bottom: 56px;
-        box-sizing: border-box;
-        height: calc(100% - 115px)!important;
+        margin-top: 59px!important;
+        margin-bottom: 51px!important;
+        height: calc(100% - 110px)!important;
+      }
+      .sidebar>div>div>div:first-child>div:last-child {
+        position: fixed!important;
+        bottom: 0!important;
+      }
+      /* todo: https://github.com/callemall/material-ui/issues/4581 */
+      .sidebar>div>div>div:first-child>div:last-child>table>tfoot>tr>td:first-child {
+        display: none!important;
+      }
+      .sidebar>div>div>div:first-child>div:last-child>table>tfoot>tr>td {
+        vertical-align: middle;
+        padding-left: 0!important;
+        padding-right: 0!important;
       }
       .content>div {
         height: 100%!important;
@@ -49,14 +61,26 @@
         height: 100%!important;
       }
       .content>div>div:first-child>div:first-child {
-        position: fixed;
-        z-index: 1;
+        position: fixed!important;
+        z-index: 1!important;
       }
       .content>div>div:first-child>div:nth-child(2) {
-        margin-top: 59px;
-        margin-bottom: 56px;
-        box-sizing: border-box;
-        height: calc(100% - 115px)!important;
+        margin-top: 59px!important;
+        margin-bottom: 51px!important;
+        height: calc(100% - 110px)!important;
+      }
+      .content>div>div:first-child>div:last-child {
+        position: fixed!important;
+        bottom: 0!important;
+      }
+      /* todo: https://github.com/callemall/material-ui/issues/4581 */
+      .content>div>div:first-child>div:last-child>table>tfoot>tr>td:first-child {
+        display: none!important;
+      }
+      .content>div>div:first-child>div:last-child>table>tfoot>tr>td {
+        vertical-align: middle;
+        padding-left: 0!important;
+        padding-right: 0!important;
       }
     </style>
   </head>

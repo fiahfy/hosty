@@ -1,37 +1,41 @@
 {
   "name": "hosty",
   "productName": "Hosty",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Electron application for hosts file management",
   "keywords": [
-    "Electron",
+    "electron",
+    "react",
+    "redux",
+    "material-ui",
+    "webpack",
     "hosts"
   ],
+  "homepage": "https://github.com/fiahfy/hosty#readme",
   "author": {
     "name": "fiahfy",
     "email": "d.fiahfy@gmail.com",
     "url": "http://fiahfy.blogspot.com/"
   },
-  "homepage": "http://fiahfy.blogspot.com/",
+  "main": "main.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/fiahfy/hosty"
   },
-  "private": true,
-  "main": "main.js",
   "scripts": {
     "start": "npm run watch & npm run build:main; electron main.js",
     "start:hot": "npm run hot:renderer & npm run build:main; HOT=1 electron main.js",
-    "hot:renderer": "webpack-dev-server --config webpack/renderer.hot.babel.js",
+    "hot:renderer": "webpack-dev-server --config webpack.config.renderer.hot.babel.js",
     "watch": "npm run build -- -w",
     "watch:renderer": "npm run build:renderer -- -w",
     "watch:main": "npm run build:main -- -w",
-    "build": "webpack --config webpack/all.babel.js",
-    "build:renderer": "webpack --config webpack/renderer.babel.js",
-    "build:main": "webpack --config webpack/main.babel.js",
+    "build": "webpack --config webpack.config.babel.js",
+    "build:renderer": "webpack --config webpack.config.renderer.babel.js",
+    "build:main": "webpack --config webpack.config.main.babel.js",
     "package": "npm run package:mac",
-    "package:mac": "DEBUG=0 npm run build; electron-packager . --overwrite --asar --platform=darwin --arch=x64 --icon=public/assets/img/hosty.icns",
-    "package:win": "DEBUG=0 npm run build; electron-packager . --overwrite --asar --platform=win32 --arch=x64 --icon=public/assets/img/hosty.ico"
+    "package:mac": "NODE_ENV=production npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --platform=darwin --arch=x64 --icon=public/assets/img/hosty.icns",
+    "package:win": "NODE_ENV=production npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --platform=win32 --arch=x64 --icon=public/assets/img/hosty.ico",
+    "lint": "eslint src"
   },
   "dependencies": {
     "babel-loader": "6.2.4",
@@ -40,14 +44,14 @@
     "babel-preset-es2015": "6.9.0",
     "babel-preset-react": "6.11.1",
     "babel-preset-stage-0": "6.5.0",
-    "electron-packager": "7.2.0",
-    "electron-prebuilt": "1.2.6",
+    "electron-packager": "7.3.0",
+    "electron-prebuilt": "1.2.7",
     "electron-rebuild": "1.1.5",
     "history": "3.0.0",
     "is-electron-renderer": "2.0.0",
-    "material-ui": "0.15.0",
-    "react": "15.1.0",
-    "react-dom": "15.1.0",
+    "material-ui": "0.15.2",
+    "react": "15.2.1",
+    "react-dom": "15.2.1",
     "react-helmet": "3.1.0",
     "react-redux": "4.4.5",
     "react-router": "2.5.2",
@@ -62,11 +66,17 @@
     "redux-thunk": "2.1.0",
     "runas": "3.1.1",
     "validator": "5.4.0",
-    "webpack": "1.13.1",
-    "webpack-target-electron-renderer": "0.4.0"
+    "webpack": "1.13.1"
   },
   "devDependencies": {
+    "babel-eslint": "6.1.2",
     "babel-preset-react-hmre": "1.1.1",
+    "eslint": "2.9.0",
+    "eslint-config-airbnb": "9.0.1",
+    "eslint-plugin-import": "1.10.3",
+    "eslint-plugin-jsx-a11y": "1.2.0",
+    "eslint-plugin-react": "5.2.2",
     "webpack-dev-server": "1.14.1"
-  }
+  },
+  "private": true
 }
