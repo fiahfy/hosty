@@ -12,7 +12,7 @@ const END_SECTION = '## hosty end ##'
 
 const DEBUG_HOSTS = process.env.NODE_ENV === 'development'
 const HOSTS_OSX = '/etc/hosts'
-const HOSTS_WINDOWS = 'C:\\Windows\\System32\\drivers\\etc\\hosts'
+const HOSTS_WINDOWS = '%SystemRoot%\\System32\\drivers\\etc\\hosts'
 const HOSTS_DUMMY = path.join(process.cwd(), 'dummyHosts')
 let HOSTS = process.platform === 'win32' ? HOSTS_WINDOWS : HOSTS_OSX
 if (DEBUG_HOSTS) {
@@ -69,17 +69,17 @@ class HostsFileManager {
     } catch (e) {
       //
     }
-    if (process.env.NODE_ENV === 'development') {
-      if (runas('ln', ['-s', HOSTS, USER_HOSTS], options)) {
+    if (process.platform === 'win32') {
+      if (runas('cmd', ['/c', `mklink ${USER_HOSTS} ${HOSTS}`], options)) {
         throw new Error(`Failed to symlink ${HOSTS} to ${USER_HOSTS}`)
       }
     } else {
-      if (runas('mklink.cmd', [USER_HOSTS, HOSTS], options)) {
+      if (runas('ln', ['-s', HOSTS, USER_HOSTS], options)) {
         throw new Error(`Failed to symlink ${HOSTS} to ${USER_HOSTS}`)
       }
-    }
-    if (runas('chmod', ['666', HOSTS], options)) {
-      throw new Error(`Failed to chmod ${HOSTS}`)
+      if (runas('chmod', ['666', HOSTS], options)) {
+        throw new Error(`Failed to chmod ${HOSTS}`)
+      }
     }
   }
   setup() {
