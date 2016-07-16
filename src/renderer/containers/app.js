@@ -40,7 +40,7 @@ export default class App extends Component {
           return null
         }
         hosts = hosts.map((host, i) => {
-          const newHost = Object.assing({}, host)
+          const newHost = Object.assign({}, host)
           newHost.id = i + 1
           return newHost
         })
