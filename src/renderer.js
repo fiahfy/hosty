@@ -16,13 +16,13 @@ injectTapEventPlugin()
 
 const store = configureStore()
 
+// TODO:
+HostsFileManager.setup()
+
 ReactDOM.render(
   <Root store={store} />,
   document.querySelector('#app')
 )
-
-// TODO:
-HostsFileManager.createSymlink()
 
 ipcRenderer.on('sendGroups', (event, { mode, groups }) => {
   if (mode === 'add') {

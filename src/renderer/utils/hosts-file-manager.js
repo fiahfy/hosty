@@ -12,7 +12,7 @@ const END_SECTION = '## hosty end ##'
 
 const DEBUG_HOSTS = process.env.NODE_ENV === 'development'
 const HOSTS_OSX = '/etc/hosts'
-const HOSTS_WINDOWS = 'C:¥¥Windows¥¥System32¥¥drivers¥¥etc¥¥hosts'
+const HOSTS_WINDOWS = 'C:\\Windows\\System32\\drivers\\etc\\hosts'
 const HOSTS_DUMMY = path.join(process.cwd(), 'dummyHosts')
 let HOSTS = process.platform === 'win32' ? HOSTS_WINDOWS : HOSTS_OSX
 if (DEBUG_HOSTS) {
@@ -39,36 +39,46 @@ const HostsFile = new (class {
 })
 
 class HostsFileManager {
-  createSymlink() {
+  setupHostsFile() {
     const options = { admin: !DEBUG_HOSTS }
     try {
       const stats = fs.lstatSync(HOSTS)
+      if (!stats.isSymbolicLink()) {
+        return
+      }
+      if (runas('rm', [HOSTS], options)) {
+        throw new Error(`Failed to delete ${HOSTS}`)
+      }
+    } catch (e) {
+      //
+    }
+    if (runas('touch', [HOSTS], options)) {
+      throw new Error(`Failed to touch ${HOSTS}`)
+    }
+  }
+  setupUserHostsFile() {
+    const options = { admin: !DEBUG_HOSTS }
+    try {
+      const stats = fs.lstatSync(USER_HOSTS)
       if (stats.isSymbolicLink()) {
         return
       }
+      if (runas('rm', [USER_HOSTS], options)) {
+        throw new Error(`Failed to delete ${USER_HOSTS}`)
+      }
     } catch (e) {
-      if (runas('touch', [HOSTS], options)) {
-        throw new Error(`Failed to touch ${HOSTS}`)
-      }
+      //
     }
-    if (runas('cp', ['-f', HOSTS, USER_HOSTS], options)) {
-      throw new Error(`Failed to copy ${HOSTS} to ${USER_HOSTS}`)
+    if (runas('ln', ['-s', HOSTS, USER_HOSTS], options)) {
+      throw new Error(`Failed to symlink ${HOSTS} to ${USER_HOSTS}`)
     }
-    if (runas('chmod', ['666', USER_HOSTS], options)) {
-      throw new Error(`Failed to chmod ${USER_HOSTS}`)
+    if (runas('chmod', ['666', HOSTS], options)) {
+      throw new Error(`Failed to chmod ${HOSTS}`)
     }
-    if (runas('rm', [HOSTS], options)) {
-      throw new Error(`Failed to delete ${HOSTS}`)
-    }
-    if (process.platform === 'win32') {
-      if (runas('mklink.cmd', [HOSTS, USER_HOSTS], options)) {
-        throw new Error(`Failed to symlink ${USER_HOSTS} to ${HOSTS}`)
-      }
-    } else {
-      if (runas('ln', ['-s', USER_HOSTS, HOSTS], options)) {
-        throw new Error(`Failed to symlink ${USER_HOSTS} to ${HOSTS}`)
-      }
-    }
+  }
+  setup() {
+    this.setupHostsFile()
+    this.setupUserHostsFile()
   }
   save(groups) {
     const data = HostsFile.read()
