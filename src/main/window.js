@@ -237,7 +237,7 @@ export default class Window {
           {
             label: 'Learn More',
             click: () => {
-              shell.openExternal('http://electron.atom.io')
+              shell.openExternal('https://github.com/fiahfy/hosty')
             },
           },
         ],
