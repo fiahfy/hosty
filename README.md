@@ -1,5 +1,6 @@
 # Hosty
 [![Build Status](https://travis-ci.org/fiahfy/hosty.svg?branch=master)](https://travis-ci.org/fiahfy/hosty)
+
 This is an Electron application for hosts file management.
 
 ## Feature
