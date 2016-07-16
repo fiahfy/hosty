@@ -60,8 +60,14 @@ class HostsFileManager {
     if (runas('rm', [HOSTS], options)) {
       throw new Error(`Failed to delete ${HOSTS}`)
     }
-    if (runas('ln', ['-s', USER_HOSTS, HOSTS], options)) {
-      throw new Error(`Failed to symlink ${USER_HOSTS} to ${HOSTS}`)
+    if (process.platform === 'win32') {
+      if (runas('mklink.cmd', [HOSTS, USER_HOSTS], options)) {
+        throw new Error(`Failed to symlink ${USER_HOSTS} to ${HOSTS}`)
+      }
+    } else {
+      if (runas('ln', ['-s', USER_HOSTS, HOSTS], options)) {
+        throw new Error(`Failed to symlink ${USER_HOSTS} to ${HOSTS}`)
+      }
     }
   }
   save(groups) {
