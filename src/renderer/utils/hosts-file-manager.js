@@ -69,8 +69,14 @@ class HostsFileManager {
     } catch (e) {
       //
     }
-    if (runas('ln', ['-s', HOSTS, USER_HOSTS], options)) {
-      throw new Error(`Failed to symlink ${HOSTS} to ${USER_HOSTS}`)
+    if (process.env.NODE_ENV === 'development') {
+      if (runas('ln', ['-s', HOSTS, USER_HOSTS], options)) {
+        throw new Error(`Failed to symlink ${HOSTS} to ${USER_HOSTS}`)
+      }
+    } else {
+      if (runas('mklink.cmd', [USER_HOSTS, HOSTS], options)) {
+        throw new Error(`Failed to symlink ${HOSTS} to ${USER_HOSTS}`)
+      }
     }
     if (runas('chmod', ['666', HOSTS], options)) {
       throw new Error(`Failed to chmod ${HOSTS}`)
