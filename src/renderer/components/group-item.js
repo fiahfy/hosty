@@ -6,7 +6,7 @@ import {
 import HostStatusIcon from './host-status-icon'
 import EditableTextField from './editable-text-field'
 import isUpdateNeeded from '../utils/is-update-needed'
-import HostGroup from '../utils/host-group'
+import * as HostGroup from '../utils/host-group'
 
 export default class GroupItem extends Component {
   static propTypes = {

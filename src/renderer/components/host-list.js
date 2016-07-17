@@ -7,7 +7,7 @@ import {
 import HostItem from './host-item'
 import SortOrderIcon from './sort-order-icon'
 import isUpdateNeeded from '../utils/is-update-needed'
-import Host from '../utils/host'
+import * as Host from '../utils/host'
 
 export default class HostList extends Component {
   static propTypes = {

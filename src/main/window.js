@@ -1,8 +1,8 @@
 import { app, shell, dialog, ipcMain, BrowserWindow, Menu } from 'electron'
 import fs from 'fs'
 import path from 'path'
-import HostGroup from '../renderer/utils/host-group'
-import Host from '../renderer/utils/host'
+import * as HostGroup from '../renderer/utils/host-group'
+import * as Host from '../renderer/utils/host'
 
 export default class Window {
   constructor(application) {
@@ -52,8 +52,14 @@ export default class Window {
 
                   const filename = filenames[0]
                   const data = fs.readFileSync(filename, 'utf8')
-                  const groups = JSON.parse(data)
-                  this.browserWindow.webContents.send('sendGroups', { mode: 'import', groups })
+                  try {
+                    const groups = JSON.parse(data)
+                    this.browserWindow.webContents.send('sendGroups', { mode: 'import', groups })
+                  } catch (e) {
+                    this.browserWindow.webContents.send('sendMessage', {
+                      message: { text: 'Invalid Hosty file' },
+                    })
+                  }
                 }
               )
             },

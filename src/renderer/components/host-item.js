@@ -6,7 +6,7 @@ import {
 import HostStatusIcon from './host-status-icon'
 import EditableTextField from './editable-text-field'
 import isUpdateNeeded from '../utils/is-update-needed'
-import Host from '../utils/host'
+import * as Host from '../utils/host'
 
 export default class HostItem extends Component {
   static propTypes = {

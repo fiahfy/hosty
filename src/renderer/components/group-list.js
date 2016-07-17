@@ -7,7 +7,7 @@ import {
 import GroupItem from './group-item'
 import SortOrderIcon from './sort-order-icon'
 import isUpdateNeeded from '../utils/is-update-needed'
-import HostGroup from '../utils/host-group'
+import * as HostGroup from '../utils/host-group'
 
 export default class GroupList extends Component {
   static propTypes = {
