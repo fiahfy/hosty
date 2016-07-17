@@ -1,38 +1,39 @@
 import webpack from 'webpack'
 import rendererConfig from './webpack.config.renderer.babel'
 
-let [babelLoader, ...otherLoaders] = rendererConfig.module.loaders
-babelLoader = {
+const [babelLoader, ...otherLoaders] = rendererConfig.module.loaders
+let newBabelLoader = babelLoader
+newBabelLoader = {
   ...babelLoader,
   query: {
     ...babelLoader.query,
     presets: [
       ...babelLoader.query.presets,
-      'react-hmre'
-    ]
-  }
+      'react-hmre',
+    ],
+  },
 }
 
 export default {
   ...rendererConfig,
   output: {
     ...rendererConfig.output,
-    publicPath: 'http://localhost:8080/assets/'
+    publicPath: 'http://localhost:8080/assets/',
   },
   plugins: [
     ...rendererConfig.plugins,
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
   ],
   module: {
     ...rendererConfig.module,
     loaders: [
-      babelLoader,
-      ...otherLoaders
-    ]
+      newBabelLoader,
+      ...otherLoaders,
+    ],
   },
   devServer: {
-    port:   8080,
+    port: 8080,
     inline: true,
-    hot:    true,
-  }
+    hot: true,
+  },
 }

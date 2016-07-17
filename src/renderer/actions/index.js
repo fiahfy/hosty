@@ -12,61 +12,56 @@ export const CLEAR_MESSAGES = 'CLEAR_MESSAGES'
 export function initializeGroups(groups) {
   return {
     type: INITIALIZE_GROUPS,
-    groups,
+    payload: { groups },
   }
 }
 
 export function createGroup(group) {
   return {
     type: CREATE_GROUP,
-    group,
+    payload: { group },
   }
 }
 
 export function updateGroup(id, group) {
   return {
     type: UPDATE_GROUP,
-    id,
-    group,
+    payload: { id, group },
   }
 }
 
 export function deleteGroups(ids) {
   return {
     type: DELETE_GROUPS,
-    ids,
+    payload: { ids },
   }
 }
 
 export function createHost(groupId, host) {
   return {
     type: CREATE_HOST,
-    groupId,
-    host,
+    payload: { groupId, host },
   }
 }
 
 export function updateHost(groupId, id, host) {
   return {
     type: UPDATE_HOST,
-    groupId,
-    id,
-    host,
+    payload: { groupId, id, host },
   }
 }
 
 export function deleteHosts(groupId, ids) {
   return {
     type: DELETE_HOSTS,
-    groupId,
-    ids,
+    payload: { groupId, ids },
   }
 }
 
 export function createMessage(message) {
   return {
     type: CREATE_MESSAGE,
-    message,
+    payload: { message },
   }
 }
 

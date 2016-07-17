@@ -1,8 +1,8 @@
 {
   "name": "hosty",
   "productName": "Hosty",
-  "version": "0.0.3",
-  "description": "Electron application for hosts file management",
+  "version": "0.1.0",
+  "description": "Hosts file manager based on Electron",
   "keywords": [
     "electron",
     "react",
@@ -33,8 +33,9 @@
     "build:renderer": "webpack --config webpack.config.renderer.babel.js",
     "build:main": "webpack --config webpack.config.main.babel.js",
     "package": "npm run package:mac",
-    "package:mac": "NODE_ENV=production npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --platform=darwin --arch=x64 --icon=public/assets/img/hosty.icns",
-    "package:win": "NODE_ENV=production npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --platform=win32 --arch=x64 --icon=public/assets/img/hosty.ico",
+    "package:mac": "NODE_ENV=production npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --out release --ignore release --platform=darwin --arch=x64 --icon=app/assets/img/hosty.icns",
+    "package:win": "NODE_ENV=production npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --out release --ignore release --platform=win32 --arch=x64 --icon=app/assets/img/hosty.ico --version-string.LegalCopyright=\"© 2016 fiahfy\" --version-string.FileDescription=\"Electron application\" --version-string.OriginalFilename=\"Hosty.exe\" --version-string.ProductName=\"Hosty\"",
+    "archive": "rm release/*.zip; ls -d release/* | xargs -I{} zip -r {}.zip {}",
     "lint": "eslint src"
   },
   "dependencies": {
@@ -44,9 +45,11 @@
     "babel-preset-es2015": "6.9.0",
     "babel-preset-react": "6.11.1",
     "babel-preset-stage-0": "6.5.0",
+    "css-loader": "0.23.1",
     "electron-packager": "7.3.0",
     "electron-prebuilt": "1.2.7",
     "electron-rebuild": "1.1.5",
+    "file-loader": "0.9.0",
     "history": "3.0.0",
     "is-electron-renderer": "2.0.0",
     "material-ui": "0.15.2",
@@ -64,7 +67,10 @@
     "redux-logger": "2.6.1",
     "redux-persist": "3.2.2",
     "redux-thunk": "2.1.0",
+    "roboto-fontface": "0.5.0",
     "runas": "3.1.1",
+    "style-loader": "0.13.1",
+    "url-loader": "0.5.7",
     "validator": "5.4.0",
     "webpack": "1.13.1"
   },

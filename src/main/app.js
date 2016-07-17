@@ -2,7 +2,7 @@ import { app } from 'electron'
 import fs from 'fs'
 import path from 'path'
 import Window from './window'
-import HostsFileManager from '../renderer/utils/hosts-file-manager'
+import * as HostsFileManager from '../renderer/utils/hosts-file-manager'
 
 const WINDOW_INIT_FILE = path.join(app.getPath('userData'), 'window.json')
 

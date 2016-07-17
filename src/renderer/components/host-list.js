@@ -7,11 +7,7 @@ import {
 import HostItem from './host-item'
 import SortOrderIcon from './sort-order-icon'
 import isUpdateNeeded from '../utils/is-update-needed'
-
-const SORT_KEY_HOST = 'host'
-const SORT_KEY_IP = 'ip'
-const SORT_ORDER_ASC = 'asc'
-const SORT_ORDER_DESC = 'desc'
+import * as Host from '../utils/host'
 
 export default class HostList extends Component {
   static propTypes = {
@@ -32,8 +28,8 @@ export default class HostList extends Component {
   };
   state = {
     sortOptions: {
-      key: SORT_KEY_HOST,
-      order: SORT_ORDER_ASC,
+      key: Host.KEY_HOST,
+      order: Host.SORT_ASC,
     },
     sortedMap: new Map,
     selectedIds: [],
@@ -83,18 +79,11 @@ export default class HostList extends Component {
     const { key, order } = options
 
     const sortedMap = new Map
-    hosts.concat().sort((a, b) => {
-      const flag = order === SORT_ORDER_ASC
-      if (!a[key]) {
-        return flag ? 1 : -1
-      }
-      if (!b[key]) {
-        return !flag ? 1 : -1
-      }
-      return (flag ? a[key] > b[key] : a[key] < b[key]) ? 1 : -1
-    }).forEach((host, i) => {
-      sortedMap.set(host.id, i)
-    })
+    hosts.concat()
+      .sort((a, b) => Host.compare(a, b, key, order))
+      .forEach((host, i) => {
+        sortedMap.set(host.id, i)
+      })
 
     this.setState({ sortOptions: options, sortedMap })
   }
@@ -104,16 +93,16 @@ export default class HostList extends Component {
   handleClickHeader(e, rowId, columnId) {
     const { key, order } = this.state.sortOptions
 
-    const columns = [null, null, SORT_KEY_HOST, SORT_KEY_IP]
+    const columns = [null, null, Host.KEY_HOST, Host.KEY_IP]
     const newKey = columns[columnId]
     if (!newKey) {
       return
     }
     let newOrder
-    if (key !== newKey || order !== SORT_ORDER_ASC) {
-      newOrder = SORT_ORDER_ASC
+    if (key !== newKey || order !== Host.SORT_ASC) {
+      newOrder = Host.SORT_ASC
     } else {
-      newOrder = SORT_ORDER_DESC
+      newOrder = Host.SORT_DESC
     }
     this.sort(this.props.hosts, { key: newKey, order: newOrder })
   }
@@ -141,16 +130,16 @@ export default class HostList extends Component {
             <div style={styles.headerColumnText}>Host</div>
             <SortOrderIcon
               style={styles.headerColumnIcon}
-              hidden={key !== SORT_KEY_HOST}
-              asc={order === SORT_ORDER_ASC}
+              hidden={key !== Host.KEY_HOST}
+              asc={order === Host.SORT_ASC}
             />
           </TableHeaderColumn>
           <TableHeaderColumn style={styles.headerSortableColumn}>
             <div style={styles.headerColumnText}>IP</div>
             <SortOrderIcon
               style={styles.headerColumnIcon}
-              hidden={key !== SORT_KEY_IP}
-              asc={order === SORT_ORDER_ASC}
+              hidden={key !== Host.KEY_IP}
+              asc={order === Host.SORT_ASC}
             />
           </TableHeaderColumn>
         </TableRow>
@@ -177,7 +166,9 @@ export default class HostList extends Component {
     )
   }
   renderFooter() {
-    const disabled = !this.state.selectedIds.length
+    const count = this.state.selectedIds.length
+    const disabled = !count
+    const label = count > 1 ? `Delete (${count})` : 'Delete'
 
     return (
       <TableFooter
@@ -192,7 +183,7 @@ export default class HostList extends Component {
               onClick={this.props.onAddHost}
             />
             <FlatButton
-              label="Delete"
+              label={label}
               style={styles.button}
               secondary
               onClick={this.props.onDeleteHosts}
@@ -206,7 +197,7 @@ export default class HostList extends Component {
   render() {
     return (
       <Table
-        multiSelectable={false}
+        multiSelectable
         allRowsSelected={false}
         onRowSelection={::this.handleRowSelection}
       >

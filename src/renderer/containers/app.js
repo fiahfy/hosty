@@ -5,8 +5,8 @@ import { Drawer, Snackbar } from 'material-ui'
 import fs from 'fs'
 import path from 'path'
 import * as ActionCreators from '../actions'
-import HostGroup from '../utils/host-group'
-import Host from '../utils/host'
+import * as HostGroup from '../utils/host-group'
+import * as Host from '../utils/host'
 
 function mapStateToProps(state) {
   return { messages: state.messages }

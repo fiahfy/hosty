@@ -7,10 +7,7 @@ import {
 import GroupItem from './group-item'
 import SortOrderIcon from './sort-order-icon'
 import isUpdateNeeded from '../utils/is-update-needed'
-
-const SORT_KEY_NAME = 'name'
-const SORT_ORDER_ASC = 'asc'
-const SORT_ORDER_DESC = 'desc'
+import * as HostGroup from '../utils/host-group'
 
 export default class GroupList extends Component {
   static propTypes = {
@@ -31,8 +28,8 @@ export default class GroupList extends Component {
   };
   state = {
     sortOptions: {
-      key: SORT_KEY_NAME,
-      order: SORT_ORDER_ASC,
+      key: HostGroup.KEY_NAME,
+      order: HostGroup.SORT_ASC,
     },
     sortedMap: new Map,
     selectedIds: [],
@@ -84,18 +81,11 @@ export default class GroupList extends Component {
     const { key, order } = options
 
     const sortedMap = new Map
-    groups.concat().sort((a, b) => {
-      const flag = order === SORT_ORDER_ASC
-      if (!a[key]) {
-        return flag ? 1 : -1
-      }
-      if (!b[key]) {
-        return !flag ? 1 : -1
-      }
-      return (flag ? a[key] > b[key] : a[key] < b[key]) ? 1 : -1
-    }).forEach((group, i) => {
-      sortedMap.set(group.id, i)
-    })
+    groups.concat()
+      .sort((a, b) => HostGroup.compare(a, b, key, order))
+      .forEach((group, i) => {
+        sortedMap.set(group.id, i)
+      })
 
     this.setState({ sortOptions: options, sortedMap })
   }
@@ -105,16 +95,16 @@ export default class GroupList extends Component {
   handleClickHeader(e, rowId, columnId) {
     const { key, order } = this.state.sortOptions
 
-    const columns = [null, null, SORT_KEY_NAME]
+    const columns = [null, null, HostGroup.KEY_NAME]
     const newKey = columns[columnId]
     if (!newKey) {
       return
     }
     let newOrder
-    if (key !== newKey || order !== SORT_ORDER_ASC) {
-      newOrder = SORT_ORDER_ASC
+    if (key !== newKey || order !== HostGroup.SORT_ASC) {
+      newOrder = HostGroup.SORT_ASC
     } else {
-      newOrder = SORT_ORDER_DESC
+      newOrder = HostGroup.SORT_DESC
     }
     this.sort(this.props.groups, { key: newKey, order: newOrder })
   }
@@ -142,8 +132,8 @@ export default class GroupList extends Component {
             <div style={styles.headerColumnText}>Group</div>
             <SortOrderIcon
               style={styles.headerColumnIcon}
-              hidden={key !== SORT_KEY_NAME}
-              asc={order === SORT_ORDER_ASC}
+              hidden={key !== HostGroup.KEY_NAME}
+              asc={order === HostGroup.SORT_ASC}
             />
           </TableHeaderColumn>
         </TableRow>

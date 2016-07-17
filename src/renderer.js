@@ -7,22 +7,24 @@ import { configureStore } from './renderer/store'
 import { ipcRenderer } from 'electron'
 import { bindActionCreators } from 'redux'
 import * as ActionCreators from './renderer/actions'
-import HostGroup from './renderer/utils/host-group'
-import HostsFileManager from './renderer/utils/hosts-file-manager'
+import * as HostGroup from './renderer/utils/host-group'
+import * as HostsFileManager from './renderer/utils/hosts-file-manager'
 
 // @see http://stackoverflow.com/a/34015469/988941
 import injectTapEventPlugin from 'react-tap-event-plugin'
 injectTapEventPlugin()
 
+import 'roboto-fontface/css/roboto/roboto-fontface.css'
+
 const store = configureStore()
+
+// TODO:
+HostsFileManager.setup()
 
 ReactDOM.render(
   <Root store={store} />,
   document.querySelector('#app')
 )
-
-// TODO:
-HostsFileManager.createSymlink()
 
 ipcRenderer.on('sendGroups', (event, { mode, groups }) => {
   if (mode === 'add') {

@@ -3,10 +3,10 @@ import {
   IconButton,
   TableRow, TableRowColumn,
 } from 'material-ui'
-import validator from 'validator'
 import HostStatusIcon from './host-status-icon'
 import EditableTextField from './editable-text-field'
 import isUpdateNeeded from '../utils/is-update-needed'
+import * as Host from '../utils/host'
 
 export default class HostItem extends Component {
   static propTypes = {
@@ -24,7 +24,7 @@ export default class HostItem extends Component {
     return isUpdateNeeded(this, nextProps, nextState)
   }
   focus() {
-    this.refs.hostTextField.focus()
+    this.refs[Host.KEY_HOST].focus()
   }
   handleClickIconButton(e) {
     e.stopPropagation()
@@ -37,20 +37,20 @@ export default class HostItem extends Component {
     const { host, onEditHost } = this.props
     const { name, value } = e.target
     const newHost = Object.assign({}, host)
-    newHost[name] = value
+    newHost[name] = value.trim()
     onEditHost(newHost)
   }
   handleKeyDown(e) {
-    if (e.keyCode === 9 && !e.shiftKey && this.refs.hostTextField.isFocused()) {
+    if (e.keyCode === 9 && !e.shiftKey && this.refs[Host.KEY_HOST].isFocused()) {
       e.preventDefault()
       e.target.blur()
-      this.refs.ipTextField.focus()
+      this.refs[Host.KEY_IP].focus()
       return
     }
-    if (e.keyCode === 9 && e.shiftKey && this.refs.ipTextField.isFocused()) {
+    if (e.keyCode === 9 && e.shiftKey && this.refs[Host.KEY_IP].isFocused()) {
       e.preventDefault()
       e.target.blur()
-      this.refs.hostTextField.focus()
+      this.refs[Host.KEY_HOST].focus()
       return
     }
     if (e.keyCode === 13) {
@@ -61,15 +61,8 @@ export default class HostItem extends Component {
     const { host, selected, onRowClick, ...others } = this.props
     delete others.onEditHost
 
-    const errors = []
-    if (!host.host || !host.host.length) {
-      errors.push('Missing Host')
-    }
-    if (!host.ip || !host.ip.length) {
-      errors.push('Missing IP')
-    } else if (!validator.isIP(host.ip)) {
-      errors.push('Invalid IP')
-    }
+    // const errors = Host.getErrorMessages(host)
+    const invalid = !Host.isValid(host)
 
     return (
       <TableRow
@@ -88,15 +81,15 @@ export default class HostItem extends Component {
         <TableRowColumn style={styles.iconColumn}>
           <IconButton onClick={::this.handleClickIconButton}>
             <HostStatusIcon
-              invalid={!!errors.length}
+              invalid={invalid}
               enable={host.enable}
             />
           </IconButton>
         </TableRowColumn>
         <TableRowColumn>
           <EditableTextField
-            name="host"
-            ref="hostTextField"
+            name={Host.KEY_HOST}
+            ref={Host.KEY_HOST}
             hintText="example.com"
             defaultValue={host.host}
             fullWidth
@@ -106,8 +99,8 @@ export default class HostItem extends Component {
         </TableRowColumn>
         <TableRowColumn>
           <EditableTextField
-            name="ip"
-            ref="ipTextField"
+            name={Host.KEY_IP}
+            ref={Host.KEY_IP}
             hintText="192.0.2.0"
             defaultValue={host.ip}
             fullWidth
