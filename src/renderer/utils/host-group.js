@@ -32,4 +32,13 @@ export default class HostGroup {
         previous + (current.hosts ? current.hosts.length : 0)
       ), 0)
   }
+  static compare(a, b, key) {
+    if (!a[key]) {
+      return 1
+    }
+    if (!b[key]) {
+      return -1
+    }
+    return (a[key] > b[key]) ? 1 : -1
+  }
 }

@@ -7,6 +7,7 @@ import {
 import HostItem from './host-item'
 import SortOrderIcon from './sort-order-icon'
 import isUpdateNeeded from '../utils/is-update-needed'
+import Host from '../utils/host'
 
 const SORT_KEY_HOST = 'host'
 const SORT_KEY_IP = 'ip'
@@ -82,17 +83,11 @@ export default class HostList extends Component {
   sort(hosts, options) {
     const { key, order } = options
 
+    const flag = order === SORT_ORDER_ASC ? 1 : -1
     const sortedMap = new Map
-    hosts.concat().sort((a, b) => {
-      const flag = order === SORT_ORDER_ASC
-      if (!a[key]) {
-        return flag ? 1 : -1
-      }
-      if (!b[key]) {
-        return !flag ? 1 : -1
-      }
-      return (flag ? a[key] > b[key] : a[key] < b[key]) ? 1 : -1
-    }).forEach((host, i) => {
+    hosts.concat().sort((a, b) => (
+      flag * Host.compare(a, b, key)
+    )).forEach((host, i) => {
       sortedMap.set(host.id, i)
     })
 

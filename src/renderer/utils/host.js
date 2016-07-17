@@ -49,8 +49,17 @@ export default class Host {
   }
   static isValid(host) {
     const errors = Host.getErrorMessages(host)
-    return Object.keys(errors).every(key => {
-      return errors[key] === null
-    })
+    return Object.keys(errors).every(key => (
+      errors[key] === null
+    ))
+  }
+  static compare(a, b, key) {
+    if (!a[key]) {
+      return 1
+    }
+    if (!b[key]) {
+      return -1
+    }
+    return (a[key] > b[key]) ? 1 : -1
   }
 }

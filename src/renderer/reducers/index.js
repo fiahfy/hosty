@@ -85,7 +85,10 @@ function messages(state = [], action) {
   switch (action.type) {
     case ActionTypes.CREATE_MESSAGE: {
       const { message } = action.payload
-      message.id = (new Date).getTime()
+      const maxId = state.reduce((previous, currentMessage) => (
+        currentMessage.id > previous ? currentMessage.id : previous
+      ), 0)
+      message.id = maxId + 1
       return [...state, message]
     }
     case ActionTypes.CLEAR_MESSAGES: {

@@ -7,6 +7,7 @@ import {
 import GroupItem from './group-item'
 import SortOrderIcon from './sort-order-icon'
 import isUpdateNeeded from '../utils/is-update-needed'
+import HostGroup from '../utils/host-group'
 
 const SORT_KEY_NAME = 'name'
 const SORT_ORDER_ASC = 'asc'
@@ -83,17 +84,11 @@ export default class GroupList extends Component {
   sort(groups, options) {
     const { key, order } = options
 
+    const flag = order === SORT_ORDER_ASC ? 1 : -1
     const sortedMap = new Map
-    groups.concat().sort((a, b) => {
-      const flag = order === SORT_ORDER_ASC
-      if (!a[key]) {
-        return flag ? 1 : -1
-      }
-      if (!b[key]) {
-        return !flag ? 1 : -1
-      }
-      return (flag ? a[key] > b[key] : a[key] < b[key]) ? 1 : -1
-    }).forEach((group, i) => {
+    groups.concat().sort((a, b) => (
+      flag * HostGroup.compare(a, b, key)
+    )).forEach((group, i) => {
       sortedMap.set(group.id, i)
     })
 
