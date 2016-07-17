@@ -37,7 +37,7 @@ export default class HostItem extends Component {
     const { host, onEditHost } = this.props
     const { name, value } = e.target
     const newHost = Object.assign({}, host)
-    newHost[name] = value
+    newHost[name] = value.trim()
     onEditHost(newHost)
   }
   handleKeyDown(e) {

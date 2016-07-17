@@ -36,7 +36,7 @@ export default class GroupItem extends Component {
     const { group, onEditGroup } = this.props
     const { name, value } = e.target
     const newGroup = Object.assign({}, group)
-    newGroup[name] = value
+    newGroup[name] = value.trim()
     onEditGroup(newGroup)
   }
   handleKeyDown(e) {
