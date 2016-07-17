@@ -1,14 +1,18 @@
 # Hosty
 [![Build Status](https://travis-ci.org/fiahfy/hosty.svg?branch=master)](https://travis-ci.org/fiahfy/hosty)
 
-This is an Electron application for hosts file management.
+Hosts file manager based on Electron.
 
 
-## Feature
-* Enable/disable a hosts setting quickly
+## Features
+* GUI manager
 * Managing group units
-* Import/Export hosts settings
+* Import/Export settings
 
+## Installation
+1. Download `.zip` file for your platform from [releases page](https://github.com/fiahfy/hosty/releases).
+2. Unzip the file.
+3. Open `.app` for OS X, Run `.exe` for Windows.
 
 ## Download
 https://github.com/fiahfy/hosty/releases
@@ -22,17 +26,17 @@ $ npm i
 $ npm run start:hot
 ```
 
-### Run & watch renderer
+### Run for Development
 ```
 $ npm run start
 ```
 
-### Run & watch renderer(HMR)
+### Run for Development(HMR)
 ```
 $ npm run start:hot
 ```
 
-### Packaging App
+### Packaging
 ```
 $ npm run package
 ```

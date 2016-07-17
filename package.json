@@ -2,7 +2,7 @@
   "name": "hosty",
   "productName": "Hosty",
   "version": "0.1.0",
-  "description": "Electron application for hosts file management",
+  "description": "Hosts file manager based on Electron",
   "keywords": [
     "electron",
     "react",
