@@ -177,7 +177,9 @@ export default class HostList extends Component {
     )
   }
   renderFooter() {
-    const disabled = !this.state.selectedIds.length
+    const count = this.state.selectedIds.length
+    const disabled = !count
+    const label = count > 1 ? `Delete (${count})` : 'Delete'
 
     return (
       <TableFooter
@@ -192,7 +194,7 @@ export default class HostList extends Component {
               onClick={this.props.onAddHost}
             />
             <FlatButton
-              label="Delete"
+              label={label}
               style={styles.button}
               secondary
               onClick={this.props.onDeleteHosts}
