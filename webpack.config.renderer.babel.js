@@ -44,7 +44,8 @@ export default {
         loader: 'url',
         query: {
           limit: '10000',
-          name: 'lib/[name].[ext]',
+          name: 'lib/[path][name].[ext]',
+          context: 'node_modules',
         },
       },
       {
@@ -52,7 +53,8 @@ export default {
         loader: 'url',
         query: {
           limit: '10000',
-          name: 'lib/[name].[ext]',
+          name: 'lib/[path][name].[ext]',
+          context: 'node_modules',
         },
       },
     ],
