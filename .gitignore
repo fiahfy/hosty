@@ -37,9 +37,9 @@ node_modules
 .idea
 /app/assets/js/renderer.js*
 /app/assets/lib/*
+/release/Hosty-*
 /main.js*
 dummyHosts
 hosts
-Hosty-*
 *.hosty
 !.gitkeep
