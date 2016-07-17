@@ -3,10 +3,10 @@ import {
   IconButton,
   TableRow, TableRowColumn,
 } from 'material-ui'
-import validator from 'validator'
 import HostStatusIcon from './host-status-icon'
 import EditableTextField from './editable-text-field'
 import isUpdateNeeded from '../utils/is-update-needed'
+import Host from '../utils/host'
 
 export default class HostItem extends Component {
   static propTypes = {
@@ -61,15 +61,8 @@ export default class HostItem extends Component {
     const { host, selected, onRowClick, ...others } = this.props
     delete others.onEditHost
 
-    const errors = []
-    if (!host.host || !host.host.length) {
-      errors.push('Missing Host')
-    }
-    if (!host.ip || !host.ip.length) {
-      errors.push('Missing IP')
-    } else if (!validator.isIP(host.ip)) {
-      errors.push('Invalid IP')
-    }
+    // const errors = Host.getErrorMessages(host)
+    const invalid = !Host.isValid(host)
 
     return (
       <TableRow
@@ -88,7 +81,7 @@ export default class HostItem extends Component {
         <TableRowColumn style={styles.iconColumn}>
           <IconButton onClick={::this.handleClickIconButton}>
             <HostStatusIcon
-              invalid={!!errors.length}
+              invalid={invalid}
               enable={host.enable}
             />
           </IconButton>

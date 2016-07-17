@@ -26,16 +26,31 @@ export default class Host {
       })
       .filter(item => !!item)
   }
+  static getErrorMessages(host) {
+    return {
+      host: Host.getHostErrorMessage(host.host),
+      ip: Host.getIPErrorMessage(host.ip),
+    }
+  }
+  static getHostErrorMessage(host) {
+    if (!host || !host.length) {
+      return 'Missing Host'
+    }
+    return null
+  }
+  static getIPErrorMessage(ip) {
+    if (!ip || !ip.length) {
+      return 'Missing IP'
+    }
+    if (!validator.isIP(ip)) {
+      return 'Invalid IP'
+    }
+    return null
+  }
   static isValid(host) {
-    if (!host.host || !host.host.length) {
-      return false
-    }
-    if (!host.ip || !host.ip.length) {
-      return false
-    }
-    if (!validator.isIP(host.ip)) {
-      return false
-    }
-    return true
+    const errors = Host.getErrorMessages(host)
+    return Object.keys(errors).every(key => {
+      return errors[key] === null
+    })
   }
 }
