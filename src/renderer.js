@@ -14,6 +14,8 @@ import HostsFileManager from './renderer/utils/hosts-file-manager'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 injectTapEventPlugin()
 
+import 'roboto-fontface/css/roboto/roboto-fontface.css'
+
 const store = configureStore()
 
 // TODO:

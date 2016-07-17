@@ -3,12 +3,18 @@
 
 This is an Electron application for hosts file management.
 
+
 ## Feature
 * Enable/disable a hosts setting quickly
 * Managing group units
 * Import/Export hosts settings
 
-## Getting Started
+
+## Download
+https://github.com/fiahfy/hosty/releases
+
+
+## Development
 ```
 $ git clone https://github.com/fiahfy/hosty.git
 $ cd hosty
@@ -30,6 +36,3 @@ $ npm run start:hot
 ```
 $ npm run package
 ```
-
-## Download
-https://github.com/fiahfy/hosty/releases

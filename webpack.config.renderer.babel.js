@@ -15,6 +15,7 @@ export default {
     path: './app/assets/',
     filename: 'js/renderer.js',
     libraryTarget: 'commonjs2',
+    publicPath: './assets/',
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -32,6 +33,26 @@ export default {
         query: {
           plugins: ['transform-decorators-legacy'],
           presets: ['es2015', 'stage-0', 'react'],
+        },
+      },
+      {
+        test: /\.css$/,
+        loader: 'style!css',
+      },
+      {
+        test: /\.(jpg|gif|png|svg)$/,
+        loader: 'url',
+        query: {
+          limit: '10000',
+          name: 'lib/[name].[ext]',
+        },
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf)$/,
+        loader: 'url',
+        query: {
+          limit: '10000',
+          name: 'lib/[name].[ext]',
         },
       },
     ],
