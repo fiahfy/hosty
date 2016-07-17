@@ -6,6 +6,7 @@ import {
 import HostStatusIcon from './host-status-icon'
 import EditableTextField from './editable-text-field'
 import isUpdateNeeded from '../utils/is-update-needed'
+import HostGroup from '../utils/host-group'
 
 export default class GroupItem extends Component {
   static propTypes = {
@@ -23,7 +24,7 @@ export default class GroupItem extends Component {
     return isUpdateNeeded(this, nextProps, nextState)
   }
   focus() {
-    this.refs.nameTextField.focus()
+    this.refs[HostGroup.KEY_NAME].focus()
   }
   handleClickIconButton(e) {
     e.stopPropagation()
@@ -74,8 +75,8 @@ export default class GroupItem extends Component {
         </TableRowColumn>
         <TableRowColumn>
           <EditableTextField
-            name="name"
-            ref="nameTextField"
+            name={HostGroup.KEY_NAME}
+            ref={HostGroup.KEY_NAME}
             hintText="Group name"
             defaultValue={group.name}
             fullWidth

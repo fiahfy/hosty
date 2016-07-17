@@ -24,7 +24,7 @@ export default class HostItem extends Component {
     return isUpdateNeeded(this, nextProps, nextState)
   }
   focus() {
-    this.refs.hostTextField.focus()
+    this.refs[Host.KEY_HOST].focus()
   }
   handleClickIconButton(e) {
     e.stopPropagation()
@@ -41,16 +41,16 @@ export default class HostItem extends Component {
     onEditHost(newHost)
   }
   handleKeyDown(e) {
-    if (e.keyCode === 9 && !e.shiftKey && this.refs.hostTextField.isFocused()) {
+    if (e.keyCode === 9 && !e.shiftKey && this.refs[Host.KEY_HOST].isFocused()) {
       e.preventDefault()
       e.target.blur()
-      this.refs.ipTextField.focus()
+      this.refs[Host.KEY_IP].focus()
       return
     }
-    if (e.keyCode === 9 && e.shiftKey && this.refs.ipTextField.isFocused()) {
+    if (e.keyCode === 9 && e.shiftKey && this.refs[Host.KEY_IP].isFocused()) {
       e.preventDefault()
       e.target.blur()
-      this.refs.hostTextField.focus()
+      this.refs[Host.KEY_HOST].focus()
       return
     }
     if (e.keyCode === 13) {
@@ -88,8 +88,8 @@ export default class HostItem extends Component {
         </TableRowColumn>
         <TableRowColumn>
           <EditableTextField
-            name="host"
-            ref="hostTextField"
+            name={Host.KEY_HOST}
+            ref={Host.KEY_HOST}
             hintText="example.com"
             defaultValue={host.host}
             fullWidth
@@ -99,8 +99,8 @@ export default class HostItem extends Component {
         </TableRowColumn>
         <TableRowColumn>
           <EditableTextField
-            name="ip"
-            ref="ipTextField"
+            name={Host.KEY_IP}
+            ref={Host.KEY_IP}
             hintText="192.0.2.0"
             defaultValue={host.ip}
             fullWidth

@@ -1,10 +1,26 @@
 import validator from 'validator'
 
 export default class Host {
+  static SORT_ASC = 'asc'
+  static SORT_DESC = 'desc'
+  static KEY_ENABLE = 'enable'
+  static KEY_HOST = 'host'
+  static KEY_IP = 'ip'
   static build(hosts) {
     const newHosts = Array.isArray(hosts) ? hosts : [hosts]
     return newHosts
       .filter(host => Host.isValid(host))
+      .sort((a, b) => {
+        let compare = Host.compare(a, b, Host.KEY_IP)
+        if (compare !== 0) {
+          return compare
+        }
+        compare = Host.compare(a, b, Host.KEY_ENABLE, Host.SORT_DESC)
+        if (compare !== 0) {
+          return compare
+        }
+        return Host.compare(a, b, Host.KEY_HOST)
+      })
       .map(item => (
         `${(item.enable ? '' : '#')}${item.ip}\t${item.host}`
       ))
@@ -53,13 +69,17 @@ export default class Host {
       errors[key] === null
     ))
   }
-  static compare(a, b, key) {
-    if (!a[key]) {
-      return 1
+  static compare(a, b, key, order) {
+    const r = order === Host.SORT_DESC ? -1 : 1
+    if (a[key] === '' || a[key] === null || typeof a[key] === 'undefined') {
+      return r
     }
-    if (!b[key]) {
-      return -1
+    if (b[key] === '' || b[key] === null || typeof b[key] === 'undefined') {
+      return -1 * r
     }
-    return (a[key] > b[key]) ? 1 : -1
+    if (a[key] === b[key]) {
+      return 0
+    }
+    return (a[key] > b[key]) ? r : -1 * r
   }
 }

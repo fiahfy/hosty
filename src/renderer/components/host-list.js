@@ -9,11 +9,6 @@ import SortOrderIcon from './sort-order-icon'
 import isUpdateNeeded from '../utils/is-update-needed'
 import Host from '../utils/host'
 
-const SORT_KEY_HOST = 'host'
-const SORT_KEY_IP = 'ip'
-const SORT_ORDER_ASC = 'asc'
-const SORT_ORDER_DESC = 'desc'
-
 export default class HostList extends Component {
   static propTypes = {
     groupId: PropTypes.number,
@@ -33,8 +28,8 @@ export default class HostList extends Component {
   };
   state = {
     sortOptions: {
-      key: SORT_KEY_HOST,
-      order: SORT_ORDER_ASC,
+      key: Host.KEY_HOST,
+      order: Host.SORT_ASC,
     },
     sortedMap: new Map,
     selectedIds: [],
@@ -83,13 +78,12 @@ export default class HostList extends Component {
   sort(hosts, options) {
     const { key, order } = options
 
-    const flag = order === SORT_ORDER_ASC ? 1 : -1
     const sortedMap = new Map
-    hosts.concat().sort((a, b) => (
-      flag * Host.compare(a, b, key)
-    )).forEach((host, i) => {
-      sortedMap.set(host.id, i)
-    })
+    hosts.concat()
+      .sort((a, b) => Host.compare(a, b, key, order))
+      .forEach((host, i) => {
+        sortedMap.set(host.id, i)
+      })
 
     this.setState({ sortOptions: options, sortedMap })
   }
@@ -99,16 +93,16 @@ export default class HostList extends Component {
   handleClickHeader(e, rowId, columnId) {
     const { key, order } = this.state.sortOptions
 
-    const columns = [null, null, SORT_KEY_HOST, SORT_KEY_IP]
+    const columns = [null, null, Host.KEY_HOST, Host.KEY_IP]
     const newKey = columns[columnId]
     if (!newKey) {
       return
     }
     let newOrder
-    if (key !== newKey || order !== SORT_ORDER_ASC) {
-      newOrder = SORT_ORDER_ASC
+    if (key !== newKey || order !== Host.SORT_ASC) {
+      newOrder = Host.SORT_ASC
     } else {
-      newOrder = SORT_ORDER_DESC
+      newOrder = Host.SORT_DESC
     }
     this.sort(this.props.hosts, { key: newKey, order: newOrder })
   }
@@ -136,16 +130,16 @@ export default class HostList extends Component {
             <div style={styles.headerColumnText}>Host</div>
             <SortOrderIcon
               style={styles.headerColumnIcon}
-              hidden={key !== SORT_KEY_HOST}
-              asc={order === SORT_ORDER_ASC}
+              hidden={key !== Host.KEY_HOST}
+              asc={order === Host.SORT_ASC}
             />
           </TableHeaderColumn>
           <TableHeaderColumn style={styles.headerSortableColumn}>
             <div style={styles.headerColumnText}>IP</div>
             <SortOrderIcon
               style={styles.headerColumnIcon}
-              hidden={key !== SORT_KEY_IP}
-              asc={order === SORT_ORDER_ASC}
+              hidden={key !== Host.KEY_IP}
+              asc={order === Host.SORT_ASC}
             />
           </TableHeaderColumn>
         </TableRow>
