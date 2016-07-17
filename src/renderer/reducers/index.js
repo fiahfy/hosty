@@ -3,11 +3,11 @@ import * as ActionTypes from '../actions'
 function groups(state = [], action) {
   switch (action.type) {
     case ActionTypes.INITIALIZE_GROUPS: {
-      const { groups: newGroups } = action
+      const { groups: newGroups } = action.payload
       return newGroups
     }
     case ActionTypes.CREATE_GROUP: {
-      const { group } = action
+      const { group } = action.payload
       const maxId = state.reduce((previous, currentGroup) => (
         currentGroup.id > previous ? currentGroup.id : previous
       ), 0)
@@ -15,19 +15,19 @@ function groups(state = [], action) {
       return [...state, group]
     }
     case ActionTypes.UPDATE_GROUP: {
-      const { id, group } = action
+      const { id, group } = action.payload
       return state.map(currentGroup => (
         currentGroup.id !== id ? currentGroup : group
       ))
     }
     case ActionTypes.DELETE_GROUPS: {
-      const { ids } = action
+      const { ids } = action.payload
       return state.filter(currentGroup => (
         !ids.includes(currentGroup.id)
       ))
     }
     case ActionTypes.CREATE_HOST: {
-      const { groupId, host } = action
+      const { groupId, host } = action.payload
       return state.map(currentGroup => {
         if (currentGroup.id !== groupId) {
           return currentGroup
@@ -45,7 +45,7 @@ function groups(state = [], action) {
       })
     }
     case ActionTypes.UPDATE_HOST: {
-      const { groupId, id, host } = action
+      const { groupId, id, host } = action.payload
       return state.map(currentGroup => {
         if (currentGroup.id !== groupId) {
           return currentGroup
@@ -61,7 +61,7 @@ function groups(state = [], action) {
       })
     }
     case ActionTypes.DELETE_HOSTS: {
-      const { groupId, ids } = action
+      const { groupId, ids } = action.payload
       return state.map(currentGroup => {
         if (currentGroup.id !== groupId) {
           return currentGroup
@@ -84,7 +84,7 @@ function groups(state = [], action) {
 function messages(state = [], action) {
   switch (action.type) {
     case ActionTypes.CREATE_MESSAGE: {
-      const { message } = action
+      const { message } = action.payload
       message.id = (new Date).getTime()
       return [...state, message]
     }
