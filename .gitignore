@@ -35,7 +35,7 @@ node_modules
 
 # Custom
 .idea
-/public/assets/js/renderer.js*
+/app/assets/js/renderer.js*
 /main.js*
 dummyHosts
 hosts

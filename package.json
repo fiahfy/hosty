@@ -33,8 +33,8 @@
     "build:renderer": "webpack --config webpack.config.renderer.babel.js",
     "build:main": "webpack --config webpack.config.main.babel.js",
     "package": "npm run package:mac",
-    "package:mac": "NODE_ENV=production npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --platform=darwin --arch=x64 --icon=public/assets/img/hosty.icns",
-    "package:win": "NODE_ENV=production npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --platform=win32 --arch=x64 --icon=public/assets/img/hosty.ico --version-string.LegalCopyright=\"© 2016 fiahfy\" --version-string.FileDescription=\"Electron application\" --version-string.OriginalFilename=\"Hosty.exe\" --version-string.ProductName=\"Hosty\"",
+    "package:mac": "NODE_ENV=production npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --platform=darwin --arch=x64 --icon=app/assets/img/hosty.icns",
+    "package:win": "NODE_ENV=production npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --platform=win32 --arch=x64 --icon=app/assets/img/hosty.ico --version-string.LegalCopyright=\"© 2016 fiahfy\" --version-string.FileDescription=\"Electron application\" --version-string.OriginalFilename=\"Hosty.exe\" --version-string.ProductName=\"Hosty\"",
     "lint": "eslint src"
   },
   "dependencies": {

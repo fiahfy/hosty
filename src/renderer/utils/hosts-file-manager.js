@@ -10,12 +10,12 @@ const app = isRenderer ? remote.app : mainApp
 const BEGIN_SECTION = '## hosty begin ##'
 const END_SECTION = '## hosty end ##'
 
-const DEBUG_HOSTS = process.env.NODE_ENV === 'development'
+const DEBUG = process.env.NODE_ENV === 'development'
 const HOSTS_OSX = '/etc/hosts'
 const HOSTS_WINDOWS = 'C:\\Windows\\System32\\drivers\\etc\\hosts'
 const HOSTS_DUMMY = path.join(process.cwd(), 'dummyHosts')
 let HOSTS = process.platform === 'win32' ? HOSTS_WINDOWS : HOSTS_OSX
-if (DEBUG_HOSTS) {
+if (DEBUG) {
   HOSTS = HOSTS_DUMMY
 }
 const USER_HOSTS = path.join(app.getPath('userData'), 'hosts')
@@ -40,7 +40,7 @@ const HostsFile = new (class {
 
 class HostsFileManager {
   setupHostsFile() {
-    const options = { admin: !DEBUG_HOSTS }
+    const options = { admin: !DEBUG }
     try {
       const stats = fs.lstatSync(HOSTS)
       if (!stats.isSymbolicLink()) {
@@ -57,7 +57,7 @@ class HostsFileManager {
     }
   }
   setupUserHostsFile() {
-    const options = { admin: !DEBUG_HOSTS }
+    const options = { admin: !DEBUG }
     try {
       const stats = fs.lstatSync(USER_HOSTS)
       if (stats.isSymbolicLink()) {

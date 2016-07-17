@@ -13,7 +13,7 @@ export default class Window {
 
     this.browserWindow = new BrowserWindow(newOptions)
 
-    this.browserWindow.loadURL(`file://${__dirname}/public/assets/index.html`)
+    this.browserWindow.loadURL(`file://${__dirname}/app/index.html`)
 
     if (process.env.NODE_ENV === 'development') {
       this.browserWindow.webContents.openDevTools()
