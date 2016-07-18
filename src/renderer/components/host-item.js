@@ -3,6 +3,7 @@ import {
   IconButton,
   TableRow, TableRowColumn,
 } from 'material-ui'
+import * as Styles from 'material-ui/styles'
 import HostStatusIcon from './host-status-icon'
 import EditableTextField from './editable-text-field'
 import isUpdateNeeded from '../utils/is-update-needed'
@@ -20,6 +21,13 @@ export default class HostItem extends Component {
     selected: false,
     onEditHost: () => {},
   };
+  constructor(props) {
+    super(props)
+    this.state.host = this.props.host
+  }
+  state = {
+    host: {},
+  };
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState)
   }
@@ -31,6 +39,7 @@ export default class HostItem extends Component {
     const { host, onEditHost } = this.props
     const newHost = Object.assign({}, host)
     newHost.enable = !newHost.enable
+    this.setState({ host: newHost })
     onEditHost(newHost)
   }
   handleBlur(e) {
@@ -39,6 +48,18 @@ export default class HostItem extends Component {
     const newHost = Object.assign({}, host)
     newHost[name] = value.trim()
     onEditHost(newHost)
+  }
+  handleChange(e) {
+    const { host } = this.state
+    const newHost = Object.assign({}, host)
+    if (this.refs[Host.KEY_HOST].isFocused()) {
+      newHost.host = e.target.value
+      this.setState({ host: newHost })
+    }
+    if (this.refs[Host.KEY_IP].isFocused()) {
+      newHost.ip = e.target.value
+      this.setState({ host: newHost })
+    }
   }
   handleKeyDown(e) {
     if (e.keyCode === 9 && !e.shiftKey && this.refs[Host.KEY_HOST].isFocused()) {
@@ -58,10 +79,12 @@ export default class HostItem extends Component {
     }
   }
   render() {
-    const { host, selected, onRowClick, ...others } = this.props
+    const { host } = this.state
+    const { selected, onRowClick, ...others } = this.props
+    delete others.host
     delete others.onEditHost
 
-    // const errors = Host.getErrorMessages(host)
+    const errors = Host.getErrorMessages(host)
     const invalid = !Host.isValid(host)
 
     return (
@@ -91,10 +114,13 @@ export default class HostItem extends Component {
             name={Host.KEY_HOST}
             ref={Host.KEY_HOST}
             hintText="example.com"
-            defaultValue={host.host}
+            errorText={errors[Host.KEY_HOST]}
+            errorStyle={styles.errorTextField}
+            value={host.host}
             fullWidth
             onBlur={::this.handleBlur}
             onKeyDown={::this.handleKeyDown}
+            onChange={::this.handleChange}
           />
         </TableRowColumn>
         <TableRowColumn>
@@ -102,10 +128,13 @@ export default class HostItem extends Component {
             name={Host.KEY_IP}
             ref={Host.KEY_IP}
             hintText="192.0.2.0"
-            defaultValue={host.ip}
+            errorText={errors[Host.KEY_IP]}
+            errorStyle={styles.errorTextField}
+            value={host.ip}
             fullWidth
             onBlur={::this.handleBlur}
             onKeyDown={::this.handleKeyDown}
+            onChange={::this.handleChange}
           />
         </TableRowColumn>
       </TableRow>
@@ -120,6 +149,10 @@ const styles = {
   iconColumn: {
     width: 48,
     textAlign: 'center',
+    verticalAlign: 'top',
     paddingRight: 0,
+  },
+  errorTextField: {
+    color: Styles.colors.pinkA200,
   },
 }

@@ -3,6 +3,7 @@ import {
   IconButton,
   TableRow, TableRowColumn,
 } from 'material-ui'
+import * as Styles from 'material-ui/styles'
 import HostStatusIcon from './host-status-icon'
 import EditableTextField from './editable-text-field'
 import isUpdateNeeded from '../utils/is-update-needed'
@@ -20,6 +21,13 @@ export default class GroupItem extends Component {
     selected: false,
     onEditGroup: () => {},
   };
+  constructor(props) {
+    super(props)
+    this.state.group = this.props.group
+  }
+  state = {
+    group: {},
+  };
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState)
   }
@@ -31,6 +39,7 @@ export default class GroupItem extends Component {
     const { group, onEditGroup } = this.props
     const newGroup = Object.assign({}, group)
     newGroup.enable = !newGroup.enable
+    this.setState({ group: newGroup })
     onEditGroup(newGroup)
   }
   handleBlur(e) {
@@ -40,16 +49,27 @@ export default class GroupItem extends Component {
     newGroup[name] = value.trim()
     onEditGroup(newGroup)
   }
+  handleChange(e) {
+    const { group } = this.state
+    const newGroup = Object.assign({}, group)
+    if (this.refs[HostGroup.KEY_NAME].isFocused()) {
+      newGroup.name = e.target.value
+      this.setState({ group: newGroup })
+    }
+  }
   handleKeyDown(e) {
     if (e.keyCode === 13) {
       e.target.blur()
     }
   }
   render() {
-    const { group, selected, onRowClick, ...others } = this.props
+    const { group } = this.state
+    const { selected, onRowClick, ...others } = this.props
+    delete others.group
     delete others.onEditGroup
 
-    const errors = []
+    const errors = {}
+    const invalid = false
 
     return (
       <TableRow
@@ -68,7 +88,7 @@ export default class GroupItem extends Component {
         <TableRowColumn style={styles.iconColumn}>
           <IconButton onClick={::this.handleClickIconButton}>
             <HostStatusIcon
-              invalid={!!errors.length}
+              invalid={invalid}
               enable={group.enable}
             />
           </IconButton>
@@ -78,10 +98,13 @@ export default class GroupItem extends Component {
             name={HostGroup.KEY_NAME}
             ref={HostGroup.KEY_NAME}
             hintText="Group name"
-            defaultValue={group.name}
+            errorText={errors[HostGroup.KEY_HOST]}
+            errorStyle={styles.errorTextField}
+            value={group.name}
             fullWidth
             onBlur={::this.handleBlur}
             onKeyDown={::this.handleKeyDown}
+            onChange={::this.handleChange}
           />
         </TableRowColumn>
       </TableRow>
@@ -96,6 +119,10 @@ const styles = {
   iconColumn: {
     width: 48,
     textAlign: 'center',
+    verticalAlign: 'top',
     paddingRight: 0,
+  },
+  errorTextField: {
+    color: Styles.colors.pinkA200,
   },
 }

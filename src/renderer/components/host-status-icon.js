@@ -7,12 +7,12 @@ export default function HostStatusIcon(props) {
   if (invalid) {
     return (
       <SvgIcons.DeviceSignalCellularConnectedNoInternet4Bar
-        color={Styles.colors.yellow700}
+        color={Styles.colors.yellow600}
       />
     )
   }
   return enable
-    ? <SvgIcons.DeviceSignalCellular4Bar color={Styles.colors.green600} />
+    ? <SvgIcons.DeviceSignalCellular4Bar color={Styles.colors.green400} />
     : <SvgIcons.DeviceSignalCellularOff color={Styles.colors.grey400} />
 }
 
