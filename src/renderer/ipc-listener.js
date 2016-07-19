@@ -25,7 +25,7 @@ export function setupListener(store) {
   })
 
   ipcRenderer.on('requestGroups', (event) => {
-    const groups = store.getState().groups
+    const { groups } = store.getState()
     event.sender.send('sendGroups', { groups })
   })
 

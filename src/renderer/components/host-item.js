@@ -64,13 +64,11 @@ export default class HostItem extends Component {
   handleKeyDown(e) {
     if (e.keyCode === 9 && !e.shiftKey && this.refs[Host.KEY_HOST].isFocused()) {
       e.preventDefault()
-      e.target.blur()
       this.refs[Host.KEY_IP].focus()
       return
     }
     if (e.keyCode === 9 && e.shiftKey && this.refs[Host.KEY_IP].isFocused()) {
       e.preventDefault()
-      e.target.blur()
       this.refs[Host.KEY_HOST].focus()
       return
     }
