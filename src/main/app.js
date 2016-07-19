@@ -1,12 +1,12 @@
 import { app } from 'electron'
 import fs from 'fs'
 import path from 'path'
-import ApplicationWindow from './application-window'
+import AppWindow from './app-window'
 import * as HostsFileManager from '../renderer/utils/hosts-file-manager'
 
 const PATH_WINDOW_OPTIONS = path.join(app.getPath('userData'), 'window.json')
 
-export default class Application {
+export default class App {
   load() {
     this.handleEvents()
   }
@@ -17,7 +17,7 @@ export default class Application {
 
     const options = this.loadWindowOptions()
 
-    this.window = new ApplicationWindow(this)
+    this.window = new AppWindow(this)
     this.window.open(options)
   }
   removeWindow() {

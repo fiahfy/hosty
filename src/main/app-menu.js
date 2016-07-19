@@ -4,7 +4,7 @@ import path from 'path'
 import * as HostGroup from '../renderer/utils/host-group'
 import * as Host from '../renderer/utils/host'
 
-export default class ApplicationMenu {
+export default class AppMenu {
   importHostyFile(item, focusedWindow) {
     dialog.showOpenDialog(
       { filters: [{ name: 'Hosty File', extensions: ['hosty'] }] },

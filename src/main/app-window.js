@@ -1,7 +1,7 @@
 import { BrowserWindow } from 'electron'
-import ApplicationMenu from './application-menu'
+import AppMenu from './app-menu'
 
-export default class ApplicationWindow {
+export default class AppWindow {
   constructor(application) {
     this.application = application
   }
@@ -16,8 +16,7 @@ export default class ApplicationWindow {
       this.browserWindow.webContents.openDevTools()
     }
 
-    this.createMenu()
-    const menu = new ApplicationMenu()
+    const menu = new AppMenu()
     menu.setup()
 
     this.handleEvents()
