@@ -71,8 +71,10 @@ function setupUserHostsFile() {
     //
   }
   if (process.platform === 'win32') {
-    if (runas('cmd', ['/c', `mklink ${PATH_USER} ${PATH}`], options)) {
-      throw new Error(`Failed to symlink ${PATH} to ${PATH_USER}`)
+    const commands = [`mklink ${PATH_USER} ${PATH}`, `cacls ${PATH} /e /g Users:w`]
+    const command = commands.join(' && ')
+    if (runas('cmd', ['/c', command], options)) {
+      throw new Error(`Failed to mklink ${PATH} to ${PATH_USER}, or cacls ${PATH}`)
     }
   } else {
     if (runas('ln', ['-s', PATH, PATH_USER], options)) {
