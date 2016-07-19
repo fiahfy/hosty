@@ -43,7 +43,7 @@ export default class EditableTextField extends Component {
       this.setState({ editable: true })
     }
   }
-  handleDoubleClickLabel() {
+  handleDoubleClickLabel(e) {
     if (!this.props.clickToEditable) {
       e.stopPropagation()
       this.setState({ editable: true })
