@@ -116,6 +116,7 @@ export default class HostItem extends Component {
             errorStyle={styles.errorTextField}
             value={host.host}
             fullWidth
+            clickToEditable={selected}
             onBlur={::this.handleBlur}
             onKeyDown={::this.handleKeyDown}
             onChange={::this.handleChange}
@@ -130,6 +131,7 @@ export default class HostItem extends Component {
             errorStyle={styles.errorTextField}
             value={host.ip}
             fullWidth
+            clickToEditable={selected}
             onBlur={::this.handleBlur}
             onKeyDown={::this.handleKeyDown}
             onChange={::this.handleChange}

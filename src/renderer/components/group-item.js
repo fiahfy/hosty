@@ -102,6 +102,7 @@ export default class GroupItem extends Component {
             errorStyle={styles.errorTextField}
             value={group.name}
             fullWidth
+            clickToEditable={selected}
             onBlur={::this.handleBlur}
             onKeyDown={::this.handleKeyDown}
             onChange={::this.handleChange}
