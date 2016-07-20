@@ -1,4 +1,4 @@
-import Application from './main/app'
+import App from './main/app'
 
-const application = new Application
-application.load()
+const app = new App
+app.load()

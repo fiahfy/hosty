@@ -32,7 +32,7 @@ export function parse(data) {
   return data
     .split('\n')
     .map(item => {
-      const matches = item.match(/^([#\s]*)(.*)\t(.*)/i)
+      const matches = item.match(/^(#[#\s\t]*)?([^#\s\t]+)[\s\t]+([^#\s\t]+)[\s\t]*(#.*)?$/i)
       if (!matches) {
         return null
       }

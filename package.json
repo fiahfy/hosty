@@ -1,7 +1,7 @@
 {
   "name": "hosty",
   "productName": "Hosty",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Hosts file manager based on Electron",
   "keywords": [
     "electron",
@@ -33,10 +33,12 @@
     "build:renderer": "webpack --config webpack.config.renderer.babel.js",
     "build:main": "webpack --config webpack.config.main.babel.js",
     "package": "npm run package:mac",
-    "package:mac": "NODE_ENV=production npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --out release --ignore release --platform=darwin --arch=x64 --icon=app/assets/img/hosty.icns",
-    "package:win": "NODE_ENV=production npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --out release --ignore release --platform=win32 --arch=x64 --icon=app/assets/img/hosty.ico --version-string.LegalCopyright=\"© 2016 fiahfy\" --version-string.FileDescription=\"Electron application\" --version-string.OriginalFilename=\"Hosty.exe\" --version-string.ProductName=\"Hosty\"",
-    "archive": "rm release/*.zip; ls -d release/* | xargs -I{} zip -r {}.zip {}",
-    "lint": "eslint src"
+    "package:mac": "NODE_ENV=production npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --app-copyright=\"© 2016 fiahfy\" --out release --ignore release --platform=darwin --arch=x64 --icon=app/assets/img/hosty.icns",
+    "package:win": "NODE_ENV=production npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --app-copyright=\"© 2016 fiahfy\" --out release --ignore release --platform=win32 --arch=x64 --icon=app/assets/img/hosty.ico --version-string.FileDescription=\"Electron application\" --version-string.OriginalFilename=\"Hosty.exe\" --version-string.ProductName=\"Hosty\"",
+    "archive": "cd release; rm *.zip; ls | xargs -I{} zip -r {}.zip {}",
+    "lint": "eslint src",
+    "cmd:start": "start /b npm run watch && npm run build:main && electron main.js",
+    "cmd:start:hot": "start /b npm run hot:renderer && npm run build:main && set HOT=1 && electron main.js"
   },
   "dependencies": {
     "babel-loader": "6.2.4",

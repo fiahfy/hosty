@@ -7,12 +7,14 @@ export default class EditableTextField extends Component {
   };
   static propTypes = {
     ...TextField.propTypes,
-    onBlur: PropTypes.func,
-    onClick: PropTypes.func,
+    clickToEditable: PropTypes.bool,
   };
   static defaultProps = {
-    onBlur: () => {},
+    ...TextField.defaultProps,
+    clickToEditable: false,
     onClick: () => {},
+    onDoubleClick: () => {},
+    onBlur: () => {},
   };
   state = {
     editable: false,
@@ -31,39 +33,55 @@ export default class EditableTextField extends Component {
     e.stopPropagation()
     this.props.onClick(e)
   }
-  handleDoubleClick() {
-    this.setState({ editable: true })
+  handleDoubleClick(e) {
+    e.stopPropagation()
+    this.props.onDoubleClick(e)
+  }
+  handleClickLabel(e) {
+    if (this.props.clickToEditable) {
+      e.stopPropagation()
+      this.setState({ editable: true })
+    }
+  }
+  handleDoubleClickLabel(e) {
+    if (!this.props.clickToEditable) {
+      e.stopPropagation()
+      this.setState({ editable: true })
+    }
   }
   render() {
-    const { hintText, defaultValue, ...others } = this.props
-    delete others.onBlur
-    delete others.onClick
+    const { hintText, defaultValue, value, ...others } = this.props
+    delete others.clickToEditable
+
     const { editable } = this.state
 
     if (!editable) {
-      const value = defaultValue || hintText
+      const sourceValue = value || defaultValue
+      const text = sourceValue || hintText
       const style = this.context.muiTheme.textField
-      const color = defaultValue ? style.textColor : style.hintColor
+      const color = sourceValue ? style.textColor : style.hintColor
       return (
         <div
           style={{ ...styles.label, color }}
-          onDoubleClick={::this.handleDoubleClick}
+          onClick={::this.handleClickLabel}
+          onDoubleClick={::this.handleDoubleClickLabel}
         >
-          {value}
+          {text}
         </div>
       )
     }
 
     return (
       <TextField
+        {...others}
         ref="textField"
         hintText={hintText}
         defaultValue={defaultValue}
+        value={value}
         autoFocus
         onBlur={::this.handleBlur}
         onClick={::this.handleClick}
-        onDoubleClick={e => { e.stopPropagation() }}
-        {...others}
+        onDoubleClick={::this.handleDoubleClick}
       />
     )
   }

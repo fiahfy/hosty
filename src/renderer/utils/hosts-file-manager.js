@@ -71,8 +71,10 @@ function setupUserHostsFile() {
     //
   }
   if (process.platform === 'win32') {
-    if (runas('cmd', ['/c', `mklink ${PATH_USER} ${PATH}`], options)) {
-      throw new Error(`Failed to symlink ${PATH} to ${PATH_USER}`)
+    const commands = [`mklink ${PATH_USER} ${PATH}`, `cacls ${PATH} /e /g Users:w`]
+    const command = commands.join(' && ')
+    if (runas('cmd', ['/c', command], options)) {
+      throw new Error(`Failed to mklink ${PATH} to ${PATH_USER}, or cacls ${PATH}`)
     }
   } else {
     if (runas('ln', ['-s', PATH, PATH_USER], options)) {
@@ -89,10 +91,11 @@ export function setup() {
   setupUserHostsFile()
 }
 
-export function save(groups) {
+export function save(groups = []) {
   const data = read()
 
-  let newData = `${SECTION_BEGIN}\n${HostGroup.build(groups)}\n${SECTION_END}\n`
+  let newData = HostGroup.build(groups)
+  newData = `${SECTION_BEGIN}\n${newData}\n${SECTION_END}\n`
 
   const reg = new RegExp(
     String.raw`([\s\S]*\n?)${SECTION_BEGIN}\n[\s\S]*\n${SECTION_END}\n?([\s\S]*)`,
@@ -109,5 +112,5 @@ export function save(groups) {
 }
 
 export function clear() {
-  save([])
+  save()
 }

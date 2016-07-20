@@ -114,8 +114,6 @@ export default class App extends Component {
 
 const styles = {
   app: {
-    // WebkitUserSelect: 'none',
-    // paddingBottom: 56,
     overflow: 'hidden',
     height: '100%',
     boxSizing: 'border-box',
