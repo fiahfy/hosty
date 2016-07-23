@@ -156,7 +156,7 @@ export default class HostList extends Component {
         {this.getSortedHosts().map(host => (
           <HostItem
             ref={host.id}
-            key={host.id}
+            key={`${this.props.groupId}-${host.id}`}
             host={host}
             selected={this.state.selectedIds.includes(host.id)}
             onEditHost={::this.handleEditHost}

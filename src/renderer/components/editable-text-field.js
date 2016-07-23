@@ -50,16 +50,15 @@ export default class EditableTextField extends Component {
     }
   }
   render() {
-    const { hintText, defaultValue, value, ...others } = this.props
+    const { hintText, value, ...others } = this.props
     delete others.clickToEditable
 
     const { editable } = this.state
 
     if (!editable) {
-      const sourceValue = value || defaultValue
-      const text = sourceValue || hintText
+      const text = value || hintText
       const style = this.context.muiTheme.textField
-      const color = sourceValue ? style.textColor : style.hintColor
+      const color = value ? style.textColor : style.hintColor
       return (
         <div
           style={{ ...styles.label, color }}
@@ -76,8 +75,7 @@ export default class EditableTextField extends Component {
         {...others}
         ref="textField"
         hintText={hintText}
-        defaultValue={defaultValue}
-        value={value}
+        value={value || ''}
         autoFocus
         onBlur={::this.handleBlur}
         onClick={::this.handleClick}
