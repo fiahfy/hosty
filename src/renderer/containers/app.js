@@ -7,6 +7,7 @@ import path from 'path'
 import * as ActionCreators from '../actions'
 import * as HostGroup from '../utils/host-group'
 import * as Host from '../utils/host'
+import * as ContextMenu from '../utils/context-menu'
 
 function mapStateToProps(state) {
   return { messages: state.messages }
@@ -66,6 +67,9 @@ export default class App extends Component {
   handleRequestClose() {
     this.props.actions.clearMessages()
   }
+  handleContextMenu(e) {
+    ContextMenu.show(e)
+  }
   renderSnackbar() {
     const { messages } = this.props
 
@@ -94,6 +98,7 @@ export default class App extends Component {
         style={styles.app}
         onDragOver={::this.handleDragOver}
         onDrop={::this.handleDrop}
+        onContextMenu={::this.handleContextMenu}
       >
         <Drawer
           open
