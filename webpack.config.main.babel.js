@@ -7,12 +7,11 @@ const debug = env === 'development'
 const devtool = debug ? 'cheap-source-map' : 'source-map'
 
 export default {
-  debug,
   devtool,
   target: 'electron',
   entry: './src/main.js',
   output: {
-    path: './app/assets/',
+    path: __dirname + '/app/assets/',
     filename: '../../main.js',
     libraryTarget: 'commonjs2',
   },
@@ -24,20 +23,19 @@ export default {
     }),
   ],
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
-        loader: 'babel',
+        loader: 'babel-loader',
         exclude: /node_modules/,
-        query: {
+        options: {
           plugins: ['transform-decorators-legacy'],
           presets: ['es2015', 'stage-0', 'react'],
         },
       },
     ],
   },
-  externals: fs.readdirSync('node_modules')
-    .filter(dir => dir !== '.bin'),
+  externals: fs.readdirSync('node_modules').filter(dir => dir !== '.bin'),
   node: {
     __dirname: false,
     __filename: false,

@@ -7,12 +7,11 @@ const debug = env === 'development'
 const devtool = debug ? 'cheap-source-map' : 'source-map'
 
 export default {
-  debug,
   devtool,
   target: 'electron-renderer',
   entry: './src/renderer.js',
   output: {
-    path: './app/assets/',
+    path: __dirname + '/app/assets/',
     filename: 'js/renderer.js',
     libraryTarget: 'commonjs2',
     publicPath: './assets/',
@@ -25,24 +24,27 @@ export default {
     }),
   ],
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
-        loader: 'babel',
+        loader: 'babel-loader',
         exclude: /node_modules/,
-        query: {
+        options: {
           plugins: ['transform-decorators-legacy'],
           presets: ['es2015', 'stage-0', 'react'],
         },
       },
       {
         test: /\.css$/,
-        loader: 'style!css',
+        use: [
+          'style-loader',
+          'css-loader',
+        ]
       },
       {
         test: /\.(jpg|gif|png|svg)$/,
-        loader: 'url',
-        query: {
+        loader: 'url-loader',
+        options: {
           limit: '10000',
           name: 'lib/[path][name].[ext]',
           context: 'node_modules',
@@ -50,8 +52,8 @@ export default {
       },
       {
         test: /\.(woff|woff2|eot|ttf)$/,
-        loader: 'url',
-        query: {
+        loader: 'url-loader',
+        options: {
           limit: '10000',
           name: 'lib/[path][name].[ext]',
           context: 'node_modules',
@@ -59,6 +61,5 @@ export default {
       },
     ],
   },
-  externals: fs.readdirSync('node_modules')
-    .filter(dir => dir !== '.bin'),
+  externals: fs.readdirSync('node_modules').filter(dir => dir !== '.bin'),
 }

@@ -1,14 +1,14 @@
 import webpack from 'webpack'
 import rendererConfig from './webpack.config.renderer.babel'
 
-const [babelLoader, ...otherLoaders] = rendererConfig.module.loaders
-let newBabelLoader = babelLoader
-newBabelLoader = {
-  ...babelLoader,
-  query: {
-    ...babelLoader.query,
+const [babelRule, ...otherRules] = rendererConfig.module.rules
+let newBabelRule = babelRule
+newBabelRule = {
+  ...babelRule,
+  options: {
+    ...babelRule.options,
     presets: [
-      ...babelLoader.query.presets,
+      ...babelRule.options.presets,
       'react-hmre',
     ],
   },
@@ -26,9 +26,9 @@ export default {
   ],
   module: {
     ...rendererConfig.module,
-    loaders: [
-      newBabelLoader,
-      ...otherLoaders,
+    rules: [
+      newBabelRule,
+      ...otherRules,
     ],
   },
   devServer: {
