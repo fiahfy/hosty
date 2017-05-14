@@ -1,27 +1,27 @@
-import { remote } from 'electron'
+import { remote } from 'electron';
 
-const { Menu, MenuItem } = remote
+const { Menu, MenuItem } = remote;
 
 export function show(e, menuItems = []) {
-  e.preventDefault()
-  e.stopPropagation()
-  const menu = new Menu
-  menuItems.forEach(item => {
-    menu.append(new MenuItem(item))
-  })
+  e.preventDefault();
+  e.stopPropagation();
+  const menu = new Menu();
+  menuItems.forEach((item) => {
+    menu.append(new MenuItem(item));
+  });
   if (process.env.NODE_ENV === 'development') {
-    menu.append(new MenuItem({ type: 'separator' }))
-    menu.append(createInspectElementMenuItem(e))
+    menu.append(new MenuItem({ type: 'separator' }));
+    menu.append(createInspectElementMenuItem(e));
   }
-  menu.popup(remote.getCurrentWindow())
+  menu.popup(remote.getCurrentWindow());
 }
 
 function createInspectElementMenuItem(e) {
-  const position = { x: e.clientX, y: e.clientY }
+  const position = { x: e.clientX, y: e.clientY };
   return new MenuItem({
     label: 'Inspect Element',
     click: () => {
-      remote.getCurrentWindow().inspectElement(position.x, position.y)
+      remote.getCurrentWindow().inspectElement(position.x, position.y);
     },
-  })
+  });
 }

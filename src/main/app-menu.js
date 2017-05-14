@@ -1,102 +1,102 @@
-import { app, shell, dialog, ipcMain, Menu } from 'electron'
-import fs from 'fs'
-import path from 'path'
-import * as HostGroup from '../renderer/utils/host-group'
-import * as Host from '../renderer/utils/host'
+import { app, shell, dialog, ipcMain, Menu } from 'electron';
+import fs from 'fs';
+import path from 'path';
+import * as HostGroup from '../renderer/utils/host-group';
+import * as Host from '../renderer/utils/host';
 
 export default class AppMenu {
   importHostyFile(item, focusedWindow) {
     dialog.showOpenDialog(
       { filters: [{ name: 'Hosty File', extensions: ['hosty'] }] },
-      filenames => {
+      (filenames) => {
         if (!filenames) {
-          return
+          return;
         }
 
-        const filename = filenames[0]
-        const data = fs.readFileSync(filename, 'utf8')
+        const filename = filenames[0];
+        const data = fs.readFileSync(filename, 'utf8');
         try {
-          const groups = JSON.parse(data)
-          focusedWindow.webContents.send('sendGroups', { mode: 'import', groups })
+          const groups = JSON.parse(data);
+          focusedWindow.webContents.send('sendGroups', { mode: 'import', groups });
         } catch (e) {
           focusedWindow.webContents.send('sendMessage', {
             message: { text: 'Invalid Hosty file' },
-          })
+          });
         }
-      }
-    )
+      },
+    );
   }
   addHostFiles(item, focusedWindow) {
     dialog.showOpenDialog(
       { properties: ['openFile', 'multiSelections'] },
-      filenames => {
+      (filenames) => {
         if (!filenames) {
-          return
+          return;
         }
 
         const groups = filenames
-          .map(filename => {
-            const { name } = path.parse(filename)
-            const data = fs.readFileSync(filename, 'utf8')
-            let hosts = Host.parse(data)
+          .map((filename) => {
+            const { name } = path.parse(filename);
+            const data = fs.readFileSync(filename, 'utf8');
+            let hosts = Host.parse(data);
             if (!hosts.length) {
-              return null
+              return null;
             }
             hosts = hosts.map((host, i) => {
-              const newHost = Object.assign({}, host)
-              newHost.id = i + 1
-              return newHost
-            })
-            return { enable: true, name, hosts }
+              const newHost = Object.assign({}, host);
+              newHost.id = i + 1;
+              return newHost;
+            });
+            return { enable: true, name, hosts };
           })
-          .filter(host => !!host)
+          .filter(host => !!host);
 
-        focusedWindow.webContents.send('sendGroups', { mode: 'add', groups })
-      }
-    )
+        focusedWindow.webContents.send('sendGroups', { mode: 'add', groups });
+      },
+    );
   }
   exportHostyFile(item, focusedWindow) {
     dialog.showSaveDialog(
       { filters: [{ name: 'Hosty File', extensions: ['hosty'] }] },
-      filename => {
+      (filename) => {
         if (!filename) {
-          return
+          return;
         }
 
-        const { ext } = path.parse(filename)
-        let filenameWithExtension = filename
+        const { ext } = path.parse(filename);
+        let filenameWithExtension = filename;
         if (ext !== '.hosty') {
-          filenameWithExtension += '.hosty'
+          filenameWithExtension += '.hosty';
         }
 
         ipcMain.once('sendGroups', (event, { groups }) => {
-          fs.writeFileSync(filenameWithExtension, `${JSON.stringify(groups)}\n`, 'utf8')
-          const groupLength = groups.length
-          const hostLength = HostGroup.getHostLength(groups)
+          fs.writeFileSync(filenameWithExtension, `${JSON.stringify(groups)}\n`, 'utf8');
+          const groupLength = groups.length;
+          const hostLength = HostGroup.getHostLength(groups);
           focusedWindow.webContents.send('sendMessage', {
             message: { text: `Exported ${groupLength} group(s), ${hostLength} host(s)` },
-          })
-        })
-        focusedWindow.webContents.send('requestGroups')
-      }
-    )
+          });
+        });
+        focusedWindow.webContents.send('requestGroups');
+      },
+    );
   }
   exportHostsFile(item, focusedWindow) {
-    dialog.showSaveDialog({}, filename => {
+    dialog.showSaveDialog({}, (filename) => {
       if (!filename) {
-        return
+        return;
       }
 
       ipcMain.once('sendGroups', (event, { groups }) => {
-        fs.writeFileSync(filename, `${HostGroup.build(groups)}\n`, 'utf8')
-        const groupLength = groups.length
-        const hostLength = HostGroup.getHostLength(groups)
+        fs.writeFileSync(filename, `${HostGroup.build(groups)}\n`, 'utf8');
+        const groupLength = groups.length;
+        const hostLength = HostGroup.getHostLength(groups);
         focusedWindow.webContents.send('sendMessage', {
           message: { text: `Exported ${groupLength} group(s), ${hostLength} host(s)` },
-        })
-      })
-      focusedWindow.webContents.send('requestGroups')
-    })
+        });
+      });
+      focusedWindow.webContents.send('requestGroups');
+    });
   }
   setup() {
     const template = [
@@ -174,7 +174,7 @@ export default class AppMenu {
             accelerator: 'CmdOrCtrl+R',
             click: (item, focusedWindow) => {
               if (focusedWindow) {
-                focusedWindow.reload()
+                focusedWindow.reload();
               }
             },
           },
@@ -183,7 +183,7 @@ export default class AppMenu {
             accelerator: process.platform === 'darwin' ? 'Ctrl+Command+F' : 'F11',
             click: (item, focusedWindow) => {
               if (focusedWindow) {
-                focusedWindow.setFullScreen(!focusedWindow.isFullScreen())
+                focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
               }
             },
           },
@@ -192,7 +192,7 @@ export default class AppMenu {
             accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
             click: (item, focusedWindow) => {
               if (focusedWindow) {
-                focusedWindow.webContents.toggleDevTools()
+                focusedWindow.webContents.toggleDevTools();
               }
             },
           },
@@ -221,15 +221,15 @@ export default class AppMenu {
           {
             label: 'Learn More',
             click: () => {
-              shell.openExternal('https://github.com/fiahfy/hosty')
+              shell.openExternal('https://github.com/fiahfy/hosty');
             },
           },
         ],
       },
-    ]
+    ];
 
     if (process.platform === 'darwin') {
-      const name = app.getName()
+      const name = app.getName();
       template.unshift({
         label: name,
         submenu: [
@@ -268,10 +268,10 @@ export default class AppMenu {
           {
             label: 'Quit',
             accelerator: 'Command+Q',
-            click: () => { app.quit() },
+            click: () => { app.quit(); },
           },
         ],
-      })
+      });
       // Window menu.
       template[3].submenu.push(
         {
@@ -280,10 +280,10 @@ export default class AppMenu {
         {
           label: 'Bring All to Front',
           role: 'front',
-        }
-      )
+        },
+      );
     }
-    const menu = Menu.buildFromTemplate(template)
-    Menu.setApplicationMenu(menu)
+    const menu = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(menu);
   }
 }

@@ -1,15 +1,16 @@
-import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import * as ActionCreators from '../actions'
-import HostList from '../components/host-list'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as ActionCreators from '../actions';
+import HostList from '../components/host-list';
 
 function mapStateToProps(state) {
-  return { groups: state.groups }
+  return { groups: state.groups };
 }
 
 function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators(ActionCreators, dispatch) }
+  return { actions: bindActionCreators(ActionCreators, dispatch) };
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -26,49 +27,49 @@ export default class HostContainer extends Component {
     groups: [],
   };
   handleEditHost(id, host) {
-    this.props.actions.updateHost(Number(this.props.location.query.id), id, host)
+    this.props.actions.updateHost(Number(this.props.location.query.id), id, host);
   }
   handleAddHost() {
-    this.props.actions.createHost(Number(this.props.location.query.id), { enable: true })
+    this.props.actions.createHost(Number(this.props.location.query.id), { enable: true });
     window.setTimeout(() => {
-      this.refs.hostList.focusLastHost()
-    }, 0)
+      this.refs.hostList.focusLastHost();
+    }, 0);
   }
   handleDeleteHosts() {
-    const ids = this.refs.hostList.getSortedHosts().map(host => host.id)
-    const selectedIds = this.refs.hostList.getSelectedHosts().map(host => host.id)
-    this.refs.hostList.deselectAll()
-    this.props.actions.deleteHosts(Number(this.props.location.query.id), selectedIds)
+    const ids = this.refs.hostList.getSortedHosts().map(host => host.id);
+    const selectedIds = this.refs.hostList.getSelectedHosts().map(host => host.id);
+    this.refs.hostList.deselectAll();
+    this.props.actions.deleteHosts(Number(this.props.location.query.id), selectedIds);
     window.setTimeout(() => {
       if (selectedIds.length !== 1) {
-        return
+        return;
       }
-      const currentId = selectedIds[0]
-      let [previous, next, isFound] = [0, 0, false]
-      ids.forEach(id => {
+      const currentId = selectedIds[0];
+      let [previous, next, isFound] = [0, 0, false];
+      ids.forEach((id) => {
         if (isFound && !next) {
-          next = id
+          next = id;
         }
         if (id === currentId) {
-          isFound = true
+          isFound = true;
         }
         if (!isFound) {
-          previous = id
+          previous = id;
         }
-      })
-      const targetId = next || previous
+      });
+      const targetId = next || previous;
       if (!targetId) {
-        return
+        return;
       }
-      this.refs.hostList.select([targetId])
-    }, 0)
+      this.refs.hostList.select([targetId]);
+    }, 0);
   }
   renderHostList() {
-    const { groups, location } = this.props
-    const groupId = Number(location.query.id)
+    const { groups, location } = this.props;
+    const groupId = Number(location.query.id);
 
-    const group = groups.filter(currentGroup => currentGroup.id === groupId)[0]
-    const hosts = group ? group.hosts : []
+    const group = groups.filter(currentGroup => currentGroup.id === groupId)[0];
+    const hosts = group ? group.hosts : [];
 
     return (
       <HostList
@@ -79,24 +80,24 @@ export default class HostContainer extends Component {
         onAddHost={::this.handleAddHost}
         onDeleteHosts={::this.handleDeleteHosts}
       />
-    )
+    );
   }
   render() {
-    const groupId = Number(this.props.location.query.id)
+    const groupId = Number(this.props.location.query.id);
 
     if (!groupId) {
       return (
         <div style={styles.messageContainer}>
           <div style={styles.message}>Select Group</div>
         </div>
-      )
+      );
     }
 
     return (
       <div>
         {this.renderHostList()}
       </div>
-    )
+    );
   }
 }
 
@@ -113,4 +114,4 @@ const styles = {
     position: 'relative',
     color: 'grey',
   },
-}
+};

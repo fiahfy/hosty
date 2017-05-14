@@ -1,20 +1,21 @@
-import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { Drawer, Snackbar } from 'material-ui'
-import fs from 'fs'
-import path from 'path'
-import * as ActionCreators from '../actions'
-import * as HostGroup from '../utils/host-group'
-import * as Host from '../utils/host'
-import * as ContextMenu from '../utils/context-menu'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { Drawer, Snackbar } from 'material-ui';
+import fs from 'fs';
+import path from 'path';
+import * as ActionCreators from '../actions';
+import * as HostGroup from '../utils/host-group';
+import * as Host from '../utils/host';
+import * as ContextMenu from '../utils/context-menu';
 
 function mapStateToProps(state) {
-  return { messages: state.messages }
+  return { messages: state.messages };
 }
 
 function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators(ActionCreators, dispatch) }
+  return { actions: bindActionCreators(ActionCreators, dispatch) };
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -29,55 +30,55 @@ export default class App extends Component {
     messages: [],
   };
   handleDrop(e) {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
 
     const groups = Array.from(e.dataTransfer.files)
-      .map(file => {
-        const params = path.parse(file.path)
-        const data = fs.readFileSync(file.path, 'utf8')
-        let hosts = Host.parse(data)
+      .map((file) => {
+        const params = path.parse(file.path);
+        const data = fs.readFileSync(file.path, 'utf8');
+        let hosts = Host.parse(data);
         if (!hosts.length) {
-          return null
+          return null;
         }
         hosts = hosts.map((host, i) => {
-          const newHost = Object.assign({}, host)
-          newHost.id = i + 1
-          return newHost
-        })
-        return { enable: true, name: params.name, hosts }
+          const newHost = Object.assign({}, host);
+          newHost.id = i + 1;
+          return newHost;
+        });
+        return { enable: true, name: params.name, hosts };
       })
-      .filter(item => !!item)
+      .filter(item => !!item);
 
-    groups.forEach(group => {
-      this.props.actions.createGroup(group)
-    })
+    groups.forEach((group) => {
+      this.props.actions.createGroup(group);
+    });
 
-    const groupLength = groups.length
-    const hostLength = HostGroup.getHostLength(groups)
+    const groupLength = groups.length;
+    const hostLength = HostGroup.getHostLength(groups);
     this.props.actions.createMessage(
-      { text: `Added ${groupLength} group(s), ${hostLength} host(s)` }
-    )
+      { text: `Added ${groupLength} group(s), ${hostLength} host(s)` },
+    );
   }
   handleDragOver(e) {
-    e.preventDefault()
-    e.stopPropagation()
-    e.dataTransfer.dropEffect = 'copy' // eslint-disable-line no-param-reassign
+    e.preventDefault();
+    e.stopPropagation();
+    e.dataTransfer.dropEffect = 'copy'; // eslint-disable-line no-param-reassign
   }
   handleRequestClose() {
-    this.props.actions.clearMessages()
+    this.props.actions.clearMessages();
   }
   handleContextMenu(e) {
-    ContextMenu.show(e)
+    ContextMenu.show(e);
   }
   renderSnackbar() {
-    const { messages } = this.props
+    const { messages } = this.props;
 
-    let open = false
-    let text = ''
+    let open = false;
+    let text = '';
     if (messages.length) {
-      open = true
-      text = messages[0].text
+      open = true;
+      text = messages[0].text;
     }
 
     return (
@@ -88,10 +89,10 @@ export default class App extends Component {
         bodyStyle={styles.snackbar}
         onRequestClose={::this.handleRequestClose}
       />
-    )
+    );
   }
   render() {
-    const { sidebar, content } = this.props
+    const { sidebar, content } = this.props;
 
     return (
       <div
@@ -113,7 +114,7 @@ export default class App extends Component {
         </div>
         {this.renderSnackbar()}
       </div>
-    )
+    );
   }
 }
 
@@ -131,4 +132,4 @@ const styles = {
   snackbar: {
     textAlign: 'center',
   },
-}
+};

@@ -1,5 +1,6 @@
-import React, { Component, PropTypes } from 'react'
-import { TextField } from 'material-ui'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { TextField } from 'material-ui';
 
 export default class EditableTextField extends Component {
   static contextTypes = {
@@ -20,45 +21,45 @@ export default class EditableTextField extends Component {
     editable: false,
   };
   isFocused() {
-    return this.state.editable
+    return this.state.editable;
   }
   focus() {
-    this.setState({ editable: true })
+    this.setState({ editable: true });
   }
   handleBlur(e) {
-    this.setState({ editable: false })
-    this.props.onBlur(e)
+    this.setState({ editable: false });
+    this.props.onBlur(e);
   }
   handleClick(e) {
-    e.stopPropagation()
-    this.props.onClick(e)
+    e.stopPropagation();
+    this.props.onClick(e);
   }
   handleDoubleClick(e) {
-    e.stopPropagation()
-    this.props.onDoubleClick(e)
+    e.stopPropagation();
+    this.props.onDoubleClick(e);
   }
   handleClickLabel(e) {
     if (this.props.clickToEditable) {
-      e.stopPropagation()
-      this.setState({ editable: true })
+      e.stopPropagation();
+      this.setState({ editable: true });
     }
   }
   handleDoubleClickLabel(e) {
     if (!this.props.clickToEditable) {
-      e.stopPropagation()
-      this.setState({ editable: true })
+      e.stopPropagation();
+      this.setState({ editable: true });
     }
   }
   render() {
-    const { hintText, value, ...others } = this.props
-    delete others.clickToEditable
+    const { hintText, value, ...others } = this.props;
+    delete others.clickToEditable;
 
-    const { editable } = this.state
+    const { editable } = this.state;
 
     if (!editable) {
-      const text = value || hintText
-      const style = this.context.muiTheme.textField
-      const color = value ? style.textColor : style.hintColor
+      const text = value || hintText;
+      const style = this.context.muiTheme.textField;
+      const color = value ? style.textColor : style.hintColor;
       return (
         <div
           style={{ ...styles.label, color }}
@@ -67,7 +68,7 @@ export default class EditableTextField extends Component {
         >
           {text}
         </div>
-      )
+      );
     }
 
     return (
@@ -81,7 +82,7 @@ export default class EditableTextField extends Component {
         onClick={::this.handleClick}
         onDoubleClick={::this.handleDoubleClick}
       />
-    )
+    );
   }
 }
 
@@ -93,4 +94,4 @@ const styles = {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
-}
+};
