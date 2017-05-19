@@ -9,7 +9,7 @@ import 'roboto-fontface/css/roboto/roboto-fontface.css';
 import Root from './renderer/containers/root';
 import configureStore from './renderer/store';
 import baseHistory from './renderer/history';
-import { setupListener } from './renderer/ipc-listener';
+import setupListener from './renderer/ipc-listener';
 import * as HostsFileManager from './renderer/utils/hosts-file-manager';
 
 // Needed for onTouchTap

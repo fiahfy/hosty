@@ -123,7 +123,7 @@ export default class HostList extends Component {
         displaySelectAll={false}
         adjustForCheckbox={false}
       >
-        <TableRow onCellClick={::this.handleClickHeader}>
+        <TableRow onCellClick={(...args) => this.handleClickHeader(...args)}>
           <TableHeaderColumn style={styles.headerIconColumn}>
             Status
           </TableHeaderColumn>
@@ -160,7 +160,7 @@ export default class HostList extends Component {
             key={`${this.props.groupId}-${host.id}`}
             host={host}
             selected={this.state.selectedIds.includes(host.id)}
-            onEditHost={::this.handleEditHost}
+            onEditHost={(host) => this.handleEditHost(host)}
           />
         ))}
       </TableBody>
@@ -200,7 +200,7 @@ export default class HostList extends Component {
       <Table
         multiSelectable={false}
         allRowsSelected={false}
-        onRowSelection={::this.handleRowSelection}
+        onRowSelection={(selectedRows) => this.handleRowSelection(selectedRows)}
       >
         {this.renderHeader()}
         {this.renderBody()}

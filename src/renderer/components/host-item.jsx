@@ -101,7 +101,7 @@ export default class HostItem extends Component {
       >
         {others.children}
         <TableRowColumn style={styles.iconColumn}>
-          <IconButton onClick={::this.handleClickIconButton}>
+          <IconButton onClick={(e) => this.handleClickIconButton(e)}>
             <HostStatusIcon
               invalid={invalid}
               enable={host.enable}
@@ -118,9 +118,9 @@ export default class HostItem extends Component {
             value={host.host}
             fullWidth
             clickToEditable={selected}
-            onBlur={::this.handleBlur}
-            onKeyDown={::this.handleKeyDown}
-            onChange={::this.handleChange}
+            onBlur={(e) => this.handleBlur(e)}
+            onKeyDown={(e) => this.handleKeyDown(e)}
+            onChange={(e) => this.handleChange(e)}
           />
         </TableRowColumn>
         <TableRowColumn>
@@ -133,9 +133,9 @@ export default class HostItem extends Component {
             value={host.ip}
             fullWidth
             clickToEditable={selected}
-            onBlur={::this.handleBlur}
-            onKeyDown={::this.handleKeyDown}
-            onChange={::this.handleChange}
+            onBlur={(e) => this.handleBlur(e)}
+            onKeyDown={(e) => this.handleKeyDown(e)}
+            onChange={(e) => this.handleChange(e)}
           />
         </TableRowColumn>
       </TableRow>

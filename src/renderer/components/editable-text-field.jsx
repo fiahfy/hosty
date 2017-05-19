@@ -63,8 +63,8 @@ export default class EditableTextField extends Component {
       return (
         <div
           style={{ ...styles.label, color }}
-          onClick={::this.handleClickLabel}
-          onDoubleClick={::this.handleDoubleClickLabel}
+          onClick={(e) => this.handleClickLabel(e)}
+          onDoubleClick={(e) => this.handleDoubleClickLabel(e)}
         >
           {text}
         </div>
@@ -78,9 +78,9 @@ export default class EditableTextField extends Component {
         hintText={hintText}
         value={value || ''}
         autoFocus
-        onBlur={::this.handleBlur}
-        onClick={::this.handleClick}
-        onDoubleClick={::this.handleDoubleClick}
+        onBlur={(e) => this.handleBlur(e)}
+        onClick={(e) => this.handleClick(e)}
+        onDoubleClick={(e) => this.handleDoubleClick(e)}
       />
     );
   }

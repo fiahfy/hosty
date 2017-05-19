@@ -7,6 +7,51 @@ export const KEY_ENABLE = 'enable';
 export const KEY_HOST = 'host';
 export const KEY_IP = 'ip';
 
+export function getHostErrorMessage(host) {
+  if (!host || !host.length) {
+    return 'Missing Host';
+  }
+  return null;
+}
+
+export function getIPErrorMessage(ip) {
+  if (!ip || !ip.length) {
+    return 'Missing IP';
+  }
+  if (!validator.isIP(ip)) {
+    return 'Invalid IP';
+  }
+  return null;
+}
+
+export function getErrorMessages(host) {
+  return {
+    host: getHostErrorMessage(host.host),
+    ip: getIPErrorMessage(host.ip),
+  };
+}
+
+export function isValid(host) {
+  const errors = getErrorMessages(host);
+  return Object.keys(errors).every(key => (
+    errors[key] === null
+  ));
+}
+
+export function compare(a, b, key, order) {
+  const r = order === SORT_DESC ? -1 : 1;
+  if (a[key] === '' || a[key] === null || typeof a[key] === 'undefined') {
+    return r;
+  }
+  if (b[key] === '' || b[key] === null || typeof b[key] === 'undefined') {
+    return -1 * r;
+  }
+  if (a[key] === b[key]) {
+    return 0;
+  }
+  return (a[key] > b[key]) ? r : -1 * r;
+}
+
 export function build(hosts) {
   const newHosts = Array.isArray(hosts) ? hosts : [hosts];
   return newHosts
@@ -43,49 +88,4 @@ export function parse(data) {
       };
     })
     .filter(item => !!item);
-}
-
-export function getErrorMessages(host) {
-  return {
-    host: getHostErrorMessage(host.host),
-    ip: getIPErrorMessage(host.ip),
-  };
-}
-
-export function getHostErrorMessage(host) {
-  if (!host || !host.length) {
-    return 'Missing Host';
-  }
-  return null;
-}
-
-export function getIPErrorMessage(ip) {
-  if (!ip || !ip.length) {
-    return 'Missing IP';
-  }
-  if (!validator.isIP(ip)) {
-    return 'Invalid IP';
-  }
-  return null;
-}
-
-export function isValid(host) {
-  const errors = getErrorMessages(host);
-  return Object.keys(errors).every(key => (
-    errors[key] === null
-  ));
-}
-
-export function compare(a, b, key, order) {
-  const r = order === SORT_DESC ? -1 : 1;
-  if (a[key] === '' || a[key] === null || typeof a[key] === 'undefined') {
-    return r;
-  }
-  if (b[key] === '' || b[key] === null || typeof b[key] === 'undefined') {
-    return -1 * r;
-  }
-  if (a[key] === b[key]) {
-    return 0;
-  }
-  return (a[key] > b[key]) ? r : -1 * r;
 }

@@ -125,7 +125,7 @@ export default class GroupList extends Component {
         displaySelectAll={false}
         adjustForCheckbox={false}
       >
-        <TableRow onCellClick={::this.handleClickHeader}>
+        <TableRow onCellClick={(...args) => this.handleClickHeader(...args)}>
           <TableHeaderColumn style={styles.headerIconColumn}>
             Status
           </TableHeaderColumn>
@@ -154,7 +154,7 @@ export default class GroupList extends Component {
             key={group.id}
             group={group}
             selected={this.state.selectedIds.includes(group.id)}
-            onEditGroup={::this.handleEditGroup}
+            onEditGroup={(group) => this.handleEditGroup(group)}
           />
         ))}
       </TableBody>
@@ -192,7 +192,7 @@ export default class GroupList extends Component {
       <Table
         multiSelectable={false}
         allRowsSelected={false}
-        onRowSelection={::this.handleRowSelection}
+        onRowSelection={(selectedRows) => this.handleRowSelection(selectedRows)}
       >
         {this.renderHeader()}
         {this.renderBody()}

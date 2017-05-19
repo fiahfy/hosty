@@ -76,9 +76,9 @@ export default class HostContainer extends Component {
         ref="hostList"
         groupId={groupId}
         hosts={hosts}
-        onEditHost={::this.handleEditHost}
-        onAddHost={::this.handleAddHost}
-        onDeleteHosts={::this.handleDeleteHosts}
+        onEditHost={(...args) => this.handleEditHost(...args)}
+        onAddHost={() => this.handleAddHost()}
+        onDeleteHosts={() => this.handleDeleteHosts()}
       />
     );
   }

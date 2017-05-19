@@ -16,15 +16,14 @@ export default class AppWindow {
       this.browserWindow.webContents.openDevTools();
     }
 
-    const menu = new AppMenu();
-    menu.setup();
+    AppMenu.setup();
 
     this.handleEvents();
   }
   handleEvents() {
     this.browserWindow.on('close', () => {
       const options = this.browserWindow.getBounds();
-      this.application.saveWindowOptions(options);
+      this.application.constructor.saveWindowOptions(options);
     });
 
     this.browserWindow.on('closed', () => {

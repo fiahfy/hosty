@@ -5,100 +5,7 @@ import * as HostGroup from '../renderer/utils/host-group';
 import * as Host from '../renderer/utils/host';
 
 export default class AppMenu {
-  importHostyFile(item, focusedWindow) {
-    dialog.showOpenDialog(
-      { filters: [{ name: 'Hosty File', extensions: ['hosty'] }] },
-      (filenames) => {
-        if (!filenames) {
-          return;
-        }
-
-        const filename = filenames[0];
-        const data = fs.readFileSync(filename, 'utf8');
-        try {
-          const groups = JSON.parse(data);
-          focusedWindow.webContents.send('sendGroups', { mode: 'import', groups });
-        } catch (e) {
-          focusedWindow.webContents.send('sendMessage', {
-            message: { text: 'Invalid Hosty file' },
-          });
-        }
-      },
-    );
-  }
-  addHostFiles(item, focusedWindow) {
-    dialog.showOpenDialog(
-      { properties: ['openFile', 'multiSelections'] },
-      (filenames) => {
-        if (!filenames) {
-          return;
-        }
-
-        const groups = filenames
-          .map((filename) => {
-            const { name } = path.parse(filename);
-            const data = fs.readFileSync(filename, 'utf8');
-            let hosts = Host.parse(data);
-            if (!hosts.length) {
-              return null;
-            }
-            hosts = hosts.map((host, i) => {
-              const newHost = Object.assign({}, host);
-              newHost.id = i + 1;
-              return newHost;
-            });
-            return { enable: true, name, hosts };
-          })
-          .filter(host => !!host);
-
-        focusedWindow.webContents.send('sendGroups', { mode: 'add', groups });
-      },
-    );
-  }
-  exportHostyFile(item, focusedWindow) {
-    dialog.showSaveDialog(
-      { filters: [{ name: 'Hosty File', extensions: ['hosty'] }] },
-      (filename) => {
-        if (!filename) {
-          return;
-        }
-
-        const { ext } = path.parse(filename);
-        let filenameWithExtension = filename;
-        if (ext !== '.hosty') {
-          filenameWithExtension += '.hosty';
-        }
-
-        ipcMain.once('sendGroups', (event, { groups }) => {
-          fs.writeFileSync(filenameWithExtension, `${JSON.stringify(groups)}\n`, 'utf8');
-          const groupLength = groups.length;
-          const hostLength = HostGroup.getHostLength(groups);
-          focusedWindow.webContents.send('sendMessage', {
-            message: { text: `Exported ${groupLength} group(s), ${hostLength} host(s)` },
-          });
-        });
-        focusedWindow.webContents.send('requestGroups');
-      },
-    );
-  }
-  exportHostsFile(item, focusedWindow) {
-    dialog.showSaveDialog({}, (filename) => {
-      if (!filename) {
-        return;
-      }
-
-      ipcMain.once('sendGroups', (event, { groups }) => {
-        fs.writeFileSync(filename, `${HostGroup.build(groups)}\n`, 'utf8');
-        const groupLength = groups.length;
-        const hostLength = HostGroup.getHostLength(groups);
-        focusedWindow.webContents.send('sendMessage', {
-          message: { text: `Exported ${groupLength} group(s), ${hostLength} host(s)` },
-        });
-      });
-      focusedWindow.webContents.send('requestGroups');
-    });
-  }
-  setup() {
+  static setup() {
     const template = [
       {
         label: 'File',
@@ -106,12 +13,12 @@ export default class AppMenu {
           {
             label: 'Import Hosty File...',
             accelerator: 'CmdOrCtrl+I',
-            click: this.importHostyFile,
+            click: AppMenu.importHostyFile,
           },
           {
             label: 'Add Groups from Hosts Files...',
             accelerator: 'Shift+CmdOrCtrl+I',
-            click: this.addHostFiles,
+            click: AppMenu.addHostFiles,
           },
           {
             type: 'separator',
@@ -119,12 +26,12 @@ export default class AppMenu {
           {
             label: 'Export Hosty File...',
             accelerator: 'CmdOrCtrl+E',
-            click: this.exportHostyFile,
+            click: AppMenu.exportHostyFile,
           },
           {
             label: 'Export Hosts File...',
             accelerator: 'Shift+CmdOrCtrl+E',
-            click: this.exportHostsFile,
+            click: AppMenu.exportHostsFile,
           },
         ],
       },
@@ -285,5 +192,98 @@ export default class AppMenu {
     }
     const menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
+  }
+  static importHostyFile(item, focusedWindow) {
+    dialog.showOpenDialog(
+      { filters: [{ name: 'Hosty File', extensions: ['hosty'] }] },
+      (filenames) => {
+        if (!filenames) {
+          return;
+        }
+
+        const filename = filenames[0];
+        const data = fs.readFileSync(filename, 'utf8');
+        try {
+          const groups = JSON.parse(data);
+          focusedWindow.webContents.send('sendGroups', { mode: 'import', groups });
+        } catch (e) {
+          focusedWindow.webContents.send('sendMessage', {
+            message: { text: 'Invalid Hosty file' },
+          });
+        }
+      },
+    );
+  }
+  static addHostFiles(item, focusedWindow) {
+    dialog.showOpenDialog(
+      { properties: ['openFile', 'multiSelections'] },
+      (filenames) => {
+        if (!filenames) {
+          return;
+        }
+
+        const groups = filenames
+          .map((filename) => {
+            const { name } = path.parse(filename);
+            const data = fs.readFileSync(filename, 'utf8');
+            let hosts = Host.parse(data);
+            if (!hosts.length) {
+              return null;
+            }
+            hosts = hosts.map((host, i) => {
+              const newHost = Object.assign({}, host);
+              newHost.id = i + 1;
+              return newHost;
+            });
+            return { enable: true, name, hosts };
+          })
+          .filter(host => !!host);
+
+        focusedWindow.webContents.send('sendGroups', { mode: 'add', groups });
+      },
+    );
+  }
+  static exportHostyFile(item, focusedWindow) {
+    dialog.showSaveDialog(
+      { filters: [{ name: 'Hosty File', extensions: ['hosty'] }] },
+      (filename) => {
+        if (!filename) {
+          return;
+        }
+
+        const { ext } = path.parse(filename);
+        let filenameWithExtension = filename;
+        if (ext !== '.hosty') {
+          filenameWithExtension += '.hosty';
+        }
+
+        ipcMain.once('sendGroups', (event, { groups }) => {
+          fs.writeFileSync(filenameWithExtension, `${JSON.stringify(groups)}\n`, 'utf8');
+          const groupLength = groups.length;
+          const hostLength = HostGroup.getHostLength(groups);
+          focusedWindow.webContents.send('sendMessage', {
+            message: { text: `Exported ${groupLength} group(s), ${hostLength} host(s)` },
+          });
+        });
+        focusedWindow.webContents.send('requestGroups');
+      },
+    );
+  }
+  static exportHostsFile(item, focusedWindow) {
+    dialog.showSaveDialog({}, (filename) => {
+      if (!filename) {
+        return;
+      }
+
+      ipcMain.once('sendGroups', (event, { groups }) => {
+        fs.writeFileSync(filename, `${HostGroup.build(groups)}\n`, 'utf8');
+        const groupLength = groups.length;
+        const hostLength = HostGroup.getHostLength(groups);
+        focusedWindow.webContents.send('sendMessage', {
+          message: { text: `Exported ${groupLength} group(s), ${hostLength} host(s)` },
+        });
+      });
+      focusedWindow.webContents.send('requestGroups');
+    });
   }
 }

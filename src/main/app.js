@@ -15,7 +15,7 @@ export default class App {
       return;
     }
 
-    const options = this.loadWindowOptions();
+    const options = App.loadWindowOptions();
 
     this.window = new AppWindow(this);
     this.window.open(options);
@@ -23,14 +23,14 @@ export default class App {
   removeWindow() {
     this.window = null;
   }
-  loadWindowOptions() {
+  static loadWindowOptions() {
     try {
       return JSON.parse(fs.readFileSync(PATH_WINDOW_OPTIONS));
     } catch (e) {
       return null;
     }
   }
-  saveWindowOptions(options) {
+  static saveWindowOptions(options) {
     try {
       fs.writeFileSync(PATH_WINDOW_OPTIONS, JSON.stringify(options));
     } catch (e) {

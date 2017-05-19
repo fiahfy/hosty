@@ -81,10 +81,10 @@ export default class GroupContainer extends Component {
         ref="groupList"
         groupId={groupId}
         groups={groups}
-        onEditGroup={::this.handleEditGroup}
-        onSelectGroups={::this.handleSelectGroups}
-        onAddGroup={::this.handleAddGroup}
-        onDeleteGroups={::this.handleDeleteGroups}
+        onEditGroup={(...args) => this.handleEditGroup(...args)}
+        onSelectGroups={(selectedGroups) => this.handleSelectGroups(selectedGroups)}
+        onAddGroup={() => this.handleAddGroup()}
+        onDeleteGroups={() => this.handleDeleteGroups()}
       />
     );
   }

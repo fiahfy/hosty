@@ -8,7 +8,7 @@ import path from 'path';
 import * as ActionCreators from '../actions';
 import * as HostGroup from '../utils/host-group';
 import * as Host from '../utils/host';
-import * as ContextMenu from '../utils/context-menu';
+import ContextMenu from '../utils/context-menu';
 
 function mapStateToProps(state) {
   return { messages: state.messages };
@@ -87,7 +87,7 @@ export default class App extends Component {
         message={text}
         autoHideDuration={4000}
         bodyStyle={styles.snackbar}
-        onRequestClose={::this.handleRequestClose}
+        onRequestClose={() => this.handleRequestClose()}
       />
     );
   }
@@ -97,9 +97,9 @@ export default class App extends Component {
     return (
       <div
         style={styles.app}
-        onDragOver={::this.handleDragOver}
-        onDrop={::this.handleDrop}
-        onContextMenu={::this.handleContextMenu}
+        onDragOver={(e) => this.handleDragOver(e)}
+        onDrop={(e) => this.handleDrop(e)}
+        onContextMenu={(e) => this.handleContextMenu(e)}
       >
         <Drawer
           open

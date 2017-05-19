@@ -29,13 +29,11 @@ export default class Root extends Component {
     }
 
     const component = (
-      <div>
-        <Router
-          render={render}
-          history={history}
-          routes={this.routes}
-        />
-      </div>
+      <Router
+        render={render}
+        history={history}
+        routes={this.routes}
+      />
     );
 
     return (

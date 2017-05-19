@@ -87,7 +87,7 @@ export default class GroupItem extends Component {
       >
         {others.children}
         <TableRowColumn style={styles.iconColumn}>
-          <IconButton onClick={::this.handleClickIconButton}>
+          <IconButton onClick={(e) => this.handleClickIconButton(e)}>
             <HostStatusIcon
               invalid={invalid}
               enable={group.enable}
@@ -104,9 +104,9 @@ export default class GroupItem extends Component {
             value={group.name}
             fullWidth
             clickToEditable={selected}
-            onBlur={::this.handleBlur}
-            onKeyDown={::this.handleKeyDown}
-            onChange={::this.handleChange}
+            onBlur={(e) => this.handleBlur(e)}
+            onKeyDown={(e) => this.handleKeyDown(e)}
+            onChange={(e) => this.handleChange(e)}
           />
         </TableRowColumn>
       </TableRow>

@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import * as ActionCreators from './actions';
 import * as HostGroup from './utils/host-group';
 
-export function setupListener(store) {
+export default function setupListener(store) {
   const actions = bindActionCreators(ActionCreators, store.dispatch);
 
   ipcRenderer.on('sendGroups', (event, { mode, groups }) => {
