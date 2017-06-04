@@ -10,6 +10,28 @@ import SortOrderIcon from './sort-order-icon';
 import isUpdateNeeded from '../utils/is-update-needed';
 import * as Host from '../utils/host';
 
+const styles = {
+  headerIconColumn: {
+    width: 48,
+    textAlign: 'center',
+    paddingRight: 0,
+  },
+  headerSortableColumn: {
+    cursor: 'pointer',
+  },
+  headerColumnText: {
+    display: 'inline-block',
+    verticalAlign: 'middle',
+  },
+  headerColumnIcon: {
+    verticalAlign: 'middle',
+  },
+  button: {
+    marginLeft: 20,
+    marginRight: 20,
+  },
+};
+
 export default class HostList extends Component {
   static propTypes = {
     groupId: PropTypes.number,
@@ -68,7 +90,7 @@ export default class HostList extends Component {
   focusLastHost() {
     const hosts = this.getSortedHosts();
     const host = hosts[hosts.length - 1];
-    this.refs[host.id].focus();
+    this.hostItems[host.id].focus();
   }
   select(ids) {
     this.setState({ selectedIds: ids });
@@ -156,11 +178,14 @@ export default class HostList extends Component {
       >
         {this.getSortedHosts().map(host => (
           <HostItem
-            ref={host.id}
+            ref={(item) => {
+              this.hostItems = this.hostItems || {};
+              this.hostItems[host.id] = item;
+            }}
             key={`${this.props.groupId}-${host.id}`}
             host={host}
             selected={this.state.selectedIds.includes(host.id)}
-            onEditHost={(host) => this.handleEditHost(host)}
+            onEditHost={editedHost => this.handleEditHost(editedHost)}
           />
         ))}
       </TableBody>
@@ -200,7 +225,7 @@ export default class HostList extends Component {
       <Table
         multiSelectable={false}
         allRowsSelected={false}
-        onRowSelection={(selectedRows) => this.handleRowSelection(selectedRows)}
+        onRowSelection={selectedRows => this.handleRowSelection(selectedRows)}
       >
         {this.renderHeader()}
         {this.renderBody()}
@@ -209,25 +234,3 @@ export default class HostList extends Component {
     );
   }
 }
-
-const styles = {
-  headerIconColumn: {
-    width: 48,
-    textAlign: 'center',
-    paddingRight: 0,
-  },
-  headerSortableColumn: {
-    cursor: 'pointer',
-  },
-  headerColumnText: {
-    display: 'inline-block',
-    verticalAlign: 'middle',
-  },
-  headerColumnIcon: {
-    verticalAlign: 'middle',
-  },
-  button: {
-    marginLeft: 20,
-    marginRight: 20,
-  },
-};

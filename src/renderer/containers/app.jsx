@@ -10,6 +10,22 @@ import * as HostGroup from '../utils/host-group';
 import * as Host from '../utils/host';
 import ContextMenu from '../utils/context-menu';
 
+const styles = {
+  app: {
+    overflow: 'hidden',
+    height: '100%',
+    boxSizing: 'border-box',
+  },
+  content: {
+    overflow: 'auto',
+    height: '100%',
+    paddingLeft: 256,
+  },
+  snackbar: {
+    textAlign: 'center',
+  },
+};
+
 function mapStateToProps(state) {
   return { messages: state.messages };
 }
@@ -29,6 +45,14 @@ export default class App extends Component {
   static defaultProps = {
     messages: [],
   };
+  static handleDragOver(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.dataTransfer.dropEffect = 'copy'; // eslint-disable-line no-param-reassign
+  }
+  static handleContextMenu(e) {
+    ContextMenu.show(e);
+  }
   handleDrop(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -60,16 +84,8 @@ export default class App extends Component {
       { text: `Added ${groupLength} group(s), ${hostLength} host(s)` },
     );
   }
-  handleDragOver(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    e.dataTransfer.dropEffect = 'copy'; // eslint-disable-line no-param-reassign
-  }
   handleRequestClose() {
     this.props.actions.clearMessages();
-  }
-  handleContextMenu(e) {
-    ContextMenu.show(e);
   }
   renderSnackbar() {
     const { messages } = this.props;
@@ -97,14 +113,14 @@ export default class App extends Component {
     return (
       <div
         style={styles.app}
-        onDragOver={(e) => this.handleDragOver(e)}
-        onDrop={(e) => this.handleDrop(e)}
-        onContextMenu={(e) => this.handleContextMenu(e)}
+        onDragOver={e => this.constructor.handleDragOver(e)}
+        onDrop={e => this.handleDrop(e)}
+        onContextMenu={e => this.constructor.handleContextMenu(e)}
       >
         <Drawer
           open
           width={256}
-          ref="drawer"
+          ref={(item) => { this.drawer = item; }}
           className="sidebar"
         >
           {sidebar}
@@ -117,19 +133,3 @@ export default class App extends Component {
     );
   }
 }
-
-const styles = {
-  app: {
-    overflow: 'hidden',
-    height: '100%',
-    boxSizing: 'border-box',
-  },
-  content: {
-    overflow: 'auto',
-    height: '100%',
-    paddingLeft: 256,
-  },
-  snackbar: {
-    textAlign: 'center',
-  },
-};

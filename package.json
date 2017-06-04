@@ -37,7 +37,7 @@
     "package:mac": "NODE_ENV=production npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --app-copyright=\"© 2016 fiahfy\" --out release --ignore release --platform=darwin --arch=x64 --icon=app/assets/img/hosty.icns",
     "package:win": "NODE_ENV=production npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --app-copyright=\"© 2016 fiahfy\" --out release --ignore release --platform=win32 --arch=x64 --icon=app/assets/img/hosty.ico --version-string.FileDescription=\"Electron application\" --version-string.OriginalFilename=\"Hosty.exe\" --version-string.ProductName=\"Hosty\"",
     "archive": "cd release; rm *.zip; ls | xargs -I{} zip -r {}.zip {}",
-    "lint": "eslint src",
+    "lint": "eslint src --ext .jsx",
     "cmd:start": "start /b npm run watch && npm run build:main && electron main.js",
     "cmd:start:hot": "start /b npm run hot:renderer && npm run build:main && set HOT=1 && electron main.js"
   },

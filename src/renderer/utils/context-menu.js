@@ -20,10 +20,8 @@ export default class ContextMenu {
     menuItems.forEach((item) => {
       menu.append(new MenuItem(item));
     });
-    if (process.env.NODE_ENV === 'development') {
-      menu.append(new MenuItem({ type: 'separator' }));
-      menu.append(createInspectElementMenuItem(e));
-    }
+    menu.append(new MenuItem({ type: 'separator' }));
+    menu.append(createInspectElementMenuItem(e));
     menu.popup(remote.getCurrentWindow());
   }
 }

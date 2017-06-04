@@ -37,15 +37,15 @@ export default class GroupContainer extends Component {
   handleAddGroup() {
     this.props.actions.createGroup({ enable: true });
     window.setTimeout(() => {
-      this.refs.groupList.focusLastGroup();
-      const groups = this.refs.groupList.getSortedGroups();
+      this.groupList.focusLastGroup();
+      const groups = this.groupList.getSortedGroups();
       const group = groups[groups.length - 1];
       this.context.router.push({ query: { id: group.id } });
     }, 0);
   }
   handleDeleteGroups() {
-    const ids = this.refs.groupList.getSortedGroups().map(group => group.id);
-    const selectedIds = this.refs.groupList.getSelectedGroups().map(group => group.id);
+    const ids = this.groupList.getSortedGroups().map(group => group.id);
+    const selectedIds = this.groupList.getSelectedGroups().map(group => group.id);
     this.context.router.push({ query: { id: 0 } });
     this.props.actions.deleteGroups(selectedIds);
     window.setTimeout(() => {
@@ -78,11 +78,11 @@ export default class GroupContainer extends Component {
 
     return (
       <GroupList
-        ref="groupList"
+        ref={(item) => { this.groupList = item; }}
         groupId={groupId}
         groups={groups}
         onEditGroup={(...args) => this.handleEditGroup(...args)}
-        onSelectGroups={(selectedGroups) => this.handleSelectGroups(selectedGroups)}
+        onSelectGroups={selectedGroups => this.handleSelectGroups(selectedGroups)}
         onAddGroup={() => this.handleAddGroup()}
         onDeleteGroups={() => this.handleDeleteGroups()}
       />

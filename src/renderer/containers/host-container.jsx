@@ -5,6 +5,21 @@ import { bindActionCreators } from 'redux';
 import * as ActionCreators from '../actions';
 import HostList from '../components/host-list';
 
+const styles = {
+  messageContainer: {
+    width: '100%',
+    height: '100%',
+    display: 'table',
+  },
+  message: {
+    display: 'table-cell',
+    textAlign: 'center',
+    verticalAlign: 'middle',
+    position: 'relative',
+    color: 'grey',
+  },
+};
+
 function mapStateToProps(state) {
   return { groups: state.groups };
 }
@@ -32,13 +47,13 @@ export default class HostContainer extends Component {
   handleAddHost() {
     this.props.actions.createHost(Number(this.props.location.query.id), { enable: true });
     window.setTimeout(() => {
-      this.refs.hostList.focusLastHost();
+      this.hostList.focusLastHost();
     }, 0);
   }
   handleDeleteHosts() {
-    const ids = this.refs.hostList.getSortedHosts().map(host => host.id);
-    const selectedIds = this.refs.hostList.getSelectedHosts().map(host => host.id);
-    this.refs.hostList.deselectAll();
+    const ids = this.hostList.getSortedHosts().map(host => host.id);
+    const selectedIds = this.hostList.getSelectedHosts().map(host => host.id);
+    this.hostList.deselectAll();
     this.props.actions.deleteHosts(Number(this.props.location.query.id), selectedIds);
     window.setTimeout(() => {
       if (selectedIds.length !== 1) {
@@ -61,7 +76,7 @@ export default class HostContainer extends Component {
       if (!targetId) {
         return;
       }
-      this.refs.hostList.select([targetId]);
+      this.hostList.select([targetId]);
     }, 0);
   }
   renderHostList() {
@@ -73,7 +88,7 @@ export default class HostContainer extends Component {
 
     return (
       <HostList
-        ref="hostList"
+        ref={(item) => { this.hostList = item; }}
         groupId={groupId}
         hosts={hosts}
         onEditHost={(...args) => this.handleEditHost(...args)}
@@ -100,18 +115,3 @@ export default class HostContainer extends Component {
     );
   }
 }
-
-const styles = {
-  messageContainer: {
-    width: '100%',
-    height: '100%',
-    display: 'table',
-  },
-  message: {
-    display: 'table-cell',
-    textAlign: 'center',
-    verticalAlign: 'middle',
-    position: 'relative',
-    color: 'grey',
-  },
-};

@@ -10,6 +10,21 @@ import EditableTextField from './editable-text-field';
 import isUpdateNeeded from '../utils/is-update-needed';
 import * as Host from '../utils/host';
 
+const styles = {
+  row: {
+    cursor: 'pointer',
+  },
+  iconColumn: {
+    width: 48,
+    textAlign: 'center',
+    verticalAlign: 'top',
+    paddingRight: 0,
+  },
+  errorTextField: {
+    color: Styles.colors.pinkA200,
+  },
+};
+
 export default class HostItem extends Component {
   static propTypes = {
     ...TableRow.propTypes,
@@ -33,7 +48,8 @@ export default class HostItem extends Component {
     return isUpdateNeeded(this, nextProps, nextState);
   }
   focus() {
-    this.refs[Host.KEY_HOST].focus();
+    const { host } = this.state;
+    this.hostTextInputs[host.id].focus();
   }
   handleClickIconButton(e) {
     e.stopPropagation();
@@ -53,24 +69,25 @@ export default class HostItem extends Component {
   handleChange(e) {
     const { host } = this.state;
     const newHost = Object.assign({}, host);
-    if (this.refs[Host.KEY_HOST].isFocused()) {
+    if (this.hostTextInputs[host.id].isFocused()) {
       newHost.host = e.target.value;
       this.setState({ host: newHost });
     }
-    if (this.refs[Host.KEY_IP].isFocused()) {
+    if (this.ipTextInputs[host.id].isFocused()) {
       newHost.ip = e.target.value;
       this.setState({ host: newHost });
     }
   }
   handleKeyDown(e) {
-    if (e.keyCode === 9 && !e.shiftKey && this.refs[Host.KEY_HOST].isFocused()) {
+    const { host } = this.state;
+    if (e.keyCode === 9 && !e.shiftKey && this.hostTextInputs[host.id].isFocused()) {
       e.preventDefault();
-      this.refs[Host.KEY_IP].focus();
+      this.ipTextInputs[host.id].focus();
       return;
     }
-    if (e.keyCode === 9 && e.shiftKey && this.refs[Host.KEY_IP].isFocused()) {
+    if (e.keyCode === 9 && e.shiftKey && this.ipTextInputs[host.id].isFocused()) {
       e.preventDefault();
-      this.refs[Host.KEY_HOST].focus();
+      this.hostTextInputs[host.id].focus();
       return;
     }
     if (e.keyCode === 13) {
@@ -101,7 +118,7 @@ export default class HostItem extends Component {
       >
         {others.children}
         <TableRowColumn style={styles.iconColumn}>
-          <IconButton onClick={(e) => this.handleClickIconButton(e)}>
+          <IconButton onClick={e => this.handleClickIconButton(e)}>
             <HostStatusIcon
               invalid={invalid}
               enable={host.enable}
@@ -111,49 +128,40 @@ export default class HostItem extends Component {
         <TableRowColumn>
           <EditableTextField
             name={Host.KEY_HOST}
-            ref={Host.KEY_HOST}
+            ref={(input) => {
+              this.hostTextInputs = this.hostTextInputs || {};
+              this.hostTextInputs[host.id] = input;
+            }}
             hintText="example.com"
             errorText={errors[Host.KEY_HOST]}
             errorStyle={styles.errorTextField}
             value={host.host}
             fullWidth
             clickToEditable={selected}
-            onBlur={(e) => this.handleBlur(e)}
-            onKeyDown={(e) => this.handleKeyDown(e)}
-            onChange={(e) => this.handleChange(e)}
+            onBlur={e => this.handleBlur(e)}
+            onKeyDown={e => this.handleKeyDown(e)}
+            onChange={e => this.handleChange(e)}
           />
         </TableRowColumn>
         <TableRowColumn>
           <EditableTextField
             name={Host.KEY_IP}
-            ref={Host.KEY_IP}
+            ref={(input) => {
+              this.ipTextInputs = this.ipTextInputs || {};
+              this.ipTextInputs[host.id] = input;
+            }}
             hintText="192.0.2.0"
             errorText={errors[Host.KEY_IP]}
             errorStyle={styles.errorTextField}
             value={host.ip}
             fullWidth
             clickToEditable={selected}
-            onBlur={(e) => this.handleBlur(e)}
-            onKeyDown={(e) => this.handleKeyDown(e)}
-            onChange={(e) => this.handleChange(e)}
+            onBlur={e => this.handleBlur(e)}
+            onKeyDown={e => this.handleKeyDown(e)}
+            onChange={e => this.handleChange(e)}
           />
         </TableRowColumn>
       </TableRow>
     );
   }
 }
-
-const styles = {
-  row: {
-    cursor: 'pointer',
-  },
-  iconColumn: {
-    width: 48,
-    textAlign: 'center',
-    verticalAlign: 'top',
-    paddingRight: 0,
-  },
-  errorTextField: {
-    color: Styles.colors.pinkA200,
-  },
-};

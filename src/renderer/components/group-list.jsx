@@ -10,9 +10,31 @@ import SortOrderIcon from './sort-order-icon';
 import isUpdateNeeded from '../utils/is-update-needed';
 import * as HostGroup from '../utils/host-group';
 
+const styles = {
+  headerIconColumn: {
+    width: 48,
+    textAlign: 'center',
+    paddingRight: 0,
+  },
+  headerSortableColumn: {
+    cursor: 'pointer',
+  },
+  headerColumnText: {
+    display: 'inline-block',
+    verticalAlign: 'middle',
+  },
+  headerColumnIcon: {
+    verticalAlign: 'middle',
+  },
+  button: {
+    marginLeft: 20,
+    marginRight: 20,
+  },
+};
+
 export default class GroupList extends Component {
   static propTypes = {
-    groupId: PropTypes.number,
+    groupId: PropTypes.number, // eslint-disable-line react/no-unused-prop-types
     groups: PropTypes.arrayOf(PropTypes.object),
     onAddGroup: PropTypes.func,
     onEditGroup: PropTypes.func,
@@ -70,7 +92,7 @@ export default class GroupList extends Component {
   focusLastGroup() {
     const groups = this.getSortedGroups();
     const group = groups[groups.length - 1];
-    this.refs[group.id].focus();
+    this.groupItems[group.id].focus();
   }
   select(ids) {
     this.setState({ selectedIds: ids });
@@ -150,11 +172,14 @@ export default class GroupList extends Component {
       >
         {this.getSortedGroups().map(group => (
           <GroupItem
-            ref={group.id}
+            ref={(item) => {
+              this.groupItems = this.groupItems || {};
+              this.groupItems[group.id] = item;
+            }}
             key={group.id}
             group={group}
             selected={this.state.selectedIds.includes(group.id)}
-            onEditGroup={(group) => this.handleEditGroup(group)}
+            onEditGroup={editedGroup => this.handleEditGroup(editedGroup)}
           />
         ))}
       </TableBody>
@@ -192,7 +217,7 @@ export default class GroupList extends Component {
       <Table
         multiSelectable={false}
         allRowsSelected={false}
-        onRowSelection={(selectedRows) => this.handleRowSelection(selectedRows)}
+        onRowSelection={selectedRows => this.handleRowSelection(selectedRows)}
       >
         {this.renderHeader()}
         {this.renderBody()}
@@ -201,25 +226,3 @@ export default class GroupList extends Component {
     );
   }
 }
-
-const styles = {
-  headerIconColumn: {
-    width: 48,
-    textAlign: 'center',
-    paddingRight: 0,
-  },
-  headerSortableColumn: {
-    cursor: 'pointer',
-  },
-  headerColumnText: {
-    display: 'inline-block',
-    verticalAlign: 'middle',
-  },
-  headerColumnIcon: {
-    verticalAlign: 'middle',
-  },
-  button: {
-    marginLeft: 20,
-    marginRight: 20,
-  },
-};

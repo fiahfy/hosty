@@ -2,6 +2,24 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { TextField } from 'material-ui';
 
+const styles = {
+  button: {
+    backgroundColor: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    height: '100%',
+    lineHeight: '48px',
+    fontFamily: 'Roboto, sans-serif',
+    fontSize: '16px',
+    outline: 'none',
+    overflow: 'hidden',
+    padding: '0',
+    textAlign: 'left',
+    textOverflow: 'ellipsis',
+    width: '100%',
+  },
+};
+
 export default class EditableTextField extends Component {
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired,
@@ -61,37 +79,26 @@ export default class EditableTextField extends Component {
       const style = this.context.muiTheme.textField;
       const color = value ? style.textColor : style.hintColor;
       return (
-        <div
-          style={{ ...styles.label, color }}
-          onClick={(e) => this.handleClickLabel(e)}
-          onDoubleClick={(e) => this.handleDoubleClickLabel(e)}
+        <button
+          style={{ ...styles.button, color }}
+          onClick={e => this.handleClickLabel(e)}
+          onDoubleClick={e => this.handleDoubleClickLabel(e)}
         >
           {text}
-        </div>
+        </button>
       );
     }
 
     return (
       <TextField
         {...others}
-        ref="textField"
         hintText={hintText}
         value={value || ''}
         autoFocus
-        onBlur={(e) => this.handleBlur(e)}
-        onClick={(e) => this.handleClick(e)}
-        onDoubleClick={(e) => this.handleDoubleClick(e)}
+        onBlur={e => this.handleBlur(e)}
+        onClick={e => this.handleClick(e)}
+        onDoubleClick={e => this.handleDoubleClick(e)}
       />
     );
   }
 }
-
-const styles = {
-  label: {
-    height: '100%',
-    lineHeight: '48px',
-    fontSize: 16,
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-  },
-};

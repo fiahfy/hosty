@@ -10,6 +10,21 @@ import EditableTextField from './editable-text-field';
 import isUpdateNeeded from '../utils/is-update-needed';
 import * as HostGroup from '../utils/host-group';
 
+const styles = {
+  row: {
+    cursor: 'pointer',
+  },
+  iconColumn: {
+    width: 48,
+    textAlign: 'center',
+    verticalAlign: 'top',
+    paddingRight: 0,
+  },
+  errorTextField: {
+    color: Styles.colors.pinkA200,
+  },
+};
+
 export default class GroupItem extends Component {
   static propTypes = {
     ...TableRow.propTypes,
@@ -22,6 +37,11 @@ export default class GroupItem extends Component {
     selected: false,
     onEditGroup: () => {},
   };
+  static handleKeyDown(e) {
+    if (e.keyCode === 13) {
+      e.target.blur();
+    }
+  }
   constructor(props) {
     super(props);
     this.state.group = this.props.group;
@@ -33,7 +53,7 @@ export default class GroupItem extends Component {
     return isUpdateNeeded(this, nextProps, nextState);
   }
   focus() {
-    this.refs[HostGroup.KEY_NAME].focus();
+    this.textInput.focus();
   }
   handleClickIconButton(e) {
     e.stopPropagation();
@@ -53,14 +73,9 @@ export default class GroupItem extends Component {
   handleChange(e) {
     const { group } = this.state;
     const newGroup = Object.assign({}, group);
-    if (this.refs[HostGroup.KEY_NAME].isFocused()) {
+    if (this.textInput.isFocused()) {
       newGroup.name = e.target.value;
       this.setState({ group: newGroup });
-    }
-  }
-  handleKeyDown(e) {
-    if (e.keyCode === 13) {
-      e.target.blur();
     }
   }
   render() {
@@ -87,7 +102,7 @@ export default class GroupItem extends Component {
       >
         {others.children}
         <TableRowColumn style={styles.iconColumn}>
-          <IconButton onClick={(e) => this.handleClickIconButton(e)}>
+          <IconButton onClick={e => this.handleClickIconButton(e)}>
             <HostStatusIcon
               invalid={invalid}
               enable={group.enable}
@@ -97,34 +112,19 @@ export default class GroupItem extends Component {
         <TableRowColumn>
           <EditableTextField
             name={HostGroup.KEY_NAME}
-            ref={HostGroup.KEY_NAME}
+            ref={(input) => { this.textInput = input; }}
             hintText="Group name"
             errorText={errors[HostGroup.KEY_HOST]}
             errorStyle={styles.errorTextField}
             value={group.name}
             fullWidth
             clickToEditable={selected}
-            onBlur={(e) => this.handleBlur(e)}
-            onKeyDown={(e) => this.handleKeyDown(e)}
-            onChange={(e) => this.handleChange(e)}
+            onBlur={e => this.handleBlur(e)}
+            onKeyDown={e => this.constructor.handleKeyDown(e)}
+            onChange={e => this.handleChange(e)}
           />
         </TableRowColumn>
       </TableRow>
     );
   }
 }
-
-const styles = {
-  row: {
-    cursor: 'pointer',
-  },
-  iconColumn: {
-    width: 48,
-    textAlign: 'center',
-    verticalAlign: 'top',
-    paddingRight: 0,
-  },
-  errorTextField: {
-    color: Styles.colors.pinkA200,
-  },
-};
