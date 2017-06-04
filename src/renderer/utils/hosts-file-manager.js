@@ -7,7 +7,7 @@ import * as HostGroup from './host-group';
 
 const app = isRenderer ? remote.app : mainApp;
 
-const DEBUG = process.env.NODE_ENV === 'development';
+const DEBUG = process.env.NODE_ENV !== 'production';
 
 const SECTION_BEGIN = '## hosty begin ##';
 const SECTION_END = '## hosty end ##';

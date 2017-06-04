@@ -1,6 +1,11 @@
 import webpack from 'webpack';
 import config from './webpack.config.renderer.babel';
 
+const plugins = config.plugins.concat([
+  new webpack.HotModuleReplacementPlugin(),
+  new webpack.NamedModulesPlugin(),
+]);
+
 export default {
   ...config,
   entry: [
@@ -11,10 +16,7 @@ export default {
     ...config.output,
     publicPath: 'http://localhost:8080/assets/',
   },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NamedModulesPlugin(),
-  ],
+  plugins,
   devServer: {
     port: 8080,
     inline: true,

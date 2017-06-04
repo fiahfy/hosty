@@ -12,7 +12,7 @@ export default class AppWindow {
 
     this.browserWindow.loadURL(`file://${__dirname}/app/index.html`);
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV !== 'production') {
       this.browserWindow.webContents.openDevTools();
     }
 

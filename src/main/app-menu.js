@@ -71,6 +71,15 @@ export default class AppMenu {
             accelerator: 'CmdOrCtrl+A',
             role: 'selectall',
           },
+          {
+            type: 'separator',
+          },
+          {
+            label: 'Search',
+            accelerator: 'CmdOrCtrl+F',
+            role: 'search',
+            click: AppMenu.search,
+          },
         ],
       },
       {
@@ -285,5 +294,8 @@ export default class AppMenu {
       });
       focusedWindow.webContents.send('requestGroups');
     });
+  }
+  static search(item, focusedWindow) {
+    focusedWindow.webContents.send('showSearchWindow');
   }
 }

@@ -193,7 +193,7 @@ export default class GroupList extends Component {
         adjustForCheckbox
       >
         <TableRow>
-          <TableRowColumn colSpan="2">
+          <TableRowColumn>
             <FlatButton
               label="Add"
               style={styles.button}

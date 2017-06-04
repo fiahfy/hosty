@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import * as ActionCreators from './actions';
 import * as HostGroup from './utils/host-group';
 
-export default function setupListener(store) {
+export default function setupListener(store, history) {
   const actions = bindActionCreators(ActionCreators, store.dispatch);
 
   ipcRenderer.on('sendGroups', (event, { mode, groups }) => {
@@ -31,5 +31,9 @@ export default function setupListener(store) {
 
   ipcRenderer.on('sendMessage', (event, { message }) => {
     actions.createMessage(message);
+  });
+
+  ipcRenderer.on('showSearchWindow', () => {
+    history.push('/search');
   });
 }

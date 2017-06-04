@@ -10,7 +10,7 @@ import hostsFileMiddleware from './middlewares/hosts-file-middleware';
 const voidMiddleware = () => next => action => next(action);
 
 function createReduxLoggerMiddleware() {
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV !== 'production') {
     return createLogger();
   }
   return voidMiddleware;

@@ -201,7 +201,7 @@ export default class HostList extends Component {
         adjustForCheckbox
       >
         <TableRow>
-          <TableRowColumn colSpan="3">
+          <TableRowColumn>
             <FlatButton
               label="Add"
               style={styles.button}

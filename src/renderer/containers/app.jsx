@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Drawer, Snackbar } from 'material-ui';
+import { Snackbar } from 'material-ui';
 import fs from 'fs';
 import path from 'path';
 import * as ActionCreators from '../actions';
@@ -15,11 +15,6 @@ const styles = {
     overflow: 'hidden',
     height: '100%',
     boxSizing: 'border-box',
-  },
-  content: {
-    overflow: 'auto',
-    height: '100%',
-    paddingLeft: 256,
   },
   snackbar: {
     textAlign: 'center',
@@ -39,8 +34,7 @@ export default class App extends Component {
   static propTypes = {
     messages: PropTypes.arrayOf(PropTypes.object),
     actions: PropTypes.object.isRequired,
-    sidebar: PropTypes.node.isRequired,
-    content: PropTypes.node.isRequired,
+    children: PropTypes.node.isRequired,
   };
   static defaultProps = {
     messages: [],
@@ -108,7 +102,7 @@ export default class App extends Component {
     );
   }
   render() {
-    const { sidebar, content } = this.props;
+    const { children } = this.props;
 
     return (
       <div
@@ -117,17 +111,7 @@ export default class App extends Component {
         onDrop={e => this.handleDrop(e)}
         onContextMenu={e => this.constructor.handleContextMenu(e)}
       >
-        <Drawer
-          open
-          width={256}
-          ref={(item) => { this.drawer = item; }}
-          className="sidebar"
-        >
-          {sidebar}
-        </Drawer>
-        <div style={styles.content} className="content">
-          {content}
-        </div>
+        {children}
         {this.renderSnackbar()}
       </div>
     );

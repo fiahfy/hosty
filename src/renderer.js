@@ -19,7 +19,7 @@ injectTapEventPlugin();
 const store = configureStore(baseHistory);
 const history = syncHistoryWithStore(baseHistory, store);
 
-setupListener(store);
+setupListener(store, history);
 
 // TODO:
 HostsFileManager.setup();
