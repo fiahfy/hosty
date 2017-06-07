@@ -27,6 +27,14 @@ const styles = {
   headerColumnIcon: {
     verticalAlign: 'middle',
   },
+  footerTextFieldColumn: {
+    width: '100%',
+    paddingLeft: '20px',
+    paddingRight: '20px',
+  },
+  footerButtonColumn: {
+    width: '128px',
+  },
   button: {
     marginLeft: '20px',
     marginRight: '20px',
@@ -90,15 +98,20 @@ export default class SearchList extends Component {
       if (query === '') {
         return true;
       }
-      if (item.host.host.indexOf(query) > -1) {
+      if ((item.host.host || '').indexOf(query) > -1) {
         return true;
       }
-      if (item.host.ip.indexOf(query) > -1) {
+      if ((item.host.ip || '').indexOf(query) > -1) {
         return true;
       }
       return false;
     });
     /* eslint-enable allow-body-style */
+  }
+  handleKeyDown(e) {
+    if (e.keyCode === 13) {
+      this.searchButton.props.onClick();
+    }
   }
   search() {
     this.setState({ query: this.textInput.getValue() });
@@ -126,14 +139,21 @@ export default class SearchList extends Component {
         adjustForCheckbox
       >
         <TableRow>
-          <TableRowColumn>
+          <TableRowColumn style={styles.footerTextFieldColumn}>
             <TextField
               name="query"
+              style={styles.textField}
               ref={(input) => { this.textInput = input; }}
+              autoFocus
+              fullWidth
+              onKeyDown={e => this.handleKeyDown(e)}
             />
+          </TableRowColumn>
+          <TableRowColumn style={styles.footerButtonColumn}>
             <FlatButton
               label="Search"
               style={styles.button}
+              ref={(button) => { this.searchButton = button; }}
               primary
               onClick={() => this.search()}
             />

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  IconButton,
   TableRow, TableRowColumn,
 } from 'material-ui';
 import HostStatusIcon from './host-status-icon';
@@ -20,6 +19,10 @@ const styles = {
     textAlign: 'center',
     verticalAlign: 'top',
     width: '48px',
+  },
+  icon: {
+    margin: '12px',
+    verticalAlign: 'top',
   },
   button: {
     backgroundColor: 'transparent',
@@ -52,8 +55,7 @@ export default class SearchItem extends Component {
     return isUpdateNeeded(this, nextProps, nextState);
   }
   render() {
-    const { group, host } = this.state;
-    const { selected, onRowClick, ...others } = this.props;
+    const { group, host, selected, onRowClick, ...others } = this.props;
     delete others.group;
     delete others.host;
 
@@ -74,12 +76,11 @@ export default class SearchItem extends Component {
       >
         {others.children}
         <TableRowColumn style={styles.iconColumn}>
-          <IconButton onClick={e => this.handleClickIconButton(e)}>
-            <HostStatusIcon
-              invalid={false}
-              enable={group.enable}
-            />
-          </IconButton>
+          <HostStatusIcon
+            style={styles.icon}
+            invalid={false}
+            enable={group.enable}
+          />
         </TableRowColumn>
         <TableRowColumn style={styles.groupColumn}>
           <button style={styles.button}>
@@ -87,12 +88,11 @@ export default class SearchItem extends Component {
           </button>
         </TableRowColumn>
         <TableRowColumn style={styles.iconColumn}>
-          <IconButton onClick={e => this.handleClickIconButton(e)}>
-            <HostStatusIcon
-              invalid={invalid}
-              enable={host.enable}
-            />
-          </IconButton>
+          <HostStatusIcon
+            style={styles.icon}
+            invalid={invalid}
+            enable={host.enable}
+          />
         </TableRowColumn>
         <TableRowColumn>
           <button style={styles.button}>
