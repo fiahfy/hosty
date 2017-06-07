@@ -33,11 +33,12 @@
     "build": "webpack --config webpack.config.babel.js",
     "build:renderer": "webpack --config webpack.config.renderer.babel.js",
     "build:main": "webpack --config webpack.config.main.babel.js",
+    "test": "npm run lint",
+    "lint": "eslint src --ext .jsx",
     "package": "npm run package:mac",
     "package:mac": "NODE_ENV=production npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --app-copyright=\"© 2016 fiahfy\" --out release --ignore release --platform=darwin --arch=x64 --icon=app/assets/img/hosty.icns",
     "package:win": "NODE_ENV=production npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --app-copyright=\"© 2016 fiahfy\" --out release --ignore release --platform=win32 --arch=x64 --icon=app/assets/img/hosty.ico --version-string.FileDescription=\"Electron application\" --version-string.OriginalFilename=\"Hosty.exe\" --version-string.ProductName=\"Hosty\"",
     "archive": "cd release; rm *.zip; ls | xargs -I{} zip -r {}.zip {}",
-    "lint": "eslint src --ext .jsx",
     "cmd:start": "start /b npm run watch && npm run build:main && electron main.js",
     "cmd:start:hot": "start /b npm run hot:renderer && npm run build:main && set HOT=1 && electron main.js"
   },
