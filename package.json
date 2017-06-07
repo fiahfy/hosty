@@ -1,7 +1,7 @@
 {
   "name": "hosty",
   "productName": "Hosty",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "Hosts file manager based on Electron",
   "keywords": [
     "electron",
