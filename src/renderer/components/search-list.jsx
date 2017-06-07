@@ -28,25 +28,27 @@ const styles = {
     verticalAlign: 'middle',
   },
   footerTextFieldColumn: {
-    width: '100%',
     paddingLeft: '20px',
     paddingRight: '20px',
+    verticalAlign: 'middle',
+    width: '100%',
   },
   footerButtonColumn: {
-    width: '128px',
-  },
-  button: {
-    marginLeft: '20px',
-    marginRight: '20px',
+    paddingLeft: '20px',
+    paddingRight: '20px',
+    verticalAlign: 'middle',
+    width: '88px',
   },
 };
 
 export default class SearchList extends Component {
   static propTypes = {
     groups: PropTypes.arrayOf(PropTypes.object),
+    onSelectItems: PropTypes.func,
   };
   static defaultProps = {
     groups: [],
+    onSelectItems: () => {},
   };
   static renderHeader() {
     return (
@@ -113,6 +115,12 @@ export default class SearchList extends Component {
       this.searchButton.props.onClick();
     }
   }
+  handleRowSelection(selectedRows) {
+    const selectedItems = this.getItems()
+        .filter((item, i) => selectedRows.includes(i));
+
+    this.props.onSelectItems(selectedItems);
+  }
   search() {
     this.setState({ query: this.textInput.getValue() });
   }
@@ -167,7 +175,7 @@ export default class SearchList extends Component {
       <Table
         multiSelectable={false}
         allRowsSelected={false}
-        selectable={false}
+        onRowSelection={selectedRows => this.handleRowSelection(selectedRows)}
       >
         {this.constructor.renderHeader()}
         {this.renderBody()}

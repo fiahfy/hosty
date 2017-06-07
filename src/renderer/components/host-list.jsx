@@ -26,9 +26,11 @@ const styles = {
   headerColumnIcon: {
     verticalAlign: 'middle',
   },
-  button: {
-    marginLeft: '20px',
-    marginRight: '20px',
+  footerColumn: {
+    paddingLeft: '20px',
+    paddingRight: '20px',
+    verticalAlign: 'middle',
+    width: '88px',
   },
 };
 
@@ -201,21 +203,22 @@ export default class HostList extends Component {
         adjustForCheckbox
       >
         <TableRow>
-          <TableRowColumn>
+          <TableRowColumn style={styles.footerColumn}>
             <FlatButton
               label="Add"
-              style={styles.button}
               primary
               onClick={this.props.onAddHost}
             />
+          </TableRowColumn>
+          <TableRowColumn style={styles.footerColumn}>
             <FlatButton
               label={label}
-              style={styles.button}
               secondary
               onClick={this.props.onDeleteHosts}
               disabled={disabled}
             />
           </TableRowColumn>
+          <TableRowColumn />
         </TableRow>
       </TableFooter>
     );

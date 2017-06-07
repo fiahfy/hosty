@@ -47,13 +47,21 @@ export default class AppContainers extends Component {
   handleClickIconButton() {
     this.context.router.push('/');
   }
+  handleSelectItems(items) {
+    const item = items[0];
+    const id = item ? item.group.id : 0;
+    this.context.router.push({ pathname: '/', query: { id } });
+  }
   render() {
     const { groups } = this.props;
 
     return (
       <div className="content" style={styles.container}>
         <div>
-          <SearchList groups={groups} />
+          <SearchList
+            groups={groups}
+            onSelectItems={items => this.handleSelectItems(items)}
+          />
         </div>
         <div style={styles.buttonWrapper}>
           <IconButton
