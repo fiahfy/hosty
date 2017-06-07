@@ -10,12 +10,12 @@ import isUpdateNeeded from '../utils/is-update-needed';
 
 const styles = {
   headerGroupColumn: {
-    width: 136,
+    width: '136px',
   },
   headerIconColumn: {
-    width: 48,
+    paddingRight: '0',
     textAlign: 'center',
-    paddingRight: 0,
+    width: '48px',
   },
   headerSortableColumn: {
     cursor: 'pointer',
@@ -28,8 +28,8 @@ const styles = {
     verticalAlign: 'middle',
   },
   button: {
-    marginLeft: 20,
-    marginRight: 20,
+    marginLeft: '20px',
+    marginRight: '20px',
   },
 };
 
@@ -100,12 +100,6 @@ export default class SearchList extends Component {
     });
     /* eslint-enable allow-body-style */
   }
-  select(ids) {
-    this.setState({ selectedIds: ids });
-  }
-  deselectAll() {
-    this.setState({ selectedIds: [] });
-  }
   search() {
     this.setState({ query: this.textInput.getValue() });
   }
@@ -153,6 +147,7 @@ export default class SearchList extends Component {
       <Table
         multiSelectable={false}
         allRowsSelected={false}
+        selectable={false}
       >
         {this.constructor.renderHeader()}
         {this.renderBody()}

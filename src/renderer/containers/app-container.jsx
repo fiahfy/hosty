@@ -5,14 +5,14 @@ import HostContainer from './host-container';
 
 const styles = {
   container: {
-    overflow: 'hidden',
-    height: '100%',
     boxSizing: 'border-box',
+    height: '100%',
+    overflow: 'hidden',
   },
   content: {
-    overflow: 'auto',
     height: '100%',
-    paddingLeft: 256,
+    overflow: 'auto',
+    paddingLeft: '256px',
   },
 };
 

@@ -7,16 +7,16 @@ import HostList from '../components/host-list';
 
 const styles = {
   messageContainer: {
-    width: '100%',
-    height: '100%',
     display: 'table',
+    height: '100%',
+    width: '100%',
   },
   message: {
+    color: 'grey',
     display: 'table-cell',
+    position: 'relative',
     textAlign: 'center',
     verticalAlign: 'middle',
-    position: 'relative',
-    color: 'grey',
   },
 };
 

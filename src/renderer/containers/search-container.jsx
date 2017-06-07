@@ -10,13 +10,18 @@ import SearchList from '../components/search-list';
 const styles = {
   buttonWrapper: {
     position: 'absolute',
-    top: 0,
-    right: 0,
+    right: '0',
+    top: '0',
+  },
+  button: {
+    height: '58px',
+    padding: '17px',
+    width: '58px',
   },
   container: {
-    overflow: 'hidden',
-    height: '100%',
     boxSizing: 'border-box',
+    height: '100%',
+    overflow: 'hidden',
   },
 };
 
@@ -51,7 +56,10 @@ export default class AppContainers extends Component {
           <SearchList groups={groups} />
         </div>
         <div style={styles.buttonWrapper}>
-          <IconButton onClick={() => this.handleClickIconButton()}>
+          <IconButton
+            style={styles.button}
+            onClick={() => this.handleClickIconButton()}
+          >
             <SvgIcons.NavigationClose />
           </IconButton>
         </div>

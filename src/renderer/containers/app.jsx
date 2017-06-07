@@ -12,9 +12,9 @@ import ContextMenu from '../utils/context-menu';
 
 const styles = {
   app: {
-    overflow: 'hidden',
-    height: '100%',
     boxSizing: 'border-box',
+    height: '100%',
+    overflow: 'hidden',
   },
   snackbar: {
     textAlign: 'center',

@@ -15,10 +15,10 @@ const styles = {
     cursor: 'pointer',
   },
   iconColumn: {
-    width: 48,
+    paddingRight: '0',
     textAlign: 'center',
     verticalAlign: 'top',
-    paddingRight: 0,
+    width: '48px',
   },
   errorTextField: {
     color: Styles.colors.pinkA200,
@@ -48,8 +48,7 @@ export default class HostItem extends Component {
     return isUpdateNeeded(this, nextProps, nextState);
   }
   focus() {
-    const { host } = this.state;
-    this.hostTextInputs[host.id].focus();
+    this.hostTextInput.focus();
   }
   handleClickIconButton(e) {
     e.stopPropagation();
@@ -69,25 +68,24 @@ export default class HostItem extends Component {
   handleChange(e) {
     const { host } = this.state;
     const newHost = Object.assign({}, host);
-    if (this.hostTextInputs[host.id].isFocused()) {
+    if (this.hostTextInput.isFocused()) {
       newHost.host = e.target.value;
       this.setState({ host: newHost });
     }
-    if (this.ipTextInputs[host.id].isFocused()) {
+    if (this.ipTextInput.isFocused()) {
       newHost.ip = e.target.value;
       this.setState({ host: newHost });
     }
   }
   handleKeyDown(e) {
-    const { host } = this.state;
-    if (e.keyCode === 9 && !e.shiftKey && this.hostTextInputs[host.id].isFocused()) {
+    if (e.keyCode === 9 && !e.shiftKey && this.hostTextInput.isFocused()) {
       e.preventDefault();
-      this.ipTextInputs[host.id].focus();
+      this.ipTextInput.focus();
       return;
     }
-    if (e.keyCode === 9 && e.shiftKey && this.ipTextInputs[host.id].isFocused()) {
+    if (e.keyCode === 9 && e.shiftKey && this.ipTextInput.isFocused()) {
       e.preventDefault();
-      this.hostTextInputs[host.id].focus();
+      this.hostTextInput.focus();
       return;
     }
     if (e.keyCode === 13) {
@@ -106,8 +104,8 @@ export default class HostItem extends Component {
     return (
       <TableRow
         key={host.id}
-        selected={selected}
         style={styles.row}
+        selected={selected}
         onRowClick={(...args) => {
           if (window.getSelection().toString().length) {
             return;
@@ -128,10 +126,7 @@ export default class HostItem extends Component {
         <TableRowColumn>
           <EditableTextField
             name={Host.KEY_HOST}
-            ref={(input) => {
-              this.hostTextInputs = this.hostTextInputs || {};
-              this.hostTextInputs[host.id] = input;
-            }}
+            ref={(input) => { this.hostTextInput = input; }}
             hintText="example.com"
             errorText={errors[Host.KEY_HOST]}
             errorStyle={styles.errorTextField}
@@ -146,10 +141,7 @@ export default class HostItem extends Component {
         <TableRowColumn>
           <EditableTextField
             name={Host.KEY_IP}
-            ref={(input) => {
-              this.ipTextInputs = this.ipTextInputs || {};
-              this.ipTextInputs[host.id] = input;
-            }}
+            ref={(input) => { this.ipTextInput = input; }}
             hintText="192.0.2.0"
             errorText={errors[Host.KEY_IP]}
             errorStyle={styles.errorTextField}

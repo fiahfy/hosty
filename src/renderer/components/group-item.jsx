@@ -15,10 +15,10 @@ const styles = {
     cursor: 'pointer',
   },
   iconColumn: {
-    width: 48,
+    paddingRight: '0',
     textAlign: 'center',
     verticalAlign: 'top',
-    paddingRight: 0,
+    width: '48px',
   },
   errorTextField: {
     color: Styles.colors.pinkA200,

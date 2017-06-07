@@ -5,9 +5,7 @@ import {
   TableRow, TableRowColumn,
 } from 'material-ui';
 import HostStatusIcon from './host-status-icon';
-import EditableTextField from './editable-text-field';
 import isUpdateNeeded from '../utils/is-update-needed';
-import * as HostGroup from '../utils/host-group';
 import * as Host from '../utils/host';
 
 const styles = {
@@ -15,13 +13,28 @@ const styles = {
     cursor: 'pointer',
   },
   groupColumn: {
-    width: 136,
+    width: '136px',
   },
   iconColumn: {
-    width: 48,
+    paddingRight: '0',
     textAlign: 'center',
     verticalAlign: 'top',
-    paddingRight: 0,
+    width: '48px',
+  },
+  button: {
+    backgroundColor: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    height: '100%',
+    lineHeight: '48px',
+    fontFamily: 'Roboto, sans-serif',
+    fontSize: '16px',
+    outline: 'none',
+    overflow: 'hidden',
+    padding: '0',
+    textAlign: 'left',
+    textOverflow: 'ellipsis',
+    width: '100%',
   },
 };
 
@@ -35,15 +48,6 @@ export default class SearchItem extends Component {
     group: {},
     host: {},
   };
-  constructor(props) {
-    super(props);
-    this.state.group = this.props.group;
-    this.state.host = this.props.host;
-  }
-  state = {
-    group: {},
-    host: {},
-  };
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState);
   }
@@ -52,16 +56,14 @@ export default class SearchItem extends Component {
     const { selected, onRowClick, ...others } = this.props;
     delete others.group;
     delete others.host;
-    delete others.onEditHost;
 
-    const errors = Host.getErrorMessages(host);
     const invalid = !Host.isValid(host);
 
     return (
       <TableRow
         key={host.id}
-        selected={selected}
         style={styles.row}
+        selected={selected}
         onRowClick={(...args) => {
           if (window.getSelection().toString().length) {
             return;
@@ -74,25 +76,15 @@ export default class SearchItem extends Component {
         <TableRowColumn style={styles.iconColumn}>
           <IconButton onClick={e => this.handleClickIconButton(e)}>
             <HostStatusIcon
-              invalid={invalid}
+              invalid={false}
               enable={group.enable}
             />
           </IconButton>
         </TableRowColumn>
         <TableRowColumn style={styles.groupColumn}>
-          <EditableTextField
-            name={HostGroup.KEY_NAME}
-            ref={(input) => { this.textInput = input; }}
-            hintText="Group name"
-            errorText={errors[HostGroup.KEY_HOST]}
-            errorStyle={styles.errorTextField}
-            value={group.name}
-            fullWidth
-            clickToEditable={selected}
-            onBlur={e => this.handleBlur(e)}
-            onKeyDown={e => this.constructor.handleKeyDown(e)}
-            onChange={e => this.handleChange(e)}
-          />
+          <button style={styles.button}>
+            {group.name}
+          </button>
         </TableRowColumn>
         <TableRowColumn style={styles.iconColumn}>
           <IconButton onClick={e => this.handleClickIconButton(e)}>
@@ -103,40 +95,14 @@ export default class SearchItem extends Component {
           </IconButton>
         </TableRowColumn>
         <TableRowColumn>
-          <EditableTextField
-            name={Host.KEY_HOST}
-            ref={(input) => {
-              this.hostTextInputs = this.hostTextInputs || {};
-              this.hostTextInputs[host.id] = input;
-            }}
-            hintText="example.com"
-            errorText={errors[Host.KEY_HOST]}
-            errorStyle={styles.errorTextField}
-            value={host.host}
-            fullWidth
-            clickToEditable={selected}
-            onBlur={e => this.handleBlur(e)}
-            onKeyDown={e => this.handleKeyDown(e)}
-            onChange={e => this.handleChange(e)}
-          />
+          <button style={styles.button}>
+            {host.host}
+          </button>
         </TableRowColumn>
         <TableRowColumn>
-          <EditableTextField
-            name={Host.KEY_IP}
-            ref={(input) => {
-              this.ipTextInputs = this.ipTextInputs || {};
-              this.ipTextInputs[host.id] = input;
-            }}
-            hintText="192.0.2.0"
-            errorText={errors[Host.KEY_IP]}
-            errorStyle={styles.errorTextField}
-            value={host.ip}
-            fullWidth
-            clickToEditable={selected}
-            onBlur={e => this.handleBlur(e)}
-            onKeyDown={e => this.handleKeyDown(e)}
-            onChange={e => this.handleChange(e)}
-          />
+          <button style={styles.button}>
+            {host.ip}
+          </button>
         </TableRowColumn>
       </TableRow>
     );

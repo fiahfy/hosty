@@ -12,9 +12,9 @@ import * as Host from '../utils/host';
 
 const styles = {
   headerIconColumn: {
-    width: 48,
+    paddingRight: '0',
     textAlign: 'center',
-    paddingRight: 0,
+    width: '48px',
   },
   headerSortableColumn: {
     cursor: 'pointer',
@@ -27,8 +27,8 @@ const styles = {
     verticalAlign: 'middle',
   },
   button: {
-    marginLeft: 20,
-    marginRight: 20,
+    marginLeft: '20px',
+    marginRight: '20px',
   },
 };
 
