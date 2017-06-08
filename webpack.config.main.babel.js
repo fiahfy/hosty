@@ -1,45 +1,22 @@
-import 'babel-polyfill'
-import fs from 'fs'
-import webpack from 'webpack'
+import fs from 'fs';
+import config from './webpack.config.base.babel';
 
-const env = process.env.NODE_ENV || 'development'
-const debug = env === 'development'
-const devtool = debug ? 'cheap-source-map' : 'source-map'
+const nodeModules = fs.readdirSync('node_modules')
+  .filter(dir => dir !== '.bin');
 
 export default {
-  debug,
-  devtool,
+  ...config,
   target: 'electron',
-  entry: './src/main.js',
+  entry: './main.js',
   output: {
-    path: './app/assets/',
+    path: `${__dirname}/app/assets/`,
+    publicPath: '/assets/',
     filename: '../../main.js',
     libraryTarget: 'commonjs2',
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify(env),
-      },
-    }),
-  ],
-  module: {
-    loaders: [
-      {
-        test: /\.js$/,
-        loader: 'babel',
-        exclude: /node_modules/,
-        query: {
-          plugins: ['transform-decorators-legacy'],
-          presets: ['es2015', 'stage-0', 'react'],
-        },
-      },
-    ],
-  },
-  externals: fs.readdirSync('node_modules')
-    .filter(dir => dir !== '.bin'),
+  externals: nodeModules,
   node: {
     __dirname: false,
     __filename: false,
   },
-}
+};

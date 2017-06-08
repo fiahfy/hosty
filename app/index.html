@@ -26,65 +26,61 @@
         vertical-align: middle;
         display: table-cell;
       }
-      .sidebar>div>div {
+      /* sidebar */
+      .sidebar>div>div:first-child {
         height: 100%!important;
       }
-      .sidebar>div>div>div:first-child {
+      .sidebar>div>div:first-child>div:first-child {
         height: 100%!important;
       }
-      .sidebar>div>div>div:first-child>div:first-child {
+      .sidebar>div>div:first-child>div:first-child>div:first-child {
         position: fixed!important;
         z-index: 1!important;
       }
-      .sidebar>div>div>div:first-child>div:nth-child(2) {
+      .sidebar>div>div:first-child>div:first-child>div:nth-child(2) {
         margin-top: 59px!important;
         margin-bottom: 51px!important;
         height: calc(100% - 110px)!important;
       }
-      .sidebar>div>div>div:first-child>div:last-child {
+      .sidebar>div>div:first-child>div:first-child>div:last-child {
         position: fixed!important;
         bottom: 0!important;
       }
-      /* todo: https://github.com/callemall/material-ui/issues/4581 */
-      .sidebar>div>div>div:first-child>div:last-child>table>tfoot>tr>td:first-child {
+      /* see: https://github.com/callemall/material-ui/issues/4581 */
+      .sidebar>div>div:first-child>div:first-child>div:last-child>table>tfoot>tr>td:first-child {
         display: none!important;
       }
-      .sidebar>div>div>div:first-child>div:last-child>table>tfoot>tr>td {
-        vertical-align: middle;
-        padding-left: 0!important;
-        padding-right: 0!important;
-      }
-      .content>div {
+      /* content */
+      .content>div:first-child {
         height: 100%!important;
       }
-      .content>div>div:first-child {
+      .content>div:first-child>div:first-child {
         height: 100%!important;
       }
-      .content>div>div:first-child>div:first-child {
+      .content>div:first-child>div:first-child>div:first-child {
         position: fixed!important;
         z-index: 1!important;
       }
-      .content>div>div:first-child>div:nth-child(2) {
+      .content>div:first-child>div:first-child>div:nth-child(2) {
         margin-top: 59px!important;
         margin-bottom: 51px!important;
         height: calc(100% - 110px)!important;
       }
-      .content>div>div:first-child>div:last-child {
+      .content>div:first-child>div:first-child>div:last-child {
         position: fixed!important;
         bottom: 0!important;
       }
-      /* todo: https://github.com/callemall/material-ui/issues/4581 */
-      .content>div>div:first-child>div:last-child>table>tfoot>tr>td:first-child {
+      /* see: https://github.com/callemall/material-ui/issues/4581 */
+      .content>div:first-child>div:first-child>div:last-child>table>tfoot>tr>td:first-child {
         display: none!important;
-      }
-      .content>div>div:first-child>div:last-child>table>tfoot>tr>td {
-        vertical-align: middle;
-        padding-left: 0!important;
-        padding-right: 0!important;
       }
       /* todo: for Roboto font */
       .sidebar input, .content input {
         height: 47px!important;
+      }
+      /* see: https://github.com/electron/electron/issues/4420 */
+      ::selection {
+        background: #accef7;
       }
     </style>
   </head>
@@ -98,7 +94,7 @@
       (function() {
         const script = document.createElement('script')
         script.src = process.env.HOT ? 'http://localhost:8080/assets/js/renderer.js' : './assets/js/renderer.js'
-        document.write(script.outerHTML)
+        document.querySelector('head').appendChild(script)
       }())
     </script>
   </body>

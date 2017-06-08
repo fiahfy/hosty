@@ -1,17 +1,42 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   FlatButton,
   Table, TableHeader, TableBody, TableFooter,
   TableRow, TableHeaderColumn, TableRowColumn,
-} from 'material-ui'
-import GroupItem from './group-item'
-import SortOrderIcon from './sort-order-icon'
-import isUpdateNeeded from '../utils/is-update-needed'
-import * as HostGroup from '../utils/host-group'
+} from 'material-ui';
+import GroupItem from './group-item';
+import SortOrderIcon from './sort-order-icon';
+import isUpdateNeeded from '../utils/is-update-needed';
+import * as HostGroup from '../utils/host-group';
+
+const styles = {
+  headerIconColumn: {
+    paddingRight: '0',
+    textAlign: 'center',
+    width: '48px',
+  },
+  headerSortableColumn: {
+    cursor: 'pointer',
+  },
+  headerColumnText: {
+    display: 'inline-block',
+    verticalAlign: 'middle',
+  },
+  headerColumnIcon: {
+    verticalAlign: 'middle',
+  },
+  footerColumn: {
+    paddingLeft: '20px',
+    paddingRight: '20px',
+    verticalAlign: 'middle',
+    width: '88px',
+  },
+};
 
 export default class GroupList extends Component {
   static propTypes = {
-    groupId: PropTypes.number,
+    groupId: PropTypes.number, // eslint-disable-line react/no-unused-prop-types
     groups: PropTypes.arrayOf(PropTypes.object),
     onAddGroup: PropTypes.func,
     onEditGroup: PropTypes.func,
@@ -31,100 +56,100 @@ export default class GroupList extends Component {
       key: HostGroup.KEY_NAME,
       order: HostGroup.SORT_ASC,
     },
-    sortedMap: new Map,
+    sortedMap: new Map(),
     selectedIds: [],
   };
   componentWillReceiveProps(nextProps) {
-    const selectedIds = nextProps.groupId ? [nextProps.groupId] : []
-    this.setState({ selectedIds })
+    const selectedIds = nextProps.groupId ? [nextProps.groupId] : [];
+    this.setState({ selectedIds });
 
     if (this.props.groups.length) {
-      return
+      return;
     }
 
-    this.sort(nextProps.groups, this.state.sortOptions)
+    this.sort(nextProps.groups, this.state.sortOptions);
   }
   shouldComponentUpdate(nextProps, nextState) {
-    return isUpdateNeeded(this, nextProps, nextState)
+    return isUpdateNeeded(this, nextProps, nextState);
   }
   getSelectedGroups() {
-    return this.getSortedGroups().filter(group => this.state.selectedIds.includes(group.id))
+    return this.getSortedGroups().filter(group => this.state.selectedIds.includes(group.id));
   }
   getSortedGroups() {
-    const { sortedMap } = this.state
+    const { sortedMap } = this.state;
 
     return this.props.groups.concat().sort((a, b) => {
       if (!sortedMap.has(a.id) && !sortedMap.has(b.id)) {
-        return (a.id > b.id) ? 1 : -1
+        return (a.id > b.id) ? 1 : -1;
       }
       if (!sortedMap.has(a.id)) {
-        return 1
+        return 1;
       }
       if (!sortedMap.has(b.id)) {
-        return -1
+        return -1;
       }
-      return sortedMap.get(a.id) > sortedMap.get(b.id) ? 1 : -1
-    })
+      return sortedMap.get(a.id) > sortedMap.get(b.id) ? 1 : -1;
+    });
   }
   focusLastGroup() {
-    const groups = this.getSortedGroups()
-    const group = groups[groups.length - 1]
-    this.refs[group.id].focus()
+    const groups = this.getSortedGroups();
+    const group = groups[groups.length - 1];
+    this.groupItems[group.id].focus();
   }
   select(ids) {
-    this.setState({ selectedIds: ids })
+    this.setState({ selectedIds: ids });
   }
   deselectAll() {
-    this.setState({ selectedIds: [] })
+    this.setState({ selectedIds: [] });
   }
   sort(groups, options) {
-    const { key, order } = options
+    const { key, order } = options;
 
-    const sortedMap = new Map
+    const sortedMap = new Map();
     groups.concat()
       .sort((a, b) => HostGroup.compare(a, b, key, order))
       .forEach((group, i) => {
-        sortedMap.set(group.id, i)
-      })
+        sortedMap.set(group.id, i);
+      });
 
-    this.setState({ sortOptions: options, sortedMap })
+    this.setState({ sortOptions: options, sortedMap });
   }
   handleEditGroup(group) {
-    this.props.onEditGroup(group.id, group)
+    this.props.onEditGroup(group.id, group);
   }
   handleClickHeader(e, rowId, columnId) {
-    const { key, order } = this.state.sortOptions
+    const { key, order } = this.state.sortOptions;
 
-    const columns = [null, null, HostGroup.KEY_NAME]
-    const newKey = columns[columnId]
+    const columns = [null, null, HostGroup.KEY_NAME];
+    const newKey = columns[columnId];
     if (!newKey) {
-      return
+      return;
     }
-    let newOrder
+    let newOrder;
     if (key !== newKey || order !== HostGroup.SORT_ASC) {
-      newOrder = HostGroup.SORT_ASC
+      newOrder = HostGroup.SORT_ASC;
     } else {
-      newOrder = HostGroup.SORT_DESC
+      newOrder = HostGroup.SORT_DESC;
     }
-    this.sort(this.props.groups, { key: newKey, order: newOrder })
+    this.sort(this.props.groups, { key: newKey, order: newOrder });
   }
   handleRowSelection(selectedRows) {
     const selectedGroups = this.getSortedGroups()
-        .filter((group, i) => selectedRows.includes(i))
-    const selectedIds = selectedGroups.map(group => group.id)
+        .filter((group, i) => selectedRows.includes(i));
+    const selectedIds = selectedGroups.map(group => group.id);
 
-    this.setState({ selectedIds })
-    this.props.onSelectGroups(selectedGroups)
+    this.setState({ selectedIds });
+    this.props.onSelectGroups(selectedGroups);
   }
   renderHeader() {
-    const { key, order } = this.state.sortOptions
+    const { key, order } = this.state.sortOptions;
 
     return (
       <TableHeader
         displaySelectAll={false}
         adjustForCheckbox={false}
       >
-        <TableRow onCellClick={::this.handleClickHeader}>
+        <TableRow onCellClick={(...args) => this.handleClickHeader(...args)}>
           <TableHeaderColumn style={styles.headerIconColumn}>
             Status
           </TableHeaderColumn>
@@ -138,7 +163,7 @@ export default class GroupList extends Component {
           </TableHeaderColumn>
         </TableRow>
       </TableHeader>
-    )
+    );
   }
   renderBody() {
     return (
@@ -149,34 +174,37 @@ export default class GroupList extends Component {
       >
         {this.getSortedGroups().map(group => (
           <GroupItem
-            ref={group.id}
+            ref={(item) => {
+              this.groupItems = this.groupItems || {};
+              this.groupItems[group.id] = item;
+            }}
             key={group.id}
             group={group}
             selected={this.state.selectedIds.includes(group.id)}
-            onEditGroup={::this.handleEditGroup}
+            onEditGroup={editedGroup => this.handleEditGroup(editedGroup)}
           />
         ))}
       </TableBody>
-    )
+    );
   }
   renderFooter() {
-    const disabled = !this.state.selectedIds.length
+    const disabled = !this.state.selectedIds.length;
 
     return (
       <TableFooter
         adjustForCheckbox
       >
         <TableRow>
-          <TableRowColumn colSpan="2">
+          <TableRowColumn style={styles.footerColumn}>
             <FlatButton
               label="Add"
-              style={styles.button}
               primary
               onClick={this.props.onAddGroup}
             />
+          </TableRowColumn>
+          <TableRowColumn style={styles.footerColumn}>
             <FlatButton
               label="Delete"
-              style={styles.button}
               secondary
               onClick={this.props.onDeleteGroups}
               disabled={disabled}
@@ -184,41 +212,19 @@ export default class GroupList extends Component {
           </TableRowColumn>
         </TableRow>
       </TableFooter>
-    )
+    );
   }
   render() {
     return (
       <Table
         multiSelectable={false}
         allRowsSelected={false}
-        onRowSelection={::this.handleRowSelection}
+        onRowSelection={selectedRows => this.handleRowSelection(selectedRows)}
       >
         {this.renderHeader()}
         {this.renderBody()}
         {this.renderFooter()}
       </Table>
-    )
+    );
   }
-}
-
-const styles = {
-  headerIconColumn: {
-    width: 48,
-    textAlign: 'center',
-    paddingRight: 0,
-  },
-  headerSortableColumn: {
-    cursor: 'pointer',
-  },
-  headerColumnText: {
-    display: 'inline-block',
-    verticalAlign: 'middle',
-  },
-  headerColumnIcon: {
-    verticalAlign: 'middle',
-  },
-  button: {
-    marginLeft: 20,
-    marginRight: 20,
-  },
 }

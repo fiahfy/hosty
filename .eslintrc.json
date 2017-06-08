@@ -1,0 +1,10 @@
+{
+  "extends": "airbnb",
+  "parser": "babel-eslint",
+  "globals": {
+    "window": true
+  },
+  "rules": {
+    "react/forbid-prop-types": "off"
+  }
+}

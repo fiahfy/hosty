@@ -1,35 +1,34 @@
-import { BrowserWindow } from 'electron'
-import AppMenu from './app-menu'
+import { BrowserWindow } from 'electron';
+import AppMenu from './app-menu';
 
 export default class AppWindow {
   constructor(application) {
-    this.application = application
+    this.application = application;
   }
   open(args) {
-    const options = args || { width: 820, height: 600 }
+    const options = args || { width: 820, height: 600 };
 
-    this.browserWindow = new BrowserWindow(options)
+    this.browserWindow = new BrowserWindow(options);
 
-    this.browserWindow.loadURL(`file://${__dirname}/app/index.html`)
+    this.browserWindow.loadURL(`file://${__dirname}/app/index.html`);
 
-    if (process.env.NODE_ENV === 'development') {
-      this.browserWindow.webContents.openDevTools()
+    if (process.env.NODE_ENV !== 'production') {
+      this.browserWindow.webContents.openDevTools();
     }
 
-    const menu = new AppMenu()
-    menu.setup()
+    AppMenu.setup();
 
-    this.handleEvents()
+    this.handleEvents();
   }
   handleEvents() {
     this.browserWindow.on('close', () => {
-      const options = this.browserWindow.getBounds()
-      this.application.saveWindowOptions(options)
-    })
+      const options = this.browserWindow.getBounds();
+      this.application.constructor.saveWindowOptions(options);
+    });
 
     this.browserWindow.on('closed', () => {
-      this.browserWindow = null
-      this.application.removeWindow()
-    })
+      this.browserWindow = null;
+      this.application.removeWindow();
+    });
   }
 }

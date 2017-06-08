@@ -1,46 +1,46 @@
-import { routerMiddleware, routerReducer as routing } from 'react-router-redux'
-import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
-import thunk from 'redux-thunk'
-import createLogger from 'redux-logger'
-import { persistStore, autoRehydrate } from 'redux-persist'
-import reducers from './reducers'
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
+import { routerMiddleware, routerReducer } from 'react-router-redux';
+import thunk from 'redux-thunk';
+import { createLogger } from 'redux-logger';
+import { persistStore, autoRehydrate } from 'redux-persist';
+import reducers from './reducers';
 // import DevTools from './containers/dev-tools'
-import hostsFileMiddleware from './middlewares/hosts-file-middleware'
-import history from './history'
+import hostsFileMiddleware from './middlewares/hosts-file-middleware';
 
-const voidMiddleware = () => next => action => next(action)
+const voidMiddleware = () => next => action => next(action);
 
 function createReduxLoggerMiddleware() {
-  if (process.env.NODE_ENV === 'development') {
-    return createLogger()
+  if (process.env.NODE_ENV !== 'production') {
+    return createLogger();
   }
-  return voidMiddleware
+  return voidMiddleware;
 }
 
-const router = routerMiddleware(history)
+export default function configureStore(history, initialState = {}) {
+  const reduxRouterMiddleware = routerMiddleware(history);
+  const reduxLoggerMiddleware = createReduxLoggerMiddleware();
 
-const enhancer = compose(
-  applyMiddleware(thunk, router, createReduxLoggerMiddleware(), hostsFileMiddleware),
-  autoRehydrate(),
-  // DevTools.instrument()  // TODO:
-)
+  const enhancer = compose(
+    applyMiddleware(thunk, reduxRouterMiddleware, reduxLoggerMiddleware, hostsFileMiddleware),
+    autoRehydrate(),
+    // DevTools.instrument()  // TODO:
+  );
 
-const rootReducer = combineReducers({
-  ...reducers,
-  routing,
-})
+  const rootReducer = combineReducers({
+    ...reducers,
+    routing: routerReducer,
+  });
 
-export function configureStore(initialState = {}) {
-  const store = createStore(rootReducer, initialState, enhancer)
+  const store = createStore(rootReducer, initialState, enhancer);
 
-  persistStore(store, { whitelist: ['groups'] })
+  persistStore(store, { whitelist: ['groups'] });
 
   if (module.hot) {
     module.hot.accept('./reducers', () => {
-      const nextRootReducer = require('./reducers').default // eslint-disable-line global-require
-      store.replaceReducer(nextRootReducer)
-    })
+      const nextRootReducer = require('./reducers').default; // eslint-disable-line global-require
+      store.replaceReducer(nextRootReducer);
+    });
   }
 
-  return store
+  return store;
 }
