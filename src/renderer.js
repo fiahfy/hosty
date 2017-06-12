@@ -12,33 +12,35 @@ import baseHistory from './renderer/history';
 import setupListener from './renderer/ipc-listener';
 import * as HostsFileManager from './renderer/utils/hosts-file-manager';
 
-// Needed for onTouchTap
-// @see http://stackoverflow.com/a/34015469/988941
-injectTapEventPlugin();
+(async function main() {
+  // Needed for onTouchTap
+  // @see http://stackoverflow.com/a/34015469/988941
+  injectTapEventPlugin();
 
-const store = configureStore(baseHistory);
-const history = syncHistoryWithStore(baseHistory, store);
+  const store = configureStore(baseHistory);
+  const history = syncHistoryWithStore(baseHistory, store);
 
-setupListener(store, history);
+  setupListener(store, history);
 
-// TODO:
-HostsFileManager.setup();
+  // TODO:
+  await HostsFileManager.setup();
 
-function renderApp(RootComponent) {
-  render(
-    /* eslint-disable react/jsx-filename-extension */
-    <AppContainer>
-      <RootComponent store={store} history={history} />
-    </AppContainer>,
-    /* eslint-enable react/jsx-filename-extension */
-    document.querySelector('#app'), // eslint-disable-line no-undef
-  );
-}
+  function renderApp(RootComponent) {
+    render(
+      /* eslint-disable react/jsx-filename-extension */
+      <AppContainer>
+        <RootComponent store={store} history={history} />
+      </AppContainer>,
+      /* eslint-enable react/jsx-filename-extension */
+      document.querySelector('#app'), // eslint-disable-line no-undef
+    );
+  }
 
-renderApp(Root);
-if (module.hot) {
-  module.hot.accept('./renderer/containers/root', () => {
-    const nextRoot = require('./renderer/containers/root').default; // eslint-disable-line global-require
-    renderApp(nextRoot);
-  });
-}
+  renderApp(Root);
+  if (module.hot) {
+    module.hot.accept('./renderer/containers/root', () => {
+      const nextRoot = require('./renderer/containers/root').default; // eslint-disable-line global-require
+      renderApp(nextRoot);
+    });
+  }
+}());
