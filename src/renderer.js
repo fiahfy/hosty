@@ -37,6 +37,7 @@ import * as HostsFileManager from './renderer/utils/hosts-file-manager';
   }
 
   renderApp(Root);
+
   if (module.hot) {
     module.hot.accept('./renderer/containers/root', () => {
       const nextRoot = require('./renderer/containers/root').default; // eslint-disable-line global-require
