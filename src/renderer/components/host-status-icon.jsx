@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import * as SvgIcons from 'material-ui/svg-icons';
 import * as Styles from 'material-ui/styles';
 
-export default function HostStatusIcon(props) {
-  const { invalid, enable, ...others } = props;
+const HostStatusIcon = ({ invalid, enable, ...others }) => {
   if (invalid) {
     return (
       <SvgIcons.DeviceSignalCellularConnectedNoInternet4Bar
@@ -16,7 +15,7 @@ export default function HostStatusIcon(props) {
   return enable
     ? <SvgIcons.DeviceSignalCellular4Bar {...others} color={Styles.colors.green400} />
     : <SvgIcons.DeviceSignalCellularOff {...others} color={Styles.colors.grey400} />;
-}
+};
 
 HostStatusIcon.propTypes = {
   ...SvgIcons.propTypes,
@@ -29,3 +28,5 @@ HostStatusIcon.defaultProps = {
   invalid: false,
   enable: false,
 };
+
+export default HostStatusIcon;

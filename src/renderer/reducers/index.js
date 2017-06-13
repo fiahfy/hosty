@@ -1,3 +1,5 @@
+import { combineReducers } from 'redux';
+import { routerReducer as router } from 'react-router-redux';
 import * as ActionTypes from '../actions';
 
 function groups(state = [], action) {
@@ -99,7 +101,8 @@ function messages(state = [], action) {
   }
 }
 
-export default {
+export default combineReducers({
   groups,
   messages,
-};
+  router,
+});

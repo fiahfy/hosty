@@ -1,36 +1,55 @@
-import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
-import { routerMiddleware, routerReducer } from 'react-router-redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
+import { routerMiddleware, routerActions } from 'react-router-redux';
 import { createLogger } from 'redux-logger';
 import { persistStore, autoRehydrate } from 'redux-persist';
-import reducers from './reducers';
-// import DevTools from './containers/dev-tools'
+import rootReducer from './reducers';
+import * as actions from './actions';
 import hostsFileMiddleware from './middlewares/hosts-file-middleware';
 
-const voidMiddleware = () => next => action => next(action);
-
-function createReduxLoggerMiddleware() {
-  if (process.env.NODE_ENV !== 'production') {
-    return createLogger();
-  }
-  return voidMiddleware;
-}
-
 export default function configureStore(history, initialState = {}) {
-  const reduxRouterMiddleware = routerMiddleware(history);
-  const reduxLoggerMiddleware = createReduxLoggerMiddleware();
+  // Redux Configuration
+  const middlewares = [];
+  const enhancers = [];
 
-  const enhancer = compose(
-    applyMiddleware(thunk, reduxRouterMiddleware, reduxLoggerMiddleware, hostsFileMiddleware),
-    autoRehydrate(),
-    // DevTools.instrument()  // TODO:
-  );
+  // Thunk Middleware
+  middlewares.push(thunk);
 
-  const rootReducer = combineReducers({
-    ...reducers,
-    routing: routerReducer,
+  // Logging Middleware
+  const logger = createLogger({
+    level: 'info',
+    collapsed: true,
   });
+  middlewares.push(logger);
 
+  // Router Middleware
+  const router = routerMiddleware(history);
+  middlewares.push(router);
+
+  // Hosts File
+  middlewares.push(hostsFileMiddleware);
+
+  // Redux DevTools Configuration
+  const actionCreators = {
+    ...actions,
+    ...routerActions,
+  };
+  // If Redux DevTools Extension is installed use it, otherwise use Redux compose
+  /* eslint-disable no-underscore-dangle */
+  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+      // Options: http://zalmoxisus.github.io/redux-devtools-extension/API/Arguments.html
+      actionCreators,
+    })
+    : compose;
+  /* eslint-enable no-underscore-dangle */
+
+  // Apply Middleware & Compose Enhancers
+  enhancers.push(applyMiddleware(...middlewares));
+  enhancers.push(autoRehydrate());
+  const enhancer = composeEnhancers(...enhancers);
+
+  // Create Store
   const store = createStore(rootReducer, initialState, enhancer);
 
   persistStore(store, { whitelist: ['groups'] });

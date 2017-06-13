@@ -2,15 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as SvgIcons from 'material-ui/svg-icons';
 
-export default function SortOrderIcon(props) {
-  const { hidden, asc, style } = props;
+const SortOrderIcon = ({ hidden, asc, style }) => {
   if (hidden) {
     return null;
   }
   return asc
     ? <SvgIcons.NavigationArrowDropDown style={style} />
     : <SvgIcons.NavigationArrowDropUp style={style} />;
-}
+};
 
 SortOrderIcon.propTypes = {
   hidden: PropTypes.bool,
@@ -23,3 +22,5 @@ SortOrderIcon.defaultProps = {
   asc: true,
   style: {},
 };
+
+export default SortOrderIcon;

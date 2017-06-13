@@ -2,13 +2,12 @@ import 'babel-polyfill';
 import React from 'react';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
-import { syncHistoryWithStore } from 'react-router-redux';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import 'roboto-fontface/css/roboto/roboto-fontface.css';
 
 import Root from './renderer/containers/root';
+import history from './renderer/history';
 import configureStore from './renderer/store';
-import baseHistory from './renderer/history';
 import setupListener from './renderer/ipc-listener';
 import * as HostsFileManager from './renderer/utils/hosts-file-manager';
 
@@ -17,8 +16,7 @@ import * as HostsFileManager from './renderer/utils/hosts-file-manager';
   // @see http://stackoverflow.com/a/34015469/988941
   injectTapEventPlugin();
 
-  const store = configureStore(baseHistory);
-  const history = syncHistoryWithStore(baseHistory, store);
+  const store = configureStore(history);
 
   setupListener(store, history);
 

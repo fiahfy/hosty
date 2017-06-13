@@ -901,7 +901,7 @@ babel-register@^6.24.1:
     mkdirp "^0.5.1"
     source-map-support "^0.4.2"
 
-babel-runtime@^6.18.0, babel-runtime@^6.2.0, babel-runtime@^6.20.0, babel-runtime@^6.22.0, babel-runtime@^6.23.0, babel-runtime@^6.6.1:
+babel-runtime@^6.18.0, babel-runtime@^6.2.0, babel-runtime@^6.20.0, babel-runtime@^6.22.0, babel-runtime@^6.23.0:
   version "6.23.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.23.0.tgz#0a9489f144de70efb3ce4300accdb329e2fc543b"
   dependencies:
@@ -948,10 +948,6 @@ babylon@^6.17.0, babylon@^6.17.2:
 balanced-match@^0.4.1, balanced-match@^0.4.2:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-0.4.2.tgz#cb3f3e3c732dc0f01ee70b403f302e61d7709838"
-
-base16@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/base16/-/base16-1.0.0.tgz#e297f60d7ec1014a7a971a39ebc8a98c0b681e70"
 
 base64-js@1.2.0, base64-js@^1.0.2:
   version "1.2.0"
@@ -1447,9 +1443,9 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-create-react-class@^15.5.1:
-  version "15.5.3"
-  resolved "https://registry.yarnpkg.com/create-react-class/-/create-react-class-15.5.3.tgz#fb0f7cae79339e9a179e194ef466efa3923820fe"
+create-react-class@^15.5.3:
+  version "15.5.4"
+  resolved "https://registry.yarnpkg.com/create-react-class/-/create-react-class-15.5.4.tgz#188875cb15e2fbe4ca595b6f43eb0e4a1f00fe50"
   dependencies:
     fbjs "^0.8.9"
     loose-envify "^1.3.1"
@@ -1637,9 +1633,9 @@ decompress-zip@0.3.0:
     readable-stream "^1.1.8"
     touch "0.0.3"
 
-deep-diff@0.3.4:
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/deep-diff/-/deep-diff-0.3.4.tgz#aac5c39952236abe5f037a2349060ba01b00ae48"
+deep-diff@^0.3.5:
+  version "0.3.8"
+  resolved "https://registry.yarnpkg.com/deep-diff/-/deep-diff-0.3.8.tgz#c01de63efb0eec9798801d40c7e0dae25b582c84"
 
 deep-equal@1.0.1:
   version "1.0.1"
@@ -1727,7 +1723,7 @@ doctrine@^2.0.0:
     esutils "^2.0.2"
     isarray "^1.0.0"
 
-dom-helpers@^3.0.0, dom-helpers@^3.2.0:
+dom-helpers@^3.2.0:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/dom-helpers/-/dom-helpers-3.2.1.tgz#3203e07fed217bd1f424b019735582fc37b2825a"
 
@@ -2612,13 +2608,15 @@ hawk@~3.1.3:
     hoek "2.x.x"
     sntp "1.x.x"
 
-history@3.0.0, history@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/history/-/history-3.0.0.tgz#02cff4e6f69dc62dd81161104a63f5b85ead0c85"
+history@^4.5.1, history@^4.6.0, history@^4.6.1:
+  version "4.6.1"
+  resolved "https://registry.yarnpkg.com/history/-/history-4.6.1.tgz#911cf8eb65728555a94f2b12780a0c531a14d2fd"
   dependencies:
-    invariant "^2.0.0"
-    query-string "^4.1.0"
-    warning "^2.0.0"
+    invariant "^2.2.1"
+    loose-envify "^1.2.0"
+    resolve-pathname "^2.0.0"
+    value-equal "^0.2.0"
+    warning "^3.0.0"
 
 hmac-drbg@^1.0.0:
   version "1.0.1"
@@ -2803,7 +2801,7 @@ interpret@^1.0.0:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.0.3.tgz#cbc35c62eeee73f19ab7b10a801511401afc0f90"
 
-invariant@^2.0.0, invariant@^2.2.0, invariant@^2.2.1:
+invariant@^2.0.0, invariant@^2.2.0, invariant@^2.2.1, invariant@^2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.2.tgz#9e1f56ac0acdb6bf303306f338be3b204ae60360"
   dependencies:
@@ -3209,24 +3207,6 @@ lodash.camelcase@^4.3.0:
 lodash.cond@^4.3.0:
   version "4.5.2"
   resolved "https://registry.yarnpkg.com/lodash.cond/-/lodash.cond-4.5.2.tgz#f471a1da486be60f6ab955d17115523dd1d255d5"
-
-lodash.curry@^4.0.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/lodash.curry/-/lodash.curry-4.1.1.tgz#248e36072ede906501d75966200a86dab8b23170"
-
-lodash.debounce@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-3.1.1.tgz#812211c378a94cc29d5aa4e3346cf0bfce3a7df5"
-  dependencies:
-    lodash._getnative "^3.0.0"
-
-lodash.debounce@^4.0.4:
-  version "4.0.8"
-  resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
-
-lodash.flow@^3.3.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/lodash.flow/-/lodash.flow-3.5.0.tgz#87bf40292b8cf83e4e8ce1a3ae4209e20071675a"
 
 lodash.get@^4.0.0:
   version "4.4.2"
@@ -3797,10 +3777,6 @@ parse-json@^2.2.0:
   dependencies:
     error-ex "^1.2.0"
 
-parse-key@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/parse-key/-/parse-key-0.2.1.tgz#7bcf76595536e36075664be4d687e4bdd910208f"
-
 parseurl@~1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/parseurl/-/parseurl-1.3.1.tgz#c8ab8c9223ba34888aa64a297b28853bec18da56"
@@ -3834,6 +3810,12 @@ path-parse@^1.0.5:
 path-to-regexp@0.1.7:
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-0.1.7.tgz#df604178005f522f15eb4490e7247a1bfaa67f8c"
+
+path-to-regexp@^1.5.3:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-1.7.0.tgz#59fde0f435badacba103a84e9d3bc64e96b9937d"
+  dependencies:
+    isarray "0.0.1"
 
 path-type@^1.0.0:
   version "1.1.0"
@@ -4203,7 +4185,7 @@ promise@^7.0.3, promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.0.0, prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@~15.5.7:
+prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@~15.5.7:
   version "15.5.10"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.5.10.tgz#2797dfc3126182e3a95e3dfbb2e893ddd7456154"
   dependencies:
@@ -4238,10 +4220,6 @@ punycode@1.3.2:
 punycode@^1.2.4, punycode@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
-
-pure-color@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/pure-color/-/pure-color-1.2.0.tgz#702d2f2819dd545b1fde5116fca5f0c2dad2d18d"
 
 q@^1.1.2:
   version "1.5.0"
@@ -4302,25 +4280,9 @@ rcedit@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/rcedit/-/rcedit-0.7.0.tgz#560b2920165034a135316e6a111f8274b9cec521"
 
-react-base16-styling@^0.5.1:
-  version "0.5.3"
-  resolved "https://registry.yarnpkg.com/react-base16-styling/-/react-base16-styling-0.5.3.tgz#3858f24e9c4dd8cbd3f702f3f74d581ca2917269"
-  dependencies:
-    base16 "^1.0.0"
-    lodash.curry "^4.0.1"
-    lodash.flow "^3.3.0"
-    pure-color "^1.2.0"
-
 react-deep-force-update@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/react-deep-force-update/-/react-deep-force-update-2.0.1.tgz#4f7f6c12c3e7de42f345992a3c518236fa1ecad3"
-
-react-dock@^0.2.4:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/react-dock/-/react-dock-0.2.4.tgz#e727dc7550b3b73116635dcb9c0e04d0b7afe17c"
-  dependencies:
-    lodash.debounce "^3.1.1"
-    prop-types "^15.5.8"
 
 react-dom@^15.5.4:
   version "15.5.4"
@@ -4361,58 +4323,42 @@ react-hot-loader@^3.0.0-beta.6:
     redbox-react "^1.3.6"
     source-map "^0.4.4"
 
-react-json-tree@^0.10.8:
-  version "0.10.9"
-  resolved "https://registry.yarnpkg.com/react-json-tree/-/react-json-tree-0.10.9.tgz#7263173a2cc8bf05eac63b0419c3ce75b232e284"
-  dependencies:
-    babel-runtime "^6.6.1"
-    prop-types "^15.5.8"
-    react-base16-styling "^0.5.1"
-
 react-proxy@^3.0.0-alpha.0:
   version "3.0.0-alpha.1"
   resolved "https://registry.yarnpkg.com/react-proxy/-/react-proxy-3.0.0-alpha.1.tgz#4400426bcfa80caa6724c7755695315209fa4b07"
   dependencies:
     lodash "^4.6.1"
 
-react-pure-render@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/react-pure-render/-/react-pure-render-1.0.2.tgz#9d8a928c7f2c37513c2d064e57b3e3c356e9fabb"
-
-react-redux@^5.0.4:
-  version "5.0.4"
-  resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-5.0.4.tgz#1563babadcfb2672f57f9ceaa439fb16bf85d55b"
+react-redux@^5.0.5:
+  version "5.0.5"
+  resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-5.0.5.tgz#f8e8c7b239422576e52d6b7db06439469be9846a"
   dependencies:
-    create-react-class "^15.5.1"
+    create-react-class "^15.5.3"
     hoist-non-react-statics "^1.0.3"
     invariant "^2.0.0"
     lodash "^4.2.0"
     lodash-es "^4.2.0"
     loose-envify "^1.1.0"
-    prop-types "^15.0.0"
+    prop-types "^15.5.10"
 
-react-router-redux@^4.0.8:
-  version "4.0.8"
-  resolved "https://registry.yarnpkg.com/react-router-redux/-/react-router-redux-4.0.8.tgz#227403596b5151e182377dab835b5d45f0f8054e"
-
-react-router-scroll@^0.4.2:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/react-router-scroll/-/react-router-scroll-0.4.2.tgz#4b90e8707edf96eba7f066d94c5b4338bd6848b7"
+react-router-redux@5.0.0-alpha.6:
+  version "5.0.0-alpha.6"
+  resolved "https://registry.yarnpkg.com/react-router-redux/-/react-router-redux-5.0.0-alpha.6.tgz#7418663c2ecd3c51be856fcf28f3d1deecc1a576"
   dependencies:
-    prop-types "^15.5.6"
-    scroll-behavior "^0.9.3"
-    warning "^3.0.0"
+    history "^4.5.1"
+    prop-types "^15.5.4"
+    react-router "^4.1.1"
 
-react-router@^3.0.5:
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/react-router/-/react-router-3.0.5.tgz#c3b7873758045a8bbc9562aef4ff4bc8cce7c136"
+react-router@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/react-router/-/react-router-4.1.1.tgz#d448f3b7c1b429a6fbb03395099949c606b1fe95"
   dependencies:
-    create-react-class "^15.5.1"
-    history "^3.0.0"
+    history "^4.6.0"
     hoist-non-react-statics "^1.2.0"
-    invariant "^2.2.1"
-    loose-envify "^1.2.0"
-    prop-types "^15.5.6"
+    invariant "^2.2.2"
+    loose-envify "^1.3.1"
+    path-to-regexp "^1.5.3"
+    prop-types "^15.5.4"
     warning "^3.0.0"
 
 react-side-effect@1.0.2:
@@ -4557,52 +4503,11 @@ reduce-function-call@^1.0.1:
   dependencies:
     balanced-match "^0.4.2"
 
-redux-devtools-dock-monitor@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/redux-devtools-dock-monitor/-/redux-devtools-dock-monitor-1.1.2.tgz#eb213a021f8c25b892f6c98bdb87368615e3d201"
+redux-logger@^3.0.6:
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/redux-logger/-/redux-logger-3.0.6.tgz#f7555966f3098f3c88604c449cf0baf5778274bf"
   dependencies:
-    babel-runtime "^6.2.0"
-    parse-key "^0.2.1"
-    prop-types "^15.5.8"
-    react-dock "^0.2.4"
-    react-pure-render "^1.0.2"
-
-redux-devtools-instrument@^1.0.1:
-  version "1.8.2"
-  resolved "https://registry.yarnpkg.com/redux-devtools-instrument/-/redux-devtools-instrument-1.8.2.tgz#5e91cfe402e790dae3fd2f0d235f7b7d84b09ffe"
-  dependencies:
-    lodash "^4.2.0"
-    symbol-observable "^1.0.2"
-
-redux-devtools-log-monitor@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/redux-devtools-log-monitor/-/redux-devtools-log-monitor-1.3.0.tgz#2de0ca1d708da208bca649ec74103023036cce39"
-  dependencies:
-    lodash.debounce "^4.0.4"
-    prop-types "^15.0.0"
-    react-json-tree "^0.10.8"
-    react-pure-render "^1.0.2"
-    redux-devtools-themes "^1.0.0"
-
-redux-devtools-themes@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/redux-devtools-themes/-/redux-devtools-themes-1.0.0.tgz#c482dce3c5373976045f40134907d9dcb3ae3d5d"
-  dependencies:
-    base16 "^1.0.0"
-
-redux-devtools@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/redux-devtools/-/redux-devtools-3.4.0.tgz#9bf8415154301f56906f26a36f5bc1f5ca913bb5"
-  dependencies:
-    lodash "^4.2.0"
-    prop-types "^15.5.7"
-    redux-devtools-instrument "^1.0.1"
-
-redux-logger@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/redux-logger/-/redux-logger-3.0.1.tgz#ae8ae4c3c55ed3dd7aa31509f0856c5d3751057a"
-  dependencies:
-    deep-diff "0.3.4"
+    deep-diff "^0.3.5"
 
 redux-persist@3.2.2:
   version "3.2.2"
@@ -4741,6 +4646,10 @@ resolve-from@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/resolve-from/-/resolve-from-1.0.1.tgz#26cbfe935d1aeeeabb29bc3fe5aeb01e93d44226"
 
+resolve-pathname@^2.0.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/resolve-pathname/-/resolve-pathname-2.1.0.tgz#e8358801b86b83b17560d4e3c382d7aef2100944"
+
 resolve@^1.1.6:
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.3.3.tgz#655907c3469a8680dc2de3a275a8fdd69691f0e5"
@@ -4817,13 +4726,6 @@ sanitize-filename@^1.6.0:
 sax@~1.2.1:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.2.tgz#fd8631a23bc7826bef5d871bdb87378c95647828"
-
-scroll-behavior@^0.9.3:
-  version "0.9.3"
-  resolved "https://registry.yarnpkg.com/scroll-behavior/-/scroll-behavior-0.9.3.tgz#e48bcc8af364f3f07176e8dbca3968bd5e71557b"
-  dependencies:
-    dom-helpers "^3.0.0"
-    invariant "^2.2.1"
 
 select-hose@^2.0.0:
   version "2.0.0"
@@ -5449,6 +5351,10 @@ validator@5.4.0:
   version "5.4.0"
   resolved "https://registry.yarnpkg.com/validator/-/validator-5.4.0.tgz#4420ddc9fdc2094d904b85303e1b4a138f84e71e"
 
+value-equal@^0.2.0:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/value-equal/-/value-equal-0.2.1.tgz#c220a304361fce6994dbbedaa3c7e1a1b895871d"
+
 vary@~1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.1.tgz#67535ebb694c1d52257457984665323f587e8d37"
@@ -5469,7 +5375,7 @@ vm-browserify@0.0.4:
   dependencies:
     indexof "0.0.1"
 
-warning@2.1.0, warning@^2.0.0:
+warning@2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/warning/-/warning-2.1.0.tgz#21220d9c63afc77a8c92111e011af705ce0c6901"
   dependencies:
