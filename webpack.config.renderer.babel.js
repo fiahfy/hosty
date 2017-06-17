@@ -11,6 +11,7 @@ rules = rules.concat([
     use: [
       'style-loader',
       'css-loader',
+      'resolve-url-loader',
     ],
   },
   {
