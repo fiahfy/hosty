@@ -2,7 +2,7 @@ import webpack from 'webpack';
 
 const env = process.env.NODE_ENV || 'development';
 const debug = env === 'development';
-const devtool = debug ? 'cheap-source-map' : 'source-map';
+const devtool = debug ? 'cheap-module-inline-source-map' : 'source-map';
 
 export default {
   devtool,

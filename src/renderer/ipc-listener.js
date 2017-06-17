@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron';
 import { bindActionCreators } from 'redux';
 import * as ActionCreators from './actions';
-import * as HostGroup from './utils/host-group';
+import * as Group from './utils/group';
 
 export default function setupListener(store, history) {
   const actions = bindActionCreators(ActionCreators, store.dispatch);
@@ -13,13 +13,13 @@ export default function setupListener(store, history) {
       });
 
       const groupLength = groups.length;
-      const hostLength = HostGroup.getHostLength(groups);
+      const hostLength = Group.getHostLength(groups);
       actions.createMessage({ text: `Added ${groupLength} group(s), ${hostLength} host(s)` });
     } else if (mode === 'import') {
       actions.initializeGroups(groups);
 
       const groupLength = groups.length;
-      const hostLength = HostGroup.getHostLength(groups);
+      const hostLength = Group.getHostLength(groups);
       actions.createMessage({ text: `Imported ${groupLength} group(s), ${hostLength} host(s)` });
     }
   });

@@ -8,7 +8,7 @@ import * as Styles from 'material-ui/styles';
 import HostStatusIcon from './host-status-icon';
 import EditableTextField from './editable-text-field';
 import isUpdateNeeded from '../utils/is-update-needed';
-import * as HostGroup from '../utils/host-group';
+import * as Group from '../utils/group';
 
 const styles = {
   row: {
@@ -111,10 +111,10 @@ export default class GroupItem extends Component {
         </TableRowColumn>
         <TableRowColumn>
           <EditableTextField
-            name={HostGroup.KEY_NAME}
+            name={Group.KEY_NAME}
             ref={(input) => { this.textInput = input; }}
             hintText="Group name"
-            errorText={errors[HostGroup.KEY_HOST]}
+            errorText={errors[Group.KEY_HOST]}
             errorStyle={styles.errorTextField}
             value={group.name}
             fullWidth

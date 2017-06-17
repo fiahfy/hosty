@@ -1,7 +1,7 @@
 import { app, shell, dialog, ipcMain, Menu } from 'electron';
 import fs from 'fs';
 import path from 'path';
-import * as HostGroup from '../renderer/utils/host-group';
+import * as Group from '../renderer/utils/group';
 import * as Host from '../renderer/utils/host';
 
 export default class AppMenu {
@@ -269,7 +269,7 @@ export default class AppMenu {
         ipcMain.once('sendGroups', (event, { groups }) => {
           fs.writeFileSync(filenameWithExtension, `${JSON.stringify(groups)}\n`, 'utf8');
           const groupLength = groups.length;
-          const hostLength = HostGroup.getHostLength(groups);
+          const hostLength = Group.getHostLength(groups);
           focusedWindow.webContents.send('sendMessage', {
             message: { text: `Exported ${groupLength} group(s), ${hostLength} host(s)` },
           });
@@ -285,9 +285,9 @@ export default class AppMenu {
       }
 
       ipcMain.once('sendGroups', (event, { groups }) => {
-        fs.writeFileSync(filename, `${HostGroup.build(groups)}\n`, 'utf8');
+        fs.writeFileSync(filename, `${Group.build(groups)}\n`, 'utf8');
         const groupLength = groups.length;
-        const hostLength = HostGroup.getHostLength(groups);
+        const hostLength = Group.getHostLength(groups);
         focusedWindow.webContents.send('sendMessage', {
           message: { text: `Exported ${groupLength} group(s), ${hostLength} host(s)` },
         });

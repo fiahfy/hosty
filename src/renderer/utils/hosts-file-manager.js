@@ -3,7 +3,7 @@ import path from 'path';
 import { app as mainApp, remote } from 'electron';
 import * as sudoPrompt from 'sudo-prompt';
 import isRenderer from 'is-electron-renderer';
-import * as HostGroup from './host-group';
+import * as Group from './group';
 
 const app = isRenderer ? remote.app : mainApp;
 
@@ -93,7 +93,7 @@ export async function setup() {
 export function save(groups = []) {
   const data = read();
 
-  let newData = HostGroup.build(groups);
+  let newData = Group.build(groups);
   newData = `${SECTION_BEGIN}\n${newData}\n${SECTION_END}\n`;
 
   const reg = new RegExp(

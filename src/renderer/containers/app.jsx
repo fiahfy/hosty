@@ -1,12 +1,12 @@
+import fs from 'fs';
+import path from 'path';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Snackbar } from 'material-ui';
-import fs from 'fs';
-import path from 'path';
 import * as ActionCreators from '../actions';
-import * as HostGroup from '../utils/host-group';
+import * as Group from '../utils/group';
 import * as Host from '../utils/host';
 import ContextMenu from '../utils/context-menu';
 
@@ -32,12 +32,9 @@ function mapDispatchToProps(dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class App extends Component {
   static propTypes = {
-    messages: PropTypes.arrayOf(PropTypes.object),
+    messages: PropTypes.arrayOf(PropTypes.object).isRequired,
     actions: PropTypes.object.isRequired,
     children: PropTypes.node.isRequired,
-  };
-  static defaultProps = {
-    messages: [],
   };
   static handleDragOver(e) {
     e.preventDefault();
@@ -45,12 +42,14 @@ export default class App extends Component {
     e.dataTransfer.dropEffect = 'copy'; // eslint-disable-line no-param-reassign
   }
   static handleContextMenu(e) {
+    // TODO:
     ContextMenu.show(e);
   }
   handleDrop(e) {
     e.preventDefault();
     e.stopPropagation();
 
+    // TODO:
     const groups = Array.from(e.dataTransfer.files)
       .map((file) => {
         const params = path.parse(file.path);
@@ -73,7 +72,7 @@ export default class App extends Component {
     });
 
     const groupLength = groups.length;
-    const hostLength = HostGroup.getHostLength(groups);
+    const hostLength = Group.getHostLength(groups);
     this.props.actions.createMessage(
       { text: `Added ${groupLength} group(s), ${hostLength} host(s)` },
     );
@@ -83,18 +82,13 @@ export default class App extends Component {
   }
   renderSnackbar() {
     const { messages } = this.props;
-
-    let open = false;
-    let text = '';
-    if (messages.length) {
-      open = true;
-      text = messages[0].text;
-    }
+    const message = messages.length ? messages[0].text : '';
+    const open = Boolean(message);
 
     return (
       <Snackbar
         open={open}
-        message={text}
+        message={message}
         autoHideDuration={4000}
         bodyStyle={styles.snackbar}
         onRequestClose={() => this.handleRequestClose()}

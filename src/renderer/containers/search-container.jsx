@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { IconButton } from 'material-ui';
 import * as SvgIcons from 'material-ui/svg-icons';
-import { bindActionCreators } from 'redux';
 import * as ActionCreators from '../actions';
 import SearchList from '../components/search-list';
 
@@ -45,12 +45,12 @@ export default class AppContainers extends Component {
     groups: [],
   };
   handleClickIconButton() {
-    this.context.router.push('/');
+    this.context.router.history.push('/');
   }
   handleSelectItems(items) {
     const item = items[0];
     const id = item ? item.group.id : 0;
-    this.context.router.push({ pathname: '/', query: { id } });
+    this.context.router.history.push(`/${id}`);
   }
   render() {
     const { groups } = this.props;

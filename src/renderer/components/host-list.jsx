@@ -11,19 +11,21 @@ import isUpdateNeeded from '../utils/is-update-needed';
 import * as Host from '../utils/host';
 
 const styles = {
-  headerIconColumn: {
+  iconHeaderColumn: {
     paddingRight: '0',
     textAlign: 'center',
+    userSelect: 'none',
     width: '48px',
   },
-  headerSortableColumn: {
+  sortableHeaderColumn: {
     cursor: 'pointer',
+    userSelect: 'none',
   },
-  headerColumnText: {
+  label: {
     display: 'inline-block',
     verticalAlign: 'middle',
   },
-  headerColumnIcon: {
+  icon: {
     verticalAlign: 'middle',
   },
   footerColumn: {
@@ -36,87 +38,30 @@ const styles = {
 
 export default class HostList extends Component {
   static propTypes = {
-    groupId: PropTypes.number,
     hosts: PropTypes.arrayOf(PropTypes.object),
     onAddHost: PropTypes.func,
     onEditHost: PropTypes.func,
     onDeleteHosts: PropTypes.func,
     onSelectHosts: PropTypes.func,
+    onSortHosts: PropTypes.func,
   };
   static defaultProps = {
-    groupId: 0,
     hosts: [],
     onAddHost: () => {},
     onEditHost: () => {},
     onDeleteHosts: () => {},
     onSelectHosts: () => {},
+    onSortHosts: () => {},
   };
   state = {
-    sortOptions: {
-      key: Host.KEY_HOST,
-      order: Host.SORT_ASC,
-    },
-    sortedMap: new Map(),
-    selectedIds: [],
+    key: null,
+    order: Host.SORT_ASC,
   };
-  componentWillReceiveProps(nextProps) {
-    if (this.props.groupId === nextProps.groupId && this.props.hosts.length) {
-      return;
-    }
-
-    this.setState({ selectedIds: [] });
-    this.sort(nextProps.hosts, this.state.sortOptions);
-  }
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState);
   }
-  getSelectedHosts() {
-    return this.getSortedHosts().filter(host => this.state.selectedIds.includes(host.id));
-  }
-  getSortedHosts() {
-    const { sortedMap } = this.state;
-
-    return this.props.hosts.concat().sort((a, b) => {
-      if (!sortedMap.has(a.id) && !sortedMap.has(b.id)) {
-        return (a.id > b.id) ? 1 : -1;
-      }
-      if (!sortedMap.has(a.id)) {
-        return 1;
-      }
-      if (!sortedMap.has(b.id)) {
-        return -1;
-      }
-      return sortedMap.get(a.id) > sortedMap.get(b.id) ? 1 : -1;
-    });
-  }
-  focusLastHost() {
-    const hosts = this.getSortedHosts();
-    const host = hosts[hosts.length - 1];
-    this.hostItems[host.id].focus();
-  }
-  select(ids) {
-    this.setState({ selectedIds: ids });
-  }
-  deselectAll() {
-    this.setState({ selectedIds: [] });
-  }
-  sort(hosts, options) {
-    const { key, order } = options;
-
-    const sortedMap = new Map();
-    hosts.concat()
-      .sort((a, b) => Host.compare(a, b, key, order))
-      .forEach((host, i) => {
-        sortedMap.set(host.id, i);
-      });
-
-    this.setState({ sortOptions: options, sortedMap });
-  }
-  handleEditHost(host) {
-    this.props.onEditHost(host.id, host);
-  }
   handleClickHeader(e, rowId, columnId) {
-    const { key, order } = this.state.sortOptions;
+    const { key, order } = this.state;
 
     const columns = [null, null, Host.KEY_HOST, Host.KEY_IP];
     const newKey = columns[columnId];
@@ -124,23 +69,24 @@ export default class HostList extends Component {
       return;
     }
     let newOrder;
-    if (key !== newKey || order !== Host.SORT_ASC) {
-      newOrder = Host.SORT_ASC;
-    } else {
+    if (key === newKey && order === Host.SORT_ASC) {
       newOrder = Host.SORT_DESC;
+    } else {
+      newOrder = Host.SORT_ASC;
     }
-    this.sort(this.props.hosts, { key: newKey, order: newOrder });
+    this.setState({ key: newKey, order: newOrder });
+    this.props.onSortHosts(newKey, newOrder);
   }
   handleRowSelection(selectedRows) {
-    const selectedHosts = this.getSortedHosts()
-        .filter((host, i) => selectedRows.includes(i));
-    const selectedIds = selectedHosts.map(host => host.id);
-
-    this.setState({ selectedIds });
-    this.props.onSelectHosts(selectedHosts);
+    const { hosts, onSelectHosts } = this.props;
+    const ids = hosts.filter((host, i) => selectedRows.includes(i)).map(host => host.id);
+    onSelectHosts(ids);
+  }
+  handleEditHost(host) {
+    this.props.onEditHost(host.id, host);
   }
   renderHeader() {
-    const { key, order } = this.state.sortOptions;
+    const { key, order } = this.state;
 
     return (
       <TableHeader
@@ -148,21 +94,21 @@ export default class HostList extends Component {
         adjustForCheckbox={false}
       >
         <TableRow onCellClick={(...args) => this.handleClickHeader(...args)}>
-          <TableHeaderColumn style={styles.headerIconColumn}>
+          <TableHeaderColumn style={styles.iconHeaderColumn}>
             Status
           </TableHeaderColumn>
-          <TableHeaderColumn style={styles.headerSortableColumn}>
-            <div style={styles.headerColumnText}>Host</div>
+          <TableHeaderColumn style={styles.sortableHeaderColumn}>
+            <div style={styles.label}>Host</div>
             <SortOrderIcon
-              style={styles.headerColumnIcon}
+              style={styles.icon}
               hidden={key !== Host.KEY_HOST}
               asc={order === Host.SORT_ASC}
             />
           </TableHeaderColumn>
-          <TableHeaderColumn style={styles.headerSortableColumn}>
-            <div style={styles.headerColumnText}>IP</div>
+          <TableHeaderColumn style={styles.sortableHeaderColumn}>
+            <div style={styles.label}>IP</div>
             <SortOrderIcon
-              style={styles.headerColumnIcon}
+              style={styles.icon}
               hidden={key !== Host.KEY_IP}
               asc={order === Host.SORT_ASC}
             />
@@ -172,21 +118,19 @@ export default class HostList extends Component {
     );
   }
   renderBody() {
+    const { hosts } = this.props;
+
     return (
       <TableBody
         showRowHover
         deselectOnClickaway={false}
         displayRowCheckbox={false}
       >
-        {this.getSortedHosts().map(host => (
+        {hosts.map(host => (
           <HostItem
-            ref={(item) => {
-              this.hostItems = this.hostItems || {};
-              this.hostItems[host.id] = item;
-            }}
-            key={`${this.props.groupId}-${host.id}`}
+            key={host.id}
             host={host}
-            selected={this.state.selectedIds.includes(host.id)}
+            selected={host.selected}
             onEditHost={editedHost => this.handleEditHost(editedHost)}
           />
         ))}
@@ -194,9 +138,10 @@ export default class HostList extends Component {
     );
   }
   renderFooter() {
-    const count = this.state.selectedIds.length;
-    const disabled = !count;
-    const label = count > 1 ? `Delete (${count})` : 'Delete';
+    const { hosts, onAddHost, onDeleteHosts } = this.props;
+    const selectedCount = hosts.filter(host => host.selected).length;
+    const disabled = !selectedCount;
+    const label = selectedCount > 1 ? `Delete (${selectedCount})` : 'Delete';
 
     return (
       <TableFooter
@@ -207,15 +152,15 @@ export default class HostList extends Component {
             <FlatButton
               label="Add"
               primary
-              onClick={this.props.onAddHost}
+              onClick={onAddHost}
             />
           </TableRowColumn>
           <TableRowColumn style={styles.footerColumn}>
             <FlatButton
               label={label}
               secondary
-              onClick={this.props.onDeleteHosts}
               disabled={disabled}
+              onClick={onDeleteHosts}
             />
           </TableRowColumn>
           <TableRowColumn />
