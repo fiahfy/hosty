@@ -103,7 +103,6 @@ export default class HostItem extends Component {
 
     return (
       <TableRow
-        key={host.id}
         style={styles.row}
         selected={selected}
         onRowClick={(...args) => {

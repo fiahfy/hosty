@@ -24,7 +24,7 @@ const styles = {
     overflow: 'auto',
     paddingLeft: '256px',
   },
-  contentContainer: {
+  messageWrapper: {
     display: 'table',
     height: '100%',
     width: '100%',
@@ -158,16 +158,18 @@ export default class MainContainer extends Component {
     const { selectedGroupIds, groupSortOptions } = this.state;
 
     return (
-      <GroupList
-        groups={this.groups}
-        selectedIds={selectedGroupIds}
-        sortOptions={groupSortOptions}
-        onAddGroup={() => this.handleAddGroup()}
-        onDeleteGroups={() => this.handleDeleteGroups()}
-        onEditGroup={(...args) => this.handleEditGroup(...args)}
-        onSelectGroups={selectedGroups => this.handleSelectGroups(selectedGroups)}
-        onSortGroups={(...args) => this.handleSortGroups(...args)}
-      />
+      <div className="list">
+        <GroupList
+          groups={this.groups}
+          selectedIds={selectedGroupIds}
+          sortOptions={groupSortOptions}
+          onAddGroup={() => this.handleAddGroup()}
+          onDeleteGroups={() => this.handleDeleteGroups()}
+          onEditGroup={(...args) => this.handleEditGroup(...args)}
+          onSelectGroups={selectedGroups => this.handleSelectGroups(selectedGroups)}
+          onSortGroups={(...args) => this.handleSortGroups(...args)}
+        />
+      </div>
     );
   }
   renderHostList() {
@@ -175,20 +177,24 @@ export default class MainContainer extends Component {
 
     if (!this.selectedGroupId) {
       return (
-        <div style={styles.message}>Select Group</div>
+        <div style={styles.messageWrapper}>
+          <div style={styles.message}>Select Group</div>
+        </div>
       );
     }
     return (
-      <HostList
-        hosts={this.hosts}
-        selectedIds={selectedHostIds}
-        sortOptions={hostSortOptions}
-        onAddHost={() => this.handleAddHost()}
-        onDeleteHosts={() => this.handleDeleteHosts()}
-        onEditHost={(...args) => this.handleEditHost(...args)}
-        onSelectHosts={selectedHosts => this.handleSelectHosts(selectedHosts)}
-        onSortHosts={(...args) => this.handleSortHosts(...args)}
-      />
+      <div className="list">
+        <HostList
+          hosts={this.hosts}
+          selectedIds={selectedHostIds}
+          sortOptions={hostSortOptions}
+          onAddHost={() => this.handleAddHost()}
+          onDeleteHosts={() => this.handleDeleteHosts()}
+          onEditHost={(...args) => this.handleEditHost(...args)}
+          onSelectHosts={selectedHosts => this.handleSelectHosts(selectedHosts)}
+          onSortHosts={(...args) => this.handleSortHosts(...args)}
+        />
+      </div>
     );
   }
   render() {
@@ -197,20 +203,12 @@ export default class MainContainer extends Component {
         <Drawer
           open
           width={256}
-          className="sidebar"
           containerStyle={styles.drawer}
         >
-          <div>
-            {this.renderGroupList()}
-          </div>
+          {this.renderGroupList()}
         </Drawer>
-        <div
-          className="content"
-          style={styles.content}
-        >
-          <div style={styles.contentContainer}>
-            {this.renderHostList()}
-          </div>
+        <div style={styles.content}>
+          {this.renderHostList()}
         </div>
       </div>
     );

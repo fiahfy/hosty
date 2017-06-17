@@ -89,7 +89,6 @@ export default class GroupItem extends Component {
 
     return (
       <TableRow
-        key={group.id}
         style={styles.row}
         selected={selected}
         onRowClick={(...args) => {

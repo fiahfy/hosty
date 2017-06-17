@@ -11,29 +11,32 @@ import isUpdateNeeded from '../utils/is-update-needed';
 const styles = {
   headerGroupColumn: {
     width: '136px',
+    userSelect: 'none',
   },
-  headerIconColumn: {
+  iconHeaderColumn: {
     paddingRight: '0',
     textAlign: 'center',
+    userSelect: 'none',
     width: '48px',
   },
-  headerSortableColumn: {
+  sortableHeaderColumn: {
     cursor: 'pointer',
+    userSelect: 'none',
   },
-  headerColumnText: {
+  label: {
     display: 'inline-block',
     verticalAlign: 'middle',
   },
-  headerColumnIcon: {
+  icon: {
     verticalAlign: 'middle',
   },
-  footerTextFieldColumn: {
+  textFieldFooterColumn: {
     paddingLeft: '20px',
     paddingRight: '20px',
     verticalAlign: 'middle',
     width: '100%',
   },
-  footerButtonColumn: {
+  buttonFooterColumn: {
     paddingLeft: '20px',
     paddingRight: '20px',
     verticalAlign: 'middle',
@@ -43,12 +46,14 @@ const styles = {
 
 export default class SearchList extends Component {
   static propTypes = {
-    groups: PropTypes.arrayOf(PropTypes.object),
+    items: PropTypes.arrayOf(PropTypes.object),
     onSelectItems: PropTypes.func,
+    onSearchItems: PropTypes.func,
   };
   static defaultProps = {
-    groups: [],
+    items: [],
     onSelectItems: () => {},
+    onSearchItems: () => {},
   };
   static renderHeader() {
     return (
@@ -57,7 +62,7 @@ export default class SearchList extends Component {
         adjustForCheckbox={false}
       >
         <TableRow>
-          <TableHeaderColumn style={styles.headerIconColumn}>
+          <TableHeaderColumn style={styles.iconHeaderColumn}>
             Status
           </TableHeaderColumn>
           <TableHeaderColumn
@@ -66,76 +71,51 @@ export default class SearchList extends Component {
               ...styles.headerSortableColumn,
             }}
           >
-            <div style={styles.headerColumnText}>Group</div>
+            <div style={styles.label}>Group</div>
           </TableHeaderColumn>
-          <TableHeaderColumn style={styles.headerIconColumn}>
+          <TableHeaderColumn style={styles.iconHeaderColumn}>
             Status
           </TableHeaderColumn>
-          <TableHeaderColumn style={styles.headerSortableColumn}>
-            <div style={styles.headerColumnText}>Host</div>
+          <TableHeaderColumn style={styles.sortableHeaderColumn}>
+            <div style={styles.label}>Host</div>
           </TableHeaderColumn>
-          <TableHeaderColumn style={styles.headerSortableColumn}>
-            <div style={styles.headerColumnText}>IP</div>
+          <TableHeaderColumn style={styles.sortableHeaderColumn}>
+            <div style={styles.label}>IP</div>
           </TableHeaderColumn>
         </TableRow>
       </TableHeader>
     );
   }
-  state = {
-    query: '',
-  };
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState);
   }
-  getItems() {
-    const { query } = this.state;
-
-    /* eslint-disable arrow-body-style */
-    return this.props.groups.reduce((prev, current) => {
-      return prev.concat((current.hosts || []).map((host) => {
-        return { group: current, host };
-      }));
-    }, [])
-    .filter((item) => {
-      if (query === '') {
-        return true;
-      }
-      if ((item.host.host || '').indexOf(query) > -1) {
-        return true;
-      }
-      if ((item.host.ip || '').indexOf(query) > -1) {
-        return true;
-      }
-      return false;
-    });
-    /* eslint-enable allow-body-style */
+  handleRowSelection(selectedRows) {
+    const { items, onSelectItems } = this.props;
+    const ids = items.filter((item, i) => selectedRows.includes(i))
+      .map(item => [item.group.id, item.id]);
+    onSelectItems(ids);
   }
   handleKeyDown(e) {
     if (e.keyCode === 13) {
       this.searchButton.props.onClick();
     }
   }
-  handleRowSelection(selectedRows) {
-    const selectedItems = this.getItems()
-        .filter((item, i) => selectedRows.includes(i));
-
-    this.props.onSelectItems(selectedItems);
-  }
-  search() {
-    this.setState({ query: this.textInput.getValue() });
+  handleSearchItems() {
+    this.props.onSearchItems(this.textInput.getValue());
   }
   renderBody() {
+    const { items } = this.props;
+
     return (
       <TableBody
         showRowHover
         deselectOnClickaway={false}
         displayRowCheckbox={false}
       >
-        {this.getItems().map(item => (
+        {items.map(item => (
           <SearchItem
             key={`${item.group.id}-${item.host.id}`}
-            group={item.group}
-            host={item.host}
+            item={item}
           />
         ))}
       </TableBody>
@@ -147,7 +127,7 @@ export default class SearchList extends Component {
         adjustForCheckbox
       >
         <TableRow>
-          <TableRowColumn style={styles.footerTextFieldColumn}>
+          <TableRowColumn style={styles.textFieldFooterColumn}>
             <TextField
               name="query"
               style={styles.textField}
@@ -157,13 +137,13 @@ export default class SearchList extends Component {
               onKeyDown={e => this.handleKeyDown(e)}
             />
           </TableRowColumn>
-          <TableRowColumn style={styles.footerButtonColumn}>
+          <TableRowColumn style={styles.buttonFooterColumn}>
             <FlatButton
               label="Search"
               style={styles.button}
               ref={(button) => { this.searchButton = button; }}
               primary
-              onClick={() => this.search()}
+              onClick={() => this.handleSearchItems()}
             />
           </TableRowColumn>
         </TableRow>
