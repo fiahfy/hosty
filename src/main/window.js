@@ -1,7 +1,7 @@
 import { BrowserWindow } from 'electron';
-import AppMenu from './app-menu';
+import MenuBuilder from './menu-builder';
 
-export default class AppWindow {
+export default class Window {
   constructor(application) {
     this.application = application;
   }
@@ -9,14 +9,10 @@ export default class AppWindow {
     const options = args || { width: 820, height: 600 };
 
     this.browserWindow = new BrowserWindow(options);
-
     this.browserWindow.loadURL(`file://${__dirname}/app/index.html`);
 
-    if (process.env.NODE_ENV !== 'production') {
-      this.browserWindow.webContents.openDevTools();
-    }
-
-    AppMenu.setup();
+    const builder = new MenuBuilder(this.browserWindow);
+    builder.build();
 
     this.handleEvents();
   }
