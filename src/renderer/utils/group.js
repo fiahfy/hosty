@@ -36,7 +36,7 @@ export function getHostLength(groups) {
     ), 0);
 }
 
-export function compare(a, b, key, order) {
+export function compare(a, b, { key, order }) {
   if (!a[KEY_NAME] && !b[KEY_NAME]) {
     return a[KEY_ID] > b[KEY_ID] ? 1 : -1;
   }

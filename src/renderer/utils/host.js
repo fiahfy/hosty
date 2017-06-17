@@ -39,7 +39,7 @@ export function isValid(host) {
   ));
 }
 
-export function compare(a, b, key, order) {
+export function compare(a, b, { key, order }) {
   if (!a[KEY_HOST] && !b[KEY_HOST]) {
     return a[KEY_ID] > b[KEY_ID] ? 1 : -1;
   }

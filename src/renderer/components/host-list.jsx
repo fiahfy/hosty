@@ -38,6 +38,7 @@ const styles = {
 
 export default class HostList extends Component {
   static propTypes = {
+    groupId: PropTypes.number.isRequired,
     hosts: PropTypes.arrayOf(PropTypes.object),
     selectedIds: PropTypes.arrayOf(PropTypes.number),
     sortOptions: PropTypes.object,
@@ -117,7 +118,7 @@ export default class HostList extends Component {
     );
   }
   renderBody() {
-    const { hosts, selectedIds } = this.props;
+    const { groupId, hosts, selectedIds } = this.props;
 
     return (
       <TableBody
@@ -127,7 +128,7 @@ export default class HostList extends Component {
       >
         {hosts.map(host => (
           <HostItem
-            key={host.id}
+            key={`${groupId}-${host.id}`}
             host={host}
             selected={selectedIds.includes(host.id)}
             onEditHost={editedHost => this.handleEditHost(editedHost)}
