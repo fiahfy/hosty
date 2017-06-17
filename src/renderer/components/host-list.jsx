@@ -39,6 +39,8 @@ const styles = {
 export default class HostList extends Component {
   static propTypes = {
     hosts: PropTypes.arrayOf(PropTypes.object),
+    selectedIds: PropTypes.arrayOf(PropTypes.number),
+    sortOptions: PropTypes.object,
     onAddHost: PropTypes.func,
     onEditHost: PropTypes.func,
     onDeleteHosts: PropTypes.func,
@@ -47,21 +49,19 @@ export default class HostList extends Component {
   };
   static defaultProps = {
     hosts: [],
+    selectedIds: [],
+    sortOptions: {},
     onAddHost: () => {},
     onEditHost: () => {},
     onDeleteHosts: () => {},
     onSelectHosts: () => {},
     onSortHosts: () => {},
   };
-  state = {
-    key: null,
-    order: Host.SORT_ASC,
-  };
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState);
   }
   handleClickHeader(e, rowId, columnId) {
-    const { key, order } = this.state;
+    const { key, order } = this.props.sortOptions;
 
     const columns = [null, null, Host.KEY_HOST, Host.KEY_IP];
     const newKey = columns[columnId];
@@ -74,8 +74,7 @@ export default class HostList extends Component {
     } else {
       newOrder = Host.SORT_ASC;
     }
-    this.setState({ key: newKey, order: newOrder });
-    this.props.onSortHosts(newKey, newOrder);
+    this.props.onSortHosts({ key: newKey, order: newOrder });
   }
   handleRowSelection(selectedRows) {
     const { hosts, onSelectHosts } = this.props;
@@ -86,7 +85,7 @@ export default class HostList extends Component {
     this.props.onEditHost(host.id, host);
   }
   renderHeader() {
-    const { key, order } = this.state;
+    const { key, order } = this.props.sortOptions;
 
     return (
       <TableHeader
@@ -118,7 +117,7 @@ export default class HostList extends Component {
     );
   }
   renderBody() {
-    const { hosts } = this.props;
+    const { hosts, selectedIds } = this.props;
 
     return (
       <TableBody
@@ -130,7 +129,7 @@ export default class HostList extends Component {
           <HostItem
             key={host.id}
             host={host}
-            selected={host.selected}
+            selected={selectedIds.includes(host.id)}
             onEditHost={editedHost => this.handleEditHost(editedHost)}
           />
         ))}
@@ -138,8 +137,8 @@ export default class HostList extends Component {
     );
   }
   renderFooter() {
-    const { hosts, onAddHost, onDeleteHosts } = this.props;
-    const selectedCount = hosts.filter(host => host.selected).length;
+    const { selectedIds, onAddHost, onDeleteHosts } = this.props;
+    const selectedCount = selectedIds.length;
     const disabled = !selectedCount;
     const label = selectedCount > 1 ? `Delete (${selectedCount})` : 'Delete';
 

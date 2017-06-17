@@ -39,6 +39,8 @@ const styles = {
 export default class GroupList extends Component {
   static propTypes = {
     groups: PropTypes.arrayOf(PropTypes.object),
+    selectedIds: PropTypes.arrayOf(PropTypes.number),
+    sortOptions: PropTypes.object,
     onAddGroup: PropTypes.func,
     onEditGroup: PropTypes.func,
     onDeleteGroups: PropTypes.func,
@@ -47,21 +49,19 @@ export default class GroupList extends Component {
   };
   static defaultProps = {
     groups: [],
+    selectedIds: [],
+    sortOptions: {},
     onAddGroup: () => {},
     onEditGroup: () => {},
     onDeleteGroups: () => {},
     onSelectGroups: () => {},
     onSortGroups: () => {},
   };
-  state = {
-    key: null,
-    order: Group.SORT_ASC,
-  };
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState);
   }
   handleClickHeader(e, rowId, columnId) {
-    const { key, order } = this.state;
+    const { key, order } = this.props.sortOptions;
 
     const columns = [null, null, Group.KEY_NAME];
     const newKey = columns[columnId];
@@ -74,8 +74,7 @@ export default class GroupList extends Component {
     } else {
       newOrder = Group.SORT_ASC;
     }
-    this.setState({ key: newKey, order: newOrder });
-    this.props.onSortGroups(newKey, newOrder);
+    this.props.onSortGroups({ key: newKey, order: newOrder });
   }
   handleRowSelection(selectedRows) {
     const { groups, onSelectGroups } = this.props;
@@ -86,7 +85,7 @@ export default class GroupList extends Component {
     this.props.onEditGroup(group.id, group);
   }
   renderHeader() {
-    const { key, order } = this.state;
+    const { key, order } = this.props.sortOptions;
 
     return (
       <TableHeader
@@ -110,7 +109,7 @@ export default class GroupList extends Component {
     );
   }
   renderBody() {
-    const { groups } = this.props;
+    const { groups, selectedIds } = this.props;
 
     return (
       <TableBody
@@ -122,7 +121,7 @@ export default class GroupList extends Component {
           <GroupItem
             key={group.id}
             group={group}
-            selected={group.selected}
+            selected={selectedIds.includes(group.id)}
             onEditGroup={editedGroup => this.handleEditGroup(editedGroup)}
           />
         ))}
@@ -130,8 +129,8 @@ export default class GroupList extends Component {
     );
   }
   renderFooter() {
-    const { groups, onAddGroup, onDeleteGroups } = this.props;
-    const selectedCount = groups.filter(group => group.selected).length;
+    const { selectedIds, onAddGroup, onDeleteGroups } = this.props;
+    const selectedCount = selectedIds.length;
     const disabled = !selectedCount;
     const label = selectedCount > 1 ? `Delete (${selectedCount})` : 'Delete';
 

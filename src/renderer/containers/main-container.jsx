@@ -6,6 +6,8 @@ import { Drawer } from 'material-ui';
 import * as ActionCreators from '../actions';
 import GroupList from '../components/group-list';
 import HostList from '../components/host-list';
+import * as Group from '../utils/group';
+import * as Host from '../utils/host';
 
 const styles = {
   container: {
@@ -50,91 +52,116 @@ export default class MainContainer extends Component {
     groups: PropTypes.arrayOf(PropTypes.object).isRequired,
     actions: PropTypes.object.isRequired,
   };
-  get groupId() {
-    const selectedGroup = this.props.groups.find(group => group.selected);
-    return selectedGroup ? selectedGroup.id : 0;
+  state = {
+    selectedGroupIds: [],
+    groupSortOptions: {
+      key: null,
+      order: Group.SORT_ASC,
+    },
+    selectedHostIds: [],
+    hostSortOptions: {
+      key: null,
+      order: Host.SORT_ASC,
+    },
+  };
+  get selectedGroup() {
+    return this.props.groups.find(group => this.state.selectedGroupIds.includes(group.id));
+  }
+  get selectedGroupId() {
+    return this.selectedGroup ? this.selectedGroup.id : 0;
+  }
+  get groups() {
+    const { key, order } = this.state.groupSortOptions;
+    return this.props.groups.sort((a, b) => Group.compare(a, b, key, order));
   }
   get hosts() {
-    const selectedGroup = this.props.groups.find(group => group.selected);
-    return selectedGroup.hosts;
+    const { key, order } = this.state.hostSortOptions;
+    return (this.selectedGroup.hosts || []).sort((a, b) => Host.compare(a, b, key, order));
   }
   handleAddGroup() {
     this.props.actions.createGroup({ enable: true });
     window.setTimeout(() => {
-      const { groups } = this.props;
-      const group = groups[groups.length - 1];
+      const group = this.groups[this.groups.length - 1];
       if (group) {
-        this.props.actions.selectGroup(group.id);
+        this.setState({ selectedGroupIds: [group.id] });
       }
     }, 0);
   }
   handleDeleteGroups() {
-    const { groups } = this.props;
+    const { selectedGroupIds } = this.state;
 
-    const lastIndex = groups.reduce((previousValue, currentValue, index) => (
-      currentValue.selected ? index : previousValue
-    ), null);
-    const selectedIndex = lastIndex < groups.length - 1 ? lastIndex + 1 : lastIndex - 1;
-    const newGroup = groups[selectedIndex];
+    const lastIndex = this.groups
+      .reduce((previousValue, currentValue, index) => (
+        selectedGroupIds.includes(currentValue.id) ? index : previousValue
+      ), null);
+    const selectedIndex = lastIndex < this.groups.length - 1 ? lastIndex + 1 : lastIndex - 1;
+    const newGroup = this.groups[selectedIndex];
 
-    const ids = groups.filter(group => group.selected).map(group => group.id);
+    const ids = this.groups
+      .filter(group => selectedGroupIds.includes(group.id))
+      .map(group => group.id);
     this.props.actions.deleteGroups(ids);
 
     if (newGroup) {
-      this.props.actions.selectGroup(newGroup.id);
+      this.setState({ selectedGroupIds: [newGroup.id] });
     }
   }
   handleEditGroup(id, group) {
     this.props.actions.updateGroup(id, group);
   }
   handleSelectGroups(ids) {
-    this.props.actions.selectGroups(ids);
+    this.setState({ selectedGroupIds: ids });
   }
-  handleSortGroups(key, order) {
-    this.props.actions.sortGroups(key, order);
+  handleSortGroups(sortOptions) {
+    this.setState({ groupSortOptions: sortOptions });
   }
 
   handleAddHost() {
-    this.props.actions.createHost(this.groupId, { enable: true });
+    this.props.actions.createHost(this.selectedGroupId, { enable: true });
     window.setTimeout(() => {
       const host = this.hosts[this.hosts.length - 1];
       if (host) {
-        this.props.actions.selectHost(this.groupId, host.id);
+        this.setState({ selectedHostIds: [host.id] });
       }
     }, 0);
   }
   handleDeleteHosts() {
-    const hosts = this.hosts;
+    const { selectedHostIds } = this.state;
 
-    const lastIndex = hosts.reduce((previousValue, currentValue, index) => (
-      currentValue.selected ? index : previousValue
-    ), null);
-    const selectedIndex = lastIndex < hosts.length - 1 ? lastIndex + 1 : lastIndex - 1;
-    const newHost = hosts[selectedIndex];
+    const lastIndex = this.hosts
+      .reduce((previousValue, currentValue, index) => (
+        selectedHostIds.includes(currentValue.id) ? index : previousValue
+      ), null);
+    const selectedIndex = lastIndex < this.hosts.length - 1 ? lastIndex + 1 : lastIndex - 1;
+    const newHost = this.hosts[selectedIndex];
 
-    const ids = hosts.filter(group => group.selected).map(group => group.id);
-    this.props.actions.deleteHosts(this.groupId, ids);
+    const ids = this.hosts
+      .filter(host => selectedHostIds
+      .includes(host.id)).map(host => host.id);
+    this.props.actions.deleteHosts(this.selectedGroupId, ids);
 
     if (newHost) {
-      this.props.actions.selectHost(this.groupId, newHost.id);
+      this.setState({ selectedHostIds: [newHost.id] });
     }
   }
   handleEditHost(id, host) {
-    this.props.actions.updateHost(this.groupId, id, host);
+    this.props.actions.updateHost(this.selectedGroupId, id, host);
   }
   handleSelectHosts(ids) {
-    this.props.actions.selectHosts(this.groupId, ids);
+    this.setState({ selectedHostIds: ids });
   }
-  handleSortHosts(key, order) {
-    this.props.actions.sortHosts(this.groupId, key, order);
+  handleSortHosts(sortOptions) {
+    this.setState({ hostSortOptions: sortOptions });
   }
 
   renderGroupList() {
-    const { groups } = this.props;
+    const { selectedGroupIds, groupSortOptions } = this.state;
 
     return (
       <GroupList
-        groups={groups}
+        groups={this.groups}
+        selectedIds={selectedGroupIds}
+        sortOptions={groupSortOptions}
         onAddGroup={() => this.handleAddGroup()}
         onDeleteGroups={() => this.handleDeleteGroups()}
         onEditGroup={(...args) => this.handleEditGroup(...args)}
@@ -144,15 +171,18 @@ export default class MainContainer extends Component {
     );
   }
   renderHostList() {
-    if (!this.groupId) {
+    const { selectedHostIds, hostSortOptions } = this.state;
+
+    if (!this.selectedGroupId) {
       return (
         <div style={styles.message}>Select Group</div>
       );
     }
     return (
       <HostList
-        groupId={this.groupId}
         hosts={this.hosts}
+        selectedIds={selectedHostIds}
+        sortOptions={hostSortOptions}
         onAddHost={() => this.handleAddHost()}
         onDeleteHosts={() => this.handleDeleteHosts()}
         onEditHost={(...args) => this.handleEditHost(...args)}

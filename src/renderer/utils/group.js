@@ -46,7 +46,7 @@ export function compare(a, b, key, order) {
   if (!b[KEY_NAME]) {
     return -1;
   }
-  const reversed = order === Host.SORT_DESC ? -1 : 1;
+  const reversed = order === SORT_DESC ? -1 : 1;
   if (a[key] === b[key]) {
     return a[KEY_ID] > b[KEY_ID] ? reversed : -1 * reversed;
   }
