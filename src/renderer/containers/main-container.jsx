@@ -59,6 +59,8 @@ export default class MainContainer extends Component {
     actions: PropTypes.object.isRequired,
   };
   state = {
+    focusedGroupId: null,
+    focusedHostId: null,
     groupSortOptions: {
       key: null,
       order: Group.SORT_ASC,
@@ -85,6 +87,7 @@ export default class MainContainer extends Component {
     window.setTimeout(() => {
       const group = this.groups[this.groups.length - 1];
       if (group) {
+        this.setState({ focusedGroupId: group.id });
         this.props.actions.selectGroups([group.id]);
       }
     }, 0);
@@ -125,6 +128,7 @@ export default class MainContainer extends Component {
     window.setTimeout(() => {
       const host = this.hosts[this.hosts.length - 1];
       if (host) {
+        this.setState({ focusedHostId: host.id });
         this.props.actions.selectHosts([host.id]);
       }
     }, 0);
@@ -161,13 +165,14 @@ export default class MainContainer extends Component {
 
   renderGroupList() {
     const { selectedGroupIds } = this.props;
-    const { groupSortOptions } = this.state;
+    const { focusedGroupId, groupSortOptions } = this.state;
 
     return (
       <div className="list">
         <GroupList
           groups={this.groups}
           selectedIds={selectedGroupIds}
+          focusedId={focusedGroupId}
           sortOptions={groupSortOptions}
           onAddGroup={() => this.handleAddGroup()}
           onDeleteGroups={() => this.handleDeleteGroups()}
@@ -180,7 +185,7 @@ export default class MainContainer extends Component {
   }
   renderHostList() {
     const { selectedHostIds } = this.props;
-    const { hostSortOptions } = this.state;
+    const { focusedHostId, hostSortOptions } = this.state;
 
     if (!this.selectedGroupId) {
       return (
@@ -196,6 +201,7 @@ export default class MainContainer extends Component {
           groupId={this.selectedGroupId}
           hosts={this.hosts}
           selectedIds={selectedHostIds}
+          focusedId={focusedHostId}
           sortOptions={hostSortOptions}
           onAddHost={() => this.handleAddHost()}
           onDeleteHosts={() => this.handleDeleteHosts()}

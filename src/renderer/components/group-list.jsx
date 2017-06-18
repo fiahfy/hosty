@@ -40,6 +40,7 @@ export default class GroupList extends Component {
   static propTypes = {
     groups: PropTypes.arrayOf(PropTypes.object),
     selectedIds: PropTypes.arrayOf(PropTypes.number),
+    focusedId: PropTypes.number,
     sortOptions: PropTypes.object,
     onAddGroup: PropTypes.func,
     onEditGroup: PropTypes.func,
@@ -50,6 +51,7 @@ export default class GroupList extends Component {
   static defaultProps = {
     groups: [],
     selectedIds: [],
+    focusedId: null,
     sortOptions: {},
     onAddGroup: () => {},
     onEditGroup: () => {},
@@ -109,7 +111,7 @@ export default class GroupList extends Component {
     );
   }
   renderBody() {
-    const { groups, selectedIds } = this.props;
+    const { groups, selectedIds, focusedId } = this.props;
 
     return (
       <TableBody
@@ -122,6 +124,7 @@ export default class GroupList extends Component {
             key={group.id}
             group={group}
             selected={selectedIds.includes(group.id)}
+            focused={focusedId === group.id}
             onEditGroup={editedGroup => this.handleEditGroup(editedGroup)}
           />
         ))}

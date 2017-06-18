@@ -30,11 +30,13 @@ export default class GroupItem extends Component {
     ...TableRow.propTypes,
     group: PropTypes.object,
     selected: PropTypes.bool,
+    focused: PropTypes.bool,
     onEditGroup: PropTypes.func,
   };
   static defaultProps = {
     group: {},
     selected: false,
+    focused: false,
     onEditGroup: () => {},
   };
   static handleKeyDown(e) {
@@ -80,7 +82,7 @@ export default class GroupItem extends Component {
   }
   render() {
     const { group } = this.state;
-    const { selected, onRowClick, ...others } = this.props;
+    const { selected, focused, onRowClick, ...others } = this.props;
     delete others.group;
     delete others.onEditGroup;
 
@@ -117,10 +119,11 @@ export default class GroupItem extends Component {
             errorStyle={styles.errorTextField}
             value={group.name}
             fullWidth
-            clickToEditable={selected}
             onBlur={e => this.handleBlur(e)}
             onKeyDown={e => this.constructor.handleKeyDown(e)}
             onChange={e => this.handleChange(e)}
+            focused={focused}
+            clickToEditable={selected}
           />
         </TableRowColumn>
       </TableRow>

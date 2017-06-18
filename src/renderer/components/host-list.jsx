@@ -41,6 +41,7 @@ export default class HostList extends Component {
     groupId: PropTypes.number.isRequired,
     hosts: PropTypes.arrayOf(PropTypes.object),
     selectedIds: PropTypes.arrayOf(PropTypes.number),
+    focusedId: PropTypes.number,
     sortOptions: PropTypes.object,
     onAddHost: PropTypes.func,
     onEditHost: PropTypes.func,
@@ -51,6 +52,7 @@ export default class HostList extends Component {
   static defaultProps = {
     hosts: [],
     selectedIds: [],
+    focusedId: null,
     sortOptions: {},
     onAddHost: () => {},
     onEditHost: () => {},
@@ -118,7 +120,7 @@ export default class HostList extends Component {
     );
   }
   renderBody() {
-    const { groupId, hosts, selectedIds } = this.props;
+    const { groupId, hosts, selectedIds, focusedId } = this.props;
 
     return (
       <TableBody
@@ -131,6 +133,7 @@ export default class HostList extends Component {
             key={`${groupId}-${host.id}`}
             host={host}
             selected={selectedIds.includes(host.id)}
+            focused={focusedId === host.id}
             onEditHost={editedHost => this.handleEditHost(editedHost)}
           />
         ))}
