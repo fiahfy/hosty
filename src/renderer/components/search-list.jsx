@@ -92,7 +92,7 @@ export default class SearchList extends Component {
   handleRowSelection(selectedRows) {
     const { items, onSelectItems } = this.props;
     const ids = items.filter((item, i) => selectedRows.includes(i))
-      .map(item => [item.group.id, item.id]);
+      .map(item => [item.group.id, item.host.id]);
     onSelectItems(ids);
   }
   handleKeyDown(e) {

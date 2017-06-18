@@ -41,6 +41,7 @@ function mapDispatchToProps(dispatch) {
 export default class AppContainers extends Component {
   static propTypes = {
     groups: PropTypes.arrayOf(PropTypes.object).isRequired,
+    actions: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
   };
   state = {
@@ -70,10 +71,15 @@ export default class AppContainers extends Component {
   handleClickIconButton() {
     this.props.history.push('/');
   }
-  handleSelectItems(items) {
-    // const item = items[0];
-    // const id = item ? item.group.id : 0;
-    // this.context.router.history.push(`/${id}`);
+  handleSelectItems(ids) {
+    const [groupIds, hostIds] = ids.reduce((previous, current) => (
+      previous.map((item, index) => (
+        item.concat([current[index]])
+      ))
+    ), [[], []]);
+    this.props.actions.selectGroups(groupIds);
+    this.props.actions.selectHosts(hostIds);
+    this.props.history.push('/');
   }
   handleSearchItems(query) {
     this.setState({ query });

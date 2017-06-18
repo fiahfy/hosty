@@ -39,7 +39,11 @@ const styles = {
 };
 
 function mapStateToProps(state) {
-  return { groups: state.groups };
+  return {
+    groups: state.groups,
+    selectedGroupIds: state.selectedGroupIds,
+    selectedHostIds: state.selectedHostIds,
+  };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -50,22 +54,22 @@ function mapDispatchToProps(dispatch) {
 export default class MainContainer extends Component {
   static propTypes = {
     groups: PropTypes.arrayOf(PropTypes.object).isRequired,
+    selectedGroupIds: PropTypes.arrayOf(PropTypes.number).isRequired,
+    selectedHostIds: PropTypes.arrayOf(PropTypes.number).isRequired,
     actions: PropTypes.object.isRequired,
   };
   state = {
-    selectedGroupIds: [],
     groupSortOptions: {
       key: null,
       order: Group.SORT_ASC,
     },
-    selectedHostIds: [],
     hostSortOptions: {
       key: null,
       order: Host.SORT_ASC,
     },
   };
   get selectedGroup() {
-    return this.props.groups.find(group => this.state.selectedGroupIds.includes(group.id));
+    return this.props.groups.find(group => this.props.selectedGroupIds.includes(group.id));
   }
   get selectedGroupId() {
     return this.selectedGroup ? this.selectedGroup.id : 0;
@@ -81,12 +85,12 @@ export default class MainContainer extends Component {
     window.setTimeout(() => {
       const group = this.groups[this.groups.length - 1];
       if (group) {
-        this.setState({ selectedGroupIds: [group.id] });
+        this.props.actions.selectGroups([group.id]);
       }
     }, 0);
   }
   handleDeleteGroups() {
-    const { selectedGroupIds } = this.state;
+    const { selectedGroupIds } = this.props;
 
     const lastIndex = this.groups
       .reduce((previousValue, currentValue, index) => (
@@ -101,14 +105,15 @@ export default class MainContainer extends Component {
     this.props.actions.deleteGroups(ids);
 
     if (newGroup) {
-      this.setState({ selectedGroupIds: [newGroup.id] });
+      this.props.actions.selectGroups([newGroup.id]);
     }
   }
   handleEditGroup(id, group) {
     this.props.actions.updateGroup(id, group);
   }
   handleSelectGroups(ids) {
-    this.setState({ selectedGroupIds: ids, hostSortOptions: {} });
+    this.setState({ hostSortOptions: {} });
+    this.props.actions.selectGroups(ids);
   }
   handleSortGroups(options) {
     this.setState({ groupSortOptions: options });
@@ -120,12 +125,12 @@ export default class MainContainer extends Component {
     window.setTimeout(() => {
       const host = this.hosts[this.hosts.length - 1];
       if (host) {
-        this.setState({ selectedHostIds: [host.id] });
+        this.props.actions.selectHosts([host.id]);
       }
     }, 0);
   }
   handleDeleteHosts() {
-    const { selectedHostIds } = this.state;
+    const { selectedHostIds } = this.props;
 
     const lastIndex = this.hosts
       .reduce((previousValue, currentValue, index) => (
@@ -140,14 +145,14 @@ export default class MainContainer extends Component {
     this.props.actions.deleteHosts(this.selectedGroupId, ids);
 
     if (newHost) {
-      this.setState({ selectedHostIds: [newHost.id] });
+      this.props.actions.selectHosts([newHost.id]);
     }
   }
   handleEditHost(id, host) {
     this.props.actions.updateHost(this.selectedGroupId, id, host);
   }
   handleSelectHosts(ids) {
-    this.setState({ selectedHostIds: ids });
+    this.props.actions.selectHosts(ids);
   }
   handleSortHosts(options) {
     this.setState({ hostSortOptions: options });
@@ -155,7 +160,8 @@ export default class MainContainer extends Component {
   }
 
   renderGroupList() {
-    const { selectedGroupIds, groupSortOptions } = this.state;
+    const { selectedGroupIds } = this.props;
+    const { groupSortOptions } = this.state;
 
     return (
       <div className="list">
@@ -173,7 +179,8 @@ export default class MainContainer extends Component {
     );
   }
   renderHostList() {
-    const { selectedHostIds, hostSortOptions } = this.state;
+    const { selectedHostIds } = this.props;
+    const { hostSortOptions } = this.state;
 
     if (!this.selectedGroupId) {
       return (

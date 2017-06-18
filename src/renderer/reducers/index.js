@@ -121,8 +121,32 @@ function messages(state = [], action) {
   }
 }
 
+function selectedGroupIds(state = [], action) {
+  switch (action.type) {
+    case ActionTypes.SELECT_GROUPS: {
+      const { ids } = action.payload;
+      return ids;
+    }
+    default:
+      return state;
+  }
+}
+
+function selectedHostIds(state = [], action) {
+  switch (action.type) {
+    case ActionTypes.SELECT_HOSTS: {
+      const { ids } = action.payload;
+      return ids;
+    }
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   groups,
   messages,
+  selectedGroupIds,
+  selectedHostIds,
   router,
 });

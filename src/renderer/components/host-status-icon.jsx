@@ -3,6 +3,14 @@ import PropTypes from 'prop-types';
 import * as SvgIcons from 'material-ui/svg-icons';
 import * as Styles from 'material-ui/styles';
 
+const styles = {
+  off: {
+    left: '1px',
+    position: 'relative',
+    top: '1px',
+  },
+};
+
 const HostStatusIcon = ({ invalid, enable, ...others }) => {
   if (invalid) {
     return (
@@ -12,9 +20,21 @@ const HostStatusIcon = ({ invalid, enable, ...others }) => {
       />
     );
   }
-  return enable
-    ? <SvgIcons.DeviceSignalCellular4Bar {...others} color={Styles.colors.green400} />
-    : <SvgIcons.DeviceSignalCellularOff {...others} color={Styles.colors.grey400} />;
+  if (enable) {
+    return (
+      <SvgIcons.DeviceSignalCellular4Bar
+        {...others}
+        color={Styles.colors.green400}
+      />
+    );
+  }
+  return (
+    <SvgIcons.DeviceSignalCellularOff
+      {...others}
+      color={Styles.colors.grey400}
+      style={styles.off}
+    />
+  );
 };
 
 HostStatusIcon.propTypes = {
