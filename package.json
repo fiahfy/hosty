@@ -1,7 +1,7 @@
 {
   "name": "hosty",
   "productName": "Hosty",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Hosts file manager based on Electron",
   "keywords": [
     "electron",
@@ -11,7 +11,6 @@
     "webpack",
     "hosts"
   ],
-  "homepage": "https://github.com/fiahfy/hosty#readme",
   "author": {
     "name": "fiahfy",
     "email": "d.fiahfy@gmail.com",
@@ -33,14 +32,10 @@
     "build": "webpack --config webpack.config.babel.js",
     "build:renderer": "webpack --config webpack.config.renderer.babel.js",
     "build:main": "webpack --config webpack.config.main.babel.js",
+    "package": "NODE_ENV=production npm run build && build",
     "test": "npm run lint",
     "lint": "eslint src --ext .js,.jsx",
-    "package": "npm run package:mac",
-    "package:mac": "NODE_ENV=production npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --app-copyright=\"© `node -pe '(new Date).getFullYear()'` fiahfy\" --out release --ignore release --platform=darwin --arch=x64 --icon=app/assets/img/hosty.icns",
-    "package:win": "NODE_ENV=production npm run build; electron-packager . --overwrite --asar --app-version=`node -pe 'require(\"./package.json\").version'` --app-copyright=\"© `node -pe '(new Date).getFullYear()'` fiahfy\" --out release --ignore release --platform=win32 --arch=x64 --icon=app/assets/img/hosty.ico --version-string.FileDescription=\"Electron application\" --version-string.OriginalFilename=\"Hosty.exe\" --version-string.ProductName=\"Hosty\"",
-    "archive": "cd release; rm *.zip; ls | xargs -I{} zip -r {}.zip {}",
-    "cmd:start": "start /b npm run watch && npm run build:main && electron main.js",
-    "cmd:start:hot": "start /b npm run hot:renderer && npm run build:main && set HOT=1 && electron main.js"
+    "archive": "cd release; rm *.zip; ls | xargs -I{} zip -r {}.zip {}"
   },
   "dependencies": {
     "babel-core": "^6.25.0",
@@ -51,9 +46,6 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "css-loader": "^0.28.4",
-    "electron": "^1.6.6",
-    "electron-packager": "8.5.1",
-    "electron-rebuild": "^1.5.11",
     "file-loader": "^0.11.2",
     "history": "^4.6.2",
     "is-electron-renderer": "^2.0.1",
@@ -80,6 +72,10 @@
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
+    "electron": "^1.6.6",
+    "electron-builder": "^19.4.2",
+    "electron-packager": "8.5.1",
+    "electron-rebuild": "^1.5.11",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^15.0.1",
     "eslint-plugin-import": "^2.3.0",

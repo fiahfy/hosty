@@ -35,10 +35,9 @@ node_modules
 
 # Custom
 .idea
-/app/assets/js/renderer.js*
-/app/assets/lib/*
-/release/Hosty-*
+/app/assets/*/*
 /main.js*
+dist
 dummyHosts
 hosts
 *.hosty

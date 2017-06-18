@@ -15,12 +15,14 @@ export default function configureStore(history, initialState = {}) {
   // Thunk Middleware
   middlewares.push(thunk);
 
-  // Logging Middleware
-  const logger = createLogger({
-    level: 'info',
-    collapsed: true,
-  });
-  middlewares.push(logger);
+  if (process.env.NODE_ENV !== 'production') {
+    // Logging Middleware
+    const logger = createLogger({
+      level: 'info',
+      collapsed: true,
+    });
+    middlewares.push(logger);
+  }
 
   // Router Middleware
   const router = routerMiddleware(history);

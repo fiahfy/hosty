@@ -5,7 +5,7 @@ ORG_SIZE="1024"
 ORG_FILE="icon_${ORG_SIZE}x${ORG_SIZE}.png"
 
 cd $(dirname $0)
-cd ../public/assets/img/hosty.iconset
+cd ../build/icon.iconset
 
 for SIZE in $SIZES
 do
@@ -23,7 +23,7 @@ done
 
 cd ..
 
-iconutil -c icns hosty.iconset
+iconutil -c icns icon.iconset
 echo "icns file is created"
 
 ARGS=""
@@ -31,8 +31,8 @@ SIZES="${SIZES} ${ORG_SIZE}"
 for SIZE in $SIZES
 do
   FILE="icon_${SIZE}x${SIZE}.png"
-  ARGS="${ARGS} hosty.iconset/${FILE}"
+  ARGS="${ARGS} icon.iconset/${FILE}"
 done
 
-convert ${ARGS} hosty.ico
+convert ${ARGS} icon.ico
 echo "ico file is created"
