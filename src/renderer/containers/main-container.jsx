@@ -54,13 +54,11 @@ export default class MainContainer extends Component {
   };
   state = {
     selectedGroupIds: [],
-    sortedGroupIds: [],
     groupSortOptions: {
       key: null,
       order: Group.SORT_ASC,
     },
     selectedHostIds: [],
-    sortedHostIds: [],
     hostSortOptions: {
       key: null,
       order: Host.SORT_ASC,
@@ -73,30 +71,10 @@ export default class MainContainer extends Component {
     return this.selectedGroup ? this.selectedGroup.id : 0;
   }
   get groups() {
-    const { sortedGroupIds } = this.state;
-    return this.props.groups
-      .sort((a, b) => {
-        let [aIndex, bIndex] = [sortedGroupIds.indexOf(a.id), sortedGroupIds.indexOf(b.id)];
-        aIndex = aIndex === -1 ? Infinity : aIndex;
-        bIndex = bIndex === -1 ? Infinity : bIndex;
-        if (aIndex === bIndex) {
-          return a.id > b.id ? 1 : -1;
-        }
-        return aIndex > bIndex ? 1 : -1;
-      });
+    return this.props.groups;
   }
   get hosts() {
-    const { sortedHostIds } = this.state;
-    return (this.selectedGroup.hosts || [])
-      .sort((a, b) => {
-        let [aIndex, bIndex] = [sortedHostIds.indexOf(a.id), sortedHostIds.indexOf(b.id)];
-        aIndex = aIndex === -1 ? Infinity : aIndex;
-        bIndex = bIndex === -1 ? Infinity : bIndex;
-        if (aIndex === bIndex) {
-          return a.id > b.id ? 1 : -1;
-        }
-        return aIndex > bIndex ? 1 : -1;
-      });
+    return this.selectedGroup.hosts;
   }
   handleAddGroup() {
     this.props.actions.createGroup({ enable: true });
@@ -130,13 +108,11 @@ export default class MainContainer extends Component {
     this.props.actions.updateGroup(id, group);
   }
   handleSelectGroups(ids) {
-    this.setState({ selectedGroupIds: ids, sortedHostIds: [], hostSortOptions: {} });
+    this.setState({ selectedGroupIds: ids, hostSortOptions: {} });
   }
-  handleSortGroups(sortOptions) {
-    const sortedGroupIds = this.props.groups
-      .sort((a, b) => Group.compare(a, b, sortOptions))
-      .map(group => group.id);
-    this.setState({ sortedGroupIds, groupSortOptions: sortOptions });
+  handleSortGroups(options) {
+    this.setState({ groupSortOptions: options });
+    this.props.actions.sortGroups(options);
   }
 
   handleAddHost() {
@@ -173,11 +149,9 @@ export default class MainContainer extends Component {
   handleSelectHosts(ids) {
     this.setState({ selectedHostIds: ids });
   }
-  handleSortHosts(sortOptions) {
-    const sortedHostIds = this.selectedGroup.hosts
-      .sort((a, b) => Host.compare(a, b, sortOptions))
-      .map(host => host.id);
-    this.setState({ sortedHostIds, hostSortOptions: sortOptions });
+  handleSortHosts(options) {
+    this.setState({ hostSortOptions: options });
+    this.props.actions.sortHosts(this.selectedGroupId, options);
   }
 
   renderGroupList() {

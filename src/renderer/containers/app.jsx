@@ -8,7 +8,6 @@ import { Snackbar } from 'material-ui';
 import * as ActionCreators from '../actions';
 import * as Group from '../utils/group';
 import * as Host from '../utils/host';
-import ContextMenu from '../utils/context-menu';
 
 const styles = {
   app: {
@@ -40,10 +39,6 @@ export default class App extends Component {
     e.preventDefault();
     e.stopPropagation();
     e.dataTransfer.dropEffect = 'copy'; // eslint-disable-line no-param-reassign
-  }
-  static handleContextMenu(e) {
-    // TODO:
-    ContextMenu.show(e);
   }
   handleDrop(e) {
     e.preventDefault();
@@ -103,7 +98,6 @@ export default class App extends Component {
         style={styles.app}
         onDragOver={e => this.constructor.handleDragOver(e)}
         onDrop={e => this.handleDrop(e)}
-        onContextMenu={e => this.constructor.handleContextMenu(e)}
       >
         {children}
         {this.renderSnackbar()}
