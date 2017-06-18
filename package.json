@@ -16,11 +16,12 @@
     "email": "d.fiahfy@gmail.com",
     "url": "http://fiahfy.blogspot.com/"
   },
-  "main": "main.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/fiahfy/hosty"
   },
+  "main": "main.js",
+  "private": true,
   "scripts": {
     "install": "npm run build",
     "start": "npm run watch & npm run build:main; electron main.js",
@@ -32,7 +33,9 @@
     "build": "webpack --config webpack.config.babel.js",
     "build:renderer": "webpack --config webpack.config.renderer.babel.js",
     "build:main": "webpack --config webpack.config.main.babel.js",
-    "package": "NODE_ENV=production npm run build && build",
+    "package": "NODE_ENV=production npm run build && build -mw",
+    "package:mac": "NODE_ENV=production npm run build && build -m",
+    "package:win": "NODE_ENV=production npm run build && build -w",
     "test": "npm run lint",
     "lint": "eslint src --ext .js,.jsx",
     "archive": "cd release; rm *.zip; ls | xargs -I{} zip -r {}.zip {}"
@@ -58,9 +61,9 @@
     "react-router": "^4.1.1",
     "react-router-redux": "5.0.0-alpha.6",
     "react-tap-event-plugin": "^2.0.1",
-    "redux": "^3.6.0",
+    "redux": "3.6.0",
     "redux-logger": "^3.0.6",
-    "redux-persist": "3.2.2",
+    "redux-persist": "^4.8.0",
     "redux-thunk": "^2.2.0",
     "resolve-url-loader": "^2.0.3",
     "roboto-fontface": "^0.7.0",
@@ -74,7 +77,6 @@
     "babel-eslint": "^7.2.3",
     "electron": "^1.6.6",
     "electron-builder": "^19.4.2",
-    "electron-packager": "8.5.1",
     "electron-rebuild": "^1.5.11",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^15.0.1",
@@ -82,6 +84,5 @@
     "eslint-plugin-jsx-a11y": "^5.0.3",
     "eslint-plugin-react": "^7.1.0",
     "webpack-dev-server": "^2.4.5"
-  },
-  "private": true
+  }
 }
