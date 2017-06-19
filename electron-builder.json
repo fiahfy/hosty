@@ -1,3 +1,9 @@
 {
-  "appId": "net.fiahfy.hosty"
+  "appId": "net.fiahfy.hosty",
+  "mac": {
+    "target": ["dmg"]
+  },
+  "win": {
+    "target": ["nsis"]
+  }
 }
