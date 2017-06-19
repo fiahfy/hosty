@@ -1,47 +1,25 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
-import { applyRouterMiddleware, Router } from 'react-router';
-import { useScroll } from 'react-router-scroll';
+import { ConnectedRouter } from 'react-router-redux';
 import { MuiThemeProvider, getMuiTheme } from 'material-ui/styles';
-import routes from '../routes';
-// import DevTools from './dev-tools'
+import Routes from '../routes';
 
-export default class Root extends Component {
-  /* eslint-disable react/forbid-prop-types */
-  static propTypes = {
-    store: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
-  };
-  /* eslint-enable react/forbid-prop-types */
-  render() {
-    const { store, history } = this.props;
+const Root = ({ store, history }) => (
+  <Provider store={store}>
+    <MuiThemeProvider muiTheme={getMuiTheme()}>
+      <ConnectedRouter history={history}>
+        <Routes />
+      </ConnectedRouter>
+    </MuiThemeProvider>
+  </Provider>
+);
 
-    const render = applyRouterMiddleware(useScroll());
+/* eslint-disable react/forbid-prop-types */
+Root.propTypes = {
+  store: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
+};
+/* eslint-enable react/forbid-prop-types */
 
-    // TODO:
-    // const hasDevTools = false
-    // const devTools = hasDevTools ? <DevTools /> : null
-
-    // @see https://github.com/ReactTraining/react-router/issues/2704#issuecomment-261310093
-    if (!this.routes) {
-      this.routes = routes;
-    }
-
-    const component = (
-      <Router
-        render={render}
-        history={history}
-        routes={this.routes}
-      />
-    );
-
-    return (
-      <Provider store={store} key="provider">
-        <MuiThemeProvider muiTheme={getMuiTheme()}>
-          {component}
-        </MuiThemeProvider>
-      </Provider>
-    );
-  }
-}
+export default Root;

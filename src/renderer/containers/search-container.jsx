@@ -1,13 +1,22 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { IconButton } from 'material-ui';
 import * as SvgIcons from 'material-ui/svg-icons';
-import { bindActionCreators } from 'redux';
 import * as ActionCreators from '../actions';
 import SearchList from '../components/search-list';
 
 const styles = {
+  container: {
+    boxSizing: 'border-box',
+    height: '100%',
+    overflow: 'hidden',
+  },
+  content: {
+    height: '100%',
+    overflow: 'auto',
+  },
   buttonWrapper: {
     position: 'absolute',
     right: '0',
@@ -17,11 +26,6 @@ const styles = {
     height: '58px',
     padding: '17px',
     width: '58px',
-  },
-  container: {
-    boxSizing: 'border-box',
-    height: '100%',
-    overflow: 'hidden',
   },
 };
 
@@ -35,33 +39,62 @@ function mapDispatchToProps(dispatch) {
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class AppContainers extends Component {
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  };
   static propTypes = {
-    groups: PropTypes.arrayOf(PropTypes.object),
+    groups: PropTypes.arrayOf(PropTypes.object).isRequired,
+    actions: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
   };
-  static defaultProps = {
-    groups: [],
+  state = {
+    query: '',
   };
-  handleClickIconButton() {
-    this.context.router.push('/');
+  get items() {
+    const { query } = this.state;
+
+    return this.props.groups.reduce((previous, current) => (
+      previous.concat((current.hosts || []).map(host => (
+        { group: current, host }
+      )))
+    ), [])
+    .filter((item) => {
+      if (query === '') {
+        return true;
+      }
+      if ((item.host.host || '').indexOf(query) > -1) {
+        return true;
+      }
+      if ((item.host.ip || '').indexOf(query) > -1) {
+        return true;
+      }
+      return false;
+    });
   }
-  handleSelectItems(items) {
-    const item = items[0];
-    const id = item ? item.group.id : 0;
-    this.context.router.push({ pathname: '/', query: { id } });
+  handleClickIconButton() {
+    this.props.history.push('/');
+  }
+  handleSelectItems(ids) {
+    const [groupIds, hostIds] = ids.reduce((previous, current) => (
+      previous.map((item, index) => (
+        item.concat([current[index]])
+      ))
+    ), [[], []]);
+    this.props.actions.selectGroups(groupIds);
+    this.props.actions.selectHosts(hostIds);
+    this.props.history.push('/');
+  }
+  handleSearchItems(query) {
+    this.setState({ query });
   }
   render() {
-    const { groups } = this.props;
-
     return (
-      <div className="content" style={styles.container}>
-        <div>
-          <SearchList
-            groups={groups}
-            onSelectItems={items => this.handleSelectItems(items)}
-          />
+      <div style={styles.container}>
+        <div style={styles.content}>
+          <div className="list">
+            <SearchList
+              items={this.items}
+              onSelectItems={selectedItems => this.handleSelectItems(selectedItems)}
+              onSearchItems={query => this.handleSearchItems(query)}
+            />
+          </div>
         </div>
         <div style={styles.buttonWrapper}>
           <IconButton

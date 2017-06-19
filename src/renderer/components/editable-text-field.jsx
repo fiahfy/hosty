@@ -26,18 +26,22 @@ export default class EditableTextField extends Component {
   };
   static propTypes = {
     ...TextField.propTypes,
+    focused: PropTypes.bool,
     clickToEditable: PropTypes.bool,
   };
   static defaultProps = {
     ...TextField.defaultProps,
+    focused: false,
     clickToEditable: false,
-    onClick: () => {},
-    onDoubleClick: () => {},
-    onBlur: () => {},
   };
   state = {
     editable: false,
   };
+  componentDidUpdate(prevProps) {
+    if (!prevProps.focused && this.props.focused) {
+      this.focus();
+    }
+  }
   isFocused() {
     return this.state.editable;
   }
@@ -70,6 +74,7 @@ export default class EditableTextField extends Component {
   }
   render() {
     const { hintText, value, ...others } = this.props;
+    delete others.focused;
     delete others.clickToEditable;
 
     const { editable } = this.state;

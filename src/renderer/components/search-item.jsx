@@ -44,28 +44,22 @@ const styles = {
 export default class SearchItem extends Component {
   static propTypes = {
     ...TableRow.propTypes,
-    group: PropTypes.object,
-    host: PropTypes.object,
+    item: PropTypes.object,
   };
   static defaultProps = {
-    group: {},
-    host: {},
+    item: {},
   };
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState);
   }
   render() {
-    const { group, host, selected, onRowClick, ...others } = this.props;
-    delete others.group;
-    delete others.host;
+    const { item, onRowClick, ...others } = this.props;
 
-    const invalid = !Host.isValid(host);
+    const invalid = !Host.isValid(item.host);
 
     return (
       <TableRow
-        key={host.id}
         style={styles.row}
-        selected={selected}
         onRowClick={(...args) => {
           if (window.getSelection().toString().length) {
             return;
@@ -79,29 +73,29 @@ export default class SearchItem extends Component {
           <HostStatusIcon
             style={styles.icon}
             invalid={false}
-            enable={group.enable}
+            enable={item.group.enable}
           />
         </TableRowColumn>
         <TableRowColumn style={styles.groupColumn}>
           <button style={styles.button}>
-            {group.name}
+            {item.group.name}
           </button>
         </TableRowColumn>
         <TableRowColumn style={styles.iconColumn}>
           <HostStatusIcon
             style={styles.icon}
             invalid={invalid}
-            enable={host.enable}
+            enable={item.host.enable}
           />
         </TableRowColumn>
         <TableRowColumn>
           <button style={styles.button}>
-            {host.host}
+            {item.host.host}
           </button>
         </TableRowColumn>
         <TableRowColumn>
           <button style={styles.button}>
-            {host.ip}
+            {item.host.ip}
           </button>
         </TableRowColumn>
       </TableRow>

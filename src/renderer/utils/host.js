@@ -3,6 +3,7 @@ import validator from 'validator';
 export const SORT_ASC = 'asc';
 export const SORT_DESC = 'desc';
 
+export const KEY_ID = 'id';
 export const KEY_ENABLE = 'enable';
 export const KEY_HOST = 'host';
 export const KEY_IP = 'ip';
@@ -38,18 +39,27 @@ export function isValid(host) {
   ));
 }
 
-export function compare(a, b, key, order) {
-  const r = order === SORT_DESC ? -1 : 1;
+export function compare(a, b, { key, order }) {
+  if (!a[KEY_HOST] && !b[KEY_HOST]) {
+    return a[KEY_ID] > b[KEY_ID] ? 1 : -1;
+  }
+  if (!a[KEY_HOST]) {
+    return 1;
+  }
+  if (!b[KEY_HOST]) {
+    return -1;
+  }
+  const reversed = order === SORT_DESC ? -1 : 1;
+  if (a[key] === b[key]) {
+    return a[KEY_ID] > b[KEY_ID] ? reversed : -1 * reversed;
+  }
   if (a[key] === '' || a[key] === null || typeof a[key] === 'undefined') {
-    return r;
+    return reversed;
   }
   if (b[key] === '' || b[key] === null || typeof b[key] === 'undefined') {
-    return -1 * r;
+    return -1 * reversed;
   }
-  if (a[key] === b[key]) {
-    return 0;
-  }
-  return (a[key] > b[key]) ? r : -1 * r;
+  return a[key] > b[key] ? reversed : -1 * reversed;
 }
 
 export function build(hosts) {

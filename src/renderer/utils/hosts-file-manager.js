@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import { app as mainApp, remote } from 'electron';
-import runas from 'runas';
+import * as sudoPrompt from 'sudo-prompt';
 import isRenderer from 'is-electron-renderer';
-import * as HostGroup from './host-group';
+import * as Group from './group';
 
 const app = isRenderer ? remote.app : mainApp;
 
@@ -23,6 +23,8 @@ if (DEBUG) {
   PATH = PATH_DUMMY;
 }
 
+const SUDO_OPTIONS = { name: 'Hosty' };
+
 function read() {
   try {
     return fs.readFileSync(PATH_USER, CHARSET);
@@ -39,62 +41,59 @@ function write(data) {
   }
 }
 
-function setupHostsFile() {
-  const options = { admin: !DEBUG };
+async function sudo(command) {
+  return new Promise((resolve, reject) => {
+    sudoPrompt.exec(command, SUDO_OPTIONS, (error, stdout, stderr) => {
+      if (error) {
+        reject('Sudo prompt failed: %o', { command, error, stdout, stderr });
+        return;
+      }
+      resolve();
+    });
+  });
+}
+
+async function setupHostsFile() {
   try {
     const stats = fs.lstatSync(PATH);
     if (!stats.isSymbolicLink()) {
       return;
     }
-    if (runas('rm', [PATH], options)) {
-      throw new Error(`Failed to delete ${PATH}`);
-    }
+    await sudo(`rm "${PATH}"`);
   } catch (e) {
     //
   }
-  if (runas('touch', [PATH], options)) {
-    throw new Error(`Failed to touch ${PATH}`);
-  }
+  await sudo(`touch "${PATH}"`);
 }
 
-function setupUserHostsFile() {
-  const options = { admin: !DEBUG };
+async function setupUserHostsFile() {
   try {
     const stats = fs.lstatSync(PATH_USER);
     if (stats.isSymbolicLink()) {
       return;
     }
-    if (runas('rm', [PATH_USER], options)) {
-      throw new Error(`Failed to delete ${PATH_USER}`);
-    }
+    await sudo(`rm "${PATH_USER}"`);
   } catch (e) {
     //
   }
   if (process.platform === 'win32') {
-    const commands = [`mklink ${PATH_USER} ${PATH}`, `cacls ${PATH} /e /g Users:w`];
+    const commands = [`mklink "${PATH_USER}" "${PATH}"`, `cacls "${PATH}" /e /g Users:w`];
     const command = commands.join(' && ');
-    if (runas('cmd', ['/c', command], options)) {
-      throw new Error(`Failed to mklink ${PATH} to ${PATH_USER}, or cacls ${PATH}`);
-    }
+    await sudo(`cmd /c ${command}`);
   } else {
-    if (runas('ln', ['-s', PATH, PATH_USER], options)) {
-      throw new Error(`Failed to symlink ${PATH} to ${PATH_USER}`);
-    }
-    if (runas('chmod', ['666', PATH], options)) {
-      throw new Error(`Failed to chmod ${PATH}`);
-    }
+    await sudo(`$SHELL -c "ln -s \\"${PATH}\\" \\"${PATH_USER}\\"; chmod 666 \\"${PATH}\\""`);
   }
 }
 
-export function setup() {
-  setupHostsFile();
-  setupUserHostsFile();
+export async function setup() {
+  await setupHostsFile();
+  await setupUserHostsFile();
 }
 
 export function save(groups = []) {
   const data = read();
 
-  let newData = HostGroup.build(groups);
+  let newData = Group.build(groups);
   newData = `${SECTION_BEGIN}\n${newData}\n${SECTION_END}\n`;
 
   const reg = new RegExp(

@@ -30,11 +30,13 @@ export default class HostItem extends Component {
     ...TableRow.propTypes,
     host: PropTypes.object,
     selected: PropTypes.bool,
+    focused: PropTypes.bool,
     onEditHost: PropTypes.func,
   };
   static defaultProps = {
     host: {},
     selected: false,
+    focused: false,
     onEditHost: () => {},
   };
   constructor(props) {
@@ -94,7 +96,7 @@ export default class HostItem extends Component {
   }
   render() {
     const { host } = this.state;
-    const { selected, onRowClick, ...others } = this.props;
+    const { selected, focused, onRowClick, ...others } = this.props;
     delete others.host;
     delete others.onEditHost;
 
@@ -103,7 +105,6 @@ export default class HostItem extends Component {
 
     return (
       <TableRow
-        key={host.id}
         style={styles.row}
         selected={selected}
         onRowClick={(...args) => {
@@ -132,10 +133,11 @@ export default class HostItem extends Component {
             errorStyle={styles.errorTextField}
             value={host.host}
             fullWidth
-            clickToEditable={selected}
             onBlur={e => this.handleBlur(e)}
             onKeyDown={e => this.handleKeyDown(e)}
             onChange={e => this.handleChange(e)}
+            focused={focused}
+            clickToEditable={selected}
           />
         </TableRowColumn>
         <TableRowColumn>
@@ -147,10 +149,10 @@ export default class HostItem extends Component {
             errorStyle={styles.errorTextField}
             value={host.ip}
             fullWidth
-            clickToEditable={selected}
             onBlur={e => this.handleBlur(e)}
             onKeyDown={e => this.handleKeyDown(e)}
             onChange={e => this.handleChange(e)}
+            clickToEditable={selected}
           />
         </TableRowColumn>
       </TableRow>

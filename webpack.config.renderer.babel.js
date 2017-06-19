@@ -11,6 +11,7 @@ rules = rules.concat([
     use: [
       'style-loader',
       'css-loader',
+      'resolve-url-loader',
     ],
   },
   {
@@ -18,7 +19,7 @@ rules = rules.concat([
     loader: 'url-loader',
     options: {
       limit: '10000',
-      name: 'lib/[path][name].[ext]',
+      name: 'img/[name].[ext]',
       context: 'node_modules',
     },
   },
@@ -27,7 +28,7 @@ rules = rules.concat([
     loader: 'url-loader',
     options: {
       limit: '10000',
-      name: 'lib/[path][name].[ext]',
+      name: 'font/[name].[ext]',
       context: 'node_modules',
     },
   },

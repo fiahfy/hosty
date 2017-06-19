@@ -8,22 +8,24 @@ import {
 import GroupItem from './group-item';
 import SortOrderIcon from './sort-order-icon';
 import isUpdateNeeded from '../utils/is-update-needed';
-import * as HostGroup from '../utils/host-group';
+import * as Group from '../utils/group';
 
 const styles = {
-  headerIconColumn: {
+  iconHeaderColumn: {
     paddingRight: '0',
     textAlign: 'center',
+    userSelect: 'none',
     width: '48px',
   },
-  headerSortableColumn: {
+  sortableHeaderColumn: {
     cursor: 'pointer',
+    userSelect: 'none',
   },
-  headerColumnText: {
+  label: {
     display: 'inline-block',
     verticalAlign: 'middle',
   },
-  headerColumnIcon: {
+  icon: {
     verticalAlign: 'middle',
   },
   footerColumn: {
@@ -36,113 +38,56 @@ const styles = {
 
 export default class GroupList extends Component {
   static propTypes = {
-    groupId: PropTypes.number, // eslint-disable-line react/no-unused-prop-types
     groups: PropTypes.arrayOf(PropTypes.object),
+    selectedIds: PropTypes.arrayOf(PropTypes.number),
+    focusedId: PropTypes.number,
+    sortOptions: PropTypes.object,
     onAddGroup: PropTypes.func,
     onEditGroup: PropTypes.func,
     onDeleteGroups: PropTypes.func,
     onSelectGroups: PropTypes.func,
+    onSortGroups: PropTypes.func,
   };
   static defaultProps = {
-    groupId: 0,
     groups: [],
+    selectedIds: [],
+    focusedId: null,
+    sortOptions: {},
     onAddGroup: () => {},
     onEditGroup: () => {},
     onDeleteGroups: () => {},
     onSelectGroups: () => {},
+    onSortGroups: () => {},
   };
-  state = {
-    sortOptions: {
-      key: HostGroup.KEY_NAME,
-      order: HostGroup.SORT_ASC,
-    },
-    sortedMap: new Map(),
-    selectedIds: [],
-  };
-  componentWillReceiveProps(nextProps) {
-    const selectedIds = nextProps.groupId ? [nextProps.groupId] : [];
-    this.setState({ selectedIds });
-
-    if (this.props.groups.length) {
-      return;
-    }
-
-    this.sort(nextProps.groups, this.state.sortOptions);
-  }
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState);
   }
-  getSelectedGroups() {
-    return this.getSortedGroups().filter(group => this.state.selectedIds.includes(group.id));
-  }
-  getSortedGroups() {
-    const { sortedMap } = this.state;
-
-    return this.props.groups.concat().sort((a, b) => {
-      if (!sortedMap.has(a.id) && !sortedMap.has(b.id)) {
-        return (a.id > b.id) ? 1 : -1;
-      }
-      if (!sortedMap.has(a.id)) {
-        return 1;
-      }
-      if (!sortedMap.has(b.id)) {
-        return -1;
-      }
-      return sortedMap.get(a.id) > sortedMap.get(b.id) ? 1 : -1;
-    });
-  }
-  focusLastGroup() {
-    const groups = this.getSortedGroups();
-    const group = groups[groups.length - 1];
-    this.groupItems[group.id].focus();
-  }
-  select(ids) {
-    this.setState({ selectedIds: ids });
-  }
-  deselectAll() {
-    this.setState({ selectedIds: [] });
-  }
-  sort(groups, options) {
-    const { key, order } = options;
-
-    const sortedMap = new Map();
-    groups.concat()
-      .sort((a, b) => HostGroup.compare(a, b, key, order))
-      .forEach((group, i) => {
-        sortedMap.set(group.id, i);
-      });
-
-    this.setState({ sortOptions: options, sortedMap });
-  }
-  handleEditGroup(group) {
-    this.props.onEditGroup(group.id, group);
-  }
   handleClickHeader(e, rowId, columnId) {
-    const { key, order } = this.state.sortOptions;
+    const { key, order } = this.props.sortOptions;
 
-    const columns = [null, null, HostGroup.KEY_NAME];
+    const columns = [null, null, Group.KEY_NAME];
     const newKey = columns[columnId];
     if (!newKey) {
       return;
     }
     let newOrder;
-    if (key !== newKey || order !== HostGroup.SORT_ASC) {
-      newOrder = HostGroup.SORT_ASC;
+    if (key === newKey && order === Group.SORT_ASC) {
+      newOrder = Group.SORT_DESC;
     } else {
-      newOrder = HostGroup.SORT_DESC;
+      newOrder = Group.SORT_ASC;
     }
-    this.sort(this.props.groups, { key: newKey, order: newOrder });
+    this.props.onSortGroups({ key: newKey, order: newOrder });
   }
   handleRowSelection(selectedRows) {
-    const selectedGroups = this.getSortedGroups()
-        .filter((group, i) => selectedRows.includes(i));
-    const selectedIds = selectedGroups.map(group => group.id);
-
-    this.setState({ selectedIds });
-    this.props.onSelectGroups(selectedGroups);
+    const { groups, onSelectGroups } = this.props;
+    const ids = groups.filter((group, i) => selectedRows.includes(i)).map(group => group.id);
+    onSelectGroups(ids);
+  }
+  handleEditGroup(group) {
+    this.props.onEditGroup(group.id, group);
   }
   renderHeader() {
-    const { key, order } = this.state.sortOptions;
+    const { key, order } = this.props.sortOptions;
 
     return (
       <TableHeader
@@ -150,15 +95,15 @@ export default class GroupList extends Component {
         adjustForCheckbox={false}
       >
         <TableRow onCellClick={(...args) => this.handleClickHeader(...args)}>
-          <TableHeaderColumn style={styles.headerIconColumn}>
+          <TableHeaderColumn style={styles.iconHeaderColumn}>
             Status
           </TableHeaderColumn>
-          <TableHeaderColumn style={styles.headerSortableColumn}>
-            <div style={styles.headerColumnText}>Group</div>
+          <TableHeaderColumn style={styles.sortableHeaderColumn}>
+            <div style={styles.label}>Group</div>
             <SortOrderIcon
-              style={styles.headerColumnIcon}
-              hidden={key !== HostGroup.KEY_NAME}
-              asc={order === HostGroup.SORT_ASC}
+              style={styles.icon}
+              hidden={key !== Group.KEY_NAME}
+              asc={order === Group.SORT_ASC}
             />
           </TableHeaderColumn>
         </TableRow>
@@ -166,21 +111,20 @@ export default class GroupList extends Component {
     );
   }
   renderBody() {
+    const { groups, selectedIds, focusedId } = this.props;
+
     return (
       <TableBody
         showRowHover
         deselectOnClickaway={false}
         displayRowCheckbox={false}
       >
-        {this.getSortedGroups().map(group => (
+        {groups.map(group => (
           <GroupItem
-            ref={(item) => {
-              this.groupItems = this.groupItems || {};
-              this.groupItems[group.id] = item;
-            }}
             key={group.id}
             group={group}
-            selected={this.state.selectedIds.includes(group.id)}
+            selected={selectedIds.includes(group.id)}
+            focused={focusedId === group.id}
             onEditGroup={editedGroup => this.handleEditGroup(editedGroup)}
           />
         ))}
@@ -188,7 +132,10 @@ export default class GroupList extends Component {
     );
   }
   renderFooter() {
-    const disabled = !this.state.selectedIds.length;
+    const { selectedIds, onAddGroup, onDeleteGroups } = this.props;
+    const selectedCount = selectedIds.length;
+    const disabled = !selectedCount;
+    const label = selectedCount > 1 ? `Delete (${selectedCount})` : 'Delete';
 
     return (
       <TableFooter
@@ -199,15 +146,15 @@ export default class GroupList extends Component {
             <FlatButton
               label="Add"
               primary
-              onClick={this.props.onAddGroup}
+              onClick={onAddGroup}
             />
           </TableRowColumn>
           <TableRowColumn style={styles.footerColumn}>
             <FlatButton
-              label="Delete"
+              label={label}
               secondary
-              onClick={this.props.onDeleteGroups}
               disabled={disabled}
+              onClick={onDeleteGroups}
             />
           </TableRowColumn>
         </TableRow>

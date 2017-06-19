@@ -21,61 +21,38 @@
         display: table;
       }
       #loading>div {
+        color: grey;
         height: 100%;
         text-align: center;
         vertical-align: middle;
         display: table-cell;
       }
-      /* sidebar */
-      .sidebar>div>div:first-child {
+      /* list */
+      .list {
         height: 100%!important;
       }
-      .sidebar>div>div:first-child>div:first-child {
+      .list>div:first-child {
         height: 100%!important;
       }
-      .sidebar>div>div:first-child>div:first-child>div:first-child {
+      .list>div:first-child>div:first-child {
         position: fixed!important;
         z-index: 1!important;
       }
-      .sidebar>div>div:first-child>div:first-child>div:nth-child(2) {
+      .list>div:first-child>div:nth-child(2) {
         margin-top: 59px!important;
         margin-bottom: 51px!important;
         height: calc(100% - 110px)!important;
       }
-      .sidebar>div>div:first-child>div:first-child>div:last-child {
+      .list>div:first-child>div:last-child {
         position: fixed!important;
         bottom: 0!important;
       }
       /* see: https://github.com/callemall/material-ui/issues/4581 */
-      .sidebar>div>div:first-child>div:first-child>div:last-child>table>tfoot>tr>td:first-child {
-        display: none!important;
-      }
-      /* content */
-      .content>div:first-child {
-        height: 100%!important;
-      }
-      .content>div:first-child>div:first-child {
-        height: 100%!important;
-      }
-      .content>div:first-child>div:first-child>div:first-child {
-        position: fixed!important;
-        z-index: 1!important;
-      }
-      .content>div:first-child>div:first-child>div:nth-child(2) {
-        margin-top: 59px!important;
-        margin-bottom: 51px!important;
-        height: calc(100% - 110px)!important;
-      }
-      .content>div:first-child>div:first-child>div:last-child {
-        position: fixed!important;
-        bottom: 0!important;
-      }
-      /* see: https://github.com/callemall/material-ui/issues/4581 */
-      .content>div:first-child>div:first-child>div:last-child>table>tfoot>tr>td:first-child {
+      .list>div:first-child>div:last-child>table>tfoot>tr>td:first-child {
         display: none!important;
       }
       /* todo: for Roboto font */
-      .sidebar input, .content input {
+      input {
         height: 47px!important;
       }
       /* see: https://github.com/electron/electron/issues/4420 */
