@@ -38,7 +38,7 @@
     "package:win": "NODE_ENV=production npm run build && build -w",
     "test": "npm run lint",
     "lint": "eslint src --ext .js,.jsx",
-    "archive": "cd release; rm *.zip; ls | xargs -I{} zip -r {}.zip {}"
+    "archive": "cd dist; ls Hosty* | xargs -I{} zip -r {}.zip {}"
   },
   "dependencies": {
     "babel-core": "^6.25.0",
