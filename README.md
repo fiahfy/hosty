@@ -12,7 +12,7 @@ Hosts file manager based on Electron.
 ## Installation
 1. Download `.zip` file for your platform from [releases page](https://github.com/fiahfy/hosty/releases).
 2. Unzip the file.
-3. Open `.app` for OS X, Run `.exe` for Windows.
+3. Open `.dmg` for OS X, Run `.exe` for Windows.
 
 ## Download
 https://github.com/fiahfy/hosty/releases
@@ -22,21 +22,21 @@ https://github.com/fiahfy/hosty/releases
 ```
 $ git clone https://github.com/fiahfy/hosty.git
 $ cd hosty
-$ npm i
-$ npm run start:hot
+$ yarn install
+$ yarn run start:hot
 ```
 
 ### Run for Development
 ```
-$ npm run start
+$ yarn run start
 ```
 
 ### Run for Development(HMR)
 ```
-$ npm run start:hot
+$ yarn run start:hot
 ```
 
 ### Packaging
 ```
-$ npm run package
+$ yarn run package
 ```
