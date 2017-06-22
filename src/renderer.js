@@ -23,16 +23,17 @@ import * as HostsFileManager from './renderer/utils/hosts-file-manager';
   // TODO:
   await HostsFileManager.setup();
 
-  function renderApp(RootComponent) {
+  const app = document.querySelector('#app'); // eslint-disable-line no-undef
+  const renderApp = (RootComponent) => {
     render(
       /* eslint-disable react/jsx-filename-extension */
       <AppContainer>
         <RootComponent store={store} history={history} />
       </AppContainer>,
       /* eslint-enable react/jsx-filename-extension */
-      document.querySelector('#app'), // eslint-disable-line no-undef
+      app,
     );
-  }
+  };
 
   renderApp(Root);
 
