@@ -6,7 +6,7 @@ import {
 } from 'material-ui';
 import * as Styles from 'material-ui/styles';
 import HostStatusIcon from './host-status-icon';
-import EditableTextField from './editable-text-field';
+import EditableLabel from './editable-label';
 import isUpdateNeeded from '../utils/is-update-needed';
 import * as Group from '../utils/group';
 
@@ -111,7 +111,7 @@ export default class GroupItem extends Component {
           </IconButton>
         </TableRowColumn>
         <TableRowColumn>
-          <EditableTextField
+          <EditableLabel
             name={Group.KEY_NAME}
             ref={(input) => { this.textInput = input; }}
             hintText="Group name"
@@ -123,7 +123,7 @@ export default class GroupItem extends Component {
             onKeyDown={e => this.constructor.handleKeyDown(e)}
             onChange={e => this.handleChange(e)}
             focused={focused}
-            clickToEditable={selected}
+            editable={selected}
           />
         </TableRowColumn>
       </TableRow>

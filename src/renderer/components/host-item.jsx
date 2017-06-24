@@ -6,7 +6,7 @@ import {
 } from 'material-ui';
 import * as Styles from 'material-ui/styles';
 import HostStatusIcon from './host-status-icon';
-import EditableTextField from './editable-text-field';
+import EditableLabel from './editable-label';
 import isUpdateNeeded from '../utils/is-update-needed';
 import * as Host from '../utils/host';
 
@@ -125,7 +125,7 @@ export default class HostItem extends Component {
           </IconButton>
         </TableRowColumn>
         <TableRowColumn>
-          <EditableTextField
+          <EditableLabel
             name={Host.KEY_HOST}
             ref={(input) => { this.hostTextInput = input; }}
             hintText="example.com"
@@ -137,11 +137,11 @@ export default class HostItem extends Component {
             onKeyDown={e => this.handleKeyDown(e)}
             onChange={e => this.handleChange(e)}
             focused={focused}
-            clickToEditable={selected}
+            editable={selected}
           />
         </TableRowColumn>
         <TableRowColumn>
-          <EditableTextField
+          <EditableLabel
             name={Host.KEY_IP}
             ref={(input) => { this.ipTextInput = input; }}
             hintText="192.0.2.0"
@@ -152,7 +152,7 @@ export default class HostItem extends Component {
             onBlur={e => this.handleBlur(e)}
             onKeyDown={e => this.handleKeyDown(e)}
             onChange={e => this.handleChange(e)}
-            clickToEditable={selected}
+            editable={selected}
           />
         </TableRowColumn>
       </TableRow>
