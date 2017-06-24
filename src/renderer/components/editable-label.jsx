@@ -40,6 +40,9 @@ export default class EditableLabel extends Component {
     editable: false,
     onKeyDown: () => {},
   };
+  static handleClick(e) {
+    e.stopPropagation();
+  }
   state = {
     editing: false,
   };
@@ -94,6 +97,7 @@ export default class EditableLabel extends Component {
         style={styles.textField}
         onKeyDown={onKeyDown}
         onBlur={e => this.handleBlur(e)}
+        onClick={e => this.constructor.handleClick(e)}
       />
     );
   }
