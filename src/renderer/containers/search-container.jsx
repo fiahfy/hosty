@@ -30,7 +30,10 @@ const styles = {
 };
 
 function mapStateToProps(state) {
-  return { groups: state.groups };
+  return {
+    groups: state.groups,
+    query: state.query,
+  };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -38,17 +41,15 @@ function mapDispatchToProps(dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class AppContainers extends Component {
+export default class SearchContainers extends Component {
   static propTypes = {
     groups: PropTypes.arrayOf(PropTypes.object).isRequired,
+    query: PropTypes.string.isRequired,
     actions: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
   };
-  state = {
-    query: '',
-  };
   get items() {
-    const { query } = this.state;
+    const { query } = this.props;
 
     return this.props.groups.reduce((previous, current) => (
       previous.concat((current.hosts || []).map(host => (
@@ -82,17 +83,20 @@ export default class AppContainers extends Component {
     this.props.history.push('/');
   }
   handleSearchItems(query) {
-    this.setState({ query });
+    this.props.actions.searchItems(query);
   }
   render() {
+    const { query } = this.props;
+
     return (
       <div style={styles.container}>
         <div style={styles.content}>
           <div className="list">
             <SearchList
               items={this.items}
+              query={query}
               onSelectItems={selectedItems => this.handleSelectItems(selectedItems)}
-              onSearchItems={query => this.handleSearchItems(query)}
+              onSearchItems={newQuery => this.handleSearchItems(newQuery)}
             />
           </div>
         </div>

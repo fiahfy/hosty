@@ -13,6 +13,8 @@ export const DELETE_HOSTS = 'DELETE_HOSTS';
 export const SORT_HOSTS = 'SORT_HOSTS';
 export const SELECT_HOSTS = 'SELECT_HOSTS';
 
+export const SEARCH_ITEMS = 'SEARCH_ITEMS';
+
 export const CREATE_MESSAGE = 'CREATE_MESSAGE';
 export const CLEAR_MESSAGES = 'CLEAR_MESSAGES';
 
@@ -69,6 +71,11 @@ export const sortHosts = createAction(
 export const selectHosts = createAction(
   SELECT_HOSTS,
   ids => ({ ids }),
+);
+
+export const searchItems = createAction(
+  SEARCH_ITEMS,
+  query => ({ query }),
 );
 
 export const createMessage = createAction(

@@ -126,10 +126,18 @@ const selectedHostIds = handleActions({
   },
 }, []);
 
+const query = handleActions({
+  [ActionTypes.SEARCH_ITEMS]: (state, action) => {
+    const { query: newQuery } = action.payload;
+    return newQuery;
+  },
+}, '');
+
 export default combineReducers({
   groups,
   messages,
   selectedGroupIds,
   selectedHostIds,
+  query,
   router,
 });
