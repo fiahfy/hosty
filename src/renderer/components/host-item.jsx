@@ -39,13 +39,6 @@ export default class HostItem extends Component {
     focused: false,
     onEditHost: () => {},
   };
-  constructor(props) {
-    super(props);
-    this.state.host = this.props.host;
-  }
-  state = {
-    host: {},
-  };
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState);
   }
@@ -57,7 +50,6 @@ export default class HostItem extends Component {
     const { host, onEditHost } = this.props;
     const newHost = Object.assign({}, host);
     newHost.enable = !newHost.enable;
-    this.setState({ host: newHost });
     onEditHost(newHost);
   }
   handleBlur(e) {
@@ -68,15 +60,13 @@ export default class HostItem extends Component {
     onEditHost(newHost);
   }
   handleChange(e) {
-    const { host } = this.state;
+    const { host } = this.props;
     const newHost = Object.assign({}, host);
     if (this.hostTextInput.isFocused()) {
       newHost.host = e.target.value;
-      this.setState({ host: newHost });
     }
     if (this.ipTextInput.isFocused()) {
       newHost.ip = e.target.value;
-      this.setState({ host: newHost });
     }
   }
   handleKeyDown(e) {
@@ -95,7 +85,7 @@ export default class HostItem extends Component {
     }
   }
   render() {
-    const { host } = this.state;
+    const { host } = this.props;
     const { selected, focused, onRowClick, ...others } = this.props;
     delete others.host;
     delete others.onEditHost;
@@ -128,10 +118,10 @@ export default class HostItem extends Component {
           <EditableLabel
             name={Host.KEY_HOST}
             ref={(input) => { this.hostTextInput = input; }}
+            defaultValue={host.host}
             hintText="example.com"
             errorText={errors[Host.KEY_HOST]}
             errorStyle={styles.errorTextField}
-            value={host.host}
             fullWidth
             onBlur={e => this.handleBlur(e)}
             onKeyDown={e => this.handleKeyDown(e)}
@@ -144,10 +134,10 @@ export default class HostItem extends Component {
           <EditableLabel
             name={Host.KEY_IP}
             ref={(input) => { this.ipTextInput = input; }}
+            defaultValue={host.ip}
             hintText="192.0.2.0"
             errorText={errors[Host.KEY_IP]}
             errorStyle={styles.errorTextField}
-            value={host.ip}
             fullWidth
             onBlur={e => this.handleBlur(e)}
             onKeyDown={e => this.handleKeyDown(e)}

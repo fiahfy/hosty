@@ -68,16 +68,16 @@ export default class EditableLabel extends Component {
     }
   }
   render() {
-    const { onKeyDown, hintText, value, ...others } = this.props;
+    const { onKeyDown, defaultValue, hintText, ...others } = this.props;
     delete others.focused;
     delete others.editable;
 
     const { editing } = this.state;
 
     if (!editing) {
-      const text = value || hintText;
+      const text = defaultValue || hintText;
       const style = this.context.muiTheme.textField;
-      const color = value ? style.textColor : style.hintColor;
+      const color = defaultValue ? style.textColor : style.hintColor;
       return (
         <button
           style={{ ...styles.button, color }}
@@ -91,8 +91,8 @@ export default class EditableLabel extends Component {
     return (
       <TextField
         {...others}
+        defaultValue={defaultValue}
         hintText={hintText}
-        value={value}
         autoFocus
         style={styles.textField}
         onKeyDown={onKeyDown}

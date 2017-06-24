@@ -20,6 +20,16 @@ const styles = {
     verticalAlign: 'top',
     width: '48px',
   },
+  labelColumn: {
+    paddingRight: '0',
+  },
+  shrinkColumn: {
+    color: Styles.colors.grey500,
+    fontSize: '11px',
+    paddingLeft: '0',
+    textAlign: 'right',
+    width: '25px',
+  },
   errorTextField: {
     color: Styles.colors.pinkA200,
   },
@@ -44,13 +54,6 @@ export default class GroupItem extends Component {
       e.target.blur();
     }
   }
-  constructor(props) {
-    super(props);
-    this.state.group = this.props.group;
-  }
-  state = {
-    group: {},
-  };
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState);
   }
@@ -62,7 +65,6 @@ export default class GroupItem extends Component {
     const { group, onEditGroup } = this.props;
     const newGroup = Object.assign({}, group);
     newGroup.enable = !newGroup.enable;
-    this.setState({ group: newGroup });
     onEditGroup(newGroup);
   }
   handleBlur(e) {
@@ -73,21 +75,21 @@ export default class GroupItem extends Component {
     onEditGroup(newGroup);
   }
   handleChange(e) {
-    const { group } = this.state;
+    const { group } = this.props;
     const newGroup = Object.assign({}, group);
     if (this.textInput.isFocused()) {
       newGroup.name = e.target.value;
-      this.setState({ group: newGroup });
     }
   }
   render() {
-    const { group } = this.state;
+    const { group } = this.props;
     const { selected, focused, onRowClick, ...others } = this.props;
     delete others.group;
     delete others.onEditGroup;
 
     const errors = {};
     const invalid = false;
+    const count = (group.hosts || []).length;
 
     return (
       <TableRow
@@ -110,14 +112,14 @@ export default class GroupItem extends Component {
             />
           </IconButton>
         </TableRowColumn>
-        <TableRowColumn>
+        <TableRowColumn style={styles.labelColumn}>
           <EditableLabel
             name={Group.KEY_NAME}
             ref={(input) => { this.textInput = input; }}
+            defaultValue={group.name}
             hintText="Group name"
             errorText={errors[Group.KEY_HOST]}
             errorStyle={styles.errorTextField}
-            value={group.name}
             fullWidth
             onBlur={e => this.handleBlur(e)}
             onKeyDown={e => this.constructor.handleKeyDown(e)}
@@ -125,6 +127,9 @@ export default class GroupItem extends Component {
             focused={focused}
             editable={selected}
           />
+        </TableRowColumn>
+        <TableRowColumn style={styles.shrinkColumn}>
+          {count}
         </TableRowColumn>
       </TableRow>
     );
