@@ -1,3 +1,5 @@
+import { createAction } from 'redux-actions';
+
 export const INITIALIZE_GROUPS = 'INITIALIZE_GROUPS';
 export const CREATE_GROUP = 'CREATE_GROUP';
 export const UPDATE_GROUP = 'UPDATE_GROUP';
@@ -11,95 +13,77 @@ export const DELETE_HOSTS = 'DELETE_HOSTS';
 export const SORT_HOSTS = 'SORT_HOSTS';
 export const SELECT_HOSTS = 'SELECT_HOSTS';
 
+export const SEARCH_ITEMS = 'SEARCH_ITEMS';
+
 export const CREATE_MESSAGE = 'CREATE_MESSAGE';
 export const CLEAR_MESSAGES = 'CLEAR_MESSAGES';
 
-export function initializeGroups(groups) {
-  return {
-    type: INITIALIZE_GROUPS,
-    payload: { groups },
-  };
-}
+export const initializeGroups = createAction(
+  INITIALIZE_GROUPS,
+  groups => ({ groups }),
+);
 
-export function createGroup(group) {
-  return {
-    type: CREATE_GROUP,
-    payload: { group },
-  };
-}
+export const createGroup = createAction(
+  CREATE_GROUP,
+  group => ({ group }),
+);
 
-export function updateGroup(id, group) {
-  return {
-    type: UPDATE_GROUP,
-    payload: { id, group },
-  };
-}
+export const updateGroup = createAction(
+  UPDATE_GROUP,
+  (id, group) => ({ id, group }),
+);
 
-export function deleteGroups(ids) {
-  return {
-    type: DELETE_GROUPS,
-    payload: { ids },
-  };
-}
+export const deleteGroups = createAction(
+  DELETE_GROUPS,
+  ids => ({ ids }),
+);
 
-export function sortGroups(options) {
-  return {
-    type: SORT_GROUPS,
-    payload: { options },
-  };
-}
+export const sortGroups = createAction(
+  SORT_GROUPS,
+  options => ({ options }),
+);
 
-export function selectGroups(ids) {
-  return {
-    type: SELECT_GROUPS,
-    payload: { ids },
-  };
-}
+export const selectGroups = createAction(
+  SELECT_GROUPS,
+  ids => ({ ids }),
+);
 
-export function createHost(groupId, host) {
-  return {
-    type: CREATE_HOST,
-    payload: { groupId, host },
-  };
-}
+export const createHost = createAction(
+  CREATE_HOST,
+  (groupId, host) => ({ groupId, host }),
+);
 
-export function updateHost(groupId, id, host) {
-  return {
-    type: UPDATE_HOST,
-    payload: { groupId, id, host },
-  };
-}
+export const updateHost = createAction(
+  UPDATE_HOST,
+  (groupId, id, host) => ({ groupId, id, host }),
+);
 
-export function deleteHosts(groupId, ids) {
-  return {
-    type: DELETE_HOSTS,
-    payload: { groupId, ids },
-  };
-}
+export const deleteHosts = createAction(
+  DELETE_HOSTS,
+  (groupId, ids) => ({ groupId, ids }),
+);
 
-export function sortHosts(groupId, options) {
-  return {
-    type: SORT_HOSTS,
-    payload: { groupId, options },
-  };
-}
+export const sortHosts = createAction(
+  SORT_HOSTS,
+  (groupId, options) => ({ groupId, options }),
+);
 
-export function selectHosts(ids) {
-  return {
-    type: SELECT_HOSTS,
-    payload: { ids },
-  };
-}
+export const selectHosts = createAction(
+  SELECT_HOSTS,
+  ids => ({ ids }),
+);
 
-export function createMessage(message) {
-  return {
-    type: CREATE_MESSAGE,
-    payload: { message },
-  };
-}
+export const searchItems = createAction(
+  SEARCH_ITEMS,
+  query => ({ query }),
+);
 
-export function clearMessages() {
-  return {
-    type: CLEAR_MESSAGES,
-  };
-}
+export const createMessage = createAction(
+  CREATE_MESSAGE,
+  message => ({ message }),
+);
+
+export const clearMessages = createAction(
+  CLEAR_MESSAGES,
+);
+

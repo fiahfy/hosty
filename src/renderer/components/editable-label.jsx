@@ -9,8 +9,8 @@ const styles = {
     cursor: 'pointer',
     height: '100%',
     lineHeight: '48px',
-    fontFamily: 'Roboto, sans-serif',
-    fontSize: '16px',
+    fontFamily: 'inherit',
+    fontSize: 'inherit',
     outline: 'none',
     overflow: 'hidden',
     padding: '0',
@@ -18,76 +18,66 @@ const styles = {
     textOverflow: 'ellipsis',
     width: '100%',
   },
+  textField: {
+    fontSize: 'inherit',
+  },
 };
 
-export default class EditableTextField extends Component {
+export default class EditableLabel extends Component {
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired,
   };
   static propTypes = {
     ...TextField.propTypes,
     focused: PropTypes.bool,
-    clickToEditable: PropTypes.bool,
+    editable: PropTypes.bool,
+    onKeyDown: PropTypes.func,
   };
   static defaultProps = {
     ...TextField.defaultProps,
     focused: false,
-    clickToEditable: false,
-  };
-  state = {
     editable: false,
+    onKeyDown: () => {},
+  };
+  static handleClick(e) {
+    e.stopPropagation();
+  }
+  state = {
+    editing: false,
   };
   componentDidUpdate(prevProps) {
     if (!prevProps.focused && this.props.focused) {
       this.focus();
     }
   }
-  isFocused() {
-    return this.state.editable;
-  }
   focus() {
-    this.setState({ editable: true });
+    this.setState({ editing: true });
   }
   handleBlur(e) {
-    this.setState({ editable: false });
+    this.setState({ editing: false });
     this.props.onBlur(e);
   }
-  handleClick(e) {
-    e.stopPropagation();
-    this.props.onClick(e);
-  }
-  handleDoubleClick(e) {
-    e.stopPropagation();
-    this.props.onDoubleClick(e);
-  }
   handleClickLabel(e) {
-    if (this.props.clickToEditable) {
+    if (this.props.editable) {
       e.stopPropagation();
-      this.setState({ editable: true });
-    }
-  }
-  handleDoubleClickLabel(e) {
-    if (!this.props.clickToEditable) {
-      e.stopPropagation();
-      this.setState({ editable: true });
+      this.setState({ editing: true });
     }
   }
   render() {
-    const { hintText, value, ...others } = this.props;
+    const { onKeyDown, defaultValue, hintText, ...others } = this.props;
     delete others.focused;
-    delete others.clickToEditable;
+    delete others.editable;
 
-    const { editable } = this.state;
+    const { editing } = this.state;
 
-    if (!editable) {
-      const text = value || hintText;
+    if (!editing) {
+      const text = defaultValue || hintText;
       const style = this.context.muiTheme.textField;
-      const color = value ? style.textColor : style.hintColor;
+      const color = defaultValue ? style.textColor : style.hintColor;
       return (
         <button
           style={{ ...styles.button, color }}
           onClick={e => this.handleClickLabel(e)}
-          onDoubleClick={e => this.handleDoubleClickLabel(e)}
         >
           {text}
         </button>
@@ -97,12 +87,13 @@ export default class EditableTextField extends Component {
     return (
       <TextField
         {...others}
+        defaultValue={defaultValue}
         hintText={hintText}
-        value={value || ''}
         autoFocus
+        style={styles.textField}
+        onKeyDown={onKeyDown}
         onBlur={e => this.handleBlur(e)}
-        onClick={e => this.handleClick(e)}
-        onDoubleClick={e => this.handleDoubleClick(e)}
+        onClick={e => this.constructor.handleClick(e)}
       />
     );
   }

@@ -4,9 +4,9 @@ import {
   IconButton,
   TableRow, TableRowColumn,
 } from 'material-ui';
-import * as Styles from 'material-ui/styles';
+import { colors } from 'material-ui/styles';
 import HostStatusIcon from './host-status-icon';
-import EditableTextField from './editable-text-field';
+import EditableLabel from './editable-label';
 import isUpdateNeeded from '../utils/is-update-needed';
 import * as Group from '../utils/group';
 
@@ -20,8 +20,18 @@ const styles = {
     verticalAlign: 'top',
     width: '48px',
   },
+  labelColumn: {
+    paddingRight: '0',
+  },
+  shrinkColumn: {
+    color: colors.grey500,
+    fontSize: '11px',
+    paddingLeft: '0',
+    textAlign: 'right',
+    width: '25px',
+  },
   errorTextField: {
-    color: Styles.colors.pinkA200,
+    color: colors.yellow700,
   },
 };
 
@@ -44,25 +54,14 @@ export default class GroupItem extends Component {
       e.target.blur();
     }
   }
-  constructor(props) {
-    super(props);
-    this.state.group = this.props.group;
-  }
-  state = {
-    group: {},
-  };
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState);
-  }
-  focus() {
-    this.textInput.focus();
   }
   handleClickIconButton(e) {
     e.stopPropagation();
     const { group, onEditGroup } = this.props;
     const newGroup = Object.assign({}, group);
     newGroup.enable = !newGroup.enable;
-    this.setState({ group: newGroup });
     onEditGroup(newGroup);
   }
   handleBlur(e) {
@@ -73,21 +72,19 @@ export default class GroupItem extends Component {
     onEditGroup(newGroup);
   }
   handleChange(e) {
-    const { group } = this.state;
+    const { group, onEditGroup } = this.props;
+    const { name, value } = e.target;
     const newGroup = Object.assign({}, group);
-    if (this.textInput.isFocused()) {
-      newGroup.name = e.target.value;
-      this.setState({ group: newGroup });
-    }
+    newGroup[name] = value.trim();
+    onEditGroup(newGroup);
   }
   render() {
-    const { group } = this.state;
+    const { group } = this.props;
     const { selected, focused, onRowClick, ...others } = this.props;
     delete others.group;
     delete others.onEditGroup;
 
-    const errors = {};
-    const invalid = false;
+    const count = (group.hosts || []).length;
 
     return (
       <TableRow
@@ -105,26 +102,27 @@ export default class GroupItem extends Component {
         <TableRowColumn style={styles.iconColumn}>
           <IconButton onClick={e => this.handleClickIconButton(e)}>
             <HostStatusIcon
-              invalid={invalid}
+              valid
               enable={group.enable}
             />
           </IconButton>
         </TableRowColumn>
-        <TableRowColumn>
-          <EditableTextField
+        <TableRowColumn style={styles.labelColumn}>
+          <EditableLabel
             name={Group.KEY_NAME}
             ref={(input) => { this.textInput = input; }}
-            hintText="Group name"
-            errorText={errors[Group.KEY_HOST]}
-            errorStyle={styles.errorTextField}
-            value={group.name}
+            defaultValue={group.name}
+            hintText="Group"
             fullWidth
             onBlur={e => this.handleBlur(e)}
             onKeyDown={e => this.constructor.handleKeyDown(e)}
             onChange={e => this.handleChange(e)}
             focused={focused}
-            clickToEditable={selected}
+            editable={selected}
           />
+        </TableRowColumn>
+        <TableRowColumn style={styles.shrinkColumn}>
+          {count}
         </TableRowColumn>
       </TableRow>
     );

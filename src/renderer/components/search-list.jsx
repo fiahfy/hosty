@@ -10,7 +10,7 @@ import isUpdateNeeded from '../utils/is-update-needed';
 
 const styles = {
   headerGroupColumn: {
-    width: '136px',
+    width: '137px',
     userSelect: 'none',
   },
   iconHeaderColumn: {
@@ -47,11 +47,13 @@ const styles = {
 export default class SearchList extends Component {
   static propTypes = {
     items: PropTypes.arrayOf(PropTypes.object),
+    query: PropTypes.string,
     onSelectItems: PropTypes.func,
     onSearchItems: PropTypes.func,
   };
   static defaultProps = {
     items: [],
+    query: '',
     onSelectItems: () => {},
     onSearchItems: () => {},
   };
@@ -66,6 +68,7 @@ export default class SearchList extends Component {
             Status
           </TableHeaderColumn>
           <TableHeaderColumn
+            colSpan="2"
             style={{
               ...styles.headerGroupColumn,
               ...styles.headerSortableColumn,
@@ -122,6 +125,8 @@ export default class SearchList extends Component {
     );
   }
   renderFooter() {
+    const { query } = this.props;
+
     return (
       <TableFooter
         adjustForCheckbox
@@ -130,6 +135,7 @@ export default class SearchList extends Component {
           <TableRowColumn style={styles.textFieldFooterColumn}>
             <TextField
               name="query"
+              defaultValue={query}
               style={styles.textField}
               ref={(input) => { this.textInput = input; }}
               autoFocus

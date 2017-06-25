@@ -33,6 +33,10 @@ export default function setupListener(store, history) {
     actions.createMessage(message);
   });
 
+  ipcRenderer.on('showGroupsWindow', () => {
+    history.push('/');
+  });
+
   ipcRenderer.on('showSearchWindow', () => {
     history.push('/search');
   });

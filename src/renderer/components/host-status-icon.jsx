@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as SvgIcons from 'material-ui/svg-icons';
-import * as Styles from 'material-ui/styles';
+import { colors } from 'material-ui/styles';
 
 const styles = {
   off: {
@@ -11,12 +11,12 @@ const styles = {
   },
 };
 
-const HostStatusIcon = ({ invalid, enable, style, ...others }) => {
-  if (invalid) {
+const HostStatusIcon = ({ valid, enable, style, ...others }) => {
+  if (!valid) {
     return (
       <SvgIcons.DeviceSignalCellularConnectedNoInternet4Bar
         {...others}
-        color={Styles.colors.yellow600}
+        color={colors.yellow700}
         style={style}
       />
     );
@@ -25,7 +25,7 @@ const HostStatusIcon = ({ invalid, enable, style, ...others }) => {
     return (
       <SvgIcons.DeviceSignalCellular4Bar
         {...others}
-        color={Styles.colors.green400}
+        color={colors.green400}
         style={style}
       />
     );
@@ -33,7 +33,7 @@ const HostStatusIcon = ({ invalid, enable, style, ...others }) => {
   return (
     <SvgIcons.DeviceSignalCellularOff
       {...others}
-      color={Styles.colors.grey400}
+      color={colors.grey400}
       style={{ ...style, ...styles.off }}
     />
   );
@@ -41,13 +41,13 @@ const HostStatusIcon = ({ invalid, enable, style, ...others }) => {
 
 HostStatusIcon.propTypes = {
   ...SvgIcons.propTypes,
-  invalid: PropTypes.bool,
+  valid: PropTypes.bool,
   enable: PropTypes.bool,
 };
 
 HostStatusIcon.defaultProps = {
   ...SvgIcons.defaultProps,
-  invalid: false,
+  valid: false,
   enable: false,
 };
 

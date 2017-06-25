@@ -98,7 +98,7 @@ export default class GroupList extends Component {
           <TableHeaderColumn style={styles.iconHeaderColumn}>
             Status
           </TableHeaderColumn>
-          <TableHeaderColumn style={styles.sortableHeaderColumn}>
+          <TableHeaderColumn colSpan="2" style={styles.sortableHeaderColumn}>
             <div style={styles.label}>Group</div>
             <SortOrderIcon
               style={styles.icon}

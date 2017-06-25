@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { IconButton } from 'material-ui';
-import * as SvgIcons from 'material-ui/svg-icons';
 import * as ActionCreators from '../actions';
 import SearchList from '../components/search-list';
 
@@ -17,20 +15,13 @@ const styles = {
     height: '100%',
     overflow: 'auto',
   },
-  buttonWrapper: {
-    position: 'absolute',
-    right: '0',
-    top: '0',
-  },
-  button: {
-    height: '58px',
-    padding: '17px',
-    width: '58px',
-  },
 };
 
 function mapStateToProps(state) {
-  return { groups: state.groups };
+  return {
+    groups: state.groups,
+    query: state.query,
+  };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -38,17 +29,15 @@ function mapDispatchToProps(dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class AppContainers extends Component {
+export default class SearchContainers extends Component {
   static propTypes = {
     groups: PropTypes.arrayOf(PropTypes.object).isRequired,
+    query: PropTypes.string.isRequired,
     actions: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
   };
-  state = {
-    query: '',
-  };
   get items() {
-    const { query } = this.state;
+    const { query } = this.props;
 
     return this.props.groups.reduce((previous, current) => (
       previous.concat((current.hosts || []).map(host => (
@@ -57,7 +46,7 @@ export default class AppContainers extends Component {
     ), [])
     .filter((item) => {
       if (query === '') {
-        return true;
+        return false;
       }
       if ((item.host.host || '').indexOf(query) > -1) {
         return true;
@@ -67,9 +56,6 @@ export default class AppContainers extends Component {
       }
       return false;
     });
-  }
-  handleClickIconButton() {
-    this.props.history.push('/');
   }
   handleSelectItems(ids) {
     const [groupIds, hostIds] = ids.reduce((previous, current) => (
@@ -82,27 +68,22 @@ export default class AppContainers extends Component {
     this.props.history.push('/');
   }
   handleSearchItems(query) {
-    this.setState({ query });
+    this.props.actions.searchItems(query);
   }
   render() {
+    const { query } = this.props;
+
     return (
       <div style={styles.container}>
         <div style={styles.content}>
           <div className="list">
             <SearchList
               items={this.items}
+              query={query}
               onSelectItems={selectedItems => this.handleSelectItems(selectedItems)}
-              onSearchItems={query => this.handleSearchItems(query)}
+              onSearchItems={newQuery => this.handleSearchItems(newQuery)}
             />
           </div>
-        </div>
-        <div style={styles.buttonWrapper}>
-          <IconButton
-            style={styles.button}
-            onClick={() => this.handleClickIconButton()}
-          >
-            <SvgIcons.NavigationClose />
-          </IconButton>
         </div>
       </div>
     );

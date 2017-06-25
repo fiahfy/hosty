@@ -4,7 +4,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Snackbar } from 'material-ui';
+import { Drawer, Snackbar, Menu, MenuItem } from 'material-ui';
+import { ActionList, ActionSearch } from 'material-ui/svg-icons';
+import { MuiThemeProvider, getMuiTheme, colors } from 'material-ui/styles';
 import * as ActionCreators from '../actions';
 import * as Group from '../utils/group';
 import * as Host from '../utils/host';
@@ -14,6 +16,17 @@ const styles = {
     boxSizing: 'border-box',
     height: '100%',
     overflow: 'hidden',
+  },
+  drawer: {
+    boxSizing: 'content-box',
+    borderRightWidth: '1px',
+    borderRightStyle: 'solid',
+    borderRightColor: colors.grey300,
+    boxShadow: 'none',
+  },
+  container: {
+    height: '100%',
+    paddingLeft: '49px',
   },
   snackbar: {
     textAlign: 'center',
@@ -30,16 +43,23 @@ function mapDispatchToProps(dispatch) {
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class App extends Component {
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  };
   static propTypes = {
     messages: PropTypes.arrayOf(PropTypes.object).isRequired,
-    actions: PropTypes.object.isRequired,
     children: PropTypes.node.isRequired,
+    actions: PropTypes.object.isRequired,
   };
   static handleDragOver(e) {
     e.preventDefault();
     e.stopPropagation();
     e.dataTransfer.dropEffect = 'copy'; // eslint-disable-line no-param-reassign
   }
+  menus = [
+    { pathname: '/', IconClass: ActionList },
+    { pathname: '/search', IconClass: ActionSearch },
+  ];
   handleDrop(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -72,6 +92,13 @@ export default class App extends Component {
       { text: `Added ${groupLength} group(s), ${hostLength} host(s)` },
     );
   }
+  handleItemTouchTap(e, item, index) {
+    const menu = this.menus[index];
+    if (!menu) {
+      return;
+    }
+    this.context.router.history.push(menu.pathname);
+  }
   handleRequestClose() {
     this.props.actions.clearMessages();
   }
@@ -90,18 +117,46 @@ export default class App extends Component {
       />
     );
   }
+  renderMenu() {
+    const currentPathname = this.context.router.history.location.pathname;
+    return (
+      <Menu onItemTouchTap={(...args) => this.handleItemTouchTap(...args)}>
+        {this.menus.map(({ pathname, IconClass }) => {
+          const color = pathname === currentPathname
+                      ? colors.pinkA200 : colors.grey400;
+          return (
+            <MenuItem
+              key={pathname}
+              leftIcon={<IconClass color={color} />}
+            />
+          );
+        })}
+      </Menu>
+    );
+  }
   render() {
     const { children } = this.props;
 
     return (
-      <div
-        style={styles.app}
-        onDragOver={e => this.constructor.handleDragOver(e)}
-        onDrop={e => this.handleDrop(e)}
-      >
-        {children}
-        {this.renderSnackbar()}
-      </div>
+      <MuiThemeProvider muiTheme={getMuiTheme()}>
+        <div
+          style={styles.app}
+          onDragOver={e => this.constructor.handleDragOver(e)}
+          onDrop={e => this.handleDrop(e)}
+        >
+          <Drawer
+            width={48}
+            className="drawer"
+            containerStyle={styles.drawer}
+          >
+            {this.renderMenu()}
+          </Drawer>
+          <div style={styles.container}>
+            {children}
+          </div>
+          {this.renderSnackbar()}
+        </div>
+      </MuiThemeProvider>
     );
   }
 }

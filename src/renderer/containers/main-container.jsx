@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Drawer } from 'material-ui';
+import { colors } from 'material-ui/styles';
 import * as ActionCreators from '../actions';
 import GroupList from '../components/group-list';
 import HostList from '../components/host-list';
@@ -15,14 +15,24 @@ const styles = {
     height: '100%',
     overflow: 'hidden',
   },
-  drawer: {
-    borderRight: '1px solid rgb(224, 224, 224)',
-    boxShadow: 'none',
+  contentWrapper: {
+    height: '100%',
+    float: 'right',
+    marginLeft: '-257px',
+    width: '100%',
   },
   content: {
     height: '100%',
-    overflow: 'auto',
-    paddingLeft: '256px',
+    paddingLeft: '257px',
+  },
+  nav: {
+    borderRightWidth: '1px',
+    borderRightStyle: 'solid',
+    borderRightColor: colors.grey300,
+    boxSizing: 'content-box',
+    float: 'left',
+    height: '100%',
+    width: '256px',
   },
   messageWrapper: {
     display: 'table',
@@ -32,6 +42,7 @@ const styles = {
   message: {
     color: 'grey',
     display: 'table-cell',
+    fontSize: '14px',
     position: 'relative',
     textAlign: 'center',
     verticalAlign: 'middle',
@@ -190,7 +201,7 @@ export default class MainContainer extends Component {
     if (!this.selectedGroupId) {
       return (
         <div style={styles.messageWrapper}>
-          <div style={styles.message}>Select Group</div>
+          <div style={styles.message}>No hosts</div>
         </div>
       );
     }
@@ -215,15 +226,13 @@ export default class MainContainer extends Component {
   render() {
     return (
       <div style={styles.container}>
-        <Drawer
-          open
-          width={256}
-          containerStyle={styles.drawer}
-        >
+        <div style={styles.contentWrapper}>
+          <div style={styles.content}>
+            {this.renderHostList()}
+          </div>
+        </div>
+        <div style={styles.nav} className="nav">
           {this.renderGroupList()}
-        </Drawer>
-        <div style={styles.content}>
-          {this.renderHostList()}
         </div>
       </div>
     );

@@ -12,12 +12,14 @@ const SortOrderIcon = ({ hidden, asc, style }) => {
 };
 
 SortOrderIcon.propTypes = {
+  ...SvgIcons.propTypes,
   hidden: PropTypes.bool,
   asc: PropTypes.bool,
   style: PropTypes.object,
 };
 
 SortOrderIcon.defaultProps = {
+  ...SvgIcons.defaultProps,
   hidden: false,
   asc: true,
   style: {},
