@@ -56,6 +56,10 @@ export default class App extends Component {
     e.stopPropagation();
     e.dataTransfer.dropEffect = 'copy'; // eslint-disable-line no-param-reassign
   }
+  menus = [
+    { pathname: '/', IconClass: SvgIcons.ActionList },
+    { pathname: '/search', IconClass: SvgIcons.ActionSearch },
+  ];
   handleDrop(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -89,17 +93,11 @@ export default class App extends Component {
     );
   }
   handleItemTouchTap(e, item, index) {
-    const { history } = this.context.router;
-    switch (index) {
-      case 0:
-        history.push('/');
-        break;
-      case 1:
-        history.push('/search');
-        break;
-      default:
-        break;
+    const menu = this.menus[index];
+    if (!menu) {
+      return;
     }
+    this.context.router.history.push(menu.pathname);
   }
   handleRequestClose() {
     this.props.actions.clearMessages();
@@ -119,10 +117,25 @@ export default class App extends Component {
       />
     );
   }
+  renderMenu() {
+    const currentPathname = this.context.router.history.location.pathname;
+    return (
+      <Menu onItemTouchTap={(...args) => this.handleItemTouchTap(...args)}>
+        {this.menus.map(({ pathname, IconClass }) => {
+          const color = pathname === currentPathname ? Styles.colors.pinkA200 : Styles.colors.grey400;
+          return (
+            <MenuItem
+              key={pathname}
+              leftIcon={<IconClass color={color} />}
+            />
+          );
+        })}
+      </Menu>
+    );
+  }
   render() {
     const { children } = this.props;
 
-// TOOD:
     return (
       <div
         style={styles.app}
@@ -134,10 +147,7 @@ export default class App extends Component {
           className="drawer"
           containerStyle={styles.drawer}
         >
-          <Menu onItemTouchTap={(...args) => this.handleItemTouchTap(...args)}>
-            <MenuItem leftIcon={<SvgIcons.ActionList />} />
-            <MenuItem leftIcon={<SvgIcons.ActionSearch />} />
-          </Menu>
+          {this.renderMenu()}
         </Drawer>
         <div style={styles.container}>
           {children}

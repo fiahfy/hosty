@@ -53,13 +53,14 @@ export default class MenuBuilder {
           { label: 'Copy', accelerator: 'CmdOrCtrl+C', role: 'copy' },
           { label: 'Paste', accelerator: 'CmdOrCtrl+V', role: 'paste' },
           { label: 'Select All', accelerator: 'CmdOrCtrl+A', role: 'selectall' },
-          { type: 'separator' },
-          { label: 'Search', accelerator: 'CmdOrCtrl+F', role: 'search', click: () => { this.search(); } },
         ],
       },
       {
         label: 'View',
         submenu: [
+          { label: 'Groups', accelerator: 'CmdOrCtrl+G', click: () => { this.showGroups(); } },
+          { label: 'Search', accelerator: 'CmdOrCtrl+F', click: () => { this.search(); } },
+          { type: 'separator' },
           { label: 'Reload', accelerator: 'CmdOrCtrl+R', click: () => { this.window.webContents.reload(); } },
           { label: 'Toggle Full Screen', accelerator: process.platform === 'darwin' ? 'Ctrl+Command+F' : 'F11', click: () => { this.window.setFullScreen(!this.window.isFullScreen()); } },
           { label: 'Toggle Developer Tools', accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I', click: () => { this.window.toggleDevTools(); } },
@@ -199,6 +200,9 @@ export default class MenuBuilder {
       });
       this.window.webContents.send('requestGroups');
     });
+  }
+  showGroups() {
+    this.window.webContents.send('showGroupsWindow');
   }
   search() {
     this.window.webContents.send('showSearchWindow');
