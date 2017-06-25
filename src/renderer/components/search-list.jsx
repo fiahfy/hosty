@@ -68,6 +68,7 @@ export default class SearchList extends Component {
             Status
           </TableHeaderColumn>
           <TableHeaderColumn
+            colSpan="2"
             style={{
               ...styles.headerGroupColumn,
               ...styles.headerSortableColumn,

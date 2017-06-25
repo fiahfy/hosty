@@ -32,6 +32,7 @@ const styles = {
   message: {
     color: 'grey',
     display: 'table-cell',
+    fontSize: '14px',
     position: 'relative',
     textAlign: 'center',
     verticalAlign: 'middle',
@@ -190,7 +191,7 @@ export default class MainContainer extends Component {
     if (!this.selectedGroupId) {
       return (
         <div style={styles.messageWrapper}>
-          <div style={styles.message}>Select Group</div>
+          <div style={styles.message}>No hosts</div>
         </div>
       );
     }

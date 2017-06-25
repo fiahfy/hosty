@@ -84,7 +84,6 @@ export default class GroupItem extends Component {
     delete others.group;
     delete others.onEditGroup;
 
-    const valid = true;
     const count = (group.hosts || []).length;
 
     return (
@@ -103,7 +102,7 @@ export default class GroupItem extends Component {
         <TableRowColumn style={styles.iconColumn}>
           <IconButton onClick={e => this.handleClickIconButton(e)}>
             <HostStatusIcon
-              valid={valid}
+              valid
               enable={group.enable}
             />
           </IconButton>
@@ -113,9 +112,7 @@ export default class GroupItem extends Component {
             name={Group.KEY_NAME}
             ref={(input) => { this.textInput = input; }}
             defaultValue={group.name}
-            hintText="Group name"
-            errorText={valid ? null : ' '}
-            errorStyle={styles.errorTextField}
+            hintText="Group"
             fullWidth
             onBlur={e => this.handleBlur(e)}
             onKeyDown={e => this.constructor.handleKeyDown(e)}

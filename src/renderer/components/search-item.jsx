@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   TableRow, TableRowColumn,
 } from 'material-ui';
+import * as Styles from 'material-ui/styles';
 import HostStatusIcon from './host-status-icon';
 import isUpdateNeeded from '../utils/is-update-needed';
 import * as Host from '../utils/host';
@@ -12,13 +13,22 @@ const styles = {
     cursor: 'pointer',
   },
   groupColumn: {
-    width: '136px',
+    width: '110px',
+    paddingRight: '0',
   },
   iconColumn: {
     paddingRight: '0',
     textAlign: 'center',
     verticalAlign: 'top',
     width: '48px',
+  },
+  shrinkColumn: {
+    color: Styles.colors.grey500,
+    fontSize: '11px',
+    paddingLeft: '0',
+    paddingRight: '25px',
+    textAlign: 'right',
+    width: '25px',
   },
   icon: {
     margin: '12px',
@@ -31,7 +41,7 @@ const styles = {
     height: '100%',
     lineHeight: '48px',
     fontFamily: 'Roboto, sans-serif',
-    fontSize: '16px',
+    fontSize: 'inherit',
     outline: 'none',
     overflow: 'hidden',
     padding: '0',
@@ -55,7 +65,8 @@ export default class SearchItem extends Component {
   render() {
     const { item, onRowClick, ...others } = this.props;
 
-    const invalid = !Host.isValid(item.host);
+    const valid = Host.isValid(item.host);
+    const count = (item.group.hosts || []).length;
 
     return (
       <TableRow
@@ -72,7 +83,7 @@ export default class SearchItem extends Component {
         <TableRowColumn style={styles.iconColumn}>
           <HostStatusIcon
             style={styles.icon}
-            invalid={false}
+            valid
             enable={item.group.enable}
           />
         </TableRowColumn>
@@ -81,10 +92,13 @@ export default class SearchItem extends Component {
             {item.group.name}
           </button>
         </TableRowColumn>
+        <TableRowColumn style={styles.shrinkColumn}>
+          {count}
+        </TableRowColumn>
         <TableRowColumn style={styles.iconColumn}>
           <HostStatusIcon
             style={styles.icon}
-            invalid={invalid}
+            valid={valid}
             enable={item.host.enable}
           />
         </TableRowColumn>
