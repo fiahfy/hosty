@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as SvgIcons from 'material-ui/svg-icons';
-import * as Styles from 'material-ui/styles';
+import { colors } from 'material-ui/styles';
 
 const styles = {
   off: {
@@ -16,7 +16,7 @@ const HostStatusIcon = ({ valid, enable, style, ...others }) => {
     return (
       <SvgIcons.DeviceSignalCellularConnectedNoInternet4Bar
         {...others}
-        color={Styles.colors.yellow700}
+        color={colors.yellow700}
         style={style}
       />
     );
@@ -25,7 +25,7 @@ const HostStatusIcon = ({ valid, enable, style, ...others }) => {
     return (
       <SvgIcons.DeviceSignalCellular4Bar
         {...others}
-        color={Styles.colors.green400}
+        color={colors.green400}
         style={style}
       />
     );
@@ -33,7 +33,7 @@ const HostStatusIcon = ({ valid, enable, style, ...others }) => {
   return (
     <SvgIcons.DeviceSignalCellularOff
       {...others}
-      color={Styles.colors.grey400}
+      color={colors.grey400}
       style={{ ...style, ...styles.off }}
     />
   );

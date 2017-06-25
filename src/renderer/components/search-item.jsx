@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {
   TableRow, TableRowColumn,
 } from 'material-ui';
-import * as Styles from 'material-ui/styles';
+import { colors } from 'material-ui/styles';
 import HostStatusIcon from './host-status-icon';
 import isUpdateNeeded from '../utils/is-update-needed';
 import * as Host from '../utils/host';
@@ -23,7 +23,7 @@ const styles = {
     width: '48px',
   },
   shrinkColumn: {
-    color: Styles.colors.grey500,
+    color: colors.grey500,
     fontSize: '11px',
     paddingLeft: '0',
     paddingRight: '25px',

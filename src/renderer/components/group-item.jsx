@@ -4,7 +4,7 @@ import {
   IconButton,
   TableRow, TableRowColumn,
 } from 'material-ui';
-import * as Styles from 'material-ui/styles';
+import { colors } from 'material-ui/styles';
 import HostStatusIcon from './host-status-icon';
 import EditableLabel from './editable-label';
 import isUpdateNeeded from '../utils/is-update-needed';
@@ -24,14 +24,14 @@ const styles = {
     paddingRight: '0',
   },
   shrinkColumn: {
-    color: Styles.colors.grey500,
+    color: colors.grey500,
     fontSize: '11px',
     paddingLeft: '0',
     textAlign: 'right',
     width: '25px',
   },
   errorTextField: {
-    color: Styles.colors.yellow700,
+    color: colors.yellow700,
   },
 };
 

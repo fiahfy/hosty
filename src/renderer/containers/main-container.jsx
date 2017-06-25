@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as Styles from 'material-ui/styles';
+import { colors } from 'material-ui/styles';
 import * as ActionCreators from '../actions';
 import GroupList from '../components/group-list';
 import HostList from '../components/host-list';
@@ -28,7 +28,7 @@ const styles = {
   nav: {
     borderRightWidth: '1px',
     borderRightStyle: 'solid',
-    borderRightColor: Styles.colors.grey300,
+    borderRightColor: colors.grey300,
     boxSizing: 'content-box',
     float: 'left',
     height: '100%',

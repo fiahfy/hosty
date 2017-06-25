@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Drawer, Snackbar, Menu, MenuItem } from 'material-ui';
-import * as SvgIcons from 'material-ui/svg-icons';
-import * as Styles from 'material-ui/styles';
+import { ActionList, ActionSearch } from 'material-ui/svg-icons';
+import { MuiThemeProvider, getMuiTheme, colors } from 'material-ui/styles';
 import * as ActionCreators from '../actions';
 import * as Group from '../utils/group';
 import * as Host from '../utils/host';
@@ -21,7 +21,7 @@ const styles = {
     boxSizing: 'content-box',
     borderRightWidth: '1px',
     borderRightStyle: 'solid',
-    borderRightColor: Styles.colors.grey300,
+    borderRightColor: colors.grey300,
     boxShadow: 'none',
   },
   container: {
@@ -57,8 +57,8 @@ export default class App extends Component {
     e.dataTransfer.dropEffect = 'copy'; // eslint-disable-line no-param-reassign
   }
   menus = [
-    { pathname: '/', IconClass: SvgIcons.ActionList },
-    { pathname: '/search', IconClass: SvgIcons.ActionSearch },
+    { pathname: '/', IconClass: ActionList },
+    { pathname: '/search', IconClass: ActionSearch },
   ];
   handleDrop(e) {
     e.preventDefault();
@@ -122,7 +122,8 @@ export default class App extends Component {
     return (
       <Menu onItemTouchTap={(...args) => this.handleItemTouchTap(...args)}>
         {this.menus.map(({ pathname, IconClass }) => {
-          const color = pathname === currentPathname ? Styles.colors.pinkA200 : Styles.colors.grey400;
+          const color = pathname === currentPathname
+                      ? colors.pinkA200 : colors.grey400;
           return (
             <MenuItem
               key={pathname}
@@ -137,23 +138,25 @@ export default class App extends Component {
     const { children } = this.props;
 
     return (
-      <div
-        style={styles.app}
-        onDragOver={e => this.constructor.handleDragOver(e)}
-        onDrop={e => this.handleDrop(e)}
-      >
-        <Drawer
-          width={48}
-          className="drawer"
-          containerStyle={styles.drawer}
+      <MuiThemeProvider muiTheme={getMuiTheme()}>
+        <div
+          style={styles.app}
+          onDragOver={e => this.constructor.handleDragOver(e)}
+          onDrop={e => this.handleDrop(e)}
         >
-          {this.renderMenu()}
-        </Drawer>
-        <div style={styles.container}>
-          {children}
+          <Drawer
+            width={48}
+            className="drawer"
+            containerStyle={styles.drawer}
+          >
+            {this.renderMenu()}
+          </Drawer>
+          <div style={styles.container}>
+            {children}
+          </div>
+          {this.renderSnackbar()}
         </div>
-        {this.renderSnackbar()}
-      </div>
+      </MuiThemeProvider>
     );
   }
 }
