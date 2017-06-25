@@ -31,7 +31,7 @@ const styles = {
     width: '25px',
   },
   errorTextField: {
-    color: Styles.colors.pinkA200,
+    color: Styles.colors.yellow700,
   },
 };
 
@@ -57,9 +57,6 @@ export default class GroupItem extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState);
   }
-  focus() {
-    this.textInput.focus();
-  }
   handleClickIconButton(e) {
     e.stopPropagation();
     const { group, onEditGroup } = this.props;
@@ -75,11 +72,11 @@ export default class GroupItem extends Component {
     onEditGroup(newGroup);
   }
   handleChange(e) {
-    const { group } = this.props;
+    const { group, onEditGroup } = this.props;
+    const { name, value } = e.target;
     const newGroup = Object.assign({}, group);
-    if (this.textInput.isFocused()) {
-      newGroup.name = e.target.value;
-    }
+    newGroup[name] = value.trim();
+    onEditGroup(newGroup);
   }
   render() {
     const { group } = this.props;
@@ -87,8 +84,7 @@ export default class GroupItem extends Component {
     delete others.group;
     delete others.onEditGroup;
 
-    const errors = {};
-    const invalid = false;
+    const valid = true;
     const count = (group.hosts || []).length;
 
     return (
@@ -107,7 +103,7 @@ export default class GroupItem extends Component {
         <TableRowColumn style={styles.iconColumn}>
           <IconButton onClick={e => this.handleClickIconButton(e)}>
             <HostStatusIcon
-              invalid={invalid}
+              valid={valid}
               enable={group.enable}
             />
           </IconButton>
@@ -118,7 +114,7 @@ export default class GroupItem extends Component {
             ref={(input) => { this.textInput = input; }}
             defaultValue={group.name}
             hintText="Group name"
-            errorText={errors[Group.KEY_HOST]}
+            errorText={valid ? null : ' '}
             errorStyle={styles.errorTextField}
             fullWidth
             onBlur={e => this.handleBlur(e)}

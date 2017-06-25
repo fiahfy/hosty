@@ -11,12 +11,12 @@ const styles = {
   },
 };
 
-const HostStatusIcon = ({ invalid, enable, style, ...others }) => {
-  if (invalid) {
+const HostStatusIcon = ({ valid, enable, style, ...others }) => {
+  if (!valid) {
     return (
       <SvgIcons.DeviceSignalCellularConnectedNoInternet4Bar
         {...others}
-        color={Styles.colors.yellow600}
+        color={Styles.colors.yellow700}
         style={style}
       />
     );
@@ -41,13 +41,13 @@ const HostStatusIcon = ({ invalid, enable, style, ...others }) => {
 
 HostStatusIcon.propTypes = {
   ...SvgIcons.propTypes,
-  invalid: PropTypes.bool,
+  valid: PropTypes.bool,
   enable: PropTypes.bool,
 };
 
 HostStatusIcon.defaultProps = {
   ...SvgIcons.defaultProps,
-  invalid: false,
+  valid: false,
   enable: false,
 };
 

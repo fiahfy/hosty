@@ -21,7 +21,7 @@ const styles = {
     width: '48px',
   },
   errorTextField: {
-    color: Styles.colors.pinkA200,
+    color: Styles.colors.yellow700,
   },
 };
 
@@ -42,9 +42,6 @@ export default class HostItem extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState);
   }
-  focus() {
-    this.hostTextInput.focus();
-  }
   handleClickIconButton(e) {
     e.stopPropagation();
     const { host, onEditHost } = this.props;
@@ -60,22 +57,20 @@ export default class HostItem extends Component {
     onEditHost(newHost);
   }
   handleChange(e) {
-    const { host } = this.props;
+    const { host, onEditHost } = this.props;
+    const { name, value } = e.target;
     const newHost = Object.assign({}, host);
-    if (this.hostTextInput.isFocused()) {
-      newHost.host = e.target.value;
-    }
-    if (this.ipTextInput.isFocused()) {
-      newHost.ip = e.target.value;
-    }
+    newHost[name] = value.trim();
+    onEditHost(newHost);
   }
   handleKeyDown(e) {
-    if (e.keyCode === 9 && !e.shiftKey && this.hostTextInput.isFocused()) {
+    const { name } = e.target;
+    if (e.keyCode === 9 && !e.shiftKey && name === Host.KEY_HOST) {
       e.preventDefault();
       this.ipTextInput.focus();
       return;
     }
-    if (e.keyCode === 9 && e.shiftKey && this.ipTextInput.isFocused()) {
+    if (e.keyCode === 9 && e.shiftKey && name === Host.KEY_IP) {
       e.preventDefault();
       this.hostTextInput.focus();
       return;
@@ -90,8 +85,9 @@ export default class HostItem extends Component {
     delete others.host;
     delete others.onEditHost;
 
-    const errors = Host.getErrorMessages(host);
-    const invalid = !Host.isValid(host);
+    const isValidHost = Host.isValidHost(host.host);
+    const isValidIp = Host.isValidIp(host.ip);
+    const valid = isValidHost && isValidIp;
 
     return (
       <TableRow
@@ -109,7 +105,7 @@ export default class HostItem extends Component {
         <TableRowColumn style={styles.iconColumn}>
           <IconButton onClick={e => this.handleClickIconButton(e)}>
             <HostStatusIcon
-              invalid={invalid}
+              valid={valid}
               enable={host.enable}
             />
           </IconButton>
@@ -120,7 +116,7 @@ export default class HostItem extends Component {
             ref={(input) => { this.hostTextInput = input; }}
             defaultValue={host.host}
             hintText="example.com"
-            errorText={errors[Host.KEY_HOST]}
+            errorText={isValidHost ? null : ' '}
             errorStyle={styles.errorTextField}
             fullWidth
             onBlur={e => this.handleBlur(e)}
@@ -136,7 +132,7 @@ export default class HostItem extends Component {
             ref={(input) => { this.ipTextInput = input; }}
             defaultValue={host.ip}
             hintText="192.0.2.0"
-            errorText={errors[Host.KEY_IP]}
+            errorText={isValidIp ? null : ' '}
             errorStyle={styles.errorTextField}
             fullWidth
             onBlur={e => this.handleBlur(e)}

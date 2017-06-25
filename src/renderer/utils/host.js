@@ -8,35 +8,25 @@ export const KEY_ENABLE = 'enable';
 export const KEY_HOST = 'host';
 export const KEY_IP = 'ip';
 
-export function getHostErrorMessage(host) {
+export function isValidHost(host) {
   if (!host || !host.length) {
-    return 'Missing Host';
+    return false;
   }
-  return null;
+  return true;
 }
 
-export function getIPErrorMessage(ip) {
+export function isValidIp(ip) {
   if (!ip || !ip.length) {
-    return 'Missing IP';
+    return false;
   }
   if (!validator.isIP(ip)) {
-    return 'Invalid IP';
+    return false;
   }
-  return null;
-}
-
-export function getErrorMessages(host) {
-  return {
-    host: getHostErrorMessage(host.host),
-    ip: getIPErrorMessage(host.ip),
-  };
+  return true;
 }
 
 export function isValid(host) {
-  const errors = getErrorMessages(host);
-  return Object.keys(errors).every(key => (
-    errors[key] === null
-  ));
+  return isValidHost(host.host) && isValidIp(host.ip);
 }
 
 export function compare(a, b, { key, order }) {

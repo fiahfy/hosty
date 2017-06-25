@@ -20,7 +20,6 @@ const styles = {
   },
   textField: {
     fontSize: 'inherit',
-    height: '47px',
   },
 };
 
@@ -50,9 +49,6 @@ export default class EditableLabel extends Component {
     if (!prevProps.focused && this.props.focused) {
       this.focus();
     }
-  }
-  isFocused() {
-    return this.state.editing;
   }
   focus() {
     this.setState({ editing: true });
