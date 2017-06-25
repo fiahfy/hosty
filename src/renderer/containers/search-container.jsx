@@ -46,7 +46,7 @@ export default class SearchContainers extends Component {
     ), [])
     .filter((item) => {
       if (query === '') {
-        return true;
+        return false;
       }
       if ((item.host.host || '').indexOf(query) > -1) {
         return true;
