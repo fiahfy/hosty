@@ -10,7 +10,7 @@ import isUpdateNeeded from '../utils/is-update-needed';
 
 const styles = {
   headerGroupColumn: {
-    width: '136px',
+    width: '137px',
     userSelect: 'none',
   },
   iconHeaderColumn: {

@@ -13,7 +13,7 @@ const styles = {
     cursor: 'pointer',
   },
   groupColumn: {
-    width: '110px',
+    width: '111px',
     paddingRight: '0',
   },
   iconColumn: {

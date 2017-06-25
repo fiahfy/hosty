@@ -4,7 +4,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Snackbar } from 'material-ui';
+import { Drawer, Snackbar, Menu, MenuItem } from 'material-ui';
+import * as SvgIcons from 'material-ui/svg-icons';
+import * as Styles from 'material-ui/styles';
 import * as ActionCreators from '../actions';
 import * as Group from '../utils/group';
 import * as Host from '../utils/host';
@@ -14,6 +16,17 @@ const styles = {
     boxSizing: 'border-box',
     height: '100%',
     overflow: 'hidden',
+  },
+  drawer: {
+    boxSizing: 'content-box',
+    borderRightWidth: '1px',
+    borderRightStyle: 'solid',
+    borderRightColor: Styles.colors.grey300,
+    boxShadow: 'none',
+  },
+  container: {
+    height: '100%',
+    paddingLeft: '49px',
   },
   snackbar: {
     textAlign: 'center',
@@ -30,10 +43,13 @@ function mapDispatchToProps(dispatch) {
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class App extends Component {
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  };
   static propTypes = {
     messages: PropTypes.arrayOf(PropTypes.object).isRequired,
-    actions: PropTypes.object.isRequired,
     children: PropTypes.node.isRequired,
+    actions: PropTypes.object.isRequired,
   };
   static handleDragOver(e) {
     e.preventDefault();
@@ -72,6 +88,19 @@ export default class App extends Component {
       { text: `Added ${groupLength} group(s), ${hostLength} host(s)` },
     );
   }
+  handleItemTouchTap(e, item, index) {
+    const { history } = this.context.router;
+    switch (index) {
+      case 0:
+        history.push('/');
+        break;
+      case 1:
+        history.push('/search');
+        break;
+      default:
+        break;
+    }
+  }
   handleRequestClose() {
     this.props.actions.clearMessages();
   }
@@ -93,13 +122,26 @@ export default class App extends Component {
   render() {
     const { children } = this.props;
 
+// TOOD:
     return (
       <div
         style={styles.app}
         onDragOver={e => this.constructor.handleDragOver(e)}
         onDrop={e => this.handleDrop(e)}
       >
-        {children}
+        <Drawer
+          width={48}
+          className="drawer"
+          containerStyle={styles.drawer}
+        >
+          <Menu onItemTouchTap={(...args) => this.handleItemTouchTap(...args)}>
+            <MenuItem leftIcon={<SvgIcons.ActionList />} />
+            <MenuItem leftIcon={<SvgIcons.ActionSearch />} />
+          </Menu>
+        </Drawer>
+        <div style={styles.container}>
+          {children}
+        </div>
         {this.renderSnackbar()}
       </div>
     );

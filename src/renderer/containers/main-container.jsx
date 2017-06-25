@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Drawer } from 'material-ui';
+import * as Styles from 'material-ui/styles';
 import * as ActionCreators from '../actions';
 import GroupList from '../components/group-list';
 import HostList from '../components/host-list';
@@ -15,14 +15,24 @@ const styles = {
     height: '100%',
     overflow: 'hidden',
   },
-  drawer: {
-    borderRight: '1px solid rgb(224, 224, 224)',
-    boxShadow: 'none',
+  contentWrapper: {
+    height: '100%',
+    float: 'right',
+    marginLeft: '-257px',
+    width: '100%',
   },
   content: {
     height: '100%',
-    overflow: 'auto',
-    paddingLeft: '256px',
+    paddingLeft: '257px',
+  },
+  nav: {
+    borderRightWidth: '1px',
+    borderRightStyle: 'solid',
+    borderRightColor: Styles.colors.grey300,
+    boxSizing: 'content-box',
+    float: 'left',
+    height: '100%',
+    width: '256px',
   },
   messageWrapper: {
     display: 'table',
@@ -216,15 +226,13 @@ export default class MainContainer extends Component {
   render() {
     return (
       <div style={styles.container}>
-        <Drawer
-          open
-          width={256}
-          containerStyle={styles.drawer}
-        >
+        <div style={styles.contentWrapper}>
+          <div style={styles.content}>
+            {this.renderHostList()}
+          </div>
+        </div>
+        <div style={styles.nav} className="nav">
           {this.renderGroupList()}
-        </Drawer>
-        <div style={styles.content}>
-          {this.renderHostList()}
         </div>
       </div>
     );

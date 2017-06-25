@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { IconButton } from 'material-ui';
-import * as SvgIcons from 'material-ui/svg-icons';
 import * as ActionCreators from '../actions';
 import SearchList from '../components/search-list';
 
@@ -16,16 +14,6 @@ const styles = {
   content: {
     height: '100%',
     overflow: 'auto',
-  },
-  buttonWrapper: {
-    position: 'absolute',
-    right: '0',
-    top: '0',
-  },
-  button: {
-    height: '58px',
-    padding: '17px',
-    width: '58px',
   },
 };
 
@@ -69,9 +57,6 @@ export default class SearchContainers extends Component {
       return false;
     });
   }
-  handleClickIconButton() {
-    this.props.history.push('/');
-  }
   handleSelectItems(ids) {
     const [groupIds, hostIds] = ids.reduce((previous, current) => (
       previous.map((item, index) => (
@@ -99,14 +84,6 @@ export default class SearchContainers extends Component {
               onSearchItems={newQuery => this.handleSearchItems(newQuery)}
             />
           </div>
-        </div>
-        <div style={styles.buttonWrapper}>
-          <IconButton
-            style={styles.button}
-            onClick={() => this.handleClickIconButton()}
-          >
-            <SvgIcons.NavigationClose />
-          </IconButton>
         </div>
       </div>
     );
