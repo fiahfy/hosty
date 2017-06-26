@@ -54,7 +54,7 @@ export default function configureStore(history, initialState = {}) {
   // Create Store
   const store = createStore(rootReducer, initialState, enhancer);
 
-  persistStore(store, { whitelist: ['groups'] });
+  persistStore(store, { whitelist: ['groups', 'settings'] });
 
   if (module.hot) {
     module.hot.accept('./reducers', () => {
