@@ -46,13 +46,15 @@ export default class MenuBuilder {
       {
         label: 'Edit',
         submenu: [
-          { label: 'Undo', accelerator: 'CmdOrCtrl+Z', role: 'undo' },
-          { label: 'Redo', accelerator: 'Shift+CmdOrCtrl+Z', role: 'redo' },
+          { role: 'undo' },
+          { role: 'redo' },
           { type: 'separator' },
-          { label: 'Cut', accelerator: 'CmdOrCtrl+X', role: 'cut' },
-          { label: 'Copy', accelerator: 'CmdOrCtrl+C', role: 'copy' },
-          { label: 'Paste', accelerator: 'CmdOrCtrl+V', role: 'paste' },
-          { label: 'Select All', accelerator: 'CmdOrCtrl+A', role: 'selectall' },
+          { role: 'cut' },
+          { role: 'copy' },
+          { role: 'paste' },
+          { role: 'pasteandmatchstyle' },
+          { role: 'delete' },
+          { role: 'selectall' },
         ],
       },
       {
@@ -61,21 +63,25 @@ export default class MenuBuilder {
           { label: 'Groups', accelerator: 'CmdOrCtrl+G', click: () => { this.showGroups(); } },
           { label: 'Search', accelerator: 'CmdOrCtrl+F', click: () => { this.search(); } },
           { type: 'separator' },
-          { label: 'Reload', accelerator: 'CmdOrCtrl+R', click: () => { this.window.webContents.reload(); } },
-          { label: 'Toggle Full Screen', accelerator: process.platform === 'darwin' ? 'Ctrl+Command+F' : 'F11', click: () => { this.window.setFullScreen(!this.window.isFullScreen()); } },
-          { label: 'Toggle Developer Tools', accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I', click: () => { this.window.toggleDevTools(); } },
+          { role: 'reload' },
+          { role: 'forcereload' },
+          { role: 'toggledevtools' },
+          { type: 'separator' },
+          // { role: 'resetzoom' },
+          // { role: 'zoomin' },
+          // { role: 'zoomout' },
+          // { type: 'separator' },
+          { role: 'togglefullscreen' },
         ],
       },
       {
-        label: 'Window',
         role: 'window',
         submenu: [
-          { label: 'Minimize', accelerator: 'CmdOrCtrl+M', role: 'minimize' },
-          { label: 'Close', accelerator: 'CmdOrCtrl+W', role: 'close' },
+          { role: 'minimize' },
+          { role: 'close' },
         ],
       },
       {
-        label: 'Help',
         role: 'help',
         submenu: [
           { label: 'Learn More', click: () => { shell.openExternal('https://github.com/fiahfy/hosty'); } },
@@ -84,26 +90,43 @@ export default class MenuBuilder {
     ];
 
     if (process.platform === 'darwin') {
-      const name = app.getName();
       template.unshift({
-        label: name,
+        label: app.getName(),
         submenu: [
-          { label: `About ${name}`, role: 'about' },
+          { role: 'about' },
           { type: 'separator' },
-          { label: 'Services', role: 'services', submenu: [] },
+          { label: 'Preferences...', accelerator: 'CmdOrCtrl+,', click: () => { this.showSettings(); } },
           { type: 'separator' },
-          { label: `Hide ${name}`, accelerator: 'Command+H', role: 'hide' },
-          { label: 'Hide Others', accelerator: 'Command+Alt+H', role: 'hideothers' },
-          { label: 'Show All', role: 'unhide' },
+          { role: 'services', submenu: [] },
           { type: 'separator' },
-          { label: 'Quit', accelerator: 'Command+Q', click: () => { app.quit(); } },
+          { role: 'hide' },
+          { role: 'hideothers' },
+          { role: 'unhide' },
+          { type: 'separator' },
+          { role: 'quit' },
         ],
       });
-      // Window menu.
-      template[3].submenu.push(
+
+      // Edit menu
+      template[2].submenu.push(
         { type: 'separator' },
-        { label: 'Bring All to Front', role: 'front' },
+        {
+          label: 'Speech',
+          submenu: [
+            { role: 'startspeaking' },
+            { role: 'stopspeaking' },
+          ],
+        },
       );
+
+      // Window menu
+      template[4].submenu = [
+        { role: 'close' },
+        { role: 'minimize' },
+        { role: 'zoom' },
+        { type: 'separator' },
+        { role: 'front' },
+      ];
     }
 
     return template;
@@ -206,5 +229,8 @@ export default class MenuBuilder {
   }
   search() {
     this.window.webContents.send('showSearchWindow');
+  }
+  showSettings() {
+    this.window.webContents.send('showSettingsWindow');
   }
 }
