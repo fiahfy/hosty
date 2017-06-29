@@ -52,6 +52,9 @@ const styles = {
 };
 
 export default class SearchItem extends Component {
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
+  };
   static propTypes = {
     ...TableRow.propTypes,
     item: PropTypes.object,
@@ -67,6 +70,8 @@ export default class SearchItem extends Component {
 
     const valid = Host.isValid(item.host);
     const count = (item.group.hosts || []).length;
+    const color = this.context.muiTheme.textField.textColor;
+    const butonStyle = { ...styles.button, color };
 
     return (
       <TableRow
@@ -88,7 +93,7 @@ export default class SearchItem extends Component {
           />
         </TableRowColumn>
         <TableRowColumn style={styles.groupColumn}>
-          <button style={styles.button}>
+          <button style={butonStyle}>
             {item.group.name}
           </button>
         </TableRowColumn>
@@ -103,12 +108,12 @@ export default class SearchItem extends Component {
           />
         </TableRowColumn>
         <TableRowColumn>
-          <button style={styles.button}>
+          <button style={butonStyle}>
             {item.host.host}
           </button>
         </TableRowColumn>
         <TableRowColumn>
-          <button style={styles.button}>
+          <button style={butonStyle}>
             {item.host.ip}
           </button>
         </TableRowColumn>
