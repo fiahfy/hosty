@@ -6,13 +6,18 @@ Hosts file manager based on Electron.
 
 ## Features
 * GUI manager
-* Managing group units
+* Managing with groups
 * Import/Export settings
 
+
+## Screenshot
+![screenshot](./build/screenshot.png?raw=true)
+
+
 ## Installation
-1. Download `.zip` file for your platform from [releases page](https://github.com/fiahfy/hosty/releases).
-2. Unzip the file.
-3. Open `.dmg` for OS X, Run `.exe` for Windows.
+1. Download the file for your platform from [releases page](https://github.com/fiahfy/hosty/releases).
+2. Open `.dmg` for OS X, Run `.exe` for Windows.
+
 
 ## Download
 https://github.com/fiahfy/hosty/releases
