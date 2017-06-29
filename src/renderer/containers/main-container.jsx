@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { colors } from 'material-ui/styles';
 import * as ActionCreators from '../actions';
 import GroupList from '../components/group-list';
 import HostList from '../components/host-list';
@@ -28,7 +27,6 @@ const styles = {
   nav: {
     borderRightWidth: '1px',
     borderRightStyle: 'solid',
-    borderRightColor: colors.grey300,
     boxSizing: 'content-box',
     float: 'left',
     height: '100%',
@@ -63,6 +61,9 @@ function mapDispatchToProps(dispatch) {
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class MainContainer extends Component {
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
+  };
   static propTypes = {
     groups: PropTypes.arrayOf(PropTypes.object).isRequired,
     selectedGroupIds: PropTypes.arrayOf(PropTypes.number).isRequired,
@@ -231,7 +232,10 @@ export default class MainContainer extends Component {
             {this.renderHostList()}
           </div>
         </div>
-        <div style={styles.nav} className="nav">
+        <div
+          style={{ ...styles.nav, borderRightColor: this.context.muiTheme.palette.borderColor }}
+          className="nav"
+        >
           {this.renderGroupList()}
         </div>
       </div>

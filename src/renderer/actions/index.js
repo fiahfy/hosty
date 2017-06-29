@@ -13,6 +13,8 @@ export const DELETE_HOSTS = 'DELETE_HOSTS';
 export const SORT_HOSTS = 'SORT_HOSTS';
 export const SELECT_HOSTS = 'SELECT_HOSTS';
 
+export const UPDATE_SETTINGS = 'UPDATE_SETTINGS';
+
 export const SEARCH_ITEMS = 'SEARCH_ITEMS';
 
 export const CREATE_MESSAGE = 'CREATE_MESSAGE';
@@ -73,6 +75,11 @@ export const selectHosts = createAction(
   ids => ({ ids }),
 );
 
+export const updateSettings = createAction(
+  UPDATE_SETTINGS,
+  settings => ({ settings }),
+);
+
 export const searchItems = createAction(
   SEARCH_ITEMS,
   query => ({ query }),
@@ -86,4 +93,3 @@ export const createMessage = createAction(
 export const clearMessages = createAction(
   CLEAR_MESSAGES,
 );
-

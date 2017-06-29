@@ -5,8 +5,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Drawer, Snackbar, Menu, MenuItem } from 'material-ui';
-import { ActionList, ActionSearch } from 'material-ui/svg-icons';
-import { MuiThemeProvider, getMuiTheme, colors } from 'material-ui/styles';
+import { ActionList, ActionSearch, ActionSettings } from 'material-ui/svg-icons';
+import {
+  MuiThemeProvider, getMuiTheme,
+  colors, lightBaseTheme, darkBaseTheme,
+} from 'material-ui/styles';
 import * as ActionCreators from '../actions';
 import * as Group from '../utils/group';
 import * as Host from '../utils/host';
@@ -21,7 +24,6 @@ const styles = {
     boxSizing: 'content-box',
     borderRightWidth: '1px',
     borderRightStyle: 'solid',
-    borderRightColor: colors.grey300,
     boxShadow: 'none',
   },
   container: {
@@ -34,7 +36,10 @@ const styles = {
 };
 
 function mapStateToProps(state) {
-  return { messages: state.messages };
+  return {
+    settings: state.settings,
+    messages: state.messages,
+  };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -47,6 +52,7 @@ export default class App extends Component {
     router: PropTypes.object.isRequired,
   };
   static propTypes = {
+    settings: PropTypes.object.isRequired,
     messages: PropTypes.arrayOf(PropTypes.object).isRequired,
     children: PropTypes.node.isRequired,
     actions: PropTypes.object.isRequired,
@@ -59,6 +65,7 @@ export default class App extends Component {
   menus = [
     { pathname: '/', IconClass: ActionList },
     { pathname: '/search', IconClass: ActionSearch },
+    { pathname: '/settings', IconClass: ActionSettings },
   ];
   handleDrop(e) {
     e.preventDefault();
@@ -135,19 +142,20 @@ export default class App extends Component {
     );
   }
   render() {
-    const { children } = this.props;
+    const { settings, children } = this.props;
+    const theme = settings.theme === 'dark' ? darkBaseTheme : lightBaseTheme;
 
     return (
-      <MuiThemeProvider muiTheme={getMuiTheme()}>
+      <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
         <div
-          style={styles.app}
+          style={{ ...styles.app, backgroundColor: theme.palette.canvasColor }}
           onDragOver={e => this.constructor.handleDragOver(e)}
           onDrop={e => this.handleDrop(e)}
         >
           <Drawer
             width={48}
             className="drawer"
-            containerStyle={styles.drawer}
+            containerStyle={{ ...styles.drawer, borderRightColor: theme.palette.borderColor }}
           >
             {this.renderMenu()}
           </Drawer>

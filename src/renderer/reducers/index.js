@@ -100,6 +100,13 @@ const groups = handleActions({
   },
 }, []);
 
+const settings = handleActions({
+  [ActionTypes.UPDATE_SETTINGS]: (state, action) => {
+    const { settings: newSettings } = action.payload;
+    return newSettings;
+  },
+}, {});
+
 const messages = handleActions({
   [ActionTypes.CREATE_MESSAGE]: (state, action) => {
     const { message } = action.payload;
@@ -135,6 +142,7 @@ const query = handleActions({
 
 export default combineReducers({
   groups,
+  settings,
   messages,
   selectedGroupIds,
   selectedHostIds,

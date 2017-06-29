@@ -40,4 +40,8 @@ export default function setupListener(store, history) {
   ipcRenderer.on('showSearchWindow', () => {
     history.push('/search');
   });
+
+  ipcRenderer.on('showSettingsWindow', () => {
+    history.push('/settings');
+  });
 }
