@@ -120,17 +120,31 @@ const messages = handleActions({
 }, []);
 
 const selectedGroupIds = handleActions({
-  [ActionTypes.SELECT_GROUPS]: (state, action) => {
-    const { ids } = action.payload;
-    return ids;
+  [ActionTypes.SELECT_GROUP]: (state, action) => {
+    const { id, append } = action.payload;
+    if (!append) {
+      return [id];
+    }
+    if (state.includes(id)) {
+      return state;
+    }
+    return [...state, id];
   },
+  [ActionTypes.UNSELECT_GROUP_ALL]: () => [],
 }, []);
 
 const selectedHostIds = handleActions({
-  [ActionTypes.SELECT_HOSTS]: (state, action) => {
-    const { ids } = action.payload;
-    return ids;
+  [ActionTypes.SELECT_HOST]: (state, action) => {
+    const { id, append } = action.payload;
+    if (!append) {
+      return [id];
+    }
+    if (state.includes(id)) {
+      return state;
+    }
+    return [...state, id];
   },
+  [ActionTypes.UNSELECT_HOST_ALL]: () => [],
 }, []);
 
 const query = handleActions({

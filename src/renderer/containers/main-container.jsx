@@ -83,7 +83,11 @@ export default class MainContainer extends Component {
     },
   };
   get selectedGroup() {
-    return this.props.groups.find(group => this.props.selectedGroupIds.includes(group.id));
+    const selectedGroupIds = this.props.selectedGroupIds;
+    if (!selectedGroupIds) {
+      return null;
+    }
+    return this.props.groups.find(group => group.id === selectedGroupIds[0]);
   }
   get selectedGroupId() {
     return this.selectedGroup ? this.selectedGroup.id : 0;
@@ -100,7 +104,7 @@ export default class MainContainer extends Component {
       const group = this.groups[this.groups.length - 1];
       if (group) {
         this.setState({ focusedGroupId: group.id });
-        this.props.actions.selectGroups([group.id]);
+        this.props.actions.selectGroup(group.id);
       }
     }, 0);
   }
@@ -120,15 +124,16 @@ export default class MainContainer extends Component {
     this.props.actions.deleteGroups(ids);
 
     if (newGroup) {
-      this.props.actions.selectGroups([newGroup.id]);
+      this.props.actions.selectGroup(newGroup.id);
     }
   }
   handleEditGroup(id, group) {
     this.props.actions.updateGroup(id, group);
   }
-  handleSelectGroups(ids) {
+  handleSelectGroup(id, append) {
     this.setState({ hostSortOptions: {} });
-    this.props.actions.selectGroups(ids);
+    this.props.actions.selectGroup(id, append);
+    this.props.actions.unselectHostAll();
   }
   handleSortGroups(options) {
     this.setState({ groupSortOptions: options });
@@ -141,7 +146,7 @@ export default class MainContainer extends Component {
       const host = this.hosts[this.hosts.length - 1];
       if (host) {
         this.setState({ focusedHostId: host.id });
-        this.props.actions.selectHosts([host.id]);
+        this.props.actions.selectHost(host.id);
       }
     }, 0);
   }
@@ -161,14 +166,14 @@ export default class MainContainer extends Component {
     this.props.actions.deleteHosts(this.selectedGroupId, ids);
 
     if (newHost) {
-      this.props.actions.selectHosts([newHost.id]);
+      this.props.actions.selectHost(newHost.id);
     }
   }
   handleEditHost(id, host) {
     this.props.actions.updateHost(this.selectedGroupId, id, host);
   }
-  handleSelectHosts(ids) {
-    this.props.actions.selectHosts(ids);
+  handleSelectHost(id, append) {
+    this.props.actions.selectHost(id, append);
   }
   handleSortHosts(options) {
     this.setState({ hostSortOptions: options });
@@ -189,7 +194,7 @@ export default class MainContainer extends Component {
           onAddGroup={() => this.handleAddGroup()}
           onDeleteGroups={() => this.handleDeleteGroups()}
           onEditGroup={(...args) => this.handleEditGroup(...args)}
-          onSelectGroups={selectedGroups => this.handleSelectGroups(selectedGroups)}
+          onSelectGroup={(...args) => this.handleSelectGroup(...args)}
           onSortGroups={(...args) => this.handleSortGroups(...args)}
         />
       </div>
@@ -218,7 +223,7 @@ export default class MainContainer extends Component {
           onAddHost={() => this.handleAddHost()}
           onDeleteHosts={() => this.handleDeleteHosts()}
           onEditHost={(...args) => this.handleEditHost(...args)}
-          onSelectHosts={selectedHosts => this.handleSelectHosts(selectedHosts)}
+          onSelectHost={(...args) => this.handleSelectHost(...args)}
           onSortHosts={(...args) => this.handleSortHosts(...args)}
         />
       </div>

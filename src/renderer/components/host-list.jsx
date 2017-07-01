@@ -46,7 +46,7 @@ export default class HostList extends Component {
     onAddHost: PropTypes.func,
     onEditHost: PropTypes.func,
     onDeleteHosts: PropTypes.func,
-    onSelectHosts: PropTypes.func,
+    onSelectHost: PropTypes.func,
     onSortHosts: PropTypes.func,
   };
   static defaultProps = {
@@ -57,7 +57,7 @@ export default class HostList extends Component {
     onAddHost: () => {},
     onEditHost: () => {},
     onDeleteHosts: () => {},
-    onSelectHosts: () => {},
+    onSelectHost: () => {},
     onSortHosts: () => {},
   };
   shouldComponentUpdate(nextProps, nextState) {
@@ -79,13 +79,13 @@ export default class HostList extends Component {
     }
     this.props.onSortHosts({ key: newKey, order: newOrder });
   }
-  handleCellClick(rowId) {
-    const { hosts, onSelectHosts } = this.props;
+  handleCellClick(rowId, columnId, e) {
+    const { hosts, onSelectHost } = this.props;
     const host = hosts[rowId];
     if (!host) {
       return;
     }
-    onSelectHosts([host.id]);
+    onSelectHost(host.id, (e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey));
   }
   handleEditHost(host) {
     this.props.onEditHost(host.id, host);

@@ -45,7 +45,7 @@ export default class GroupList extends Component {
     onAddGroup: PropTypes.func,
     onEditGroup: PropTypes.func,
     onDeleteGroups: PropTypes.func,
-    onSelectGroups: PropTypes.func,
+    onSelectGroup: PropTypes.func,
     onSortGroups: PropTypes.func,
   };
   static defaultProps = {
@@ -56,7 +56,7 @@ export default class GroupList extends Component {
     onAddGroup: () => {},
     onEditGroup: () => {},
     onDeleteGroups: () => {},
-    onSelectGroups: () => {},
+    onSelectGroup: () => {},
     onSortGroups: () => {},
   };
   shouldComponentUpdate(nextProps, nextState) {
@@ -78,13 +78,13 @@ export default class GroupList extends Component {
     }
     this.props.onSortGroups({ key: newKey, order: newOrder });
   }
-  handleCellClick(rowId) {
-    const { groups, onSelectGroups } = this.props;
+  handleCellClick(rowId, columnId, e) {
+    const { groups, onSelectGroup } = this.props;
     const group = groups[rowId];
     if (!group) {
       return;
     }
-    onSelectGroups([group.id]);
+    onSelectGroup(group.id, (e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey));
   }
   handleEditGroup(group) {
     this.props.onEditGroup(group.id, group);
