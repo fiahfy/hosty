@@ -129,7 +129,7 @@ export default class SearchList extends Component {
 
     return (
       <TableFooter
-        adjustForCheckbox
+        adjustForCheckbox={false}
       >
         <TableRow>
           <TableRowColumn style={styles.textFieldFooterColumn}>
@@ -159,8 +159,8 @@ export default class SearchList extends Component {
   render() {
     return (
       <Table
-        multiSelectable={false}
         allRowsSelected={false}
+        multiSelectable={false}
         onRowSelection={selectedRows => this.handleRowSelection(selectedRows)}
       >
         {this.constructor.renderHeader()}

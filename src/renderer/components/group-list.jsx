@@ -139,7 +139,7 @@ export default class GroupList extends Component {
 
     return (
       <TableFooter
-        adjustForCheckbox
+        adjustForCheckbox={false}
       >
         <TableRow>
           <TableRowColumn style={styles.footerColumn}>
@@ -164,8 +164,8 @@ export default class GroupList extends Component {
   render() {
     return (
       <Table
-        multiSelectable={false}
         allRowsSelected={false}
+        multiSelectable={false}
         onRowSelection={selectedRows => this.handleRowSelection(selectedRows)}
       >
         {this.renderHeader()}
