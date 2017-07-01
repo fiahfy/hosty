@@ -37,17 +37,18 @@ const styles = {
 
 export default class GroupItem extends Component {
   static propTypes = {
-    ...TableRow.propTypes,
     group: PropTypes.object,
     selected: PropTypes.bool,
     focused: PropTypes.bool,
     onEditGroup: PropTypes.func,
+    ...TableRow.propTypes,
   };
   static defaultProps = {
     group: {},
     selected: false,
     focused: false,
     onEditGroup: () => {},
+    ...TableRow.defaultProps,
   };
   static handleKeyDown(e) {
     if (e.keyCode === 13) {
@@ -79,9 +80,7 @@ export default class GroupItem extends Component {
     onEditGroup(newGroup);
   }
   render() {
-    const { group } = this.props;
-    const { selected, focused, onRowClick, ...others } = this.props;
-    delete others.group;
+    const { group, selected, focused, onRowClick, ...others } = this.props;
     delete others.onEditGroup;
 
     const count = (group.hosts || []).length;
@@ -90,12 +89,6 @@ export default class GroupItem extends Component {
       <TableRow
         style={styles.row}
         selected={selected}
-        onRowClick={(...args) => {
-          if (window.getSelection().toString().length) {
-            return;
-          }
-          onRowClick(...args);
-        }}
         {...others}
       >
         {others.children}

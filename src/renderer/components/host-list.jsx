@@ -63,7 +63,7 @@ export default class HostList extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState);
   }
-  handleClickHeader(e, rowId, columnId) {
+  handleHeaderClick(e, rowId, columnId) {
     const { key, order } = this.props.sortOptions;
 
     const columns = [null, null, Host.KEY_HOST, Host.KEY_IP];
@@ -79,10 +79,13 @@ export default class HostList extends Component {
     }
     this.props.onSortHosts({ key: newKey, order: newOrder });
   }
-  handleRowSelection(selectedRows) {
+  handleCellClick(rowId) {
     const { hosts, onSelectHosts } = this.props;
-    const ids = hosts.filter((host, i) => selectedRows.includes(i)).map(host => host.id);
-    onSelectHosts(ids);
+    const host = hosts[rowId];
+    if (!host) {
+      return;
+    }
+    onSelectHosts([host.id]);
   }
   handleEditHost(host) {
     this.props.onEditHost(host.id, host);
@@ -95,7 +98,7 @@ export default class HostList extends Component {
         displaySelectAll={false}
         adjustForCheckbox={false}
       >
-        <TableRow onCellClick={(...args) => this.handleClickHeader(...args)}>
+        <TableRow onCellClick={(...args) => this.handleHeaderClick(...args)}>
           <TableHeaderColumn style={styles.iconHeaderColumn}>
             Status
           </TableHeaderColumn>
@@ -148,7 +151,7 @@ export default class HostList extends Component {
 
     return (
       <TableFooter
-        adjustForCheckbox
+        adjustForCheckbox={false}
       >
         <TableRow>
           <TableRowColumn style={styles.footerColumn}>
@@ -174,9 +177,9 @@ export default class HostList extends Component {
   render() {
     return (
       <Table
-        multiSelectable={false}
         allRowsSelected={false}
-        onRowSelection={selectedRows => this.handleRowSelection(selectedRows)}
+        multiSelectable
+        onCellClick={(...args) => this.handleCellClick(...args)}
       >
         {this.renderHeader()}
         {this.renderBody()}

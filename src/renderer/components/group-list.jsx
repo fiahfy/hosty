@@ -62,7 +62,7 @@ export default class GroupList extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState);
   }
-  handleClickHeader(e, rowId, columnId) {
+  handleHeaderClick(e, rowId, columnId) {
     const { key, order } = this.props.sortOptions;
 
     const columns = [null, null, Group.KEY_NAME];
@@ -78,10 +78,13 @@ export default class GroupList extends Component {
     }
     this.props.onSortGroups({ key: newKey, order: newOrder });
   }
-  handleRowSelection(selectedRows) {
+  handleCellClick(rowId) {
     const { groups, onSelectGroups } = this.props;
-    const ids = groups.filter((group, i) => selectedRows.includes(i)).map(group => group.id);
-    onSelectGroups(ids);
+    const group = groups[rowId];
+    if (!group) {
+      return;
+    }
+    onSelectGroups([group.id]);
   }
   handleEditGroup(group) {
     this.props.onEditGroup(group.id, group);
@@ -94,7 +97,7 @@ export default class GroupList extends Component {
         displaySelectAll={false}
         adjustForCheckbox={false}
       >
-        <TableRow onCellClick={(...args) => this.handleClickHeader(...args)}>
+        <TableRow onCellClick={(...args) => this.handleHeaderClick(...args)}>
           <TableHeaderColumn style={styles.iconHeaderColumn}>
             Status
           </TableHeaderColumn>
@@ -165,8 +168,8 @@ export default class GroupList extends Component {
     return (
       <Table
         allRowsSelected={false}
-        multiSelectable={false}
-        onRowSelection={selectedRows => this.handleRowSelection(selectedRows)}
+        multiSelectable
+        onCellClick={(...args) => this.handleCellClick(...args)}
       >
         {this.renderHeader()}
         {this.renderBody()}

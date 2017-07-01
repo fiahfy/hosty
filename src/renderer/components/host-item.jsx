@@ -27,17 +27,18 @@ const styles = {
 
 export default class HostItem extends Component {
   static propTypes = {
-    ...TableRow.propTypes,
     host: PropTypes.object,
     selected: PropTypes.bool,
     focused: PropTypes.bool,
     onEditHost: PropTypes.func,
+    ...TableRow.propTypes,
   };
   static defaultProps = {
     host: {},
     selected: false,
     focused: false,
     onEditHost: () => {},
+    ...TableRow.defaultProps,
   };
   shouldComponentUpdate(nextProps, nextState) {
     return isUpdateNeeded(this, nextProps, nextState);
@@ -80,9 +81,7 @@ export default class HostItem extends Component {
     }
   }
   render() {
-    const { host } = this.props;
-    const { selected, focused, onRowClick, ...others } = this.props;
-    delete others.host;
+    const { host, selected, focused, ...others } = this.props;
     delete others.onEditHost;
 
     const isValidHost = Host.isValidHost(host.host);
@@ -93,12 +92,6 @@ export default class HostItem extends Component {
       <TableRow
         style={styles.row}
         selected={selected}
-        onRowClick={(...args) => {
-          if (window.getSelection().toString().length) {
-            return;
-          }
-          onRowClick(...args);
-        }}
         {...others}
       >
         {others.children}
