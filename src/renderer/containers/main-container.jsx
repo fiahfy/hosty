@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import * as ActionCreators from '../actions';
 import GroupList from '../components/group-list';
 import HostList from '../components/host-list';
+import ContextMenu from '../utils/context-menu';
 import * as Group from '../utils/group';
 import * as Host from '../utils/host';
 
@@ -98,6 +99,7 @@ export default class MainContainer extends Component {
   get hosts() {
     return this.selectedGroup.hosts;
   }
+  // handle group
   handleAddGroup() {
     this.props.actions.createGroup({ enable: true });
     window.setTimeout(() => {
@@ -139,7 +141,10 @@ export default class MainContainer extends Component {
     this.setState({ groupSortOptions: options });
     this.props.actions.sortGroups(options);
   }
-
+  handleContextMenuForGroups(e) {
+    ContextMenu.show(e, [{ label: 'New Group', click: () => this.handleAddGroup() }]);
+  }
+  // handle host
   handleAddHost() {
     this.props.actions.createHost(this.selectedGroupId, { enable: true });
     window.setTimeout(() => {
@@ -179,13 +184,19 @@ export default class MainContainer extends Component {
     this.setState({ hostSortOptions: options });
     this.props.actions.sortHosts(this.selectedGroupId, options);
   }
-
+  handleContextMenuForHosts(e) {
+    ContextMenu.show(e, [{ label: 'New Host', click: () => this.handleAddHost() }]);
+  }
+  // render
   renderGroupList() {
     const { selectedGroupIds } = this.props;
     const { focusedGroupId, groupSortOptions } = this.state;
 
     return (
-      <div className="list">
+      <div
+        className="list"
+        onContextMenu={e => this.handleContextMenuForGroups(e)}
+      >
         <GroupList
           groups={this.groups}
           selectedIds={selectedGroupIds}
@@ -213,7 +224,10 @@ export default class MainContainer extends Component {
     }
 
     return (
-      <div className="list">
+      <div
+        className="list"
+        onContextMenu={e => this.handleContextMenuForHosts(e)}
+      >
         <HostList
           groupId={this.selectedGroupId}
           hosts={this.hosts}
