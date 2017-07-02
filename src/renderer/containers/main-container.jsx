@@ -41,7 +41,6 @@ const styles = {
     width: '100%',
   },
   emptyMessage: {
-    color: 'grey',
     display: 'table-cell',
     fontSize: '14px',
     position: 'relative',
@@ -209,7 +208,11 @@ export default class MainContainer extends Component {
     if (!this.groups.length) {
       emptyView = (
         <div style={styles.emptyWrapper}>
-          <div style={styles.emptyMessage}>No groups</div>
+          <div style={{
+            ...styles.emptyMessage,
+            color: this.context.muiTheme.palette.primary3Color,
+          }}
+          >No groups</div>
         </div>
       );
     }
@@ -242,7 +245,11 @@ export default class MainContainer extends Component {
     if (!this.hosts.length) {
       emptyView = (
         <div style={styles.emptyWrapper}>
-          <div style={styles.emptyMessage}>No hosts</div>
+          <div style={{
+            ...styles.emptyMessage,
+            color: this.context.muiTheme.palette.primary3Color,
+          }}
+          >No hosts</div>
         </div>
       );
     }
@@ -277,7 +284,7 @@ export default class MainContainer extends Component {
           </div>
         </div>
         <div
-          style={{ ...styles.nav, borderRightColor: this.context.muiTheme.palette.borderColor }}
+          style={{ ...styles.nav, borderRightColor: this.context.muiTheme.palette.primary3Color }}
           className="nav"
         >
           {this.renderGroupList()}
