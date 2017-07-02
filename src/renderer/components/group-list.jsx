@@ -38,6 +38,9 @@ const styles = {
 };
 
 export default class GroupList extends Component {
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
+  };
   static propTypes = {
     groups: PropTypes.arrayOf(PropTypes.object),
     selectedIds: PropTypes.arrayOf(PropTypes.number),
@@ -60,8 +63,8 @@ export default class GroupList extends Component {
     onSelectGroup: () => {},
     onSortGroups: () => {},
   };
-  shouldComponentUpdate(nextProps, nextState) {
-    return isUpdateNeeded(this, nextProps, nextState);
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    return isUpdateNeeded(this, nextProps, nextState, nextContext);
   }
   handleHeaderClick(e, rowId, columnId) {
     const { key, order } = this.props.sortOptions;

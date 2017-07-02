@@ -33,12 +33,14 @@ const styles = {
     height: '100%',
     width: '256px',
   },
-  messageWrapper: {
+  emptyWrapper: {
     display: 'table',
     height: '100%',
+    position: 'absolute',
+    top: '0',
     width: '100%',
   },
-  message: {
+  emptyMessage: {
     color: 'grey',
     display: 'table-cell',
     fontSize: '14px',
@@ -97,7 +99,10 @@ export default class MainContainer extends Component {
     return this.props.groups;
   }
   get hosts() {
-    return this.selectedGroup.hosts;
+    if (!this.selectedGroup) {
+      return [];
+    }
+    return this.selectedGroup.hosts || [];
   }
   // handle group
   handleAddGroup() {
@@ -127,7 +132,9 @@ export default class MainContainer extends Component {
 
     if (newGroup) {
       this.props.actions.selectGroup(newGroup.id);
+      return;
     }
+    this.props.actions.unselectGroupAll();
   }
   handleEditGroup(id, group) {
     this.props.actions.updateGroup(id, group);
@@ -172,7 +179,9 @@ export default class MainContainer extends Component {
 
     if (newHost) {
       this.props.actions.selectHost(newHost.id);
+      return;
     }
+    this.props.actions.unselectHostAll();
   }
   handleEditHost(id, host) {
     this.props.actions.updateHost(this.selectedGroupId, id, host);
@@ -185,12 +194,25 @@ export default class MainContainer extends Component {
     this.props.actions.sortHosts(this.selectedGroupId, options);
   }
   handleContextMenuForHosts(e) {
-    ContextMenu.show(e, [{ label: 'New Host', click: () => this.handleAddHost() }]);
+    let menus = [];
+    if (this.selectedGroupId) {
+      menus = [{ label: 'New Host', click: () => this.handleAddHost() }];
+    }
+    ContextMenu.show(e, menus);
   }
   // render
   renderGroupList() {
     const { selectedGroupIds } = this.props;
     const { focusedGroupId, groupSortOptions } = this.state;
+
+    let emptyView = null;
+    if (!this.groups.length) {
+      emptyView = (
+        <div style={styles.emptyWrapper}>
+          <div style={styles.emptyMessage}>No groups</div>
+        </div>
+      );
+    }
 
     return (
       <div
@@ -208,6 +230,7 @@ export default class MainContainer extends Component {
           onSelectGroup={(...args) => this.handleSelectGroup(...args)}
           onSortGroups={(...args) => this.handleSortGroups(...args)}
         />
+        {emptyView}
       </div>
     );
   }
@@ -215,10 +238,11 @@ export default class MainContainer extends Component {
     const { selectedHostIds } = this.props;
     const { focusedHostId, hostSortOptions } = this.state;
 
-    if (!this.selectedGroupId) {
-      return (
-        <div style={styles.messageWrapper}>
-          <div style={styles.message}>No hosts</div>
+    let emptyView = null;
+    if (!this.hosts.length) {
+      emptyView = (
+        <div style={styles.emptyWrapper}>
+          <div style={styles.emptyMessage}>No hosts</div>
         </div>
       );
     }
@@ -240,6 +264,7 @@ export default class MainContainer extends Component {
           onSelectHost={(...args) => this.handleSelectHost(...args)}
           onSortHosts={(...args) => this.handleSortHosts(...args)}
         />
+        {emptyView}
       </div>
     );
   }

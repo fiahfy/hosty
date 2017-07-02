@@ -36,6 +36,9 @@ const styles = {
 };
 
 export default class GroupItem extends Component {
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
+  };
   static propTypes = {
     group: PropTypes.object,
     selected: PropTypes.bool,
@@ -57,8 +60,8 @@ export default class GroupItem extends Component {
       e.target.blur();
     }
   }
-  shouldComponentUpdate(nextProps, nextState) {
-    return isUpdateNeeded(this, nextProps, nextState);
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    return isUpdateNeeded(this, nextProps, nextState, nextContext);
   }
   handleClickIconButton(e) {
     e.stopPropagation();

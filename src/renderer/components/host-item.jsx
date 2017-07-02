@@ -26,6 +26,9 @@ const styles = {
 };
 
 export default class HostItem extends Component {
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
+  };
   static propTypes = {
     host: PropTypes.object,
     selected: PropTypes.bool,
@@ -42,8 +45,8 @@ export default class HostItem extends Component {
     onEditHost: () => {},
     ...TableRow.defaultProps,
   };
-  shouldComponentUpdate(nextProps, nextState) {
-    return isUpdateNeeded(this, nextProps, nextState);
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    return isUpdateNeeded(this, nextProps, nextState, nextContext);
   }
   handleClickIconButton(e) {
     e.stopPropagation();

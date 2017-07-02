@@ -63,8 +63,8 @@ export default class SearchItem extends Component {
     item: {},
     ...TableRow.defaultProps,
   };
-  shouldComponentUpdate(nextProps, nextState) {
-    return isUpdateNeeded(this, nextProps, nextState);
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    return isUpdateNeeded(this, nextProps, nextState, nextContext);
   }
   render() {
     const { item, onRowClick, ...others } = this.props;

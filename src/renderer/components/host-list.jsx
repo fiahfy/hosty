@@ -38,6 +38,9 @@ const styles = {
 };
 
 export default class HostList extends Component {
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
+  };
   static propTypes = {
     groupId: PropTypes.number.isRequired,
     hosts: PropTypes.arrayOf(PropTypes.object),
@@ -61,8 +64,8 @@ export default class HostList extends Component {
     onSelectHost: () => {},
     onSortHosts: () => {},
   };
-  shouldComponentUpdate(nextProps, nextState) {
-    return isUpdateNeeded(this, nextProps, nextState);
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    return isUpdateNeeded(this, nextProps, nextState, nextContext);
   }
   handleHeaderClick(e, rowId, columnId) {
     const { key, order } = this.props.sortOptions;
@@ -164,9 +167,10 @@ export default class HostList extends Component {
     );
   }
   renderFooter() {
-    const { selectedIds, onAddHost, onDeleteHosts } = this.props;
+    const { groupId, selectedIds, onAddHost, onDeleteHosts } = this.props;
     const selectedCount = selectedIds.length;
-    const disabled = !selectedCount;
+    const addDisabled = !groupId;
+    const deleteDisabled = !groupId || !selectedCount;
     const label = selectedCount > 1 ? `Delete (${selectedCount})` : 'Delete';
 
     return (
@@ -178,6 +182,7 @@ export default class HostList extends Component {
             <FlatButton
               label="Add"
               primary
+              disabled={addDisabled}
               onClick={onAddHost}
             />
           </TableRowColumn>
@@ -185,7 +190,7 @@ export default class HostList extends Component {
             <FlatButton
               label={label}
               secondary
-              disabled={disabled}
+              disabled={deleteDisabled}
               onClick={onDeleteHosts}
             />
           </TableRowColumn>
