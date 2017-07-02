@@ -30,6 +30,7 @@ export default class HostItem extends Component {
     host: PropTypes.object,
     selected: PropTypes.bool,
     focused: PropTypes.bool,
+    editable: PropTypes.bool,
     onEditHost: PropTypes.func,
     ...TableRow.propTypes,
   };
@@ -37,6 +38,7 @@ export default class HostItem extends Component {
     host: {},
     selected: false,
     focused: false,
+    editable: false,
     onEditHost: () => {},
     ...TableRow.defaultProps,
   };
@@ -81,7 +83,7 @@ export default class HostItem extends Component {
     }
   }
   render() {
-    const { host, selected, focused, ...others } = this.props;
+    const { host, selected, focused, editable, ...others } = this.props;
     delete others.onEditHost;
 
     const isValidHost = Host.isValidHost(host.host);
@@ -116,7 +118,7 @@ export default class HostItem extends Component {
             onKeyDown={e => this.handleKeyDown(e)}
             onChange={e => this.handleChange(e)}
             focused={focused}
-            editable={selected}
+            editable={editable}
           />
         </TableRowColumn>
         <TableRowColumn>
@@ -131,7 +133,7 @@ export default class HostItem extends Component {
             onBlur={e => this.handleBlur(e)}
             onKeyDown={e => this.handleKeyDown(e)}
             onChange={e => this.handleChange(e)}
-            editable={selected}
+            editable={editable}
           />
         </TableRowColumn>
       </TableRow>

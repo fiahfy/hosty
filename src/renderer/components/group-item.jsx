@@ -40,6 +40,7 @@ export default class GroupItem extends Component {
     group: PropTypes.object,
     selected: PropTypes.bool,
     focused: PropTypes.bool,
+    editable: PropTypes.bool,
     onEditGroup: PropTypes.func,
     ...TableRow.propTypes,
   };
@@ -47,6 +48,7 @@ export default class GroupItem extends Component {
     group: {},
     selected: false,
     focused: false,
+    editable: false,
     onEditGroup: () => {},
     ...TableRow.defaultProps,
   };
@@ -80,7 +82,7 @@ export default class GroupItem extends Component {
     onEditGroup(newGroup);
   }
   render() {
-    const { group, selected, focused, onRowClick, ...others } = this.props;
+    const { group, selected, focused, editable, onRowClick, ...others } = this.props;
     delete others.onEditGroup;
 
     const count = (group.hosts || []).length;
@@ -111,7 +113,7 @@ export default class GroupItem extends Component {
             onKeyDown={e => this.constructor.handleKeyDown(e)}
             onChange={e => this.handleChange(e)}
             focused={focused}
-            editable={selected}
+            editable={editable}
           />
         </TableRowColumn>
         <TableRowColumn style={styles.shrinkColumn}>

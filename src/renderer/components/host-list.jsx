@@ -137,6 +137,7 @@ export default class HostList extends Component {
             host={host}
             selected={selectedIds.includes(host.id)}
             focused={focusedId === host.id}
+            editable={selectedIds.includes(host.id) && selectedIds.length === 1}
             onEditHost={editedHost => this.handleEditHost(editedHost)}
           />
         ))}

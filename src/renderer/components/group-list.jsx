@@ -128,6 +128,7 @@ export default class GroupList extends Component {
             group={group}
             selected={selectedIds.includes(group.id)}
             focused={focusedId === group.id}
+            editable={selectedIds.includes(group.id) && selectedIds.length === 1}
             onEditGroup={editedGroup => this.handleEditGroup(editedGroup)}
           />
         ))}
