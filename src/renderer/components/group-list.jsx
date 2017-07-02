@@ -8,6 +8,7 @@ import {
 import GroupItem from './group-item';
 import SortOrderIcon from './sort-order-icon';
 import isUpdateNeeded from '../utils/is-update-needed';
+import ContextMenu from '../utils/context-menu';
 import * as Group from '../utils/group';
 
 const styles = {
@@ -89,6 +90,20 @@ export default class GroupList extends Component {
   handleEditGroup(group) {
     this.props.onEditGroup(group.id, group);
   }
+  handleContextMenu(e) {
+    const { onAddGroup, onDeleteGroups } = this.props;
+
+    ContextMenu.show(e, [
+      {
+        label: 'New Group',
+        click: onAddGroup,
+      },
+      {
+        label: 'Delete',
+        click: onDeleteGroups,
+      },
+    ]);
+  }
   renderHeader() {
     const { key, order } = this.props.sortOptions;
 
@@ -114,7 +129,7 @@ export default class GroupList extends Component {
     );
   }
   renderBody() {
-    const { groups, selectedIds, focusedId, onDeleteGroups } = this.props;
+    const { groups, selectedIds, focusedId } = this.props;
 
     return (
       <TableBody
@@ -130,7 +145,7 @@ export default class GroupList extends Component {
             focused={focusedId === group.id}
             editable={selectedIds.includes(group.id) && selectedIds.length === 1}
             onEditGroup={editedGroup => this.handleEditGroup(editedGroup)}
-            onDeleteGroups={onDeleteGroups}
+            onContextMenu={e => this.handleContextMenu(e)}
           />
         ))}
       </TableBody>

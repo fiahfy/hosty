@@ -8,6 +8,7 @@ import {
 import HostItem from './host-item';
 import SortOrderIcon from './sort-order-icon';
 import isUpdateNeeded from '../utils/is-update-needed';
+import ContextMenu from '../utils/context-menu';
 import * as Host from '../utils/host';
 
 const styles = {
@@ -90,6 +91,20 @@ export default class HostList extends Component {
   handleEditHost(host) {
     this.props.onEditHost(host.id, host);
   }
+  handleContextMenu(e) {
+    const { onAddHost, onDeleteHosts } = this.props;
+
+    ContextMenu.show(e, [
+      {
+        label: 'New Host',
+        click: onAddHost,
+      },
+      {
+        label: 'Delete',
+        click: onDeleteHosts,
+      },
+    ]);
+  }
   renderHeader() {
     const { key, order } = this.props.sortOptions;
 
@@ -123,7 +138,7 @@ export default class HostList extends Component {
     );
   }
   renderBody() {
-    const { groupId, hosts, selectedIds, focusedId, onDeleteHosts } = this.props;
+    const { groupId, hosts, selectedIds, focusedId } = this.props;
 
     return (
       <TableBody
@@ -139,7 +154,7 @@ export default class HostList extends Component {
             focused={focusedId === host.id}
             editable={selectedIds.includes(host.id) && selectedIds.length === 1}
             onEditHost={editedHost => this.handleEditHost(editedHost)}
-            onDeleteHosts={onDeleteHosts}
+            onContextMenu={e => this.handleContextMenu(e)}
           />
         ))}
       </TableBody>

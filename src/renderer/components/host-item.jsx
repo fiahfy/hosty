@@ -8,7 +8,6 @@ import { colors } from 'material-ui/styles';
 import HostStatusIcon from './host-status-icon';
 import EditableLabel from './editable-label';
 import isUpdateNeeded from '../utils/is-update-needed';
-import ContextMenu from '../utils/context-menu';
 import * as Host from '../utils/host';
 
 const styles = {
@@ -33,7 +32,6 @@ export default class HostItem extends Component {
     focused: PropTypes.bool,
     editable: PropTypes.bool,
     onEditHost: PropTypes.func,
-    onDeleteHosts: PropTypes.func,
     ...TableRow.propTypes,
   };
   static defaultProps = {
@@ -42,7 +40,6 @@ export default class HostItem extends Component {
     focused: false,
     editable: false,
     onEditHost: () => {},
-    onDeleteHosts: () => {},
     ...TableRow.defaultProps,
   };
   shouldComponentUpdate(nextProps, nextState) {
@@ -85,14 +82,6 @@ export default class HostItem extends Component {
       e.target.blur();
     }
   }
-  handleContextMenu(e) {
-    const { onDeleteHosts } = this.props;
-
-    ContextMenu.show(e, [{
-      label: 'Delete',
-      click: onDeleteHosts,
-    }]);
-  }
   render() {
     const { host, selected, focused, editable, ...others } = this.props;
     delete others.onEditHost;
@@ -105,7 +94,6 @@ export default class HostItem extends Component {
       <TableRow
         style={styles.row}
         selected={selected}
-        onContextMenu={e => this.handleContextMenu(e)}
         {...others}
       >
         {others.children}
