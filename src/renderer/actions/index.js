@@ -51,7 +51,7 @@ export const sortGroups = createAction(
 
 export const selectGroup = createAction(
   SELECT_GROUP,
-  (id, append) => ({ id, append }),
+  (id, mode) => ({ id, mode }),
 );
 
 export const unselectGroupAll = createAction(
@@ -80,7 +80,7 @@ export const sortHosts = createAction(
 
 export const selectHost = createAction(
   SELECT_HOST,
-  (id, append) => ({ id, append }),
+  (id, mode) => ({ id, mode }),
 );
 
 export const unselectHostAll = createAction(

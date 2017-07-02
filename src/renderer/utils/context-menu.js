@@ -26,8 +26,10 @@ export default class ContextMenu {
       newTemplate = newTemplate.concat(inspectElementTemplate(e));
     }
 
-    Menu
-      .buildFromTemplate(newTemplate)
-      .popup(remote.getCurrentWindow());
+    setTimeout(() => {
+      Menu
+        .buildFromTemplate(newTemplate)
+        .popup(remote.getCurrentWindow());
+    }, 0);
   }
 }

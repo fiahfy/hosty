@@ -85,13 +85,16 @@ export default class GroupList extends Component {
     if (!group) {
       return;
     }
-    onSelectGroup(group.id, (e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey));
+    const mode = (e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey) ? 'append' : 'set';
+    onSelectGroup(group.id, mode);
   }
   handleEditGroup(group) {
     this.props.onEditGroup(group.id, group);
   }
-  handleContextMenu(e) {
-    const { onAddGroup, onDeleteGroups } = this.props;
+  handleContextMenu(e, id) {
+    const { onSelectGroup, onAddGroup, onDeleteGroups } = this.props;
+
+    onSelectGroup(id, 'shift');
 
     ContextMenu.show(e, [
       {
@@ -145,7 +148,7 @@ export default class GroupList extends Component {
             focused={focusedId === group.id}
             editable={selectedIds.includes(group.id) && selectedIds.length === 1}
             onEditGroup={editedGroup => this.handleEditGroup(editedGroup)}
-            onContextMenu={e => this.handleContextMenu(e)}
+            onContextMenu={e => this.handleContextMenu(e, group.id)}
           />
         ))}
       </TableBody>

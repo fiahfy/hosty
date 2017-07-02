@@ -132,9 +132,9 @@ export default class MainContainer extends Component {
   handleEditGroup(id, group) {
     this.props.actions.updateGroup(id, group);
   }
-  handleSelectGroup(id, append) {
+  handleSelectGroup(id, mode) {
     this.setState({ hostSortOptions: {} });
-    this.props.actions.selectGroup(id, append);
+    this.props.actions.selectGroup(id, mode);
     this.props.actions.unselectHostAll();
   }
   handleSortGroups(options) {
@@ -177,8 +177,8 @@ export default class MainContainer extends Component {
   handleEditHost(id, host) {
     this.props.actions.updateHost(this.selectedGroupId, id, host);
   }
-  handleSelectHost(id, append) {
-    this.props.actions.selectHost(id, append);
+  handleSelectHost(id, mode) {
+    this.props.actions.selectHost(id, mode);
   }
   handleSortHosts(options) {
     this.setState({ hostSortOptions: options });

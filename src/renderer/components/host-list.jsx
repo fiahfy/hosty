@@ -86,13 +86,16 @@ export default class HostList extends Component {
     if (!host) {
       return;
     }
-    onSelectHost(host.id, (e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey));
+    const mode = (e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey) ? 'append' : 'set';
+    onSelectHost(host.id, mode);
   }
   handleEditHost(host) {
     this.props.onEditHost(host.id, host);
   }
-  handleContextMenu(e) {
-    const { onAddHost, onDeleteHosts } = this.props;
+  handleContextMenu(e, id) {
+    const { onSelectHost, onAddHost, onDeleteHosts } = this.props;
+
+    onSelectHost(id, 'shift');
 
     ContextMenu.show(e, [
       {
@@ -154,7 +157,7 @@ export default class HostList extends Component {
             focused={focusedId === host.id}
             editable={selectedIds.includes(host.id) && selectedIds.length === 1}
             onEditHost={editedHost => this.handleEditHost(editedHost)}
-            onContextMenu={e => this.handleContextMenu(e)}
+            onContextMenu={e => this.handleContextMenu(e, host.id)}
           />
         ))}
       </TableBody>
