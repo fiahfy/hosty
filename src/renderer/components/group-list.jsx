@@ -114,7 +114,7 @@ export default class GroupList extends Component {
     );
   }
   renderBody() {
-    const { groups, selectedIds, focusedId } = this.props;
+    const { groups, selectedIds, focusedId, onDeleteGroups } = this.props;
 
     return (
       <TableBody
@@ -130,6 +130,7 @@ export default class GroupList extends Component {
             focused={focusedId === group.id}
             editable={selectedIds.includes(group.id) && selectedIds.length === 1}
             onEditGroup={editedGroup => this.handleEditGroup(editedGroup)}
+            onDeleteGroups={onDeleteGroups}
           />
         ))}
       </TableBody>

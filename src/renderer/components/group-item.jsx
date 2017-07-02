@@ -8,6 +8,7 @@ import { colors } from 'material-ui/styles';
 import HostStatusIcon from './host-status-icon';
 import EditableLabel from './editable-label';
 import isUpdateNeeded from '../utils/is-update-needed';
+import ContextMenu from '../utils/context-menu';
 import * as Group from '../utils/group';
 
 const styles = {
@@ -42,6 +43,7 @@ export default class GroupItem extends Component {
     focused: PropTypes.bool,
     editable: PropTypes.bool,
     onEditGroup: PropTypes.func,
+    onDeleteGroups: PropTypes.func,
     ...TableRow.propTypes,
   };
   static defaultProps = {
@@ -50,6 +52,7 @@ export default class GroupItem extends Component {
     focused: false,
     editable: false,
     onEditGroup: () => {},
+    onDeleteGroups: () => {},
     ...TableRow.defaultProps,
   };
   static handleKeyDown(e) {
@@ -81,6 +84,14 @@ export default class GroupItem extends Component {
     newGroup[name] = value.trim();
     onEditGroup(newGroup);
   }
+  handleContextMenu(e) {
+    const { onDeleteGroups } = this.props;
+
+    ContextMenu.show(e, [{
+      label: 'Delete',
+      click: onDeleteGroups,
+    }]);
+  }
   render() {
     const { group, selected, focused, editable, onRowClick, ...others } = this.props;
     delete others.onEditGroup;
@@ -91,6 +102,7 @@ export default class GroupItem extends Component {
       <TableRow
         style={styles.row}
         selected={selected}
+        onContextMenu={e => this.handleContextMenu(e)}
         {...others}
       >
         {others.children}

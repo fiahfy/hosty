@@ -123,7 +123,7 @@ export default class HostList extends Component {
     );
   }
   renderBody() {
-    const { groupId, hosts, selectedIds, focusedId } = this.props;
+    const { groupId, hosts, selectedIds, focusedId, onDeleteHosts } = this.props;
 
     return (
       <TableBody
@@ -139,6 +139,7 @@ export default class HostList extends Component {
             focused={focusedId === host.id}
             editable={selectedIds.includes(host.id) && selectedIds.length === 1}
             onEditHost={editedHost => this.handleEditHost(editedHost)}
+            onDeleteHosts={onDeleteHosts}
           />
         ))}
       </TableBody>

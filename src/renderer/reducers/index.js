@@ -126,7 +126,9 @@ const selectedGroupIds = handleActions({
       return [id];
     }
     if (state.includes(id)) {
-      return state;
+      return state.filter(currentId => (
+        currentId !== id
+      ));
     }
     return [...state, id];
   },
@@ -140,7 +142,9 @@ const selectedHostIds = handleActions({
       return [id];
     }
     if (state.includes(id)) {
-      return state;
+      return state.filter(currentId => (
+        currentId !== id
+      ));
     }
     return [...state, id];
   },
