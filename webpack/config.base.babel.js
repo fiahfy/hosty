@@ -5,7 +5,7 @@ const devtool = env !== 'production' ? 'inline-source-map' : 'source-map';
 
 export default {
   devtool,
-  context: `${__dirname}/src`,
+  context: `${__dirname}/../src`,
   module: {
     rules: [
       {
