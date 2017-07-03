@@ -8,7 +8,7 @@ import { Drawer, Snackbar, Menu, MenuItem } from 'material-ui';
 import { ActionList, ActionSearch, ActionSettings } from 'material-ui/svg-icons';
 import {
   MuiThemeProvider, getMuiTheme,
-  colors, lightBaseTheme, darkBaseTheme,
+  lightBaseTheme, darkBaseTheme,
 } from 'material-ui/styles';
 import * as ActionCreators from '../actions';
 import * as Group from '../utils/group';
@@ -124,13 +124,14 @@ export default class App extends Component {
       />
     );
   }
-  renderMenu() {
+  renderMenu(theme) {
     const currentPathname = this.context.router.history.location.pathname;
     return (
       <Menu onItemTouchTap={(...args) => this.handleItemTouchTap(...args)}>
         {this.menus.map(({ pathname, IconClass }) => {
           const color = pathname === currentPathname
-                      ? colors.pinkA200 : colors.grey400;
+                      ? theme.palette.accent1Color
+                      : theme.palette.primary3Color;
           return (
             <MenuItem
               key={pathname}
@@ -157,7 +158,7 @@ export default class App extends Component {
             className="drawer"
             containerStyle={{ ...styles.drawer, borderRightColor: theme.palette.borderColor }}
           >
-            {this.renderMenu()}
+            {this.renderMenu(theme)}
           </Drawer>
           <div style={styles.container}>
             {children}

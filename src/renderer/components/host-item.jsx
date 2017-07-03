@@ -26,21 +26,27 @@ const styles = {
 };
 
 export default class HostItem extends Component {
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
+  };
   static propTypes = {
-    ...TableRow.propTypes,
     host: PropTypes.object,
     selected: PropTypes.bool,
     focused: PropTypes.bool,
+    editable: PropTypes.bool,
     onEditHost: PropTypes.func,
+    ...TableRow.propTypes,
   };
   static defaultProps = {
     host: {},
     selected: false,
     focused: false,
+    editable: false,
     onEditHost: () => {},
+    ...TableRow.defaultProps,
   };
-  shouldComponentUpdate(nextProps, nextState) {
-    return isUpdateNeeded(this, nextProps, nextState);
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    return isUpdateNeeded(this, nextProps, nextState, nextContext);
   }
   handleClickIconButton(e) {
     e.stopPropagation();
@@ -80,9 +86,7 @@ export default class HostItem extends Component {
     }
   }
   render() {
-    const { host } = this.props;
-    const { selected, focused, onRowClick, ...others } = this.props;
-    delete others.host;
+    const { host, selected, focused, editable, ...others } = this.props;
     delete others.onEditHost;
 
     const isValidHost = Host.isValidHost(host.host);
@@ -93,12 +97,6 @@ export default class HostItem extends Component {
       <TableRow
         style={styles.row}
         selected={selected}
-        onRowClick={(...args) => {
-          if (window.getSelection().toString().length) {
-            return;
-          }
-          onRowClick(...args);
-        }}
         {...others}
       >
         {others.children}
@@ -123,7 +121,7 @@ export default class HostItem extends Component {
             onKeyDown={e => this.handleKeyDown(e)}
             onChange={e => this.handleChange(e)}
             focused={focused}
-            editable={selected}
+            editable={editable}
           />
         </TableRowColumn>
         <TableRowColumn>
@@ -138,7 +136,7 @@ export default class HostItem extends Component {
             onBlur={e => this.handleBlur(e)}
             onKeyDown={e => this.handleKeyDown(e)}
             onChange={e => this.handleChange(e)}
-            editable={selected}
+            editable={editable}
           />
         </TableRowColumn>
       </TableRow>

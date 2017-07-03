@@ -28,16 +28,16 @@ export default class EditableLabel extends Component {
     muiTheme: PropTypes.object.isRequired,
   };
   static propTypes = {
-    ...TextField.propTypes,
     focused: PropTypes.bool,
     editable: PropTypes.bool,
     onKeyDown: PropTypes.func,
+    ...TextField.propTypes,
   };
   static defaultProps = {
-    ...TextField.defaultProps,
     focused: false,
     editable: false,
     onKeyDown: () => {},
+    ...TextField.defaultProps,
   };
   static handleClick(e) {
     e.stopPropagation();

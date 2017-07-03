@@ -45,6 +45,9 @@ const styles = {
 };
 
 export default class SearchList extends Component {
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
+  };
   static propTypes = {
     items: PropTypes.arrayOf(PropTypes.object),
     query: PropTypes.string,
@@ -89,8 +92,8 @@ export default class SearchList extends Component {
       </TableHeader>
     );
   }
-  shouldComponentUpdate(nextProps, nextState) {
-    return isUpdateNeeded(this, nextProps, nextState);
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    return isUpdateNeeded(this, nextProps, nextState, nextContext);
   }
   handleRowSelection(selectedRows) {
     const { items, onSelectItems } = this.props;
@@ -129,7 +132,7 @@ export default class SearchList extends Component {
 
     return (
       <TableFooter
-        adjustForCheckbox
+        adjustForCheckbox={false}
       >
         <TableRow>
           <TableRowColumn style={styles.textFieldFooterColumn}>
@@ -159,8 +162,8 @@ export default class SearchList extends Component {
   render() {
     return (
       <Table
-        multiSelectable={false}
         allRowsSelected={false}
+        multiSelectable={false}
         onRowSelection={selectedRows => this.handleRowSelection(selectedRows)}
       >
         {this.constructor.renderHeader()}

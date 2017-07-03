@@ -36,26 +36,32 @@ const styles = {
 };
 
 export default class GroupItem extends Component {
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
+  };
   static propTypes = {
-    ...TableRow.propTypes,
     group: PropTypes.object,
     selected: PropTypes.bool,
     focused: PropTypes.bool,
+    editable: PropTypes.bool,
     onEditGroup: PropTypes.func,
+    ...TableRow.propTypes,
   };
   static defaultProps = {
     group: {},
     selected: false,
     focused: false,
+    editable: false,
     onEditGroup: () => {},
+    ...TableRow.defaultProps,
   };
   static handleKeyDown(e) {
     if (e.keyCode === 13) {
       e.target.blur();
     }
   }
-  shouldComponentUpdate(nextProps, nextState) {
-    return isUpdateNeeded(this, nextProps, nextState);
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    return isUpdateNeeded(this, nextProps, nextState, nextContext);
   }
   handleClickIconButton(e) {
     e.stopPropagation();
@@ -79,9 +85,7 @@ export default class GroupItem extends Component {
     onEditGroup(newGroup);
   }
   render() {
-    const { group } = this.props;
-    const { selected, focused, onRowClick, ...others } = this.props;
-    delete others.group;
+    const { group, selected, focused, editable, onRowClick, ...others } = this.props;
     delete others.onEditGroup;
 
     const count = (group.hosts || []).length;
@@ -90,12 +94,6 @@ export default class GroupItem extends Component {
       <TableRow
         style={styles.row}
         selected={selected}
-        onRowClick={(...args) => {
-          if (window.getSelection().toString().length) {
-            return;
-          }
-          onRowClick(...args);
-        }}
         {...others}
       >
         {others.children}
@@ -118,7 +116,7 @@ export default class GroupItem extends Component {
             onKeyDown={e => this.constructor.handleKeyDown(e)}
             onChange={e => this.handleChange(e)}
             focused={focused}
-            editable={selected}
+            editable={editable}
           />
         </TableRowColumn>
         <TableRowColumn style={styles.shrinkColumn}>

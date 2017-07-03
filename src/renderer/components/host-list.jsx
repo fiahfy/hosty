@@ -8,6 +8,7 @@ import {
 import HostItem from './host-item';
 import SortOrderIcon from './sort-order-icon';
 import isUpdateNeeded from '../utils/is-update-needed';
+import ContextMenu from '../utils/context-menu';
 import * as Host from '../utils/host';
 
 const styles = {
@@ -37,6 +38,9 @@ const styles = {
 };
 
 export default class HostList extends Component {
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
+  };
   static propTypes = {
     groupId: PropTypes.number.isRequired,
     hosts: PropTypes.arrayOf(PropTypes.object),
@@ -46,7 +50,7 @@ export default class HostList extends Component {
     onAddHost: PropTypes.func,
     onEditHost: PropTypes.func,
     onDeleteHosts: PropTypes.func,
-    onSelectHosts: PropTypes.func,
+    onSelectHost: PropTypes.func,
     onSortHosts: PropTypes.func,
   };
   static defaultProps = {
@@ -57,13 +61,13 @@ export default class HostList extends Component {
     onAddHost: () => {},
     onEditHost: () => {},
     onDeleteHosts: () => {},
-    onSelectHosts: () => {},
+    onSelectHost: () => {},
     onSortHosts: () => {},
   };
-  shouldComponentUpdate(nextProps, nextState) {
-    return isUpdateNeeded(this, nextProps, nextState);
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    return isUpdateNeeded(this, nextProps, nextState, nextContext);
   }
-  handleClickHeader(e, rowId, columnId) {
+  handleHeaderClick(e, rowId, columnId) {
     const { key, order } = this.props.sortOptions;
 
     const columns = [null, null, Host.KEY_HOST, Host.KEY_IP];
@@ -79,13 +83,33 @@ export default class HostList extends Component {
     }
     this.props.onSortHosts({ key: newKey, order: newOrder });
   }
-  handleRowSelection(selectedRows) {
-    const { hosts, onSelectHosts } = this.props;
-    const ids = hosts.filter((host, i) => selectedRows.includes(i)).map(host => host.id);
-    onSelectHosts(ids);
+  handleCellClick(rowId, columnId, e) {
+    const { hosts, onSelectHost } = this.props;
+    const host = hosts[rowId];
+    if (!host) {
+      return;
+    }
+    const mode = (e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey) ? 'append' : 'set';
+    onSelectHost(host.id, mode);
   }
   handleEditHost(host) {
     this.props.onEditHost(host.id, host);
+  }
+  handleContextMenu(e, id) {
+    const { onSelectHost, onAddHost, onDeleteHosts } = this.props;
+
+    onSelectHost(id, 'shift');
+
+    ContextMenu.show(e, [
+      {
+        label: 'New Host',
+        click: onAddHost,
+      },
+      {
+        label: 'Delete',
+        click: onDeleteHosts,
+      },
+    ]);
   }
   renderHeader() {
     const { key, order } = this.props.sortOptions;
@@ -95,7 +119,7 @@ export default class HostList extends Component {
         displaySelectAll={false}
         adjustForCheckbox={false}
       >
-        <TableRow onCellClick={(...args) => this.handleClickHeader(...args)}>
+        <TableRow onCellClick={(...args) => this.handleHeaderClick(...args)}>
           <TableHeaderColumn style={styles.iconHeaderColumn}>
             Status
           </TableHeaderColumn>
@@ -134,27 +158,31 @@ export default class HostList extends Component {
             host={host}
             selected={selectedIds.includes(host.id)}
             focused={focusedId === host.id}
+            editable={selectedIds.includes(host.id) && selectedIds.length === 1}
             onEditHost={editedHost => this.handleEditHost(editedHost)}
+            onContextMenu={e => this.handleContextMenu(e, host.id)}
           />
         ))}
       </TableBody>
     );
   }
   renderFooter() {
-    const { selectedIds, onAddHost, onDeleteHosts } = this.props;
+    const { groupId, selectedIds, onAddHost, onDeleteHosts } = this.props;
     const selectedCount = selectedIds.length;
-    const disabled = !selectedCount;
+    const addDisabled = !groupId;
+    const deleteDisabled = !groupId || !selectedCount;
     const label = selectedCount > 1 ? `Delete (${selectedCount})` : 'Delete';
 
     return (
       <TableFooter
-        adjustForCheckbox
+        adjustForCheckbox={false}
       >
         <TableRow>
           <TableRowColumn style={styles.footerColumn}>
             <FlatButton
               label="Add"
               primary
+              disabled={addDisabled}
               onClick={onAddHost}
             />
           </TableRowColumn>
@@ -162,7 +190,7 @@ export default class HostList extends Component {
             <FlatButton
               label={label}
               secondary
-              disabled={disabled}
+              disabled={deleteDisabled}
               onClick={onDeleteHosts}
             />
           </TableRowColumn>
@@ -174,9 +202,9 @@ export default class HostList extends Component {
   render() {
     return (
       <Table
-        multiSelectable={false}
         allRowsSelected={false}
-        onRowSelection={selectedRows => this.handleRowSelection(selectedRows)}
+        multiSelectable
+        onCellClick={(...args) => this.handleCellClick(...args)}
       >
         {this.renderHeader()}
         {this.renderBody()}

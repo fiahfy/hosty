@@ -15,6 +15,20 @@ const styles = {
     height: '100%',
     overflow: 'auto',
   },
+  emptyWrapper: {
+    display: 'table',
+    height: '100%',
+    position: 'absolute',
+    top: '0',
+    width: '100%',
+  },
+  emptyMessage: {
+    display: 'table-cell',
+    fontSize: '14px',
+    position: 'relative',
+    textAlign: 'center',
+    verticalAlign: 'middle',
+  },
 };
 
 function mapStateToProps(state) {
@@ -30,6 +44,9 @@ function mapDispatchToProps(dispatch) {
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class SearchContainers extends Component {
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
+  };
   static propTypes = {
     groups: PropTypes.arrayOf(PropTypes.object).isRequired,
     query: PropTypes.string.isRequired,
@@ -73,6 +90,19 @@ export default class SearchContainers extends Component {
   render() {
     const { query } = this.props;
 
+    let emptyView = null;
+    if (!this.items.length) {
+      emptyView = (
+        <div style={styles.emptyWrapper}>
+          <div style={{
+            ...styles.emptyMessage,
+            color: this.context.muiTheme.palette.primary3Color,
+          }}
+          >No results</div>
+        </div>
+      );
+    }
+
     return (
       <div style={styles.container}>
         <div style={styles.content}>
@@ -83,6 +113,7 @@ export default class SearchContainers extends Component {
               onSelectItems={selectedItems => this.handleSelectItems(selectedItems)}
               onSearchItems={newQuery => this.handleSearchItems(newQuery)}
             />
+            {emptyView}
           </div>
         </div>
       </div>

@@ -120,17 +120,53 @@ const messages = handleActions({
 }, []);
 
 const selectedGroupIds = handleActions({
-  [ActionTypes.SELECT_GROUPS]: (state, action) => {
-    const { ids } = action.payload;
-    return ids;
+  [ActionTypes.SELECT_GROUP]: (state, action) => {
+    const { id, mode } = action.payload;
+    switch (mode) {
+      case 'append': {
+        if (state.includes(id)) {
+          return state.filter(currentId => (
+            currentId !== id
+          ));
+        }
+        return [...state, id];
+      }
+      case 'shift': {
+        if (state.includes(id)) {
+          return state;
+        }
+        return [id];
+      }
+      default:
+        return [id];
+    }
   },
+  [ActionTypes.UNSELECT_GROUP_ALL]: () => [],
 }, []);
 
 const selectedHostIds = handleActions({
-  [ActionTypes.SELECT_HOSTS]: (state, action) => {
-    const { ids } = action.payload;
-    return ids;
+  [ActionTypes.SELECT_HOST]: (state, action) => {
+    const { id, mode } = action.payload;
+    switch (mode) {
+      case 'append': {
+        if (state.includes(id)) {
+          return state.filter(currentId => (
+            currentId !== id
+          ));
+        }
+        return [...state, id];
+      }
+      case 'shift': {
+        if (state.includes(id)) {
+          return state;
+        }
+        return [id];
+      }
+      default:
+        return [id];
+    }
   },
+  [ActionTypes.UNSELECT_HOST_ALL]: () => [],
 }, []);
 
 const query = handleActions({

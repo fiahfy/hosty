@@ -5,13 +5,17 @@ export const CREATE_GROUP = 'CREATE_GROUP';
 export const UPDATE_GROUP = 'UPDATE_GROUP';
 export const DELETE_GROUPS = 'DELETE_GROUPS';
 export const SORT_GROUPS = 'SORT_GROUPS';
-export const SELECT_GROUPS = 'SELECT_GROUPS';
+
+export const SELECT_GROUP = 'SELECT_GROUP';
+export const UNSELECT_GROUP_ALL = 'UNSELECT_GROUP_ALL';
 
 export const CREATE_HOST = 'CREATE_HOST';
 export const UPDATE_HOST = 'UPDATE_HOST';
 export const DELETE_HOSTS = 'DELETE_HOSTS';
 export const SORT_HOSTS = 'SORT_HOSTS';
-export const SELECT_HOSTS = 'SELECT_HOSTS';
+
+export const SELECT_HOST = 'SELECT_HOST';
+export const UNSELECT_HOST_ALL = 'UNSELECT_HOST_ALL';
 
 export const UPDATE_SETTINGS = 'UPDATE_SETTINGS';
 
@@ -45,9 +49,13 @@ export const sortGroups = createAction(
   options => ({ options }),
 );
 
-export const selectGroups = createAction(
-  SELECT_GROUPS,
-  ids => ({ ids }),
+export const selectGroup = createAction(
+  SELECT_GROUP,
+  (id, mode) => ({ id, mode }),
+);
+
+export const unselectGroupAll = createAction(
+  UNSELECT_GROUP_ALL,
 );
 
 export const createHost = createAction(
@@ -70,9 +78,13 @@ export const sortHosts = createAction(
   (groupId, options) => ({ groupId, options }),
 );
 
-export const selectHosts = createAction(
-  SELECT_HOSTS,
-  ids => ({ ids }),
+export const selectHost = createAction(
+  SELECT_HOST,
+  (id, mode) => ({ id, mode }),
+);
+
+export const unselectHostAll = createAction(
+  UNSELECT_HOST_ALL,
 );
 
 export const updateSettings = createAction(
