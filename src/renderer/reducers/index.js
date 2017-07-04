@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import { handleActions } from 'redux-actions';
 import { routerReducer as router } from 'react-router-redux';
+import reduceReducers from 'reduce-reducers';
 import * as ActionTypes from '../actions';
 import * as Group from '../utils/group';
 import * as Host from '../utils/host';
@@ -119,55 +120,85 @@ const messages = handleActions({
   [ActionTypes.CLEAR_MESSAGES]: () => [],
 }, []);
 
-const selectedGroupIds = handleActions({
+const mainContainer = handleActions({
   [ActionTypes.SELECT_GROUP]: (state, action) => {
     const { id, mode } = action.payload;
-    switch (mode) {
-      case 'append': {
-        if (state.includes(id)) {
-          return state.filter(currentId => (
-            currentId !== id
-          ));
+    return Object.assign({}, state, {
+      selectedGroupIds: (() => {
+        switch (mode) {
+          case 'append': {
+            const { selectedGroupIds } = state;
+            if (selectedGroupIds.includes(id)) {
+              return selectedGroupIds.filter(currentId => (
+                currentId !== id
+              ));
+            }
+            return [...selectedGroupIds, id];
+          }
+          case 'shift': {
+            const { selectedGroupIds } = state;
+            if (selectedGroupIds.includes(id)) {
+              return selectedGroupIds;
+            }
+            return [id];
+          }
+          default:
+            return [id];
         }
-        return [...state, id];
-      }
-      case 'shift': {
-        if (state.includes(id)) {
-          return state;
-        }
-        return [id];
-      }
-      default:
-        return [id];
-    }
+      })(),
+      selectedHostIds: [],
+      hostSortOptions: {},
+    });
   },
-  [ActionTypes.UNSELECT_GROUP_ALL]: () => [],
-}, []);
-
-const selectedHostIds = handleActions({
+  [ActionTypes.UNSELECT_GROUP_ALL]: state => (
+    Object.assign({}, state, { selectedGroupIds: [] })
+  ),
+  [ActionTypes.SORT_GROUPS]: (state, action) => {
+    const { options } = action.payload;
+    return Object.assign({}, state, { groupSortOptions: options });
+  },
   [ActionTypes.SELECT_HOST]: (state, action) => {
     const { id, mode } = action.payload;
-    switch (mode) {
-      case 'append': {
-        if (state.includes(id)) {
-          return state.filter(currentId => (
-            currentId !== id
-          ));
+    return Object.assign({}, state, {
+      selectedHostIds: (() => {
+        switch (mode) {
+          case 'append': {
+            const { selectedHostIds } = state;
+            if (selectedHostIds.includes(id)) {
+              return selectedHostIds.filter(currentId => (
+                currentId !== id
+              ));
+            }
+            return [...selectedHostIds, id];
+          }
+          case 'shift': {
+            const { selectedHostIds } = state;
+            if (selectedHostIds.includes(id)) {
+              return selectedHostIds;
+            }
+            return [id];
+          }
+          default:
+            return [id];
         }
-        return [...state, id];
-      }
-      case 'shift': {
-        if (state.includes(id)) {
-          return state;
-        }
-        return [id];
-      }
-      default:
-        return [id];
-    }
+      })(),
+    });
   },
-  [ActionTypes.UNSELECT_HOST_ALL]: () => [],
-}, []);
+  [ActionTypes.UNSELECT_HOST_ALL]: state => (
+    Object.assign({}, state, { selectedHostIds: [] })
+  ),
+  [ActionTypes.SORT_HOSTS]: (state, action) => {
+    const { options } = action.payload;
+    return Object.assign({}, state, { hostSortOptions: options });
+  },
+}, {
+  focusedGroupId: null,
+  focusedHostId: null,
+  selectedGroupIds: [],
+  selectedHostIds: [],
+  groupSortOptions: {},
+  hostSortOptions: {},
+});
 
 const query = handleActions({
   [ActionTypes.SEARCH_ITEMS]: (state, action) => {
@@ -176,12 +207,46 @@ const query = handleActions({
   },
 }, '');
 
-export default combineReducers({
-  groups,
-  settings,
-  messages,
-  selectedGroupIds,
-  selectedHostIds,
-  query,
-  router,
-});
+export default reduceReducers(
+  combineReducers({
+    groups,
+    settings,
+    messages,
+    mainContainer,
+    query,
+    router,
+  }),
+  handleActions({
+    [ActionTypes.FOCUS_GROUP]: (state) => {
+      const { groups: newGroups } = state;
+      const group = newGroups[newGroups.length - 1];
+      if (!group) {
+        return state;
+      }
+      return Object.assign({}, state, {
+        mainContainer: {
+          ...state.mainContainer,
+          focusedGroupId: group.id,
+          selectedGroupIds: [group.id],
+        },
+      });
+    },
+    [ActionTypes.FOCUS_HOST]: (state) => {
+      const group = state.groups.find(currentGroup => currentGroup.id === state.mainContainer.selectedGroupIds[0]);
+      if (!group) {
+        return state;
+      }
+      const host = group.hosts[group.hosts.length - 1];
+      if (!host) {
+        return state;
+      }
+      return Object.assign({}, state, {
+        mainContainer: {
+          ...state.mainContainer,
+          focusedHostId: host.id,
+          selectedHostIds: [host.id],
+        },
+      });
+    },
+  }, {}),
+);
