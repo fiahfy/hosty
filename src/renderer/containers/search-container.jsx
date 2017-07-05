@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as ActionCreators from '../actions';
-import SearchList from '../components/search-list';
+import ResultList from '../components/result-list';
 
 const styles = {
   container: {
@@ -31,32 +31,8 @@ const styles = {
   },
 };
 
-function mapStateToProps(state) {
-  return {
-    groups: state.groups,
-    query: state.query,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators(ActionCreators, dispatch) };
-}
-
-@connect(mapStateToProps, mapDispatchToProps)
-export default class SearchContainers extends Component {
-  static contextTypes = {
-    muiTheme: PropTypes.object.isRequired,
-  };
-  static propTypes = {
-    groups: PropTypes.arrayOf(PropTypes.object).isRequired,
-    query: PropTypes.string.isRequired,
-    actions: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
-  };
-  get items() {
-    const { query } = this.props;
-
-    return this.props.groups.reduce((previous, current) => (
+function getResults(groups, query) {
+  return groups.reduce((previous, current) => (
       previous.concat((current.hosts || []).map(host => (
         { group: current, host }
       )))
@@ -73,25 +49,43 @@ export default class SearchContainers extends Component {
       }
       return false;
     });
-  }
-  handleSelectItems(ids) {
-    const [groupIds, hostIds] = ids.reduce((previous, current) => (
-      previous.map((item, index) => (
-        item.concat([current[index]])
-      ))
-    ), [[], []]);
-    this.props.actions.selectGroups(groupIds);
-    this.props.actions.selectHosts(hostIds);
+}
+
+function mapStateToProps(state) {
+  return {
+    query: state.query,
+    results: getResults(state.groups, state.query),
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return { actions: bindActionCreators(ActionCreators, dispatch) };
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
+export default class SearchContainers extends Component {
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
+  };
+  static propTypes = {
+    query: PropTypes.string.isRequired,
+    results: PropTypes.arrayOf(PropTypes.object).isRequired,
+    actions: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
+  };
+  handleSelectResult([groupId, hostId]) {
+    this.props.actions.selectGroup(groupId);
+    this.props.actions.selectHost(hostId);
     this.props.history.push('/');
   }
-  handleSearchItems(query) {
+  handleSearch(query) {
     this.props.actions.searchItems(query);
   }
   render() {
-    const { query } = this.props;
+    const { query, results } = this.props;
 
     let emptyView = null;
-    if (!this.items.length) {
+    if (!results.length) {
       emptyView = (
         <div style={styles.emptyWrapper}>
           <div style={{
@@ -107,11 +101,11 @@ export default class SearchContainers extends Component {
       <div style={styles.container}>
         <div style={styles.content}>
           <div className="list">
-            <SearchList
-              items={this.items}
+            <ResultList
+              results={results}
               query={query}
-              onSelectItems={selectedItems => this.handleSelectItems(selectedItems)}
-              onSearchItems={newQuery => this.handleSearchItems(newQuery)}
+              onSelectResult={(...args) => this.handleSelectResult(...args)}
+              onSearch={(...args) => this.handleSearch(...args)}
             />
             {emptyView}
           </div>

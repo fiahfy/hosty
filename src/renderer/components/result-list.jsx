@@ -5,7 +5,7 @@ import {
   Table, TableHeader, TableBody, TableFooter,
   TableRow, TableHeaderColumn, TableRowColumn,
 } from 'material-ui';
-import SearchItem from './search-item';
+import ResultItem from './result-item';
 import isUpdateNeeded from '../utils/is-update-needed';
 
 const styles = {
@@ -44,21 +44,21 @@ const styles = {
   },
 };
 
-export default class SearchList extends Component {
+export default class ResultList extends Component {
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired,
   };
   static propTypes = {
-    items: PropTypes.arrayOf(PropTypes.object),
+    results: PropTypes.arrayOf(PropTypes.object),
     query: PropTypes.string,
-    onSelectItems: PropTypes.func,
-    onSearchItems: PropTypes.func,
+    onSelectResult: PropTypes.func,
+    onSearch: PropTypes.func,
   };
   static defaultProps = {
-    items: [],
+    results: [],
     query: '',
-    onSelectItems: () => {},
-    onSearchItems: () => {},
+    onSelectResult: () => {},
+    onSearch: () => {},
   };
   static renderHeader() {
     return (
@@ -95,22 +95,24 @@ export default class SearchList extends Component {
   shouldComponentUpdate(nextProps, nextState, nextContext) {
     return isUpdateNeeded(this, nextProps, nextState, nextContext);
   }
-  handleRowSelection(selectedRows) {
-    const { items, onSelectItems } = this.props;
-    const ids = items.filter((item, i) => selectedRows.includes(i))
-      .map(item => [item.group.id, item.host.id]);
-    onSelectItems(ids);
+  handleCellClick(rowId) {
+    const { results, onSelectResult } = this.props;
+    const result = results[rowId];
+    if (!result) {
+      return;
+    }
+    onSelectResult([result.group.id, result.host.id]);
   }
   handleKeyDown(e) {
     if (e.keyCode === 13) {
       this.searchButton.props.onClick();
     }
   }
-  handleSearchItems() {
-    this.props.onSearchItems(this.textInput.getValue());
+  handleSearch() {
+    this.props.onSearch(this.textInput.getValue());
   }
   renderBody() {
-    const { items } = this.props;
+    const { results } = this.props;
 
     return (
       <TableBody
@@ -118,10 +120,10 @@ export default class SearchList extends Component {
         deselectOnClickaway={false}
         displayRowCheckbox={false}
       >
-        {items.map(item => (
-          <SearchItem
-            key={`${item.group.id}-${item.host.id}`}
-            item={item}
+        {results.map(result => (
+          <ResultItem
+            key={`${result.group.id}-${result.host.id}`}
+            result={result}
           />
         ))}
       </TableBody>
@@ -152,7 +154,7 @@ export default class SearchList extends Component {
               style={styles.button}
               ref={(button) => { this.searchButton = button; }}
               primary
-              onClick={() => this.handleSearchItems()}
+              onClick={() => this.handleSearch()}
             />
           </TableRowColumn>
         </TableRow>
@@ -163,8 +165,8 @@ export default class SearchList extends Component {
     return (
       <Table
         allRowsSelected={false}
-        multiSelectable={false}
-        onRowSelection={selectedRows => this.handleRowSelection(selectedRows)}
+        multiSelectable
+        onCellClick={(...args) => this.handleCellClick(...args)}
       >
         {this.constructor.renderHeader()}
         {this.renderBody()}

@@ -192,8 +192,8 @@ const mainContainer = handleActions({
     return Object.assign({}, state, { hostSortOptions: options });
   },
 }, {
-  focusedGroupId: null,
-  focusedHostId: null,
+  focusedGroupId: 0,
+  focusedHostId: 0,
   selectedGroupIds: [],
   selectedHostIds: [],
   groupSortOptions: {},
@@ -232,7 +232,9 @@ export default reduceReducers(
       });
     },
     [ActionTypes.FOCUS_HOST]: (state) => {
-      const group = state.groups.find(currentGroup => currentGroup.id === state.mainContainer.selectedGroupIds[0]);
+      const group = state.groups.find(currentGroup => (
+        currentGroup.id === state.mainContainer.selectedGroupIds[0]
+      ));
       if (!group) {
         return state;
       }

@@ -51,26 +51,26 @@ const styles = {
   },
 };
 
-export default class SearchItem extends Component {
+export default class ResultItem extends Component {
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired,
   };
   static propTypes = {
-    item: PropTypes.object,
+    result: PropTypes.object,
     ...TableRow.propTypes,
   };
   static defaultProps = {
-    item: {},
+    result: {},
     ...TableRow.defaultProps,
   };
   shouldComponentUpdate(nextProps, nextState, nextContext) {
     return isUpdateNeeded(this, nextProps, nextState, nextContext);
   }
   render() {
-    const { item, onRowClick, ...others } = this.props;
+    const { result, onRowClick, ...others } = this.props;
 
-    const valid = Host.isValid(item.host);
-    const count = (item.group.hosts || []).length;
+    const valid = Host.isValid(result.host);
+    const count = (result.group.hosts || []).length;
     const color = this.context.muiTheme.textField.textColor;
     const butonStyle = { ...styles.button, color };
 
@@ -90,12 +90,12 @@ export default class SearchItem extends Component {
           <HostStatusIcon
             style={styles.icon}
             valid
-            enable={item.group.enable}
+            enable={result.group.enable}
           />
         </TableRowColumn>
         <TableRowColumn style={styles.groupColumn}>
           <button style={butonStyle}>
-            {item.group.name}
+            {result.group.name}
           </button>
         </TableRowColumn>
         <TableRowColumn style={styles.shrinkColumn}>
@@ -105,17 +105,17 @@ export default class SearchItem extends Component {
           <HostStatusIcon
             style={styles.icon}
             valid={valid}
-            enable={item.host.enable}
+            enable={result.host.enable}
           />
         </TableRowColumn>
         <TableRowColumn>
           <button style={butonStyle}>
-            {item.host.host}
+            {result.host.host}
           </button>
         </TableRowColumn>
         <TableRowColumn>
           <button style={butonStyle}>
-            {item.host.ip}
+            {result.host.ip}
           </button>
         </TableRowColumn>
       </TableRow>

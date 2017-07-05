@@ -253,16 +253,16 @@ export default class MainContainer extends Component {
   render() {
     return (
       <div style={styles.container}>
-        <div style={styles.contentWrapper}>
-          <div style={styles.content}>
-            {this.renderHostList()}
-          </div>
-        </div>
         <div
           style={{ ...styles.nav, borderRightColor: this.context.muiTheme.palette.primary3Color }}
           className="nav"
         >
           {this.renderGroupList()}
+        </div>
+        <div style={styles.contentWrapper}>
+          <div style={styles.content}>
+            {this.renderHostList()}
+          </div>
         </div>
       </div>
     );
