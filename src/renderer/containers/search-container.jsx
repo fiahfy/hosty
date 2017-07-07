@@ -80,8 +80,8 @@ export default class SearchContainers extends Component {
     this.props.actions.selectHost(hostId);
     this.props.history.push('/');
   }
-  handleSortResult(options) {
-
+  handleSortResult(options) { // eslint-disable-line
+    // TODO:
   }
   handleSearch(query) {
     this.props.actions.search(query);

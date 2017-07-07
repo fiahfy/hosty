@@ -62,7 +62,7 @@ export default class App extends Component {
     e.stopPropagation();
     e.dataTransfer.dropEffect = 'copy'; // eslint-disable-line no-param-reassign
   }
-  menus = [
+  static menus = [
     { pathname: '/', IconClass: ActionList },
     { pathname: '/search', IconClass: ActionSearch },
     { pathname: '/settings', IconClass: ActionSettings },
@@ -100,7 +100,7 @@ export default class App extends Component {
     );
   }
   handleItemTouchTap(e, item, index) {
-    const menu = this.menus[index];
+    const menu = this.constructor.menus[index];
     if (!menu) {
       return;
     }
@@ -128,7 +128,7 @@ export default class App extends Component {
     const currentPathname = this.context.router.history.location.pathname;
     return (
       <Menu onItemTouchTap={(...args) => this.handleItemTouchTap(...args)}>
-        {this.menus.map(({ pathname, IconClass }) => {
+        {this.constructor.menus.map(({ pathname, IconClass }) => {
           const color = pathname === currentPathname
                       ? theme.palette.accent1Color
                       : theme.palette.primary3Color;

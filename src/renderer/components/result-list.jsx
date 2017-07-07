@@ -6,7 +6,6 @@ import {
   TableRow, TableHeaderColumn, TableRowColumn,
 } from 'material-ui';
 import ResultItem from './result-item';
-import SortOrderIcon from './sort-order-icon';
 import isUpdateNeeded from '../utils/is-update-needed';
 
 const styles = {
@@ -54,7 +53,7 @@ export default class ResultList extends Component {
     query: PropTypes.string,
     sortOptions: PropTypes.object,
     onSelectResult: PropTypes.func,
-    onSortResults: PropTypes.func,
+    onSortResults: PropTypes.func, // eslint-disable-line
     onSearch: PropTypes.func,
   };
   static defaultProps = {
@@ -65,40 +64,11 @@ export default class ResultList extends Component {
     onSortResults: () => {},
     onSearch: () => {},
   };
-  static renderHeader() {
-    return (
-      <TableHeader
-        displaySelectAll={false}
-        adjustForCheckbox={false}
-      >
-        <TableRow>
-          <TableHeaderColumn style={styles.iconHeaderColumn}>
-            Status
-          </TableHeaderColumn>
-          <TableHeaderColumn
-            colSpan="2"
-            style={{
-              ...styles.groupHeaderColumn,
-              ...styles.headerSortableColumn,
-            }}
-          >
-            <div style={styles.label}>Group</div>
-          </TableHeaderColumn>
-          <TableHeaderColumn style={styles.iconHeaderColumn}>
-            Status
-          </TableHeaderColumn>
-          <TableHeaderColumn style={styles.sortableHeaderColumn}>
-            <div style={styles.label}>Host</div>
-          </TableHeaderColumn>
-          <TableHeaderColumn style={styles.sortableHeaderColumn}>
-            <div style={styles.label}>IP</div>
-          </TableHeaderColumn>
-        </TableRow>
-      </TableHeader>
-    );
-  }
   shouldComponentUpdate(nextProps, nextState, nextContext) {
     return isUpdateNeeded(this, nextProps, nextState, nextContext);
+  }
+  handleHeaderClick(e, rowId, columnId) { // eslint-disable-line
+    // TODO:
   }
   handleCellClick(rowId) {
     const { results, onSelectResult } = this.props;
@@ -115,6 +85,40 @@ export default class ResultList extends Component {
   }
   handleSearch() {
     this.props.onSearch(this.textInput.getValue());
+  }
+  renderHeader() {
+    const { key, order } = this.props.sortOptions; // eslint-disable-line
+
+    return (
+      <TableHeader
+        displaySelectAll={false}
+        adjustForCheckbox={false}
+      >
+        <TableRow onCellClick={(...args) => this.handleHeaderClick(...args)}>
+          <TableHeaderColumn style={styles.iconHeaderColumn}>
+            Status
+          </TableHeaderColumn>
+          <TableHeaderColumn
+            colSpan="2"
+            style={{
+              ...styles.groupHeaderColumn,
+              ...styles.sortableHeaderColumn,
+            }}
+          >
+            <div style={styles.label}>Group</div>
+          </TableHeaderColumn>
+          <TableHeaderColumn style={styles.iconHeaderColumn}>
+            Status
+          </TableHeaderColumn>
+          <TableHeaderColumn style={styles.sortableHeaderColumn}>
+            <div style={styles.label}>Host</div>
+          </TableHeaderColumn>
+          <TableHeaderColumn style={styles.sortableHeaderColumn}>
+            <div style={styles.label}>IP</div>
+          </TableHeaderColumn>
+        </TableRow>
+      </TableHeader>
+    );
   }
   renderBody() {
     const { results } = this.props;
@@ -173,7 +177,7 @@ export default class ResultList extends Component {
         multiSelectable
         onCellClick={(...args) => this.handleCellClick(...args)}
       >
-        {this.constructor.renderHeader()}
+        {this.renderHeader()}
         {this.renderBody()}
         {this.renderFooter()}
       </Table>
