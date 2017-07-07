@@ -19,7 +19,7 @@ export const UNSELECT_HOST_ALL = 'UNSELECT_HOST_ALL';
 
 export const UPDATE_SETTINGS = 'UPDATE_SETTINGS';
 
-export const SEARCH_ITEMS = 'SEARCH_ITEMS';
+export const SEARCH = 'SEARCH';
 
 export const CREATE_MESSAGE = 'CREATE_MESSAGE';
 export const CLEAR_MESSAGES = 'CLEAR_MESSAGES';
@@ -100,8 +100,8 @@ export const updateSettings = createAction(
   settings => ({ settings }),
 );
 
-export const searchItems = createAction(
-  SEARCH_ITEMS,
+export const search = createAction(
+  SEARCH,
   query => ({ query }),
 );
 

@@ -44,8 +44,8 @@ export default class HostList extends Component {
   static propTypes = {
     groupId: PropTypes.number.isRequired,
     hosts: PropTypes.arrayOf(PropTypes.object),
-    selectedIds: PropTypes.arrayOf(PropTypes.number),
     focusedId: PropTypes.number,
+    selectedIds: PropTypes.arrayOf(PropTypes.number),
     sortOptions: PropTypes.object,
     onAddHost: PropTypes.func,
     onEditHost: PropTypes.func,
@@ -55,8 +55,8 @@ export default class HostList extends Component {
   };
   static defaultProps = {
     hosts: [],
-    selectedIds: [],
     focusedId: null,
+    selectedIds: [],
     sortOptions: {},
     onAddHost: () => {},
     onEditHost: () => {},

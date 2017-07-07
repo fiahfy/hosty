@@ -6,10 +6,11 @@ import {
   TableRow, TableHeaderColumn, TableRowColumn,
 } from 'material-ui';
 import ResultItem from './result-item';
+import SortOrderIcon from './sort-order-icon';
 import isUpdateNeeded from '../utils/is-update-needed';
 
 const styles = {
-  headerGroupColumn: {
+  groupHeaderColumn: {
     width: '137px',
     userSelect: 'none',
   },
@@ -51,13 +52,17 @@ export default class ResultList extends Component {
   static propTypes = {
     results: PropTypes.arrayOf(PropTypes.object),
     query: PropTypes.string,
+    sortOptions: PropTypes.object,
     onSelectResult: PropTypes.func,
+    onSortResults: PropTypes.func,
     onSearch: PropTypes.func,
   };
   static defaultProps = {
     results: [],
     query: '',
+    sortOptions: {},
     onSelectResult: () => {},
+    onSortResults: () => {},
     onSearch: () => {},
   };
   static renderHeader() {
@@ -73,7 +78,7 @@ export default class ResultList extends Component {
           <TableHeaderColumn
             colSpan="2"
             style={{
-              ...styles.headerGroupColumn,
+              ...styles.groupHeaderColumn,
               ...styles.headerSortableColumn,
             }}
           >

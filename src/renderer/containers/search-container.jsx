@@ -11,10 +11,6 @@ const styles = {
     height: '100%',
     overflow: 'hidden',
   },
-  content: {
-    height: '100%',
-    overflow: 'auto',
-  },
   emptyWrapper: {
     display: 'table',
     height: '100%',
@@ -31,30 +27,35 @@ const styles = {
   },
 };
 
-function getResults(groups, query) {
-  return groups.reduce((previous, current) => (
-      previous.concat((current.hosts || []).map(host => (
-        { group: current, host }
-      )))
-    ), [])
-    .filter((item) => {
-      if (query === '') {
-        return false;
-      }
-      if ((item.host.host || '').indexOf(query) > -1) {
-        return true;
-      }
-      if ((item.host.ip || '').indexOf(query) > -1) {
-        return true;
-      }
+function getResultReducer() {
+  return (previous, current) => (
+    previous.concat((current.hosts || []).map(host => (
+      { group: current, host }
+    )))
+  );
+}
+
+function getResultFilter(query) {
+  return (result) => {
+    if (query === '') {
       return false;
-    });
+    }
+    if ((result.host.host || '').indexOf(query) > -1) {
+      return true;
+    }
+    if ((result.host.ip || '').indexOf(query) > -1) {
+      return true;
+    }
+    return false;
+  };
 }
 
 function mapStateToProps(state) {
   return {
-    query: state.query,
-    results: getResults(state.groups, state.query),
+    results: state.groups
+      .reduce(getResultReducer(), [])
+      .filter(getResultFilter(state.searchContainer.query)),
+    ...state.searchContainer,
   };
 }
 
@@ -68,8 +69,9 @@ export default class SearchContainers extends Component {
     muiTheme: PropTypes.object.isRequired,
   };
   static propTypes = {
-    query: PropTypes.string.isRequired,
     results: PropTypes.arrayOf(PropTypes.object).isRequired,
+    query: PropTypes.string.isRequired,
+    sortOptions: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
   };
@@ -78,11 +80,14 @@ export default class SearchContainers extends Component {
     this.props.actions.selectHost(hostId);
     this.props.history.push('/');
   }
+  handleSortResult(options) {
+
+  }
   handleSearch(query) {
-    this.props.actions.searchItems(query);
+    this.props.actions.search(query);
   }
   render() {
-    const { query, results } = this.props;
+    const { query, results, sortOptions } = this.props;
 
     let emptyView = null;
     if (!results.length) {
@@ -99,16 +104,16 @@ export default class SearchContainers extends Component {
 
     return (
       <div style={styles.container}>
-        <div style={styles.content}>
-          <div className="list">
-            <ResultList
-              results={results}
-              query={query}
-              onSelectResult={(...args) => this.handleSelectResult(...args)}
-              onSearch={(...args) => this.handleSearch(...args)}
-            />
-            {emptyView}
-          </div>
+        <div className="list">
+          <ResultList
+            results={results}
+            query={query}
+            sortOptions={sortOptions}
+            onSelectResult={(...args) => this.handleSelectResult(...args)}
+            onSortResult={(...args) => this.handleSortResult(...args)}
+            onSearch={(...args) => this.handleSearch(...args)}
+          />
+          {emptyView}
         </div>
       </div>
     );

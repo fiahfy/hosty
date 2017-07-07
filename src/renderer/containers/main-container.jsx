@@ -13,6 +13,14 @@ const styles = {
     height: '100%',
     overflow: 'hidden',
   },
+  nav: {
+    borderRightWidth: '1px',
+    borderRightStyle: 'solid',
+    boxSizing: 'content-box',
+    float: 'left',
+    height: '100%',
+    width: '256px',
+  },
   contentWrapper: {
     height: '100%',
     float: 'right',
@@ -22,14 +30,6 @@ const styles = {
   content: {
     height: '100%',
     paddingLeft: '257px',
-  },
-  nav: {
-    borderRightWidth: '1px',
-    borderRightStyle: 'solid',
-    boxSizing: 'content-box',
-    float: 'left',
-    height: '100%',
-    width: '256px',
   },
   emptyWrapper: {
     display: 'table',
@@ -200,8 +200,8 @@ export default class MainContainer extends Component {
       >
         <GroupList
           groups={this.groups}
-          selectedIds={selectedGroupIds}
           focusedId={focusedGroupId}
+          selectedIds={selectedGroupIds}
           sortOptions={groupSortOptions}
           onAddGroup={() => this.handleAddGroup()}
           onDeleteGroups={() => this.handleDeleteGroups()}
@@ -237,8 +237,8 @@ export default class MainContainer extends Component {
         <HostList
           groupId={this.selectedGroupId}
           hosts={this.hosts}
-          selectedIds={selectedHostIds}
           focusedId={focusedHostId}
+          selectedIds={selectedHostIds}
           sortOptions={hostSortOptions}
           onAddHost={() => this.handleAddHost()}
           onDeleteHosts={() => this.handleDeleteHosts()}

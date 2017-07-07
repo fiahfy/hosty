@@ -200,12 +200,15 @@ const mainContainer = handleActions({
   hostSortOptions: {},
 });
 
-const query = handleActions({
-  [ActionTypes.SEARCH_ITEMS]: (state, action) => {
-    const { query: newQuery } = action.payload;
-    return newQuery;
+const searchContainer = handleActions({
+  [ActionTypes.SEARCH]: (state, action) => {
+    const { query } = action.payload;
+    return Object.assign({}, state, { query });
   },
-}, '');
+}, {
+  query: '',
+  sortOptions: {},
+});
 
 export default reduceReducers(
   combineReducers({
@@ -213,7 +216,7 @@ export default reduceReducers(
     settings,
     messages,
     mainContainer,
-    query,
+    searchContainer,
     router,
   }),
   handleActions({

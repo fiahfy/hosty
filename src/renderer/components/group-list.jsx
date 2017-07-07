@@ -43,8 +43,8 @@ export default class GroupList extends Component {
   };
   static propTypes = {
     groups: PropTypes.arrayOf(PropTypes.object),
-    selectedIds: PropTypes.arrayOf(PropTypes.number),
     focusedId: PropTypes.number,
+    selectedIds: PropTypes.arrayOf(PropTypes.number),
     sortOptions: PropTypes.object,
     onAddGroup: PropTypes.func,
     onEditGroup: PropTypes.func,
@@ -54,8 +54,8 @@ export default class GroupList extends Component {
   };
   static defaultProps = {
     groups: [],
-    selectedIds: [],
     focusedId: null,
+    selectedIds: [],
     sortOptions: {},
     onAddGroup: () => {},
     onEditGroup: () => {},
