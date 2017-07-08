@@ -51,22 +51,17 @@ export default class HostItem extends Component {
   handleClickIconButton(e) {
     e.stopPropagation();
     const { host, onEditHost } = this.props;
-    const newHost = Object.assign({}, host);
-    newHost.enable = !newHost.enable;
-    onEditHost(newHost);
-  }
-  handleBlur(e) {
-    const { host, onEditHost } = this.props;
-    const { name, value } = e.target;
-    const newHost = Object.assign({}, host);
-    newHost[name] = value.trim();
+    const newHost = Object.assign({}, host, {
+      enable: !host.enable,
+    });
     onEditHost(newHost);
   }
   handleChange(e) {
     const { host, onEditHost } = this.props;
     const { name, value } = e.target;
-    const newHost = Object.assign({}, host);
-    newHost[name] = value.trim();
+    const newHost = Object.assign({}, host, {
+      [name]: value.trim(),
+    });
     onEditHost(newHost);
   }
   handleKeyDown(e) {
@@ -117,8 +112,8 @@ export default class HostItem extends Component {
             errorText={isValidHost ? null : ' '}
             errorStyle={styles.errorTextField}
             fullWidth
-            onBlur={e => this.handleBlur(e)}
             onKeyDown={e => this.handleKeyDown(e)}
+            onBlur={e => this.handleChange(e)}
             onChange={e => this.handleChange(e)}
             focused={focused}
             editable={editable}
@@ -133,8 +128,8 @@ export default class HostItem extends Component {
             errorText={isValidIp ? null : ' '}
             errorStyle={styles.errorTextField}
             fullWidth
-            onBlur={e => this.handleBlur(e)}
             onKeyDown={e => this.handleKeyDown(e)}
+            onBlur={e => this.handleChange(e)}
             onChange={e => this.handleChange(e)}
             editable={editable}
           />

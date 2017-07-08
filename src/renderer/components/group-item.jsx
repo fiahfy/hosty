@@ -66,22 +66,17 @@ export default class GroupItem extends Component {
   handleClickIconButton(e) {
     e.stopPropagation();
     const { group, onEditGroup } = this.props;
-    const newGroup = Object.assign({}, group);
-    newGroup.enable = !newGroup.enable;
-    onEditGroup(newGroup);
-  }
-  handleBlur(e) {
-    const { group, onEditGroup } = this.props;
-    const { name, value } = e.target;
-    const newGroup = Object.assign({}, group);
-    newGroup[name] = value.trim();
+    const newGroup = Object.assign({}, group, {
+      enable: !group.enable,
+    });
     onEditGroup(newGroup);
   }
   handleChange(e) {
     const { group, onEditGroup } = this.props;
     const { name, value } = e.target;
-    const newGroup = Object.assign({}, group);
-    newGroup[name] = value.trim();
+    const newGroup = Object.assign({}, group, {
+      [name]: value.trim(),
+    });
     onEditGroup(newGroup);
   }
   render() {
@@ -112,8 +107,8 @@ export default class GroupItem extends Component {
             defaultValue={group.name}
             hintText="Group"
             fullWidth
-            onBlur={e => this.handleBlur(e)}
             onKeyDown={e => this.constructor.handleKeyDown(e)}
+            onBlur={e => this.handleChange(e)}
             onChange={e => this.handleChange(e)}
             focused={focused}
             editable={editable}

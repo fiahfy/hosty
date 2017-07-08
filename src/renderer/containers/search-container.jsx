@@ -45,13 +45,14 @@ export default class SearchContainers extends Component {
   static propTypes = {
     results: PropTypes.arrayOf(PropTypes.object).isRequired,
     query: PropTypes.string.isRequired,
+    selectedIds: PropTypes.arrayOf(PropTypes.number).isRequired,
     sortOptions: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
   };
-  handleSelectResult([groupId, hostId]) {
-    this.props.actions.selectGroup(groupId);
-    this.props.actions.selectHost(hostId);
+  handleSelectResult(result) {
+    this.props.actions.selectGroup(result.group.id);
+    this.props.actions.selectHost(result.host.id);
     this.props.history.push('/');
   }
   handleSortResults(options) {
@@ -61,7 +62,7 @@ export default class SearchContainers extends Component {
     this.props.actions.search(query);
   }
   render() {
-    const { query, results, sortOptions } = this.props;
+    const { query, results, selectedIds, sortOptions } = this.props;
 
     let emptyView = null;
     if (!results.length) {
@@ -82,6 +83,7 @@ export default class SearchContainers extends Component {
           <ResultList
             results={results}
             query={query}
+            selectedIds={selectedIds}
             sortOptions={sortOptions}
             onSelectResult={(...args) => this.handleSelectResult(...args)}
             onSortResults={(...args) => this.handleSortResults(...args)}

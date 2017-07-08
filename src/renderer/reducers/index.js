@@ -146,6 +146,10 @@ const messages = handleActions({
 }, []);
 
 const mainContainer = handleActions({
+  [ActionTypes.SORT_GROUPS]: (state, action) => {
+    const { options } = action.payload;
+    return Object.assign({}, state, { groupSortOptions: options });
+  },
   [ActionTypes.SELECT_GROUP]: (state, action) => {
     const { id, mode } = action.payload;
     return Object.assign({}, state, {
@@ -178,9 +182,9 @@ const mainContainer = handleActions({
   [ActionTypes.UNSELECT_GROUP_ALL]: state => (
     Object.assign({}, state, { selectedGroupIds: [] })
   ),
-  [ActionTypes.SORT_GROUPS]: (state, action) => {
+  [ActionTypes.SORT_HOSTS]: (state, action) => {
     const { options } = action.payload;
-    return Object.assign({}, state, { groupSortOptions: options });
+    return Object.assign({}, state, { hostSortOptions: options });
   },
   [ActionTypes.SELECT_HOST]: (state, action) => {
     const { id, mode } = action.payload;
@@ -212,10 +216,6 @@ const mainContainer = handleActions({
   [ActionTypes.UNSELECT_HOST_ALL]: state => (
     Object.assign({}, state, { selectedHostIds: [] })
   ),
-  [ActionTypes.SORT_HOSTS]: (state, action) => {
-    const { options } = action.payload;
-    return Object.assign({}, state, { hostSortOptions: options });
-  },
 }, {
   focusedGroupId: 0,
   focusedHostId: 0,
@@ -239,9 +239,37 @@ const searchContainer = handleActions({
       sortOptions: options,
     });
   },
+  [ActionTypes.SELECT_RESULT]: (state, action) => {
+    const { id, mode } = action.payload;
+    return Object.assign({}, state, {
+      selectedIds: (() => {
+        switch (mode) {
+          case 'append': {
+            const { selectedIds } = state;
+            if (selectedIds.includes(id)) {
+              return selectedIds.filter(currentId => (
+                currentId !== id
+              ));
+            }
+            return [...selectedIds, id];
+          }
+          case 'shift': {
+            const { selectedIds } = state;
+            if (selectedIds.includes(id)) {
+              return selectedIds;
+            }
+            return [id];
+          }
+          default:
+            return [id];
+        }
+      })(),
+    });
+  },
 }, {
   results: [],
   query: '',
+  selectedIds: [],
   sortOptions: {},
 });
 
@@ -292,9 +320,11 @@ export default reduceReducers(
       const { query, sortOptions } = state.searchContainer;
       const results = state.groups.concat()
         .reduce((previous, current) => (
-          previous.concat((current.hosts || []).map(host => (
-            { group: current, host }
-          )))
+          previous.concat((current.hosts || []).map(host => ({
+            id: `${current.id}-${host.id}`,
+            group: current,
+            host,
+          })))
         ), [])
         .filter((result) => {
           if (query === '') {

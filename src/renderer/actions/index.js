@@ -21,6 +21,7 @@ export const UPDATE_SETTINGS = 'UPDATE_SETTINGS';
 
 export const SEARCH = 'SEARCH';
 export const SORT_RESULTS = 'SORT_RESULTS';
+export const SELECT_RESULT = 'SELECT_RESULT';
 
 export const CREATE_MESSAGE = 'CREATE_MESSAGE';
 export const CLEAR_MESSAGES = 'CLEAR_MESSAGES';
@@ -109,6 +110,11 @@ export const search = createAction(
 export const sortResults = createAction(
   SORT_RESULTS,
   options => ({ options }),
+);
+
+export const selectResult = createAction(
+  SELECT_RESULT,
+  (id, mode) => ({ id, mode }),
 );
 
 export const createMessage = createAction(

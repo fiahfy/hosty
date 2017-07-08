@@ -53,6 +53,7 @@ export default class ResultList extends Component {
   static propTypes = {
     results: PropTypes.arrayOf(PropTypes.object),
     query: PropTypes.string,
+    selectedIds: PropTypes.arrayOf(PropTypes.number),
     sortOptions: PropTypes.object,
     onSelectResult: PropTypes.func,
     onSortResults: PropTypes.func,
@@ -61,6 +62,7 @@ export default class ResultList extends Component {
   static defaultProps = {
     results: [],
     query: '',
+    selectedIds: [],
     sortOptions: {},
     onSelectResult: () => {},
     onSortResults: () => {},
@@ -94,7 +96,7 @@ export default class ResultList extends Component {
     if (!result) {
       return;
     }
-    onSelectResult([result.group.id, result.host.id]);
+    onSelectResult(result);
   }
   handleKeyDown(e) {
     if (e.keyCode === 13) {
@@ -154,7 +156,7 @@ export default class ResultList extends Component {
     );
   }
   renderBody() {
-    const { results } = this.props;
+    const { results, selectedIds } = this.props;
 
     return (
       <TableBody
@@ -164,8 +166,9 @@ export default class ResultList extends Component {
       >
         {results.map(result => (
           <ResultItem
-            key={`${result.group.id}-${result.host.id}`}
+            key={result.id}
             result={result}
+            selected={selectedIds.includes(result.id)}
           />
         ))}
       </TableBody>
