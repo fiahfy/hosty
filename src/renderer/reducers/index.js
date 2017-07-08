@@ -33,7 +33,19 @@ const groups = handleActions({
   },
   [ActionTypes.SORT_GROUPS]: (state, action) => {
     const { options } = action.payload;
-    return state.concat().sort((a, b) => Group.compare(a, b, options));
+    return state.concat().sort((a, b) => {
+      if (!a[Group.KEY_NAME]) {
+        return 1;
+      }
+      if (!b[Group.KEY_NAME]) {
+        return -1;
+      }
+      const result = Group.compare(a, b, options);
+      if (result !== 0) {
+        return result;
+      }
+      return Group.compare(a, b, { key: Group.KEY_ID, order: Group.SORT_ASC });
+    });
   },
   [ActionTypes.CREATE_HOST]: (state, action) => {
     const { groupId, host } = action.payload;
@@ -95,7 +107,19 @@ const groups = handleActions({
       if (!newGroup.hosts) {
         newGroup.hosts = [];
       }
-      newGroup.hosts = newGroup.hosts.concat().sort((a, b) => Host.compare(a, b, options));
+      newGroup.hosts = newGroup.hosts.concat().sort((a, b) => {
+        if (!a[Host.KEY_HOST]) {
+          return 1;
+        }
+        if (!b[Host.KEY_HOST]) {
+          return -1;
+        }
+        const result = Host.compare(a, b, options);
+        if (result !== 0) {
+          return result;
+        }
+        return Host.compare(a, b, { key: Host.KEY_ID, order: Host.SORT_ASC });
+      });
       return newGroup;
     });
   },
