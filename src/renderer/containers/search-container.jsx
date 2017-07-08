@@ -27,34 +27,8 @@ const styles = {
   },
 };
 
-function getResultReducer() {
-  return (previous, current) => (
-    previous.concat((current.hosts || []).map(host => (
-      { group: current, host }
-    )))
-  );
-}
-
-function getResultFilter(query) {
-  return (result) => {
-    if (query === '') {
-      return false;
-    }
-    if ((result.host.host || '').indexOf(query) > -1) {
-      return true;
-    }
-    if ((result.host.ip || '').indexOf(query) > -1) {
-      return true;
-    }
-    return false;
-  };
-}
-
 function mapStateToProps(state) {
   return {
-    results: state.groups
-      .reduce(getResultReducer(), [])
-      .filter(getResultFilter(state.searchContainer.query)),
     ...state.searchContainer,
   };
 }
@@ -80,8 +54,8 @@ export default class SearchContainers extends Component {
     this.props.actions.selectHost(hostId);
     this.props.history.push('/');
   }
-  handleSortResult(options) { // eslint-disable-line
-    // TODO:
+  handleSortResults(options) {
+    this.props.actions.sortResults(options);
   }
   handleSearch(query) {
     this.props.actions.search(query);
@@ -110,7 +84,7 @@ export default class SearchContainers extends Component {
             query={query}
             sortOptions={sortOptions}
             onSelectResult={(...args) => this.handleSelectResult(...args)}
-            onSortResult={(...args) => this.handleSortResult(...args)}
+            onSortResults={(...args) => this.handleSortResults(...args)}
             onSearch={(...args) => this.handleSearch(...args)}
           />
           {emptyView}

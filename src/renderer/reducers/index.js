@@ -5,6 +5,7 @@ import reduceReducers from 'reduce-reducers';
 import * as ActionTypes from '../actions';
 import * as Group from '../utils/group';
 import * as Host from '../utils/host';
+import * as Result from '../utils/result';
 
 const groups = handleActions({
   [ActionTypes.INITIALIZE_GROUPS]: (state, action) => {
@@ -229,7 +230,17 @@ const searchContainer = handleActions({
     const { query } = action.payload;
     return Object.assign({}, state, { query });
   },
+  [ActionTypes.SORT_RESULTS]: (state, action) => {
+    const { options } = action.payload;
+    const results = state.results.concat()
+      .sort((a, b) => Result.compare(a, b, options));
+    return Object.assign({}, state, {
+      results,
+      sortOptions: options,
+    });
+  },
 }, {
+  results: [],
   query: '',
   sortOptions: {},
 });
@@ -274,6 +285,34 @@ export default reduceReducers(
           ...state.mainContainer,
           focusedHostId: host.id,
           selectedHostIds: [host.id],
+        },
+      });
+    },
+    [ActionTypes.SEARCH]: (state) => {
+      const { query, sortOptions } = state.searchContainer;
+      const results = state.groups.concat()
+        .reduce((previous, current) => (
+          previous.concat((current.hosts || []).map(host => (
+            { group: current, host }
+          )))
+        ), [])
+        .filter((result) => {
+          if (query === '') {
+            return false;
+          }
+          if ((result.host.host || '').indexOf(query) > -1) {
+            return true;
+          }
+          if ((result.host.ip || '').indexOf(query) > -1) {
+            return true;
+          }
+          return false;
+        })
+        .sort((a, b) => Result.compare(a, b, sortOptions));
+      return Object.assign({}, state, {
+        searchContainer: {
+          ...state.searchContainer,
+          results,
         },
       });
     },

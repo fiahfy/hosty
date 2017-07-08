@@ -6,7 +6,9 @@ import {
   TableRow, TableHeaderColumn, TableRowColumn,
 } from 'material-ui';
 import ResultItem from './result-item';
+import SortOrderIcon from './sort-order-icon';
 import isUpdateNeeded from '../utils/is-update-needed';
+import * as Result from '../utils/result';
 
 const styles = {
   groupHeaderColumn: {
@@ -53,7 +55,7 @@ export default class ResultList extends Component {
     query: PropTypes.string,
     sortOptions: PropTypes.object,
     onSelectResult: PropTypes.func,
-    onSortResults: PropTypes.func, // eslint-disable-line
+    onSortResults: PropTypes.func,
     onSearch: PropTypes.func,
   };
   static defaultProps = {
@@ -67,8 +69,21 @@ export default class ResultList extends Component {
   shouldComponentUpdate(nextProps, nextState, nextContext) {
     return isUpdateNeeded(this, nextProps, nextState, nextContext);
   }
-  handleHeaderClick(e, rowId, columnId) { // eslint-disable-line
-    // TODO:
+  handleHeaderClick(e, rowId, columnId) {
+    const { key, order } = this.props.sortOptions;
+
+    const columns = [null, null, Result.KEY_GROUP_NAME, null, Result.KEY_HOST_HOST, Result.KEY_HOST_IP];
+    const newKey = columns[columnId];
+    if (!newKey) {
+      return;
+    }
+    let newOrder;
+    if (key === newKey && order === Result.SORT_ASC) {
+      newOrder = Result.SORT_DESC;
+    } else {
+      newOrder = Result.SORT_ASC;
+    }
+    this.props.onSortResults({ key: newKey, order: newOrder });
   }
   handleCellClick(rowId) {
     const { results, onSelectResult } = this.props;
@@ -106,15 +121,30 @@ export default class ResultList extends Component {
             }}
           >
             <div style={styles.label}>Group</div>
+            <SortOrderIcon
+              style={styles.icon}
+              hidden={key !== Result.KEY_GROUP_NAME}
+              asc={order === Result.SORT_ASC}
+            />
           </TableHeaderColumn>
           <TableHeaderColumn style={styles.iconHeaderColumn}>
             Status
           </TableHeaderColumn>
           <TableHeaderColumn style={styles.sortableHeaderColumn}>
             <div style={styles.label}>Host</div>
+            <SortOrderIcon
+              style={styles.icon}
+              hidden={key !== Result.KEY_HOST_HOST}
+              asc={order === Result.SORT_ASC}
+            />
           </TableHeaderColumn>
           <TableHeaderColumn style={styles.sortableHeaderColumn}>
             <div style={styles.label}>IP</div>
+            <SortOrderIcon
+              style={styles.icon}
+              hidden={key !== Result.KEY_HOST_IP}
+              asc={order === Result.SORT_ASC}
+            />
           </TableHeaderColumn>
         </TableRow>
       </TableHeader>
