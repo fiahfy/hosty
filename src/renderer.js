@@ -12,7 +12,7 @@ import setupListener from './renderer/ipc-listener';
 import * as HostsFileManager from './renderer/utils/hosts-file-manager';
 
 (async function main() {
-  // Needed for onTouchTap
+  // @see https://github.com/callemall/material-ui/issues/4670
   // @see http://stackoverflow.com/a/34015469/988941
   injectTapEventPlugin();
 

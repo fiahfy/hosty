@@ -1,5 +1,3 @@
-import fs from 'fs';
-import path from 'path';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -12,7 +10,7 @@ import {
 } from 'material-ui/styles';
 import * as ActionCreators from '../actions';
 import * as Group from '../utils/group';
-import * as Host from '../utils/host';
+import * as HostsFileManager from '../utils/hosts-file-manager';
 
 const styles = {
   app: {
@@ -71,23 +69,8 @@ export default class App extends Component {
     e.preventDefault();
     e.stopPropagation();
 
-    // TODO:
-    const groups = Array.from(e.dataTransfer.files)
-      .map((file) => {
-        const params = path.parse(file.path);
-        const data = fs.readFileSync(file.path, 'utf8');
-        let hosts = Host.parse(data);
-        if (!hosts.length) {
-          return null;
-        }
-        hosts = hosts.map((host, i) => {
-          const newHost = Object.assign({}, host);
-          newHost.id = i + 1;
-          return newHost;
-        });
-        return { enable: true, name: params.name, hosts };
-      })
-      .filter(item => !!item);
+    const filenames = Array.from(e.dataTransfer.files).map(file => file.path);
+    const groups = HostsFileManager.readGroupsFromFiles(filenames);
 
     groups.forEach((group) => {
       this.props.actions.createGroup(group);

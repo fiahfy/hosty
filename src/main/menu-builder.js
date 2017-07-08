@@ -1,8 +1,6 @@
 import { app, shell, dialog, ipcMain, Menu } from 'electron';
-import fs from 'fs';
-import path from 'path';
 import * as Group from '../renderer/utils/group';
-import * as Host from '../renderer/utils/host';
+import * as HostsFileManager from '../renderer/utils/hosts-file-manager';
 
 export default class MenuBuilder {
   constructor(window) {
@@ -138,11 +136,10 @@ export default class MenuBuilder {
         if (!filenames) {
           return;
         }
-
         const filename = filenames[0];
-        const data = fs.readFileSync(filename, 'utf8');
+
         try {
-          const groups = JSON.parse(data);
+          const groups = HostsFileManager.readGroupsFromHostyFile(filename);
           this.window.webContents.send('sendGroups', { mode: 'import', groups });
         } catch (e) {
           this.window.webContents.send('sendMessage', {
@@ -160,23 +157,7 @@ export default class MenuBuilder {
           return;
         }
 
-        const groups = filenames
-          .map((filename) => {
-            const { name } = path.parse(filename);
-            const data = fs.readFileSync(filename, 'utf8');
-            let hosts = Host.parse(data);
-            if (!hosts.length) {
-              return null;
-            }
-            hosts = hosts.map((host, i) => {
-              const newHost = Object.assign({}, host);
-              newHost.id = i + 1;
-              return newHost;
-            });
-            return { enable: true, name, hosts };
-          })
-          .filter(host => !!host);
-
+        const groups = HostsFileManager.readGroupsFromHostsFiles(filenames);
         this.window.webContents.send('sendGroups', { mode: 'add', groups });
       },
     );
@@ -189,14 +170,8 @@ export default class MenuBuilder {
           return;
         }
 
-        const { ext } = path.parse(filename);
-        let filenameWithExtension = filename;
-        if (ext !== '.hosty') {
-          filenameWithExtension += '.hosty';
-        }
-
         ipcMain.once('sendGroups', (event, { groups }) => {
-          fs.writeFileSync(filenameWithExtension, `${JSON.stringify(groups)}\n`, 'utf8');
+          HostsFileManager.writeGroupsToHostyFile(groups, filename);
           const groupLength = groups.length;
           const hostLength = Group.getHostLength(groups);
           this.window.webContents.send('sendMessage', {
@@ -214,7 +189,7 @@ export default class MenuBuilder {
       }
 
       ipcMain.once('sendGroups', (event, { groups }) => {
-        fs.writeFileSync(filename, `${Group.build(groups)}\n`, 'utf8');
+        HostsFileManager.writeGroupsToHostyFile(groups, filename);
         const groupLength = groups.length;
         const hostLength = Group.getHostLength(groups);
         this.window.webContents.send('sendMessage', {
