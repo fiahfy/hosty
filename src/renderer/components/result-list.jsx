@@ -72,7 +72,10 @@ export default class ResultList extends Component {
   handleHeaderClick(e, rowId, columnId) {
     const { key, order } = this.props.sortOptions;
 
-    const columns = [null, null, Result.KEY_GROUP_NAME, null, Result.KEY_HOST_HOST, Result.KEY_HOST_IP];
+    const columns = [
+      null, null, Result.KEY_GROUP_NAME,
+      null, Result.KEY_HOST_HOST, Result.KEY_HOST_IP,
+    ];
     const newKey = columns[columnId];
     if (!newKey) {
       return;
