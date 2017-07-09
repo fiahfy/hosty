@@ -8,7 +8,6 @@ import {
 import HostItem from './host-item';
 import SortOrderIcon from './sort-order-icon';
 import isUpdateNeeded from '../utils/is-update-needed';
-import ContextMenu from '../utils/context-menu';
 import * as Host from '../utils/host';
 
 const styles = {

@@ -8,7 +8,6 @@ import {
 import GroupItem from './group-item';
 import SortOrderIcon from './sort-order-icon';
 import isUpdateNeeded from '../utils/is-update-needed';
-import ContextMenu from '../utils/context-menu';
 import * as Group from '../utils/group';
 
 const styles = {
