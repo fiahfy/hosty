@@ -35,10 +35,12 @@ export default class MenuBuilder {
         label: 'File',
         submenu: [
           { label: 'Import Hosty File...', accelerator: 'CmdOrCtrl+I', click: () => { this.importHostyFile(); } },
-          { label: 'Add Groups from Hosts Files...', accelerator: 'Shift+CmdOrCtrl+I', click: () => { this.addHostFiles(); } },
+          { label: 'Import Hosts File...', accelerator: 'CmdOrCtrl+Shift+I', click: () => { this.importHostsFile(); } },
+          { label: 'Add Groups from Hosty Files...', click: () => { this.addGroupsFromHostyFiles(); } },
+          { label: 'Add Groups from Hosts Files...', click: () => { this.addGroupsFromHostsFiles(); } },
           { type: 'separator' },
           { label: 'Export Hosty File...', accelerator: 'CmdOrCtrl+E', click: () => { this.exportHostyFile(); } },
-          { label: 'Export Hosts File...', accelerator: 'Shift+CmdOrCtrl+E', click: () => { this.exportHostsFile(); } },
+          { label: 'Export Hosts File...', accelerator: 'CmdOrCtrl+Shift+E', click: () => { this.exportHostsFile(); } },
         ],
       },
       {
@@ -84,7 +86,7 @@ export default class MenuBuilder {
       {
         role: 'window',
         submenu: [
-          { label: 'Hosts List', accelerator: 'CmdOrCtrl+G', click: () => { this.showGroups(); } },
+          { label: 'Hosts List', accelerator: 'CmdOrCtrl+Shift+H', click: () => { this.showGroups(); } },
           { type: 'separator' },
           { role: 'close' },
           { role: 'minimize' },
@@ -149,7 +151,7 @@ export default class MenuBuilder {
 
         try {
           const groups = HostsFileManager.readGroupsFromHostyFile(filename);
-          this.window.webContents.send('sendGroups', { mode: 'import', groups });
+          this.window.webContents.send('sendGroups', { method: 'initialize', groups });
         } catch (e) {
           this.window.webContents.send('sendMessage', {
             message: { text: 'Invalid Hosty file' },
@@ -158,16 +160,54 @@ export default class MenuBuilder {
       },
     );
   }
-  addHostFiles() {
+  importHostsFile() {
     dialog.showOpenDialog(
-      { properties: ['openFile', 'multiSelections'] },
+      {},
+      (filenames) => {
+        if (!filenames) {
+          return;
+        }
+        const filename = filenames[0];
+
+        const group = HostsFileManager.readGroupFromHostsFile(filename);
+        this.window.webContents.send('sendGroups', { method: 'initialize', groups: [group] });
+      },
+    );
+  }
+  addGroupsFromHostyFiles() {
+    dialog.showOpenDialog(
+      {
+        filters: [{ name: 'Hosty File', extensions: ['hosty'] }],
+        properties: ['openFile', 'multiSelections'],
+      },
       (filenames) => {
         if (!filenames) {
           return;
         }
 
-        const groups = HostsFileManager.readGroupsFromHostsFiles(filenames);
-        this.window.webContents.send('sendGroups', { mode: 'add', groups });
+        try {
+          const groups = HostsFileManager.readGroupsFromFiles(filenames);
+          this.window.webContents.send('sendGroups', { method: 'add', groups });
+        } catch (e) {
+          this.window.webContents.send('sendMessage', {
+            message: { text: 'Invalid Hosty file' },
+          });
+        }
+      },
+    );
+  }
+  addGroupsFromHostsFiles() {
+    dialog.showOpenDialog(
+      {
+        properties: ['openFile', 'multiSelections'],
+      },
+      (filenames) => {
+        if (!filenames) {
+          return;
+        }
+
+        const groups = HostsFileManager.readGroupsFromFiles(filenames);
+        this.window.webContents.send('sendGroups', { method: 'add', groups });
       },
     );
   }

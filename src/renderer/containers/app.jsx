@@ -70,17 +70,19 @@ export default class App extends Component {
     e.stopPropagation();
 
     const filenames = Array.from(e.dataTransfer.files).map(file => file.path);
-    const groups = HostsFileManager.readGroupsFromFiles(filenames);
-
-    groups.forEach((group) => {
-      this.props.actions.createGroup(group);
-    });
-
-    const groupLength = groups.length;
-    const hostLength = Group.getHostLength(groups);
-    this.props.actions.createMessage(
-      { text: `Added ${groupLength} group(s), ${hostLength} host(s)` },
-    );
+    try {
+      const groups = HostsFileManager.readGroupsFromFiles(filenames);
+      const groupLength = groups.length;
+      const hostLength = Group.getHostLength(groups);
+      this.props.actions.addGroups(groups);
+      this.props.actions.createMessage(
+        { text: `Added ${groupLength} group(s), ${hostLength} host(s)` },
+      );
+    } catch (error) {
+      this.props.actions.createMessage(
+        { text: 'Invalid Hosty file' },
+      );
+    }
   }
   handleItemTouchTap(e, item, index) {
     const menu = this.constructor.menus[index];

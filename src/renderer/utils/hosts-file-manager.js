@@ -123,35 +123,24 @@ export function readGroupsFromHostyFile(filename) {
   return JSON.parse(data);
 }
 
-export function readGroupsFromHostsFiles(filenames) {
-  return filenames
-    .map((filename) => {
-      const { name } = path.parse(filename);
-      const data = fs.readFileSync(filename, CHARSET);
-      let hosts = Host.parse(data);
-      if (!hosts.length) {
-        return null;
-      }
-      hosts = hosts.map((host, i) => {
-        const newHost = Object.assign({}, host);
-        newHost.id = i + 1;
-        return newHost;
-      });
-      return { enable: true, name, hosts };
-    })
-    .filter(host => !!host);
+export function readGroupFromHostsFile(filename) {
+  const { name } = path.parse(filename);
+  const data = fs.readFileSync(filename, CHARSET);
+  const hosts = Host.parse(data);
+  return {
+    enable: true,
+    name,
+    hosts,
+  };
 }
 
 export function readGroupsFromFiles(filenames) {
-  if (!filenames) {
-    return [];
-  }
-  const filename = filenames[0];
-  const { ext } = path.parse(filename);
-  if (ext === EXTENSION) {
-    return this.readGroupsFromHostyFile(filename);
-  }
-  return this.readGroupsFromHostsFiles(filenames);
+  return filenames.map((filename) => {
+    const { ext } = path.parse(filename);
+    return ext === EXTENSION
+      ? this.readGroupsFromHostyFile(filename)
+      : [this.readGroupFromHostsFile(filename)];
+  }).reduce((previous, current) => [...previous, ...current]);
 }
 
 export function writeGroupsToHostyFile(groups, filename) {

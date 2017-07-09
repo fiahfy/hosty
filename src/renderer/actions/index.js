@@ -1,6 +1,8 @@
 import { createAction } from 'redux-actions';
 
 export const INITIALIZE_GROUPS = 'INITIALIZE_GROUPS';
+export const ADD_GROUPS = 'ADD_GROUPS';
+
 export const CREATE_GROUP = 'CREATE_GROUP';
 export const UPDATE_GROUP = 'UPDATE_GROUP';
 export const DELETE_GROUPS = 'DELETE_GROUPS';
@@ -33,9 +35,13 @@ export const initializeGroups = createAction(
   groups => ({ groups }),
 );
 
+export const addGroups = createAction(
+  ADD_GROUPS,
+  groups => ({ groups }),
+);
+
 export const createGroup = createAction(
   CREATE_GROUP,
-  group => ({ group }),
 );
 
 export const updateGroup = createAction(
@@ -71,7 +77,6 @@ export const selectGroup = createAction(
 
 export const createHost = createAction(
   CREATE_HOST,
-  host => ({ host }),
 );
 
 export const updateHost = createAction(

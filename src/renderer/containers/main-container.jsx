@@ -89,7 +89,7 @@ export default class MainContainer extends Component {
   };
   // handle group
   handleAddGroup() {
-    this.props.actions.createGroup({ enable: true });
+    this.props.actions.createGroup();
     window.setTimeout(() => {
       this.props.actions.focusGroup();
     }, 0);
@@ -141,7 +141,7 @@ export default class MainContainer extends Component {
   }
   // handle host
   handleAddHost() {
-    this.props.actions.createHost({ enable: true });
+    this.props.actions.createHost();
     window.setTimeout(() => {
       this.props.actions.focusHost();
     }, 0);

@@ -10,14 +10,43 @@ import * as Result from '../utils/result';
 const groups = handleActions({
   [ActionTypes.INITIALIZE_GROUPS]: (state, action) => {
     const { groups: newGroups } = action.payload;
-    return newGroups;
+    return newGroups.map((group, i) => (
+      Object.assign({}, group, {
+        id: i + 1,
+        hosts: (group.hosts || []).map((host, j) => (
+          Object.assign({}, host, {
+            id: j + 1,
+          })
+        )),
+      })
+    ));
   },
-  [ActionTypes.CREATE_GROUP]: (state, action) => {
-    const { group } = action.payload;
+  [ActionTypes.ADD_GROUPS]: (state, action) => {
+    let { groups: newGroups } = action.payload;
     const maxId = state.reduce((previousGroup, currentGroup) => (
       currentGroup.id > previousGroup ? currentGroup.id : previousGroup
     ), 0);
-    group.id = maxId + 1;
+    newGroups = newGroups.map((group, i) => (
+      Object.assign({}, group, {
+        id: maxId + i + 1,
+        hosts: (group.hosts || []).map((host, j) => (
+          Object.assign({}, host, {
+            id: j + 1,
+          })
+        )),
+      })
+    ));
+    return [...state, ...newGroups];
+  },
+  [ActionTypes.CREATE_GROUP]: (state) => {
+    const maxId = state.reduce((previousGroup, currentGroup) => (
+      currentGroup.id > previousGroup ? currentGroup.id : previousGroup
+    ), 0);
+    const group = {
+      id: maxId + 1,
+      enable: true,
+      hosts: [],
+    };
     return [...state, group];
   },
   [ActionTypes.UPDATE_GROUP]: (state, action) => {
@@ -199,14 +228,12 @@ export default reduceReducers(
   handleActions({
     [ActionTypes.DELETE_GROUPS]: (state) => {
       const { selectedGroupIds } = state.mainContainer;
-
       const lastIndex = state.groups.reduce((previousValue, currentValue, index) => (
           selectedGroupIds.includes(currentValue.id) ? index : previousValue
         ), null);
       const selectedIndex = lastIndex < state.groups.length - 1 ? lastIndex + 1 : lastIndex - 1;
       const newGroup = state.groups[selectedIndex];
       const newSelectedGroupIds = newGroup ? [newGroup.id] : [];
-
       return Object.assign({}, state, {
         groups: state.groups.filter(currentGroup => (
           !selectedGroupIds.includes(currentGroup.id)
@@ -221,7 +248,6 @@ export default reduceReducers(
     },
     [ActionTypes.COPY_GROUPS]: (state) => {
       const { selectedGroupIds } = state.mainContainer;
-
       return Object.assign({}, state, {
         mainContainer: {
           ...state.mainContainer,
@@ -231,26 +257,22 @@ export default reduceReducers(
     },
     [ActionTypes.PASTE_GROUPS]: (state) => {
       const { copiedGroups } = state.mainContainer;
-
       const maxId = state.groups.reduce((previous, currentHost) => (
         currentHost.id > previous ? currentHost.id : previous
       ), 0);
       const newGroups = copiedGroups.map((group, index) => (
         Object.assign({}, group, { id: maxId + index + 1 })
       ));
-
       return Object.assign({}, state, {
         groups: [...state.groups, ...newGroups],
       });
     },
     [ActionTypes.FOCUS_GROUP]: (state) => {
       const { groups: newGroups } = state;
-
       const group = newGroups[newGroups.length - 1];
       if (!group) {
         return state;
       }
-
       return Object.assign({}, state, {
         mainContainer: {
           ...state.mainContainer,
@@ -259,15 +281,12 @@ export default reduceReducers(
         },
       });
     },
-    [ActionTypes.CREATE_HOST]: (state, action) => {
+    [ActionTypes.CREATE_HOST]: (state) => {
       const { selectedGroupIds } = state.mainContainer;
-      const { host } = action.payload;
-
       const selectedGroupId = selectedGroupIds[0];
       if (!selectedGroupId) {
         return state;
       }
-
       return Object.assign({}, state, {
         groups: state.groups.map((currentGroup) => {
           if (currentGroup.id !== selectedGroupId) {
@@ -280,7 +299,10 @@ export default reduceReducers(
           const maxId = newGroup.hosts.reduce((previous, currentHost) => (
             currentHost.id > previous ? currentHost.id : previous
           ), 0);
-          host.id = maxId + 1;
+          const host = {
+            id: maxId + 1,
+            enable: true,
+          };
           newGroup.hosts = [...newGroup.hosts, host];
           return newGroup;
         }),
@@ -289,12 +311,10 @@ export default reduceReducers(
     [ActionTypes.UPDATE_HOST]: (state, action) => {
       const { selectedGroupIds } = state.mainContainer;
       const { id, host } = action.payload;
-
       const selectedGroupId = selectedGroupIds[0];
       if (!selectedGroupId) {
         return state;
       }
-
       return Object.assign({}, state, {
         groups: state.groups.map((currentGroup) => {
           if (currentGroup.id !== selectedGroupId) {
@@ -313,7 +333,6 @@ export default reduceReducers(
     },
     [ActionTypes.DELETE_HOSTS]: (state) => {
       const { selectedGroupIds, selectedHostIds } = state.mainContainer;
-
       const selectedGroupId = selectedGroupIds[0];
       if (!selectedGroupId) {
         return state;
@@ -329,7 +348,6 @@ export default reduceReducers(
       const selectedIndex = lastIndex < hosts.length - 1 ? lastIndex + 1 : lastIndex - 1;
       const newHost = hosts[selectedIndex];
       const newSelectedHostsIds = newHost ? [newHost.id] : [];
-
       return Object.assign({}, state, {
         groups: state.groups.map((currentGroup) => {
           if (currentGroup.id !== selectedGroupId) {
@@ -349,7 +367,6 @@ export default reduceReducers(
     },
     [ActionTypes.COPY_HOSTS]: (state) => {
       const { selectedGroupIds, selectedHostIds } = state.mainContainer;
-
       const selectedGroupId = selectedGroupIds[0];
       if (!selectedGroupId) {
         return state;
@@ -359,7 +376,6 @@ export default reduceReducers(
         return state;
       }
       const hosts = group.hosts || [];
-
       return Object.assign({}, state, {
         mainContainer: {
           ...state.mainContainer,
@@ -369,12 +385,10 @@ export default reduceReducers(
     },
     [ActionTypes.PASTE_HOSTS]: (state) => {
       const { selectedGroupIds, copiedHosts } = state.mainContainer;
-
       const selectedGroupId = selectedGroupIds[0];
       if (!selectedGroupId) {
         return state;
       }
-
       return Object.assign({}, state, {
         groups: state.groups.map((currentGroup) => {
           if (currentGroup.id !== selectedGroupId) {
@@ -398,12 +412,10 @@ export default reduceReducers(
     [ActionTypes.SORT_HOSTS]: (state, action) => {
       const { selectedGroupIds } = state.mainContainer;
       const { options } = action.payload;
-
       const selectedGroupId = selectedGroupIds[0];
       if (!selectedGroupId) {
         return state;
       }
-
       return Object.assign({}, state, {
         groups: state.groups.map((currentGroup) => {
           if (currentGroup.id !== selectedGroupId) {
@@ -432,7 +444,6 @@ export default reduceReducers(
     },
     [ActionTypes.FOCUS_HOST]: (state) => {
       const { selectedGroupIds } = state.mainContainer;
-
       const group = state.groups.find(currentGroup => (
         currentGroup.id === selectedGroupIds[0]
       ));
@@ -443,7 +454,6 @@ export default reduceReducers(
       if (!host) {
         return state;
       }
-
       return Object.assign({}, state, {
         mainContainer: {
           ...state.mainContainer,
@@ -454,7 +464,6 @@ export default reduceReducers(
     },
     [ActionTypes.SEARCH]: (state) => {
       const { query, sortOptions } = state.searchContainer;
-
       return Object.assign({}, state, {
         searchContainer: {
           ...state.searchContainer,
