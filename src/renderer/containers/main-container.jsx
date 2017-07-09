@@ -51,6 +51,7 @@ function mapStateToProps(state) {
   return {
     groups: state.groups,
     ...state.mainContainer,
+    groupPastable: !!state.mainContainer.copiedGroups.length,
     hostPastable: !!state.mainContainer.copiedHosts.length,
   };
 }
@@ -72,6 +73,7 @@ export default class MainContainer extends Component {
     selectedHostIds: PropTypes.arrayOf(PropTypes.number).isRequired,
     groupSortOptions: PropTypes.object.isRequired,
     hostSortOptions: PropTypes.object.isRequired,
+    groupPastable: PropTypes.bool.isRequired,
     hostPastable: PropTypes.bool.isRequired,
     actions: PropTypes.object.isRequired,
   };
@@ -101,29 +103,17 @@ export default class MainContainer extends Component {
       this.props.actions.focusGroup();
     }, 0);
   }
-  handleDeleteGroups() {
-    const { selectedGroupIds } = this.props;
-
-    const lastIndex = this.groups
-      .reduce((previousValue, currentValue, index) => (
-        selectedGroupIds.includes(currentValue.id) ? index : previousValue
-      ), null);
-    const selectedIndex = lastIndex < this.groups.length - 1 ? lastIndex + 1 : lastIndex - 1;
-    const newGroup = this.groups[selectedIndex];
-
-    const ids = this.groups
-      .filter(group => selectedGroupIds.includes(group.id))
-      .map(group => group.id);
-    this.props.actions.deleteGroups(ids);
-
-    if (newGroup) {
-      this.props.actions.selectGroup(newGroup.id);
-      return;
-    }
-    this.props.actions.unselectGroupAll();
-  }
   handleEditGroup(id, group) {
     this.props.actions.updateGroup(id, group);
+  }
+  handleDeleteGroups() {
+    this.props.actions.deleteGroups();
+  }
+  handleCopyGroups() {
+    this.props.actions.copyGroups();
+  }
+  handlePasteGroups() {
+    this.props.actions.pasteGroups();
   }
   handleSelectGroup(id, mode) {
     this.props.actions.selectGroup(id, mode);
@@ -132,7 +122,27 @@ export default class MainContainer extends Component {
     this.props.actions.sortGroups(options);
   }
   handleContextMenuForGroups(e) {
-    ContextMenu.show(e, [{ label: 'New Group', click: () => this.handleAddGroup() }]);
+    const { groupPastable } = this.props;
+
+    ContextMenu.show(e, [
+      {
+        label: 'New Group',
+        click: () => this.handleAddGroup(),
+      },
+      {
+        label: 'Copy',
+        click: () => this.handleCopyGroups(),
+      },
+      {
+        label: 'Paste',
+        click: () => this.handlePasteGroups(),
+        enabled: groupPastable,
+      },
+      {
+        label: 'Delete',
+        click: () => this.handleDeleteGroups(),
+      },
+    ]);
   }
   // handle host
   handleAddHost() {
@@ -141,29 +151,11 @@ export default class MainContainer extends Component {
       this.props.actions.focusHost();
     }, 0);
   }
-  handleDeleteHosts() {
-    const { selectedHostIds } = this.props;
-
-    const lastIndex = this.hosts
-      .reduce((previousValue, currentValue, index) => (
-        selectedHostIds.includes(currentValue.id) ? index : previousValue
-      ), null);
-    const selectedIndex = lastIndex < this.hosts.length - 1 ? lastIndex + 1 : lastIndex - 1;
-    const newHost = this.hosts[selectedIndex];
-
-    const ids = this.hosts
-      .filter(host => selectedHostIds
-      .includes(host.id)).map(host => host.id);
-    this.props.actions.deleteHosts(this.selectedGroupId, ids);
-
-    if (newHost) {
-      this.props.actions.selectHost(newHost.id);
-      return;
-    }
-    this.props.actions.unselectHostAll();
-  }
   handleEditHost(id, host) {
     this.props.actions.updateHost(this.selectedGroupId, id, host);
+  }
+  handleDeleteHosts() {
+    this.props.actions.deleteHosts();
   }
   handleCopyHosts() {
     this.props.actions.copyHosts();
@@ -180,29 +172,29 @@ export default class MainContainer extends Component {
   handleContextMenuForHosts(e) {
     const { hostPastable } = this.props;
 
-    let menus = [];
-    if (this.selectedGroupId) {
-      menus = [
-        {
-          label: 'New Host',
-          click: () => this.handleAddHost(),
-        },
-        {
-          label: 'Copy',
-          click: () => this.handleCopyHosts(),
-        },
-        {
-          label: 'Paste',
-          click: () => this.handlePasteHosts(),
-          enabled: hostPastable,
-        },
-        {
-          label: 'Delete',
-          click: () => this.handleDeleteHosts(),
-        },
-      ];
+    if (!this.selectedGroupId) {
+      return;
     }
-    ContextMenu.show(e, menus);
+
+    ContextMenu.show(e, [
+      {
+        label: 'New Host',
+        click: () => this.handleAddHost(),
+      },
+      {
+        label: 'Copy',
+        click: () => this.handleCopyHosts(),
+      },
+      {
+        label: 'Paste',
+        click: () => this.handlePasteHosts(),
+        enabled: hostPastable,
+      },
+      {
+        label: 'Delete',
+        click: () => this.handleDeleteHosts(),
+      },
+    ]);
   }
   // render
   renderGroupList() {

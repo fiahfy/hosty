@@ -4,6 +4,8 @@ export const INITIALIZE_GROUPS = 'INITIALIZE_GROUPS';
 export const CREATE_GROUP = 'CREATE_GROUP';
 export const UPDATE_GROUP = 'UPDATE_GROUP';
 export const DELETE_GROUPS = 'DELETE_GROUPS';
+export const COPY_GROUPS = 'COPY_GROUPS';
+export const PASTE_GROUPS = 'PASTE_GROUPS';
 export const SORT_GROUPS = 'SORT_GROUPS';
 export const FOCUS_GROUP = 'FOCUS_GROUP';
 export const SELECT_GROUP = 'SELECT_GROUP';
@@ -45,7 +47,14 @@ export const updateGroup = createAction(
 
 export const deleteGroups = createAction(
   DELETE_GROUPS,
-  ids => ({ ids }),
+);
+
+export const copyGroups = createAction(
+  COPY_GROUPS,
+);
+
+export const pasteGroups = createAction(
+  PASTE_GROUPS,
 );
 
 export const sortGroups = createAction(
@@ -78,7 +87,6 @@ export const updateHost = createAction(
 
 export const deleteHosts = createAction(
   DELETE_HOSTS,
-  (groupId, ids) => ({ groupId, ids }),
 );
 
 export const copyHosts = createAction(

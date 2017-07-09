@@ -95,20 +95,7 @@ export default class GroupList extends Component {
     this.props.onEditGroup(group.id, group);
   }
   handleContextMenu(e, id) {
-    const { onSelectGroup, onAddGroup, onDeleteGroups } = this.props;
-
-    onSelectGroup(id, 'shift');
-
-    ContextMenu.show(e, [
-      {
-        label: 'New Group',
-        click: onAddGroup,
-      },
-      {
-        label: 'Delete',
-        click: onDeleteGroups,
-      },
-    ]);
+    this.props.onSelectGroup(id, 'shift');
   }
   renderHeader() {
     const { key, order } = this.props.sortOptions;
