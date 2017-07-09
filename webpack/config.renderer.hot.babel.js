@@ -1,5 +1,5 @@
 import webpack from 'webpack';
-import config from './webpack.config.renderer.babel';
+import config from './config.renderer.babel';
 
 const plugins = config.plugins.concat([
   new webpack.HotModuleReplacementPlugin(),

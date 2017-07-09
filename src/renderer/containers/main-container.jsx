@@ -6,14 +6,20 @@ import * as ActionCreators from '../actions';
 import GroupList from '../components/group-list';
 import HostList from '../components/host-list';
 import ContextMenu from '../utils/context-menu';
-import * as Group from '../utils/group';
-import * as Host from '../utils/host';
 
 const styles = {
   container: {
     boxSizing: 'border-box',
     height: '100%',
     overflow: 'hidden',
+  },
+  nav: {
+    borderRightWidth: '1px',
+    borderRightStyle: 'solid',
+    boxSizing: 'content-box',
+    float: 'left',
+    height: '100%',
+    width: '256px',
   },
   contentWrapper: {
     height: '100%',
@@ -24,14 +30,6 @@ const styles = {
   content: {
     height: '100%',
     paddingLeft: '257px',
-  },
-  nav: {
-    borderRightWidth: '1px',
-    borderRightStyle: 'solid',
-    boxSizing: 'content-box',
-    float: 'left',
-    height: '100%',
-    width: '256px',
   },
   emptyWrapper: {
     display: 'table',
@@ -50,10 +48,19 @@ const styles = {
 };
 
 function mapStateToProps(state) {
+  const { selectedGroupIds, copiedGroups, copiedHosts } = state.mainContainer;
+
+  const selectedGroupId = selectedGroupIds[0] || 0;
+  const selectedGroup = state.groups.find(group => group.id === selectedGroupId);
+  const hosts = selectedGroup ? (selectedGroup.hosts || []) : [];
+
   return {
     groups: state.groups,
-    selectedGroupIds: state.selectedGroupIds,
-    selectedHostIds: state.selectedHostIds,
+    hosts,
+    selectedGroupId,
+    groupPastable: !!copiedGroups.length,
+    hostPastable: !!copiedHosts.length,
+    ...state.mainContainer,
   };
 }
 
@@ -68,144 +75,152 @@ export default class MainContainer extends Component {
   };
   static propTypes = {
     groups: PropTypes.arrayOf(PropTypes.object).isRequired,
+    hosts: PropTypes.arrayOf(PropTypes.object).isRequired,
+    selectedGroupId: PropTypes.number.isRequired,
+    groupPastable: PropTypes.bool.isRequired,
+    hostPastable: PropTypes.bool.isRequired,
+    focusedGroupId: PropTypes.number.isRequired,
+    focusedHostId: PropTypes.number.isRequired,
     selectedGroupIds: PropTypes.arrayOf(PropTypes.number).isRequired,
     selectedHostIds: PropTypes.arrayOf(PropTypes.number).isRequired,
+    groupSortOptions: PropTypes.object.isRequired,
+    hostSortOptions: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
   };
-  state = {
-    focusedGroupId: null,
-    focusedHostId: null,
-    groupSortOptions: {
-      key: null,
-      order: Group.SORT_ASC,
-    },
-    hostSortOptions: {
-      key: null,
-      order: Host.SORT_ASC,
-    },
-  };
-  get selectedGroup() {
-    const selectedGroupIds = this.props.selectedGroupIds;
-    if (!selectedGroupIds) {
-      return null;
-    }
-    return this.props.groups.find(group => group.id === selectedGroupIds[0]);
-  }
-  get selectedGroupId() {
-    return this.selectedGroup ? this.selectedGroup.id : 0;
-  }
-  get groups() {
-    return this.props.groups;
-  }
-  get hosts() {
-    if (!this.selectedGroup) {
-      return [];
-    }
-    return this.selectedGroup.hosts || [];
-  }
   // handle group
   handleAddGroup() {
-    this.props.actions.createGroup({ enable: true });
+    this.props.actions.createGroup();
     window.setTimeout(() => {
-      const group = this.groups[this.groups.length - 1];
-      if (group) {
-        this.setState({ focusedGroupId: group.id });
-        this.props.actions.selectGroup(group.id);
-      }
+      this.props.actions.focusGroup();
     }, 0);
-  }
-  handleDeleteGroups() {
-    const { selectedGroupIds } = this.props;
-
-    const lastIndex = this.groups
-      .reduce((previousValue, currentValue, index) => (
-        selectedGroupIds.includes(currentValue.id) ? index : previousValue
-      ), null);
-    const selectedIndex = lastIndex < this.groups.length - 1 ? lastIndex + 1 : lastIndex - 1;
-    const newGroup = this.groups[selectedIndex];
-
-    const ids = this.groups
-      .filter(group => selectedGroupIds.includes(group.id))
-      .map(group => group.id);
-    this.props.actions.deleteGroups(ids);
-
-    if (newGroup) {
-      this.props.actions.selectGroup(newGroup.id);
-      return;
-    }
-    this.props.actions.unselectGroupAll();
   }
   handleEditGroup(id, group) {
     this.props.actions.updateGroup(id, group);
   }
+  handleDeleteGroups() {
+    this.props.actions.deleteGroups();
+  }
+  handleCutGroups() {
+    this.props.actions.cutGroups();
+  }
+  handleCopyGroups() {
+    this.props.actions.copyGroups();
+  }
+  handlePasteGroups() {
+    this.props.actions.pasteGroups();
+  }
   handleSelectGroup(id, mode) {
-    this.setState({ hostSortOptions: {} });
     this.props.actions.selectGroup(id, mode);
-    this.props.actions.unselectHostAll();
   }
   handleSortGroups(options) {
-    this.setState({ groupSortOptions: options });
     this.props.actions.sortGroups(options);
   }
   handleContextMenuForGroups(e) {
-    ContextMenu.show(e, [{ label: 'New Group', click: () => this.handleAddGroup() }]);
+    const { groupPastable } = this.props;
+
+    ContextMenu.show(e, [
+      {
+        label: 'New Group',
+        click: () => this.handleAddGroup(),
+        accelerator: 'CmdOrCtrl+Shift+N',
+      },
+      { type: 'separator' },
+      {
+        label: 'Cut',
+        click: () => this.handleCutGroups(),
+        accelerator: 'CmdOrCtrl+Shift+X',
+      },
+      {
+        label: 'Copy',
+        click: () => this.handleCopyGroups(),
+        accelerator: 'CmdOrCtrl+Shift+C',
+      },
+      {
+        label: 'Paste',
+        click: () => this.handlePasteGroups(),
+        accelerator: 'CmdOrCtrl+Shift+V',
+        enabled: groupPastable,
+      },
+      { type: 'separator' },
+      {
+        label: 'Delete',
+        click: () => this.handleDeleteGroups(),
+        accelerator: 'CmdOrCtrl+Shift+Backspace',
+      },
+    ]);
   }
   // handle host
   handleAddHost() {
-    this.props.actions.createHost(this.selectedGroupId, { enable: true });
+    this.props.actions.createHost();
     window.setTimeout(() => {
-      const host = this.hosts[this.hosts.length - 1];
-      if (host) {
-        this.setState({ focusedHostId: host.id });
-        this.props.actions.selectHost(host.id);
-      }
+      this.props.actions.focusHost();
     }, 0);
   }
-  handleDeleteHosts() {
-    const { selectedHostIds } = this.props;
-
-    const lastIndex = this.hosts
-      .reduce((previousValue, currentValue, index) => (
-        selectedHostIds.includes(currentValue.id) ? index : previousValue
-      ), null);
-    const selectedIndex = lastIndex < this.hosts.length - 1 ? lastIndex + 1 : lastIndex - 1;
-    const newHost = this.hosts[selectedIndex];
-
-    const ids = this.hosts
-      .filter(host => selectedHostIds
-      .includes(host.id)).map(host => host.id);
-    this.props.actions.deleteHosts(this.selectedGroupId, ids);
-
-    if (newHost) {
-      this.props.actions.selectHost(newHost.id);
-      return;
-    }
-    this.props.actions.unselectHostAll();
-  }
   handleEditHost(id, host) {
-    this.props.actions.updateHost(this.selectedGroupId, id, host);
+    this.props.actions.updateHost(id, host);
+  }
+  handleDeleteHosts() {
+    this.props.actions.deleteHosts();
+  }
+  handleCutHosts() {
+    this.props.actions.cutHosts();
+  }
+  handleCopyHosts() {
+    this.props.actions.copyHosts();
+  }
+  handlePasteHosts() {
+    this.props.actions.pasteHosts();
   }
   handleSelectHost(id, mode) {
     this.props.actions.selectHost(id, mode);
   }
   handleSortHosts(options) {
-    this.setState({ hostSortOptions: options });
-    this.props.actions.sortHosts(this.selectedGroupId, options);
+    this.props.actions.sortHosts(options);
   }
   handleContextMenuForHosts(e) {
-    let menus = [];
-    if (this.selectedGroupId) {
-      menus = [{ label: 'New Host', click: () => this.handleAddHost() }];
+    const { selectedGroupId, hostPastable } = this.props;
+
+    if (!selectedGroupId) {
+      return;
     }
-    ContextMenu.show(e, menus);
+
+    ContextMenu.show(e, [
+      {
+        label: 'New Host',
+        click: () => this.handleAddHost(),
+        accelerator: 'CmdOrCtrl+N',
+      },
+      { type: 'separator' },
+      {
+        label: 'Cut',
+        click: () => this.handleCutHosts(),
+        accelerator: 'CmdOrCtrl+Alt+X',
+      },
+      {
+        label: 'Copy',
+        click: () => this.handleCopyHosts(),
+        accelerator: 'CmdOrCtrl+Alt+C',
+      },
+      {
+        label: 'Paste',
+        click: () => this.handlePasteHosts(),
+        accelerator: 'CmdOrCtrl+Alt+V',
+        enabled: hostPastable,
+      },
+      { type: 'separator' },
+      {
+        label: 'Delete',
+        click: () => this.handleDeleteHosts(),
+        accelerator: 'CmdOrCtrl+Backspace',
+      },
+    ]);
   }
   // render
   renderGroupList() {
-    const { selectedGroupIds } = this.props;
-    const { focusedGroupId, groupSortOptions } = this.state;
+    const { groups, focusedGroupId, selectedGroupIds, groupSortOptions } = this.props;
 
     let emptyView = null;
-    if (!this.groups.length) {
+    if (!groups.length) {
       emptyView = (
         <div style={styles.emptyWrapper}>
           <div style={{
@@ -223,12 +238,10 @@ export default class MainContainer extends Component {
         onContextMenu={e => this.handleContextMenuForGroups(e)}
       >
         <GroupList
-          groups={this.groups}
-          selectedIds={selectedGroupIds}
+          groups={groups}
           focusedId={focusedGroupId}
+          selectedIds={selectedGroupIds}
           sortOptions={groupSortOptions}
-          onAddGroup={() => this.handleAddGroup()}
-          onDeleteGroups={() => this.handleDeleteGroups()}
           onEditGroup={(...args) => this.handleEditGroup(...args)}
           onSelectGroup={(...args) => this.handleSelectGroup(...args)}
           onSortGroups={(...args) => this.handleSortGroups(...args)}
@@ -238,11 +251,10 @@ export default class MainContainer extends Component {
     );
   }
   renderHostList() {
-    const { selectedHostIds } = this.props;
-    const { focusedHostId, hostSortOptions } = this.state;
+    const { selectedGroupId, hosts, focusedHostId, selectedHostIds, hostSortOptions } = this.props;
 
     let emptyView = null;
-    if (!this.hosts.length) {
+    if (!hosts.length) {
       emptyView = (
         <div style={styles.emptyWrapper}>
           <div style={{
@@ -260,13 +272,11 @@ export default class MainContainer extends Component {
         onContextMenu={e => this.handleContextMenuForHosts(e)}
       >
         <HostList
-          groupId={this.selectedGroupId}
-          hosts={this.hosts}
-          selectedIds={selectedHostIds}
+          groupId={selectedGroupId}
+          hosts={hosts}
           focusedId={focusedHostId}
+          selectedIds={selectedHostIds}
           sortOptions={hostSortOptions}
-          onAddHost={() => this.handleAddHost()}
-          onDeleteHosts={() => this.handleDeleteHosts()}
           onEditHost={(...args) => this.handleEditHost(...args)}
           onSelectHost={(...args) => this.handleSelectHost(...args)}
           onSortHosts={(...args) => this.handleSortHosts(...args)}
@@ -278,16 +288,16 @@ export default class MainContainer extends Component {
   render() {
     return (
       <div style={styles.container}>
-        <div style={styles.contentWrapper}>
-          <div style={styles.content}>
-            {this.renderHostList()}
-          </div>
-        </div>
         <div
           style={{ ...styles.nav, borderRightColor: this.context.muiTheme.palette.primary3Color }}
           className="nav"
         >
           {this.renderGroupList()}
+        </div>
+        <div style={styles.contentWrapper}>
+          <div style={styles.content}>
+            {this.renderHostList()}
+          </div>
         </div>
       </div>
     );

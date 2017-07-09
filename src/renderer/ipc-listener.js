@@ -6,21 +6,23 @@ import * as Group from './utils/group';
 export default function setupListener(store, history) {
   const actions = bindActionCreators(ActionCreators, store.dispatch);
 
-  ipcRenderer.on('sendGroups', (event, { mode, groups }) => {
-    if (mode === 'add') {
-      groups.forEach((group) => {
-        actions.createGroup(group);
-      });
+  ipcRenderer.on('sendGroups', (event, { method, groups }) => {
+    const groupLength = groups.length;
+    const hostLength = Group.getHostLength(groups);
 
-      const groupLength = groups.length;
-      const hostLength = Group.getHostLength(groups);
-      actions.createMessage({ text: `Added ${groupLength} group(s), ${hostLength} host(s)` });
-    } else if (mode === 'import') {
-      actions.initializeGroups(groups);
-
-      const groupLength = groups.length;
-      const hostLength = Group.getHostLength(groups);
-      actions.createMessage({ text: `Imported ${groupLength} group(s), ${hostLength} host(s)` });
+    switch (method) {
+      case 'initialize': {
+        actions.initializeGroups(groups);
+        actions.createMessage({ text: `Imported ${groupLength} group(s), ${hostLength} host(s)` });
+        break;
+      }
+      case 'add': {
+        actions.addGroups(groups);
+        actions.createMessage({ text: `Added ${groupLength} group(s), ${hostLength} host(s)` });
+        break;
+      }
+      default:
+        break;
     }
   });
 
@@ -43,5 +45,51 @@ export default function setupListener(store, history) {
 
   ipcRenderer.on('showSettingsWindow', () => {
     history.push('/settings');
+  });
+
+  ipcRenderer.on('createGroup', () => {
+    actions.createGroup();
+    window.setTimeout(() => {
+      actions.focusGroup();
+    }, 0);
+  });
+
+  ipcRenderer.on('cutGroups', () => {
+    actions.cutGroups();
+  });
+
+  ipcRenderer.on('copyGroups', () => {
+    actions.copyGroups();
+  });
+
+  ipcRenderer.on('pasteGroups', () => {
+    actions.pasteGroups();
+  });
+
+  ipcRenderer.on('deleteGroups', () => {
+    actions.deleteGroups();
+  });
+
+  ipcRenderer.on('createHost', () => {
+    actions.createHost();
+    window.setTimeout(() => {
+      actions.focusHost();
+    }, 0);
+  });
+
+  ipcRenderer.on('cutHosts', () => {
+    actions.cutHosts();
+  });
+
+  ipcRenderer.on('copyHosts', () => {
+    actions.copyHosts();
+  });
+
+  ipcRenderer.on('pasteHosts', () => {
+    actions.pasteHosts();
+  });
+
+  ipcRenderer.on('deleteHosts', () => {
+    actions.deleteHosts();
   });
 }

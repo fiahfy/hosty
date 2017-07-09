@@ -30,18 +30,9 @@ export function isValid(host) {
 }
 
 export function compare(a, b, { key, order }) {
-  if (!a[KEY_HOST] && !b[KEY_HOST]) {
-    return a[KEY_ID] > b[KEY_ID] ? 1 : -1;
-  }
-  if (!a[KEY_HOST]) {
-    return 1;
-  }
-  if (!b[KEY_HOST]) {
-    return -1;
-  }
   const reversed = order === SORT_DESC ? -1 : 1;
   if (a[key] === b[key]) {
-    return a[KEY_ID] > b[KEY_ID] ? reversed : -1 * reversed;
+    return 0;
   }
   if (a[key] === '' || a[key] === null || typeof a[key] === 'undefined') {
     return reversed;
@@ -57,15 +48,15 @@ export function build(hosts) {
   return newHosts
     .filter(host => isValid(host))
     .sort((a, b) => {
-      let result = compare(a, b, KEY_IP);
+      let result = compare(a, b, { key: KEY_IP });
       if (result !== 0) {
         return result;
       }
-      result = compare(a, b, KEY_ENABLE, SORT_DESC);
+      result = compare(a, b, { key: KEY_ENABLE, order: SORT_DESC });
       if (result !== 0) {
         return result;
       }
-      return compare(a, b, KEY_HOST);
+      return compare(a, b, { key: KEY_HOST });
     })
     .map(item => (
       `${(item.enable ? '' : '#')}${item.ip}\t${item.host}`

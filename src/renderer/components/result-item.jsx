@@ -8,11 +8,16 @@ import { colors } from 'material-ui/styles';
 import StatusIcon from './status-icon';
 import EditableLabel from './editable-label';
 import isUpdateNeeded from '../utils/is-update-needed';
+import * as Group from '../utils/group';
 import * as Host from '../utils/host';
 
 const styles = {
   row: {
     cursor: 'pointer',
+  },
+  groupColumn: {
+    width: '111px',
+    paddingRight: '0',
   },
   iconColumn: {
     paddingRight: '0',
@@ -20,73 +25,40 @@ const styles = {
     verticalAlign: 'top',
     width: '48px',
   },
-  errorTextField: {
-    color: colors.yellow700,
+  shrinkColumn: {
+    color: colors.grey500,
+    fontSize: '11px',
+    paddingLeft: '0',
+    paddingRight: '25px',
+    textAlign: 'right',
+    width: '25px',
   },
 };
 
-export default class HostItem extends Component {
+export default class ResultItem extends Component {
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired,
   };
   static propTypes = {
-    host: PropTypes.object,
+    result: PropTypes.object,
     selected: PropTypes.bool,
-    focused: PropTypes.bool,
-    editable: PropTypes.bool,
-    onEditHost: PropTypes.func,
     ...TableRow.propTypes,
   };
   static defaultProps = {
-    host: {},
+    result: {},
     selected: false,
-    focused: false,
-    editable: false,
-    onEditHost: () => {},
     ...TableRow.defaultProps,
   };
   shouldComponentUpdate(nextProps, nextState, nextContext) {
     return isUpdateNeeded(this, nextProps, nextState, nextContext);
   }
-  handleClickIconButton(e) {
-    e.stopPropagation();
-    const { host, onEditHost } = this.props;
-    const newHost = Object.assign({}, host, {
-      enable: !host.enable,
-    });
-    onEditHost(newHost);
-  }
-  handleChange(e) {
-    const { host, onEditHost } = this.props;
-    const { name, value } = e.target;
-    const newHost = Object.assign({}, host, {
-      [name]: value.trim(),
-    });
-    onEditHost(newHost);
-  }
-  handleKeyDown(e) {
-    const { name } = e.target;
-    if (e.keyCode === 9 && !e.shiftKey && name === Host.KEY_HOST) {
-      e.preventDefault();
-      this.ipTextInput.focus();
-      return;
-    }
-    if (e.keyCode === 9 && e.shiftKey && name === Host.KEY_IP) {
-      e.preventDefault();
-      this.hostTextInput.focus();
-      return;
-    }
-    if (e.keyCode === 13) {
-      e.target.blur();
-    }
-  }
   render() {
-    const { host, selected, focused, editable, ...others } = this.props;
-    delete others.onEditHost;
+    const { result, selected, ...others } = this.props;
 
-    const isValidHost = Host.isValidHost(host.host);
-    const isValidIp = Host.isValidIp(host.ip);
-    const valid = isValidHost && isValidIp;
+    const valid = Host.isValid(result.host);
+    const count = (result.group.hosts || []).length;
+    const isValidHost = Host.isValidHost(result.host.host);
+    const isValidIp = Host.isValidIp(result.host.ip);
 
     return (
       <TableRow
@@ -96,10 +68,31 @@ export default class HostItem extends Component {
       >
         {others.children}
         <TableRowColumn style={styles.iconColumn}>
-          <IconButton onClick={e => this.handleClickIconButton(e)}>
+          <IconButton>
+            <StatusIcon
+              valid
+              enable={result.group.enable}
+            />
+          </IconButton>
+        </TableRowColumn>
+        <TableRowColumn style={styles.groupColumn}>
+          <EditableLabel
+            name={Group.KEY_NAME}
+            ref={(input) => { this.textInput = input; }}
+            defaultValue={result.group.name}
+            hintText="Group"
+            fullWidth
+            editable={false}
+          />
+        </TableRowColumn>
+        <TableRowColumn style={styles.shrinkColumn}>
+          {count}
+        </TableRowColumn>
+        <TableRowColumn style={styles.iconColumn}>
+          <IconButton>
             <StatusIcon
               valid={valid}
-              enable={host.enable}
+              enable={result.host.enable}
             />
           </IconButton>
         </TableRowColumn>
@@ -107,31 +100,24 @@ export default class HostItem extends Component {
           <EditableLabel
             name={Host.KEY_HOST}
             ref={(input) => { this.hostTextInput = input; }}
-            defaultValue={host.host}
+            defaultValue={result.host.host}
             hintText="example.com"
             errorText={isValidHost ? null : ' '}
             errorStyle={styles.errorTextField}
             fullWidth
-            onKeyDown={e => this.handleKeyDown(e)}
-            onBlur={e => this.handleChange(e)}
-            onChange={e => this.handleChange(e)}
-            focused={focused}
-            editable={editable}
+            editable={false}
           />
         </TableRowColumn>
         <TableRowColumn>
           <EditableLabel
             name={Host.KEY_IP}
             ref={(input) => { this.ipTextInput = input; }}
-            defaultValue={host.ip}
+            defaultValue={result.host.ip}
             hintText="192.0.2.0"
             errorText={isValidIp ? null : ' '}
             errorStyle={styles.errorTextField}
             fullWidth
-            onKeyDown={e => this.handleKeyDown(e)}
-            onBlur={e => this.handleChange(e)}
-            onChange={e => this.handleChange(e)}
-            editable={editable}
+            editable={false}
           />
         </TableRowColumn>
       </TableRow>

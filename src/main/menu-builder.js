@@ -1,8 +1,6 @@
 import { app, shell, dialog, ipcMain, Menu } from 'electron';
-import fs from 'fs';
-import path from 'path';
 import * as Group from '../renderer/utils/group';
-import * as Host from '../renderer/utils/host';
+import * as HostsFileManager from '../renderer/utils/hosts-file-manager';
 
 export default class MenuBuilder {
   constructor(window) {
@@ -37,10 +35,12 @@ export default class MenuBuilder {
         label: 'File',
         submenu: [
           { label: 'Import Hosty File...', accelerator: 'CmdOrCtrl+I', click: () => { this.importHostyFile(); } },
-          { label: 'Add Groups from Hosts Files...', accelerator: 'Shift+CmdOrCtrl+I', click: () => { this.addHostFiles(); } },
+          { label: 'Import Hosts File...', accelerator: 'CmdOrCtrl+Shift+I', click: () => { this.importHostsFile(); } },
+          { label: 'Add Groups from Hosty Files...', click: () => { this.addGroupsFromHostyFiles(); } },
+          { label: 'Add Groups from Hosts Files...', click: () => { this.addGroupsFromHostsFiles(); } },
           { type: 'separator' },
           { label: 'Export Hosty File...', accelerator: 'CmdOrCtrl+E', click: () => { this.exportHostyFile(); } },
-          { label: 'Export Hosts File...', accelerator: 'Shift+CmdOrCtrl+E', click: () => { this.exportHostsFile(); } },
+          { label: 'Export Hosts File...', accelerator: 'CmdOrCtrl+Shift+E', click: () => { this.exportHostsFile(); } },
         ],
       },
       {
@@ -52,17 +52,38 @@ export default class MenuBuilder {
           { role: 'cut' },
           { role: 'copy' },
           { role: 'paste' },
-          { role: 'pasteandmatchstyle' },
+          // { role: 'pasteandmatchstyle' },
           { role: 'delete' },
           { role: 'selectall' },
+          { type: 'separator' },
+          {
+            label: 'Group',
+            submenu: [
+              { label: 'New Group', accelerator: 'CmdOrCtrl+Shift+N', click: () => { this.createGroup(); } },
+              { label: 'Cut Group', accelerator: 'CmdOrCtrl+Shift+X', click: () => { this.cutGroups(); } },
+              { label: 'Copy Group', accelerator: 'CmdOrCtrl+Shift+C', click: () => { this.copyGroups(); } },
+              { label: 'Paste Group', accelerator: 'CmdOrCtrl+Shift+V', click: () => { this.pasteGroups(); } },
+              { label: 'Delete Group', accelerator: 'CmdOrCtrl+Shift+Backspace', click: () => { this.deleteGroups(); } },
+            ],
+          },
+          { type: 'separator' },
+          {
+            label: 'Host',
+            submenu: [
+              { label: 'New Host', accelerator: 'CmdOrCtrl+N', click: () => { this.createHost(); } },
+              { label: 'Cut Host', accelerator: 'CmdOrCtrl+Alt+X', click: () => { this.cutHosts(); } },
+              { label: 'Copy Host', accelerator: 'CmdOrCtrl+Alt+C', click: () => { this.copyHosts(); } },
+              { label: 'Paste Host', accelerator: 'CmdOrCtrl+Alt+V', click: () => { this.pasteHosts(); } },
+              { label: 'Delete Host', accelerator: 'CmdOrCtrl+Backspace', click: () => { this.deleteHosts(); } },
+            ],
+          },
+          { type: 'separator' },
+          { label: 'Search', accelerator: 'CmdOrCtrl+F', click: () => { this.search(); } },
         ],
       },
       {
         label: 'View',
         submenu: [
-          { label: 'Groups', accelerator: 'CmdOrCtrl+G', click: () => { this.showGroups(); } },
-          { label: 'Search', accelerator: 'CmdOrCtrl+F', click: () => { this.search(); } },
-          { type: 'separator' },
           { role: 'reload' },
           { role: 'forcereload' },
           { role: 'toggledevtools' },
@@ -77,8 +98,10 @@ export default class MenuBuilder {
       {
         role: 'window',
         submenu: [
-          { role: 'minimize' },
+          { label: 'Hosts List', accelerator: 'CmdOrCtrl+Shift+H', click: () => { this.showGroups(); } },
+          { type: 'separator' },
           { role: 'close' },
+          { role: 'minimize' },
         ],
       },
       {
@@ -120,13 +143,11 @@ export default class MenuBuilder {
       );
 
       // Window menu
-      template[4].submenu = [
-        { role: 'close' },
-        { role: 'minimize' },
+      template[4].submenu.push(
         { role: 'zoom' },
         { type: 'separator' },
         { role: 'front' },
-      ];
+      );
     }
 
     return template;
@@ -138,12 +159,11 @@ export default class MenuBuilder {
         if (!filenames) {
           return;
         }
-
         const filename = filenames[0];
-        const data = fs.readFileSync(filename, 'utf8');
+
         try {
-          const groups = JSON.parse(data);
-          this.window.webContents.send('sendGroups', { mode: 'import', groups });
+          const groups = HostsFileManager.readGroupsFromHostyFile(filename);
+          this.window.webContents.send('sendGroups', { method: 'initialize', groups });
         } catch (e) {
           this.window.webContents.send('sendMessage', {
             message: { text: 'Invalid Hosty file' },
@@ -152,32 +172,54 @@ export default class MenuBuilder {
       },
     );
   }
-  addHostFiles() {
+  importHostsFile() {
     dialog.showOpenDialog(
-      { properties: ['openFile', 'multiSelections'] },
+      {},
+      (filenames) => {
+        if (!filenames) {
+          return;
+        }
+        const filename = filenames[0];
+
+        const group = HostsFileManager.readGroupFromHostsFile(filename);
+        this.window.webContents.send('sendGroups', { method: 'initialize', groups: [group] });
+      },
+    );
+  }
+  addGroupsFromHostyFiles() {
+    dialog.showOpenDialog(
+      {
+        filters: [{ name: 'Hosty File', extensions: ['hosty'] }],
+        properties: ['openFile', 'multiSelections'],
+      },
       (filenames) => {
         if (!filenames) {
           return;
         }
 
-        const groups = filenames
-          .map((filename) => {
-            const { name } = path.parse(filename);
-            const data = fs.readFileSync(filename, 'utf8');
-            let hosts = Host.parse(data);
-            if (!hosts.length) {
-              return null;
-            }
-            hosts = hosts.map((host, i) => {
-              const newHost = Object.assign({}, host);
-              newHost.id = i + 1;
-              return newHost;
-            });
-            return { enable: true, name, hosts };
-          })
-          .filter(host => !!host);
+        try {
+          const groups = HostsFileManager.readGroupsFromFiles(filenames);
+          this.window.webContents.send('sendGroups', { method: 'add', groups });
+        } catch (e) {
+          this.window.webContents.send('sendMessage', {
+            message: { text: 'Invalid Hosty file' },
+          });
+        }
+      },
+    );
+  }
+  addGroupsFromHostsFiles() {
+    dialog.showOpenDialog(
+      {
+        properties: ['openFile', 'multiSelections'],
+      },
+      (filenames) => {
+        if (!filenames) {
+          return;
+        }
 
-        this.window.webContents.send('sendGroups', { mode: 'add', groups });
+        const groups = HostsFileManager.readGroupsFromFiles(filenames);
+        this.window.webContents.send('sendGroups', { method: 'add', groups });
       },
     );
   }
@@ -189,14 +231,8 @@ export default class MenuBuilder {
           return;
         }
 
-        const { ext } = path.parse(filename);
-        let filenameWithExtension = filename;
-        if (ext !== '.hosty') {
-          filenameWithExtension += '.hosty';
-        }
-
         ipcMain.once('sendGroups', (event, { groups }) => {
-          fs.writeFileSync(filenameWithExtension, `${JSON.stringify(groups)}\n`, 'utf8');
+          HostsFileManager.writeGroupsToHostyFile(groups, filename);
           const groupLength = groups.length;
           const hostLength = Group.getHostLength(groups);
           this.window.webContents.send('sendMessage', {
@@ -214,7 +250,7 @@ export default class MenuBuilder {
       }
 
       ipcMain.once('sendGroups', (event, { groups }) => {
-        fs.writeFileSync(filename, `${Group.build(groups)}\n`, 'utf8');
+        HostsFileManager.writeGroupsToHostsFile(groups, filename);
         const groupLength = groups.length;
         const hostLength = Group.getHostLength(groups);
         this.window.webContents.send('sendMessage', {
@@ -232,5 +268,35 @@ export default class MenuBuilder {
   }
   showSettings() {
     this.window.webContents.send('showSettingsWindow');
+  }
+  createGroup() {
+    this.window.webContents.send('createGroup');
+  }
+  cutGroups() {
+    this.window.webContents.send('cutGroups');
+  }
+  copyGroups() {
+    this.window.webContents.send('copyGroups');
+  }
+  pasteGroups() {
+    this.window.webContents.send('pasteGroups');
+  }
+  deleteGroups() {
+    this.window.webContents.send('deleteGroups');
+  }
+  createHost() {
+    this.window.webContents.send('createHost');
+  }
+  cutHosts() {
+    this.window.webContents.send('cutHosts');
+  }
+  copyHosts() {
+    this.window.webContents.send('copyHosts');
+  }
+  pasteHosts() {
+    this.window.webContents.send('pasteHosts');
+  }
+  deleteHosts() {
+    this.window.webContents.send('deleteHosts');
   }
 }

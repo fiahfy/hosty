@@ -2,27 +2,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as SvgIcons from 'material-ui/svg-icons';
 
-const SortOrderIcon = ({ hidden, asc, style }) => {
+const SortOrderIcon = ({ hidden, asc, ...others }) => {
   if (hidden) {
     return null;
   }
   return asc
-    ? <SvgIcons.NavigationArrowDropDown style={style} />
-    : <SvgIcons.NavigationArrowDropUp style={style} />;
+    ? <SvgIcons.NavigationArrowDropDown {...others} />
+    : <SvgIcons.NavigationArrowDropUp {...others} />;
 };
 
 SortOrderIcon.propTypes = {
-  ...SvgIcons.propTypes,
   hidden: PropTypes.bool,
   asc: PropTypes.bool,
-  style: PropTypes.object,
+  ...SvgIcons.propTypes,
 };
 
 SortOrderIcon.defaultProps = {
-  ...SvgIcons.defaultProps,
   hidden: false,
   asc: true,
-  style: {},
+  ...SvgIcons.defaultProps,
 };
 
 export default SortOrderIcon;

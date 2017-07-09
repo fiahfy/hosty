@@ -4,26 +4,30 @@ import { app as mainApp, remote } from 'electron';
 import * as sudoPrompt from 'sudo-prompt';
 import isRenderer from 'is-electron-renderer';
 import * as Group from './group';
+import * as Host from './host';
 
 const app = isRenderer ? remote.app : mainApp;
 
 const DEBUG = process.env.NODE_ENV !== 'production';
+const WIN32 = process.platform === 'win32';
 
 const SECTION_BEGIN = '## hosty begin ##';
 const SECTION_END = '## hosty end ##';
 
 const CHARSET = 'utf8';
+const EXTENSION = '.hosty';
 
 const PATH_USER = path.join(app.getPath('userData'), 'hosts');
 const PATH_OSX = '/etc/hosts';
 const PATH_WINDOWS = 'C:\\Windows\\System32\\drivers\\etc\\hosts';
 const PATH_DUMMY = path.join(process.cwd(), 'dummyHosts');
-let PATH = process.platform === 'win32' ? PATH_WINDOWS : PATH_OSX;
+
+const SUDO_OPTIONS = { name: 'Hosty' };
+
+let PATH = WIN32 ? PATH_WINDOWS : PATH_OSX;
 if (DEBUG) {
   PATH = PATH_DUMMY;
 }
-
-const SUDO_OPTIONS = { name: 'Hosty' };
 
 function read() {
   try {
@@ -76,7 +80,7 @@ async function setupUserHostsFile() {
   } catch (e) {
     //
   }
-  if (process.platform === 'win32') {
+  if (WIN32) {
     const commands = [`mklink "${PATH_USER}" "${PATH}"`, `cacls "${PATH}" /e /g Users:w`];
     const command = commands.join(' && ');
     await sudo(`cmd /c ${command}`);
@@ -112,4 +116,42 @@ export function save(groups = []) {
 
 export function clear() {
   save();
+}
+
+export function readGroupsFromHostyFile(filename) {
+  const data = fs.readFileSync(filename, CHARSET);
+  return JSON.parse(data);
+}
+
+export function readGroupFromHostsFile(filename) {
+  const { name } = path.parse(filename);
+  const data = fs.readFileSync(filename, CHARSET);
+  const hosts = Host.parse(data);
+  return {
+    enable: true,
+    name,
+    hosts,
+  };
+}
+
+export function readGroupsFromFiles(filenames) {
+  return filenames.map((filename) => {
+    const { ext } = path.parse(filename);
+    return ext === EXTENSION
+      ? this.readGroupsFromHostyFile(filename)
+      : [this.readGroupFromHostsFile(filename)];
+  }).reduce((previous, current) => [...previous, ...current]);
+}
+
+export function writeGroupsToHostyFile(groups, filename) {
+  const { ext } = path.parse(filename);
+  let filenameWithExtension = filename;
+  if (ext !== EXTENSION) {
+    filenameWithExtension += EXTENSION;
+  }
+  fs.writeFileSync(filenameWithExtension, `${JSON.stringify(groups)}\n`, CHARSET);
+}
+
+export function writeGroupsToHostsFile(groups, filename) {
+  fs.writeFileSync(filename, `${Group.build(groups)}\n`, CHARSET);
 }

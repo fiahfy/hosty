@@ -5,7 +5,7 @@ import {
   TableRow, TableRowColumn,
 } from 'material-ui';
 import { colors } from 'material-ui/styles';
-import HostStatusIcon from './host-status-icon';
+import StatusIcon from './status-icon';
 import EditableLabel from './editable-label';
 import isUpdateNeeded from '../utils/is-update-needed';
 import * as Group from '../utils/group';
@@ -66,22 +66,17 @@ export default class GroupItem extends Component {
   handleClickIconButton(e) {
     e.stopPropagation();
     const { group, onEditGroup } = this.props;
-    const newGroup = Object.assign({}, group);
-    newGroup.enable = !newGroup.enable;
-    onEditGroup(newGroup);
-  }
-  handleBlur(e) {
-    const { group, onEditGroup } = this.props;
-    const { name, value } = e.target;
-    const newGroup = Object.assign({}, group);
-    newGroup[name] = value.trim();
+    const newGroup = Object.assign({}, group, {
+      enable: !group.enable,
+    });
     onEditGroup(newGroup);
   }
   handleChange(e) {
     const { group, onEditGroup } = this.props;
     const { name, value } = e.target;
-    const newGroup = Object.assign({}, group);
-    newGroup[name] = value.trim();
+    const newGroup = Object.assign({}, group, {
+      [name]: value.trim(),
+    });
     onEditGroup(newGroup);
   }
   render() {
@@ -99,7 +94,7 @@ export default class GroupItem extends Component {
         {others.children}
         <TableRowColumn style={styles.iconColumn}>
           <IconButton onClick={e => this.handleClickIconButton(e)}>
-            <HostStatusIcon
+            <StatusIcon
               valid
               enable={group.enable}
             />
@@ -112,8 +107,8 @@ export default class GroupItem extends Component {
             defaultValue={group.name}
             hintText="Group"
             fullWidth
-            onBlur={e => this.handleBlur(e)}
             onKeyDown={e => this.constructor.handleKeyDown(e)}
+            onBlur={e => this.handleChange(e)}
             onChange={e => this.handleChange(e)}
             focused={focused}
             editable={editable}

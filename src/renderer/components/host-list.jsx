@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  FlatButton,
-  Table, TableHeader, TableBody, TableFooter,
-  TableRow, TableHeaderColumn, TableRowColumn,
+  Table, TableHeader, TableBody,
+  TableRow, TableHeaderColumn,
 } from 'material-ui';
 import HostItem from './host-item';
 import SortOrderIcon from './sort-order-icon';
 import isUpdateNeeded from '../utils/is-update-needed';
-import ContextMenu from '../utils/context-menu';
 import * as Host from '../utils/host';
 
 const styles = {
@@ -44,23 +42,19 @@ export default class HostList extends Component {
   static propTypes = {
     groupId: PropTypes.number.isRequired,
     hosts: PropTypes.arrayOf(PropTypes.object),
-    selectedIds: PropTypes.arrayOf(PropTypes.number),
     focusedId: PropTypes.number,
+    selectedIds: PropTypes.arrayOf(PropTypes.number),
     sortOptions: PropTypes.object,
-    onAddHost: PropTypes.func,
     onEditHost: PropTypes.func,
-    onDeleteHosts: PropTypes.func,
     onSelectHost: PropTypes.func,
     onSortHosts: PropTypes.func,
   };
   static defaultProps = {
     hosts: [],
-    selectedIds: [],
     focusedId: null,
+    selectedIds: [],
     sortOptions: {},
-    onAddHost: () => {},
     onEditHost: () => {},
-    onDeleteHosts: () => {},
     onSelectHost: () => {},
     onSortHosts: () => {},
   };
@@ -96,20 +90,7 @@ export default class HostList extends Component {
     this.props.onEditHost(host.id, host);
   }
   handleContextMenu(e, id) {
-    const { onSelectHost, onAddHost, onDeleteHosts } = this.props;
-
-    onSelectHost(id, 'shift');
-
-    ContextMenu.show(e, [
-      {
-        label: 'New Host',
-        click: onAddHost,
-      },
-      {
-        label: 'Delete',
-        click: onDeleteHosts,
-      },
-    ]);
+    this.props.onSelectHost(id, 'shift');
   }
   renderHeader() {
     const { key, order } = this.props.sortOptions;
@@ -166,39 +147,6 @@ export default class HostList extends Component {
       </TableBody>
     );
   }
-  renderFooter() {
-    const { groupId, selectedIds, onAddHost, onDeleteHosts } = this.props;
-    const selectedCount = selectedIds.length;
-    const addDisabled = !groupId;
-    const deleteDisabled = !groupId || !selectedCount;
-    const label = selectedCount > 1 ? `Delete (${selectedCount})` : 'Delete';
-
-    return (
-      <TableFooter
-        adjustForCheckbox={false}
-      >
-        <TableRow>
-          <TableRowColumn style={styles.footerColumn}>
-            <FlatButton
-              label="Add"
-              primary
-              disabled={addDisabled}
-              onClick={onAddHost}
-            />
-          </TableRowColumn>
-          <TableRowColumn style={styles.footerColumn}>
-            <FlatButton
-              label={label}
-              secondary
-              disabled={deleteDisabled}
-              onClick={onDeleteHosts}
-            />
-          </TableRowColumn>
-          <TableRowColumn />
-        </TableRow>
-      </TableFooter>
-    );
-  }
   render() {
     return (
       <Table
@@ -208,7 +156,6 @@ export default class HostList extends Component {
       >
         {this.renderHeader()}
         {this.renderBody()}
-        {this.renderFooter()}
       </Table>
     );
   }

@@ -1,5 +1,3 @@
-import fs from 'fs';
-import path from 'path';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -12,7 +10,7 @@ import {
 } from 'material-ui/styles';
 import * as ActionCreators from '../actions';
 import * as Group from '../utils/group';
-import * as Host from '../utils/host';
+import * as HostsFileManager from '../utils/hosts-file-manager';
 
 const styles = {
   app: {
@@ -62,7 +60,7 @@ export default class App extends Component {
     e.stopPropagation();
     e.dataTransfer.dropEffect = 'copy'; // eslint-disable-line no-param-reassign
   }
-  menus = [
+  static menus = [
     { pathname: '/', IconClass: ActionList },
     { pathname: '/search', IconClass: ActionSearch },
     { pathname: '/settings', IconClass: ActionSettings },
@@ -71,36 +69,23 @@ export default class App extends Component {
     e.preventDefault();
     e.stopPropagation();
 
-    // TODO:
-    const groups = Array.from(e.dataTransfer.files)
-      .map((file) => {
-        const params = path.parse(file.path);
-        const data = fs.readFileSync(file.path, 'utf8');
-        let hosts = Host.parse(data);
-        if (!hosts.length) {
-          return null;
-        }
-        hosts = hosts.map((host, i) => {
-          const newHost = Object.assign({}, host);
-          newHost.id = i + 1;
-          return newHost;
-        });
-        return { enable: true, name: params.name, hosts };
-      })
-      .filter(item => !!item);
-
-    groups.forEach((group) => {
-      this.props.actions.createGroup(group);
-    });
-
-    const groupLength = groups.length;
-    const hostLength = Group.getHostLength(groups);
-    this.props.actions.createMessage(
-      { text: `Added ${groupLength} group(s), ${hostLength} host(s)` },
-    );
+    const filenames = Array.from(e.dataTransfer.files).map(file => file.path);
+    try {
+      const groups = HostsFileManager.readGroupsFromFiles(filenames);
+      const groupLength = groups.length;
+      const hostLength = Group.getHostLength(groups);
+      this.props.actions.addGroups(groups);
+      this.props.actions.createMessage(
+        { text: `Added ${groupLength} group(s), ${hostLength} host(s)` },
+      );
+    } catch (error) {
+      this.props.actions.createMessage(
+        { text: 'Invalid Hosty file' },
+      );
+    }
   }
   handleItemTouchTap(e, item, index) {
-    const menu = this.menus[index];
+    const menu = this.constructor.menus[index];
     if (!menu) {
       return;
     }
@@ -128,7 +113,7 @@ export default class App extends Component {
     const currentPathname = this.context.router.history.location.pathname;
     return (
       <Menu onItemTouchTap={(...args) => this.handleItemTouchTap(...args)}>
-        {this.menus.map(({ pathname, IconClass }) => {
+        {this.constructor.menus.map(({ pathname, IconClass }) => {
           const color = pathname === currentPathname
                       ? theme.palette.accent1Color
                       : theme.palette.primary3Color;

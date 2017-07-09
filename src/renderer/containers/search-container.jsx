@@ -3,17 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as ActionCreators from '../actions';
-import SearchList from '../components/search-list';
+import ResultList from '../components/result-list';
 
 const styles = {
   container: {
     boxSizing: 'border-box',
     height: '100%',
     overflow: 'hidden',
-  },
-  content: {
-    height: '100%',
-    overflow: 'auto',
   },
   emptyWrapper: {
     display: 'table',
@@ -32,10 +28,7 @@ const styles = {
 };
 
 function mapStateToProps(state) {
-  return {
-    groups: state.groups,
-    query: state.query,
-  };
+  return { ...state.searchContainer };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -48,50 +41,29 @@ export default class SearchContainers extends Component {
     muiTheme: PropTypes.object.isRequired,
   };
   static propTypes = {
-    groups: PropTypes.arrayOf(PropTypes.object).isRequired,
+    results: PropTypes.arrayOf(PropTypes.object).isRequired,
     query: PropTypes.string.isRequired,
+    selectedIds: PropTypes.arrayOf(PropTypes.number).isRequired,
+    sortOptions: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
   };
-  get items() {
-    const { query } = this.props;
-
-    return this.props.groups.reduce((previous, current) => (
-      previous.concat((current.hosts || []).map(host => (
-        { group: current, host }
-      )))
-    ), [])
-    .filter((item) => {
-      if (query === '') {
-        return false;
-      }
-      if ((item.host.host || '').indexOf(query) > -1) {
-        return true;
-      }
-      if ((item.host.ip || '').indexOf(query) > -1) {
-        return true;
-      }
-      return false;
-    });
-  }
-  handleSelectItems(ids) {
-    const [groupIds, hostIds] = ids.reduce((previous, current) => (
-      previous.map((item, index) => (
-        item.concat([current[index]])
-      ))
-    ), [[], []]);
-    this.props.actions.selectGroups(groupIds);
-    this.props.actions.selectHosts(hostIds);
+  handleSelectResult(result) {
+    this.props.actions.selectGroup(result.group.id);
+    this.props.actions.selectHost(result.host.id);
     this.props.history.push('/');
   }
-  handleSearchItems(query) {
-    this.props.actions.searchItems(query);
+  handleSortResults(options) {
+    this.props.actions.sortResults(options);
+  }
+  handleSearch(query) {
+    this.props.actions.search(query);
   }
   render() {
-    const { query } = this.props;
+    const { query, results, selectedIds, sortOptions } = this.props;
 
     let emptyView = null;
-    if (!this.items.length) {
+    if (!results.length) {
       emptyView = (
         <div style={styles.emptyWrapper}>
           <div style={{
@@ -105,16 +77,17 @@ export default class SearchContainers extends Component {
 
     return (
       <div style={styles.container}>
-        <div style={styles.content}>
-          <div className="list">
-            <SearchList
-              items={this.items}
-              query={query}
-              onSelectItems={selectedItems => this.handleSelectItems(selectedItems)}
-              onSearchItems={newQuery => this.handleSearchItems(newQuery)}
-            />
-            {emptyView}
-          </div>
+        <div className="list has-footer">
+          <ResultList
+            results={results}
+            query={query}
+            selectedIds={selectedIds}
+            sortOptions={sortOptions}
+            onSelectResult={(...args) => this.handleSelectResult(...args)}
+            onSortResults={(...args) => this.handleSortResults(...args)}
+            onSearch={(...args) => this.handleSearch(...args)}
+          />
+          {emptyView}
         </div>
       </div>
     );

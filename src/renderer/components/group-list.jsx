@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  FlatButton,
-  Table, TableHeader, TableBody, TableFooter,
-  TableRow, TableHeaderColumn, TableRowColumn,
+  Table, TableHeader, TableBody,
+  TableRow, TableHeaderColumn,
 } from 'material-ui';
 import GroupItem from './group-item';
 import SortOrderIcon from './sort-order-icon';
 import isUpdateNeeded from '../utils/is-update-needed';
-import ContextMenu from '../utils/context-menu';
 import * as Group from '../utils/group';
 
 const styles = {
@@ -43,23 +41,19 @@ export default class GroupList extends Component {
   };
   static propTypes = {
     groups: PropTypes.arrayOf(PropTypes.object),
-    selectedIds: PropTypes.arrayOf(PropTypes.number),
     focusedId: PropTypes.number,
+    selectedIds: PropTypes.arrayOf(PropTypes.number),
     sortOptions: PropTypes.object,
-    onAddGroup: PropTypes.func,
     onEditGroup: PropTypes.func,
-    onDeleteGroups: PropTypes.func,
     onSelectGroup: PropTypes.func,
     onSortGroups: PropTypes.func,
   };
   static defaultProps = {
     groups: [],
-    selectedIds: [],
     focusedId: null,
+    selectedIds: [],
     sortOptions: {},
-    onAddGroup: () => {},
     onEditGroup: () => {},
-    onDeleteGroups: () => {},
     onSelectGroup: () => {},
     onSortGroups: () => {},
   };
@@ -95,20 +89,7 @@ export default class GroupList extends Component {
     this.props.onEditGroup(group.id, group);
   }
   handleContextMenu(e, id) {
-    const { onSelectGroup, onAddGroup, onDeleteGroups } = this.props;
-
-    onSelectGroup(id, 'shift');
-
-    ContextMenu.show(e, [
-      {
-        label: 'New Group',
-        click: onAddGroup,
-      },
-      {
-        label: 'Delete',
-        click: onDeleteGroups,
-      },
-    ]);
+    this.props.onSelectGroup(id, 'shift');
   }
   renderHeader() {
     const { key, order } = this.props.sortOptions;
@@ -157,36 +138,6 @@ export default class GroupList extends Component {
       </TableBody>
     );
   }
-  renderFooter() {
-    const { selectedIds, onAddGroup, onDeleteGroups } = this.props;
-    const selectedCount = selectedIds.length;
-    const disabled = !selectedCount;
-    const label = selectedCount > 1 ? `Delete (${selectedCount})` : 'Delete';
-
-    return (
-      <TableFooter
-        adjustForCheckbox={false}
-      >
-        <TableRow>
-          <TableRowColumn style={styles.footerColumn}>
-            <FlatButton
-              label="Add"
-              primary
-              onClick={onAddGroup}
-            />
-          </TableRowColumn>
-          <TableRowColumn style={styles.footerColumn}>
-            <FlatButton
-              label={label}
-              secondary
-              disabled={disabled}
-              onClick={onDeleteGroups}
-            />
-          </TableRowColumn>
-        </TableRow>
-      </TableFooter>
-    );
-  }
   render() {
     return (
       <Table
@@ -196,7 +147,6 @@ export default class GroupList extends Component {
       >
         {this.renderHeader()}
         {this.renderBody()}
-        {this.renderFooter()}
       </Table>
     );
   }
