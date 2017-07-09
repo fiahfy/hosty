@@ -12,6 +12,8 @@ export const UNSELECT_GROUP_ALL = 'UNSELECT_GROUP_ALL';
 export const CREATE_HOST = 'CREATE_HOST';
 export const UPDATE_HOST = 'UPDATE_HOST';
 export const DELETE_HOSTS = 'DELETE_HOSTS';
+export const COPY_HOSTS = 'COPY_HOSTS';
+export const PASTE_HOSTS = 'PASTE_HOSTS';
 export const SORT_HOSTS = 'SORT_HOSTS';
 export const FOCUS_HOST = ' FOCUS_HOST';
 export const SELECT_HOST = 'SELECT_HOST';
@@ -77,6 +79,14 @@ export const updateHost = createAction(
 export const deleteHosts = createAction(
   DELETE_HOSTS,
   (groupId, ids) => ({ groupId, ids }),
+);
+
+export const copyHosts = createAction(
+  COPY_HOSTS,
+);
+
+export const pasteHosts = createAction(
+  PASTE_HOSTS,
 );
 
 export const sortHosts = createAction(

@@ -221,6 +221,7 @@ const mainContainer = handleActions({
   focusedHostId: 0,
   selectedGroupIds: [],
   selectedHostIds: [],
+  copiedHosts: [],
   groupSortOptions: {},
   hostSortOptions: {},
 });
@@ -316,33 +317,75 @@ export default reduceReducers(
         },
       });
     },
+    [ActionTypes.COPY_HOSTS]: (state) => {
+      const { selectedGroupIds, selectedHostIds } = state.mainContainer;
+      const selectedGroupId = selectedGroupIds[0];
+      if (!selectedGroupId) {
+        return state;
+      }
+      const group = state.groups.find(currentGroup => currentGroup.id === selectedGroupId);
+      if (!group) {
+        return state;
+      }
+      const hosts = group.hosts || [];
+      return Object.assign({}, state, {
+        mainContainer: {
+          ...state.mainContainer,
+          copiedHosts: hosts.filter(host => selectedHostIds.includes(host.id)),
+        },
+      });
+    },
+    [ActionTypes.PASTE_HOSTS]: (state) => {
+      const { selectedGroupIds, copiedHosts } = state.mainContainer;
+      const selectedGroupId = selectedGroupIds[0];
+      if (!selectedGroupId) {
+        return state;
+      }
+      return Object.assign({}, state, {
+        groups: state.groups.map((currentGroup) => {
+          if (currentGroup.id !== selectedGroupId) {
+            return currentGroup;
+          }
+          const newGroup = Object.assign({}, currentGroup);
+          if (!newGroup.hosts) {
+            newGroup.hosts = [];
+          }
+          const maxId = newGroup.hosts.reduce((previous, currentHost) => (
+            currentHost.id > previous ? currentHost.id : previous
+          ), 0);
+          const newHosts = copiedHosts
+            .map((host, index) => Object.assign({}, host, { id: maxId + index + 1 }));
+          newGroup.hosts = [...newGroup.hosts, ...newHosts];
+          return newGroup;
+        }),
+      });
+    },
     [ActionTypes.SEARCH]: (state) => {
       const { query, sortOptions } = state.searchContainer;
-      const results = state.groups.concat()
-        .reduce((previous, current) => (
-          previous.concat((current.hosts || []).map(host => ({
-            id: `${current.id}-${host.id}`,
-            group: current,
-            host,
-          })))
-        ), [])
-        .filter((result) => {
-          if (query === '') {
-            return false;
-          }
-          if ((result.host.host || '').indexOf(query) > -1) {
-            return true;
-          }
-          if ((result.host.ip || '').indexOf(query) > -1) {
-            return true;
-          }
-          return false;
-        })
-        .sort((a, b) => Result.compare(a, b, sortOptions));
       return Object.assign({}, state, {
         searchContainer: {
           ...state.searchContainer,
-          results,
+          results: state.groups.concat()
+            .reduce((previous, current) => (
+              previous.concat((current.hosts || []).map(host => ({
+                id: `${current.id}-${host.id}`,
+                group: current,
+                host,
+              })))
+            ), [])
+            .filter((result) => {
+              if (query === '') {
+                return false;
+              }
+              if ((result.host.host || '').indexOf(query) > -1) {
+                return true;
+              }
+              if ((result.host.ip || '').indexOf(query) > -1) {
+                return true;
+              }
+              return false;
+            })
+            .sort((a, b) => Result.compare(a, b, sortOptions)),
         },
       });
     },

@@ -51,6 +51,7 @@ function mapStateToProps(state) {
   return {
     groups: state.groups,
     ...state.mainContainer,
+    hostPastable: !!state.mainContainer.copiedHosts.length,
   };
 }
 
@@ -71,6 +72,7 @@ export default class MainContainer extends Component {
     selectedHostIds: PropTypes.arrayOf(PropTypes.number).isRequired,
     groupSortOptions: PropTypes.object.isRequired,
     hostSortOptions: PropTypes.object.isRequired,
+    hostPastable: PropTypes.bool.isRequired,
     actions: PropTypes.object.isRequired,
   };
   get selectedGroup() {
@@ -163,6 +165,12 @@ export default class MainContainer extends Component {
   handleEditHost(id, host) {
     this.props.actions.updateHost(this.selectedGroupId, id, host);
   }
+  handleCopyHosts() {
+    this.props.actions.copyHosts();
+  }
+  handlePasteHosts() {
+    this.props.actions.pasteHosts();
+  }
   handleSelectHost(id, mode) {
     this.props.actions.selectHost(id, mode);
   }
@@ -170,9 +178,29 @@ export default class MainContainer extends Component {
     this.props.actions.sortHosts(this.selectedGroupId, options);
   }
   handleContextMenuForHosts(e) {
+    const { hostPastable } = this.props;
+
     let menus = [];
     if (this.selectedGroupId) {
-      menus = [{ label: 'New Host', click: () => this.handleAddHost() }];
+      menus = [
+        {
+          label: 'New Host',
+          click: () => this.handleAddHost(),
+        },
+        {
+          label: 'Copy',
+          click: () => this.handleCopyHosts(),
+        },
+        {
+          label: 'Paste',
+          click: () => this.handlePasteHosts(),
+          enabled: hostPastable,
+        },
+        {
+          label: 'Delete',
+          click: () => this.handleDeleteHosts(),
+        },
+      ];
     }
     ContextMenu.show(e, menus);
   }
@@ -204,8 +232,8 @@ export default class MainContainer extends Component {
           selectedIds={selectedGroupIds}
           sortOptions={groupSortOptions}
           onAddGroup={() => this.handleAddGroup()}
-          onDeleteGroups={() => this.handleDeleteGroups()}
           onEditGroup={(...args) => this.handleEditGroup(...args)}
+          onDeleteGroups={() => this.handleDeleteGroups()}
           onSelectGroup={(...args) => this.handleSelectGroup(...args)}
           onSortGroups={(...args) => this.handleSortGroups(...args)}
         />
@@ -241,8 +269,8 @@ export default class MainContainer extends Component {
           selectedIds={selectedHostIds}
           sortOptions={hostSortOptions}
           onAddHost={() => this.handleAddHost()}
-          onDeleteHosts={() => this.handleDeleteHosts()}
           onEditHost={(...args) => this.handleEditHost(...args)}
+          onDeleteHosts={() => this.handleDeleteHosts()}
           onSelectHost={(...args) => this.handleSelectHost(...args)}
           onSortHosts={(...args) => this.handleSortHosts(...args)}
         />

@@ -96,20 +96,7 @@ export default class HostList extends Component {
     this.props.onEditHost(host.id, host);
   }
   handleContextMenu(e, id) {
-    const { onSelectHost, onAddHost, onDeleteHosts } = this.props;
-
-    onSelectHost(id, 'shift');
-
-    ContextMenu.show(e, [
-      {
-        label: 'New Host',
-        click: onAddHost,
-      },
-      {
-        label: 'Delete',
-        click: onDeleteHosts,
-      },
-    ]);
+    this.props.onSelectHost(id, 'shift');
   }
   renderHeader() {
     const { key, order } = this.props.sortOptions;
