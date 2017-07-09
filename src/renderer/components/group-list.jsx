@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  FlatButton,
-  Table, TableHeader, TableBody, TableFooter,
-  TableRow, TableHeaderColumn, TableRowColumn,
+  Table, TableHeader, TableBody,
+  TableRow, TableHeaderColumn,
 } from 'material-ui';
 import GroupItem from './group-item';
 import SortOrderIcon from './sort-order-icon';

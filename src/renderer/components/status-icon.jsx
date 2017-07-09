@@ -11,7 +11,7 @@ const styles = {
   },
 };
 
-const HostStatusIcon = ({ valid, enable, ...others }) => {
+const StatusIcon = ({ valid, enable, ...others }) => {
   if (!valid) {
     return (
       <SvgIcons.DeviceSignalCellularConnectedNoInternet4Bar
@@ -37,16 +37,16 @@ const HostStatusIcon = ({ valid, enable, ...others }) => {
   );
 };
 
-HostStatusIcon.propTypes = {
+StatusIcon.propTypes = {
   valid: PropTypes.bool,
   enable: PropTypes.bool,
   ...SvgIcons.propTypes,
 };
 
-HostStatusIcon.defaultProps = {
+StatusIcon.defaultProps = {
   valid: false,
   enable: false,
   ...SvgIcons.defaultProps,
 };
 
-export default HostStatusIcon;
+export default StatusIcon;

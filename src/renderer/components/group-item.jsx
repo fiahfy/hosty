@@ -5,7 +5,7 @@ import {
   TableRow, TableRowColumn,
 } from 'material-ui';
 import { colors } from 'material-ui/styles';
-import HostStatusIcon from './host-status-icon';
+import StatusIcon from './status-icon';
 import EditableLabel from './editable-label';
 import isUpdateNeeded from '../utils/is-update-needed';
 import * as Group from '../utils/group';
@@ -94,7 +94,7 @@ export default class GroupItem extends Component {
         {others.children}
         <TableRowColumn style={styles.iconColumn}>
           <IconButton onClick={e => this.handleClickIconButton(e)}>
-            <HostStatusIcon
+            <StatusIcon
               valid
               enable={group.enable}
             />
