@@ -252,7 +252,9 @@ export default reduceReducers(
                 if (firstIndex > lastIndex) {
                   [firstIndex, lastIndex] = [lastIndex, firstIndex];
                 }
-                const groupIds = state.groups.filter((group, i) => firstIndex <= i && i <= lastIndex)
+                const groupIds = state.groups.filter((group, i) => (
+                    firstIndex <= i && i <= lastIndex
+                  ))
                   .map(group => group.id)
                   .filter(currentId => !selectedGroupIds.includes(currentId));
                 return [...selectedGroupIds, ...groupIds];
@@ -514,7 +516,9 @@ export default reduceReducers(
                 if (firstIndex > lastIndex) {
                   [firstIndex, lastIndex] = [lastIndex, firstIndex];
                 }
-                const hostIds = hosts.filter((host, i) => firstIndex <= i && i <= lastIndex)
+                const hostIds = hosts.filter((host, i) => (
+                    firstIndex <= i && i <= lastIndex
+                  ))
                   .map(host => host.id)
                   .filter(currentId => !selectedHostIds.includes(currentId));
                 return [...selectedHostIds, ...hostIds];
