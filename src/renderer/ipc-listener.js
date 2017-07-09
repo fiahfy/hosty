@@ -44,4 +44,42 @@ export default function setupListener(store, history) {
   ipcRenderer.on('showSettingsWindow', () => {
     history.push('/settings');
   });
+
+  ipcRenderer.on('createGroup', () => {
+    actions.createGroup({ enable: true });
+    window.setTimeout(() => {
+      actions.focusGroup();
+    }, 0);
+  });
+
+  ipcRenderer.on('copyGroups', () => {
+    actions.copyGroups();
+  });
+
+  ipcRenderer.on('pasteGroups', () => {
+    actions.pasteGroups();
+  });
+
+  ipcRenderer.on('deleteGroups', () => {
+    actions.deleteGroups();
+  });
+
+  ipcRenderer.on('createHost', () => {
+    actions.createHost({ enable: true });
+    window.setTimeout(() => {
+      actions.focusHost();
+    }, 0);
+  });
+
+  ipcRenderer.on('copyHosts', () => {
+    actions.copyHosts();
+  });
+
+  ipcRenderer.on('pasteHosts', () => {
+    actions.pasteHosts();
+  });
+
+  ipcRenderer.on('deleteHosts', () => {
+    actions.deleteHosts();
+  });
 }

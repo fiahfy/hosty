@@ -119,19 +119,23 @@ export default class MainContainer extends Component {
       {
         label: 'New Group',
         click: () => this.handleAddGroup(),
+        accelerator: 'CmdOrCtrl+Shift+N',
       },
       {
         label: 'Copy',
         click: () => this.handleCopyGroups(),
+        accelerator: 'CmdOrCtrl+Shift+C',
       },
       {
         label: 'Paste',
         click: () => this.handlePasteGroups(),
+        accelerator: 'CmdOrCtrl+Shift+V',
         enabled: groupPastable,
       },
       {
         label: 'Delete',
         click: () => this.handleDeleteGroups(),
+        accelerator: 'CmdOrCtrl+Shift+Backspace',
       },
     ]);
   }
@@ -171,19 +175,23 @@ export default class MainContainer extends Component {
       {
         label: 'New Host',
         click: () => this.handleAddHost(),
+        accelerator: 'CmdOrCtrl+N',
       },
       {
         label: 'Copy',
         click: () => this.handleCopyHosts(),
+        accelerator: 'CmdOrCtrl+Alt+C',
       },
       {
         label: 'Paste',
         click: () => this.handlePasteHosts(),
+        accelerator: 'CmdOrCtrl+Alt+V',
         enabled: hostPastable,
       },
       {
         label: 'Delete',
         click: () => this.handleDeleteHosts(),
+        accelerator: 'CmdOrCtrl+Backspace',
       },
     ]);
   }

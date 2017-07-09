@@ -50,17 +50,26 @@ export default class MenuBuilder {
           { role: 'cut' },
           { role: 'copy' },
           { role: 'paste' },
-          { role: 'pasteandmatchstyle' },
+          // { role: 'pasteandmatchstyle' },
           { role: 'delete' },
           { role: 'selectall' },
+          { type: 'separator' },
+          { label: 'New Group', accelerator: 'CmdOrCtrl+Shift+N', click: () => { this.createGroup(); } },
+          { label: 'Copy Group', accelerator: 'CmdOrCtrl+Shift+C', click: () => { this.copyGroups(); } },
+          { label: 'Paste Group', accelerator: 'CmdOrCtrl+Shift+V', click: () => { this.pasteGroups(); } },
+          { label: 'Delete Group', accelerator: 'CmdOrCtrl+Shift+Backspace', click: () => { this.deleteGroups(); } },
+          { type: 'separator' },
+          { label: 'New Host', accelerator: 'CmdOrCtrl+N', click: () => { this.createHost(); } },
+          { label: 'Copy Host', accelerator: 'CmdOrCtrl+Alt+C', click: () => { this.copyHosts(); } },
+          { label: 'Paste Host', accelerator: 'CmdOrCtrl+Alt+V', click: () => { this.pasteHosts(); } },
+          { label: 'Delete Host', accelerator: 'CmdOrCtrl+Backspace', click: () => { this.deleteHosts(); } },
+          { type: 'separator' },
+          { label: 'Search', accelerator: 'CmdOrCtrl+F', click: () => { this.search(); } },
         ],
       },
       {
         label: 'View',
         submenu: [
-          { label: 'Groups', accelerator: 'CmdOrCtrl+G', click: () => { this.showGroups(); } },
-          { label: 'Search', accelerator: 'CmdOrCtrl+F', click: () => { this.search(); } },
-          { type: 'separator' },
           { role: 'reload' },
           { role: 'forcereload' },
           { role: 'toggledevtools' },
@@ -75,8 +84,10 @@ export default class MenuBuilder {
       {
         role: 'window',
         submenu: [
-          { role: 'minimize' },
+          { label: 'Hosts List', accelerator: 'CmdOrCtrl+G', click: () => { this.showGroups(); } },
+          { type: 'separator' },
           { role: 'close' },
+          { role: 'minimize' },
         ],
       },
       {
@@ -118,13 +129,11 @@ export default class MenuBuilder {
       );
 
       // Window menu
-      template[4].submenu = [
-        { role: 'close' },
-        { role: 'minimize' },
+      template[4].submenu.push(
         { role: 'zoom' },
         { type: 'separator' },
         { role: 'front' },
-      ];
+      );
     }
 
     return template;
@@ -207,5 +216,29 @@ export default class MenuBuilder {
   }
   showSettings() {
     this.window.webContents.send('showSettingsWindow');
+  }
+  createGroup() {
+    this.window.webContents.send('createGroup');
+  }
+  copyGroups() {
+    this.window.webContents.send('copyGroups');
+  }
+  pasteGroups() {
+    this.window.webContents.send('pasteGroups');
+  }
+  deleteGroups() {
+    this.window.webContents.send('deleteGroups');
+  }
+  createHost() {
+    this.window.webContents.send('createHost');
+  }
+  copyHosts() {
+    this.window.webContents.send('copyHosts');
+  }
+  pasteHosts() {
+    this.window.webContents.send('pasteHosts');
+  }
+  deleteHosts() {
+    this.window.webContents.send('deleteHosts');
   }
 }
