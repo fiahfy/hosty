@@ -82,14 +82,15 @@ export default class GroupList extends Component {
     if (!group) {
       return;
     }
-    const mode = (e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey) ? 'append' : 'set';
-    onSelectGroup(group.id, mode);
+    let option = e.shiftKey ? 'shift' : 'leftClick';
+    option = (e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey) ? 'ctrl' : option;
+    onSelectGroup(group.id, option);
   }
   handleEditGroup(group) {
     this.props.onEditGroup(group.id, group);
   }
   handleContextMenu(e, id) {
-    this.props.onSelectGroup(id, 'shift');
+    this.props.onSelectGroup(id, 'rightClick');
   }
   renderHeader() {
     const { key, order } = this.props.sortOptions;

@@ -83,14 +83,15 @@ export default class HostList extends Component {
     if (!host) {
       return;
     }
-    const mode = (e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey) ? 'append' : 'set';
-    onSelectHost(host.id, mode);
+    let option = e.shiftKey ? 'shift' : 'leftClick';
+    option = (e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey) ? 'ctrl' : option;
+    onSelectHost(host.id, option);
   }
   handleEditHost(host) {
     this.props.onEditHost(host.id, host);
   }
   handleContextMenu(e, id) {
-    this.props.onSelectHost(id, 'shift');
+    this.props.onSelectHost(id, 'rightClick');
   }
   renderHeader() {
     const { key, order } = this.props.sortOptions;

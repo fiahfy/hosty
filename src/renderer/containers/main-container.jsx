@@ -109,8 +109,8 @@ export default class MainContainer extends Component {
   handlePasteGroups() {
     this.props.actions.pasteGroups();
   }
-  handleSelectGroup(id, mode) {
-    this.props.actions.selectGroup(id, mode);
+  handleSelectGroup(id, option) {
+    this.props.actions.selectGroup(id, option);
   }
   handleSortGroups(options) {
     this.props.actions.sortGroups(options);
@@ -171,8 +171,8 @@ export default class MainContainer extends Component {
   handlePasteHosts() {
     this.props.actions.pasteHosts();
   }
-  handleSelectHost(id, mode) {
-    this.props.actions.selectHost(id, mode);
+  handleSelectHost(id, option) {
+    this.props.actions.selectHost(id, option);
   }
   handleSortHosts(options) {
     this.props.actions.sortHosts(options);

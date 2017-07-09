@@ -91,65 +91,9 @@ const mainContainer = handleActions({
     const { options } = action.payload;
     return Object.assign({}, state, { groupSortOptions: options });
   },
-  [ActionTypes.SELECT_GROUP]: (state, action) => {
-    const { id, mode } = action.payload;
-    return Object.assign({}, state, {
-      selectedGroupIds: (() => {
-        switch (mode) {
-          case 'append': {
-            const { selectedGroupIds } = state;
-            if (selectedGroupIds.includes(id)) {
-              return selectedGroupIds.filter(currentId => (
-                currentId !== id
-              ));
-            }
-            return [...selectedGroupIds, id];
-          }
-          case 'shift': {
-            const { selectedGroupIds } = state;
-            if (selectedGroupIds.includes(id)) {
-              return selectedGroupIds;
-            }
-            return [id];
-          }
-          default:
-            return [id];
-        }
-      })(),
-      selectedHostIds: [],
-      hostSortOptions: {},
-    });
-  },
   [ActionTypes.SORT_HOSTS]: (state, action) => {
     const { options } = action.payload;
     return Object.assign({}, state, { hostSortOptions: options });
-  },
-  [ActionTypes.SELECT_HOST]: (state, action) => {
-    const { id, mode } = action.payload;
-    return Object.assign({}, state, {
-      selectedHostIds: (() => {
-        switch (mode) {
-          case 'append': {
-            const { selectedHostIds } = state;
-            if (selectedHostIds.includes(id)) {
-              return selectedHostIds.filter(currentId => (
-                currentId !== id
-              ));
-            }
-            return [...selectedHostIds, id];
-          }
-          case 'shift': {
-            const { selectedHostIds } = state;
-            if (selectedHostIds.includes(id)) {
-              return selectedHostIds;
-            }
-            return [id];
-          }
-          default:
-            return [id];
-        }
-      })(),
-    });
   },
 }, {
   focusedGroupId: 0,
@@ -287,6 +231,52 @@ export default reduceReducers(
           ...state.mainContainer,
           focusedGroupId: group.id,
           selectedGroupIds: [group.id],
+        },
+      });
+    },
+    [ActionTypes.SELECT_GROUP]: (state, action) => {
+      const { id, option } = action.payload;
+      const { selectedGroupIds } = state.mainContainer;
+      return Object.assign({}, state, {
+        mainContainer: {
+          ...state.mainContainer,
+          selectedHostIds: [],
+          hostSortOptions: {},
+          selectedGroupIds: (() => {
+            switch (option) {
+              case 'shift': {
+                const lastId = selectedGroupIds.length
+                  ? selectedGroupIds[selectedGroupIds.length - 1] : 0;
+                let lastIndex = state.groups.findIndex(group => group.id === lastId);
+                let firstIndex = state.groups.findIndex(group => group.id === id);
+                if (firstIndex > lastIndex) {
+                  [firstIndex, lastIndex] = [lastIndex, firstIndex];
+                }
+                const groupIds = state.groups.filter((group, i) => firstIndex <= i && i <= lastIndex)
+                  .map(group => group.id)
+                  .filter(currentId => !selectedGroupIds.includes(currentId));
+                return [...selectedGroupIds, ...groupIds];
+              }
+              case 'ctrl': {
+                if (selectedGroupIds.includes(id)) {
+                  return selectedGroupIds.filter(currentId => (
+                    currentId !== id
+                  ));
+                }
+                return [...selectedGroupIds, id];
+              }
+              case 'rightClick': {
+                if (selectedGroupIds.includes(id)) {
+                  return selectedGroupIds;
+                }
+                return [id];
+              }
+              case 'leftClick':
+                return [id];
+              default:
+                return selectedGroupIds;
+            }
+          })(),
         },
       });
     },
@@ -501,6 +491,54 @@ export default reduceReducers(
           ...state.mainContainer,
           focusedHostId: host.id,
           selectedHostIds: [host.id],
+        },
+      });
+    },
+    [ActionTypes.SELECT_HOST]: (state, action) => {
+      const { id, option } = action.payload;
+      const { selectedGroupIds, selectedHostIds } = state.mainContainer;
+      const group = state.groups.find(currentGroup => (
+        currentGroup.id === selectedGroupIds[0]
+      ));
+      const hosts = (group ? group.hosts : []) || [];
+      return Object.assign({}, state, {
+        mainContainer: {
+          ...state.mainContainer,
+          selectedHostIds: (() => {
+            switch (option) {
+              case 'shift': {
+                const lastId = selectedHostIds.length
+                  ? selectedHostIds[selectedHostIds.length - 1] : 0;
+                let lastIndex = hosts.findIndex(host => host.id === lastId);
+                let firstIndex = hosts.findIndex(host => host.id === id);
+                if (firstIndex > lastIndex) {
+                  [firstIndex, lastIndex] = [lastIndex, firstIndex];
+                }
+                const hostIds = hosts.filter((host, i) => firstIndex <= i && i <= lastIndex)
+                  .map(host => host.id)
+                  .filter(currentId => !selectedHostIds.includes(currentId));
+                return [...selectedHostIds, ...hostIds];
+              }
+              case 'ctrl': {
+                if (selectedHostIds.includes(id)) {
+                  return selectedHostIds.filter(currentId => (
+                    currentId !== id
+                  ));
+                }
+                return [...selectedHostIds, id];
+              }
+              case 'rightClick': {
+                if (selectedHostIds.includes(id)) {
+                  return selectedHostIds;
+                }
+                return [id];
+              }
+              case 'leftClick':
+                return [id];
+              default:
+                return selectedHostIds;
+            }
+          })(),
         },
       });
     },
