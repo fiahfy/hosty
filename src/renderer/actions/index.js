@@ -66,7 +66,7 @@ export const focusGroup = createAction(FOCUS_GROUP);
 
 export const selectGroup = createAction(
   SELECT_GROUP,
-  (id, mode) => ({ id, mode }),
+  (id, option) => ({ id, option }),
 );
 
 export const createHost = createAction(CREATE_HOST);
@@ -93,7 +93,7 @@ export const focusHost = createAction(FOCUS_HOST);
 
 export const selectHost = createAction(
   SELECT_HOST,
-  (id, mode) => ({ id, mode }),
+  (id, option) => ({ id, option }),
 );
 
 export const updateSettings = createAction(
