@@ -222,9 +222,7 @@ export default class MainContainer extends Component {
           focusedId={focusedGroupId}
           selectedIds={selectedGroupIds}
           sortOptions={groupSortOptions}
-          onAddGroup={() => this.handleAddGroup()}
           onEditGroup={(...args) => this.handleEditGroup(...args)}
-          onDeleteGroups={() => this.handleDeleteGroups()}
           onSelectGroup={(...args) => this.handleSelectGroup(...args)}
           onSortGroups={(...args) => this.handleSortGroups(...args)}
         />
@@ -259,9 +257,7 @@ export default class MainContainer extends Component {
           focusedId={focusedHostId}
           selectedIds={selectedHostIds}
           sortOptions={hostSortOptions}
-          onAddHost={() => this.handleAddHost()}
           onEditHost={(...args) => this.handleEditHost(...args)}
-          onDeleteHosts={() => this.handleDeleteHosts()}
           onSelectHost={(...args) => this.handleSelectHost(...args)}
           onSortHosts={(...args) => this.handleSortHosts(...args)}
         />

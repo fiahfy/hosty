@@ -9,7 +9,6 @@ export const PASTE_GROUPS = 'PASTE_GROUPS';
 export const SORT_GROUPS = 'SORT_GROUPS';
 export const FOCUS_GROUP = 'FOCUS_GROUP';
 export const SELECT_GROUP = 'SELECT_GROUP';
-export const UNSELECT_GROUP_ALL = 'UNSELECT_GROUP_ALL';
 
 export const CREATE_HOST = 'CREATE_HOST';
 export const UPDATE_HOST = 'UPDATE_HOST';
@@ -19,7 +18,6 @@ export const PASTE_HOSTS = 'PASTE_HOSTS';
 export const SORT_HOSTS = 'SORT_HOSTS';
 export const FOCUS_HOST = ' FOCUS_HOST';
 export const SELECT_HOST = 'SELECT_HOST';
-export const UNSELECT_HOST_ALL = 'UNSELECT_HOST_ALL';
 
 export const UPDATE_SETTINGS = 'UPDATE_SETTINGS';
 
@@ -71,10 +69,6 @@ export const selectGroup = createAction(
   (id, mode) => ({ id, mode }),
 );
 
-export const unselectGroupAll = createAction(
-  UNSELECT_GROUP_ALL,
-);
-
 export const createHost = createAction(
   CREATE_HOST,
   host => ({ host }),
@@ -109,10 +103,6 @@ export const focusHost = createAction(
 export const selectHost = createAction(
   SELECT_HOST,
   (id, mode) => ({ id, mode }),
-);
-
-export const unselectHostAll = createAction(
-  UNSELECT_HOST_ALL,
 );
 
 export const updateSettings = createAction(

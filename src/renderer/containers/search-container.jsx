@@ -77,7 +77,7 @@ export default class SearchContainers extends Component {
 
     return (
       <div style={styles.container}>
-        <div className="list">
+        <div className="list has-footer">
           <ResultList
             results={results}
             query={query}

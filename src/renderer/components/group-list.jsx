@@ -45,9 +45,7 @@ export default class GroupList extends Component {
     focusedId: PropTypes.number,
     selectedIds: PropTypes.arrayOf(PropTypes.number),
     sortOptions: PropTypes.object,
-    onAddGroup: PropTypes.func,
     onEditGroup: PropTypes.func,
-    onDeleteGroups: PropTypes.func,
     onSelectGroup: PropTypes.func,
     onSortGroups: PropTypes.func,
   };
@@ -56,9 +54,7 @@ export default class GroupList extends Component {
     focusedId: null,
     selectedIds: [],
     sortOptions: {},
-    onAddGroup: () => {},
     onEditGroup: () => {},
-    onDeleteGroups: () => {},
     onSelectGroup: () => {},
     onSortGroups: () => {},
   };
@@ -143,36 +139,6 @@ export default class GroupList extends Component {
       </TableBody>
     );
   }
-  renderFooter() {
-    const { selectedIds, onAddGroup, onDeleteGroups } = this.props;
-    const selectedCount = selectedIds.length;
-    const disabled = !selectedCount;
-    const label = selectedCount > 1 ? `Delete (${selectedCount})` : 'Delete';
-
-    return (
-      <TableFooter
-        adjustForCheckbox={false}
-      >
-        <TableRow>
-          <TableRowColumn style={styles.footerColumn}>
-            <FlatButton
-              label="Add"
-              primary
-              onClick={onAddGroup}
-            />
-          </TableRowColumn>
-          <TableRowColumn style={styles.footerColumn}>
-            <FlatButton
-              label={label}
-              secondary
-              disabled={disabled}
-              onClick={onDeleteGroups}
-            />
-          </TableRowColumn>
-        </TableRow>
-      </TableFooter>
-    );
-  }
   render() {
     return (
       <Table
@@ -182,7 +148,6 @@ export default class GroupList extends Component {
       >
         {this.renderHeader()}
         {this.renderBody()}
-        {this.renderFooter()}
       </Table>
     );
   }

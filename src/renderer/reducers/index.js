@@ -97,9 +97,6 @@ const mainContainer = handleActions({
       hostSortOptions: {},
     });
   },
-  [ActionTypes.UNSELECT_GROUP_ALL]: state => (
-    Object.assign({}, state, { selectedGroupIds: [] })
-  ),
   [ActionTypes.SORT_HOSTS]: (state, action) => {
     const { options } = action.payload;
     return Object.assign({}, state, { hostSortOptions: options });
@@ -131,18 +128,15 @@ const mainContainer = handleActions({
       })(),
     });
   },
-  [ActionTypes.UNSELECT_HOST_ALL]: state => (
-    Object.assign({}, state, { selectedHostIds: [] })
-  ),
 }, {
   focusedGroupId: 0,
   focusedHostId: 0,
   selectedGroupIds: [],
   selectedHostIds: [],
-  copiedGroups: [],
-  copiedHosts: [],
   groupSortOptions: {},
   hostSortOptions: {},
+  copiedGroups: [],
+  copiedHosts: [],
 });
 
 const searchContainer = handleActions({

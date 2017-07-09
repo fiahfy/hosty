@@ -46,9 +46,7 @@ export default class HostList extends Component {
     focusedId: PropTypes.number,
     selectedIds: PropTypes.arrayOf(PropTypes.number),
     sortOptions: PropTypes.object,
-    onAddHost: PropTypes.func,
     onEditHost: PropTypes.func,
-    onDeleteHosts: PropTypes.func,
     onSelectHost: PropTypes.func,
     onSortHosts: PropTypes.func,
   };
@@ -57,9 +55,7 @@ export default class HostList extends Component {
     focusedId: null,
     selectedIds: [],
     sortOptions: {},
-    onAddHost: () => {},
     onEditHost: () => {},
-    onDeleteHosts: () => {},
     onSelectHost: () => {},
     onSortHosts: () => {},
   };
@@ -152,39 +148,6 @@ export default class HostList extends Component {
       </TableBody>
     );
   }
-  renderFooter() {
-    const { groupId, selectedIds, onAddHost, onDeleteHosts } = this.props;
-    const selectedCount = selectedIds.length;
-    const addDisabled = !groupId;
-    const deleteDisabled = !groupId || !selectedCount;
-    const label = selectedCount > 1 ? `Delete (${selectedCount})` : 'Delete';
-
-    return (
-      <TableFooter
-        adjustForCheckbox={false}
-      >
-        <TableRow>
-          <TableRowColumn style={styles.footerColumn}>
-            <FlatButton
-              label="Add"
-              primary
-              disabled={addDisabled}
-              onClick={onAddHost}
-            />
-          </TableRowColumn>
-          <TableRowColumn style={styles.footerColumn}>
-            <FlatButton
-              label={label}
-              secondary
-              disabled={deleteDisabled}
-              onClick={onDeleteHosts}
-            />
-          </TableRowColumn>
-          <TableRowColumn />
-        </TableRow>
-      </TableFooter>
-    );
-  }
   render() {
     return (
       <Table
@@ -194,7 +157,6 @@ export default class HostList extends Component {
       >
         {this.renderHeader()}
         {this.renderBody()}
-        {this.renderFooter()}
       </Table>
     );
   }
