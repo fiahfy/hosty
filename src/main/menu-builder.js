@@ -56,15 +56,27 @@ export default class MenuBuilder {
           { role: 'delete' },
           { role: 'selectall' },
           { type: 'separator' },
-          { label: 'New Group', accelerator: 'CmdOrCtrl+Shift+N', click: () => { this.createGroup(); } },
-          { label: 'Copy Group', accelerator: 'CmdOrCtrl+Shift+C', click: () => { this.copyGroups(); } },
-          { label: 'Paste Group', accelerator: 'CmdOrCtrl+Shift+V', click: () => { this.pasteGroups(); } },
-          { label: 'Delete Group', accelerator: 'CmdOrCtrl+Shift+Backspace', click: () => { this.deleteGroups(); } },
+          {
+            label: 'Group',
+            submenu: [
+              { label: 'New Group', accelerator: 'CmdOrCtrl+Shift+N', click: () => { this.createGroup(); } },
+              { label: 'Cut Group', accelerator: 'CmdOrCtrl+Shift+X', click: () => { this.cutGroups(); } },
+              { label: 'Copy Group', accelerator: 'CmdOrCtrl+Shift+C', click: () => { this.copyGroups(); } },
+              { label: 'Paste Group', accelerator: 'CmdOrCtrl+Shift+V', click: () => { this.pasteGroups(); } },
+              { label: 'Delete Group', accelerator: 'CmdOrCtrl+Shift+Backspace', click: () => { this.deleteGroups(); } },
+            ],
+          },
           { type: 'separator' },
-          { label: 'New Host', accelerator: 'CmdOrCtrl+N', click: () => { this.createHost(); } },
-          { label: 'Copy Host', accelerator: 'CmdOrCtrl+Alt+C', click: () => { this.copyHosts(); } },
-          { label: 'Paste Host', accelerator: 'CmdOrCtrl+Alt+V', click: () => { this.pasteHosts(); } },
-          { label: 'Delete Host', accelerator: 'CmdOrCtrl+Backspace', click: () => { this.deleteHosts(); } },
+          {
+            label: 'Host',
+            submenu: [
+              { label: 'New Host', accelerator: 'CmdOrCtrl+N', click: () => { this.createHost(); } },
+              { label: 'Cut Host', accelerator: 'CmdOrCtrl+Alt+X', click: () => { this.cutHosts(); } },
+              { label: 'Copy Host', accelerator: 'CmdOrCtrl+Alt+C', click: () => { this.copyHosts(); } },
+              { label: 'Paste Host', accelerator: 'CmdOrCtrl+Alt+V', click: () => { this.pasteHosts(); } },
+              { label: 'Delete Host', accelerator: 'CmdOrCtrl+Backspace', click: () => { this.deleteHosts(); } },
+            ],
+          },
           { type: 'separator' },
           { label: 'Search', accelerator: 'CmdOrCtrl+F', click: () => { this.search(); } },
         ],
@@ -238,7 +250,7 @@ export default class MenuBuilder {
       }
 
       ipcMain.once('sendGroups', (event, { groups }) => {
-        HostsFileManager.writeGroupsToHostyFile(groups, filename);
+        HostsFileManager.writeGroupsToHostsFile(groups, filename);
         const groupLength = groups.length;
         const hostLength = Group.getHostLength(groups);
         this.window.webContents.send('sendMessage', {
@@ -260,6 +272,9 @@ export default class MenuBuilder {
   createGroup() {
     this.window.webContents.send('createGroup');
   }
+  cutGroups() {
+    this.window.webContents.send('cutGroups');
+  }
   copyGroups() {
     this.window.webContents.send('copyGroups');
   }
@@ -271,6 +286,9 @@ export default class MenuBuilder {
   }
   createHost() {
     this.window.webContents.send('createHost');
+  }
+  cutHosts() {
+    this.window.webContents.send('cutHosts');
   }
   copyHosts() {
     this.window.webContents.send('copyHosts');

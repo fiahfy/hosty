@@ -100,6 +100,9 @@ export default class MainContainer extends Component {
   handleDeleteGroups() {
     this.props.actions.deleteGroups();
   }
+  handleCutGroups() {
+    this.props.actions.cutGroups();
+  }
   handleCopyGroups() {
     this.props.actions.copyGroups();
   }
@@ -121,6 +124,12 @@ export default class MainContainer extends Component {
         click: () => this.handleAddGroup(),
         accelerator: 'CmdOrCtrl+Shift+N',
       },
+      { type: 'separator' },
+      {
+        label: 'Cut',
+        click: () => this.handleCutGroups(),
+        accelerator: 'CmdOrCtrl+Shift+X',
+      },
       {
         label: 'Copy',
         click: () => this.handleCopyGroups(),
@@ -132,6 +141,7 @@ export default class MainContainer extends Component {
         accelerator: 'CmdOrCtrl+Shift+V',
         enabled: groupPastable,
       },
+      { type: 'separator' },
       {
         label: 'Delete',
         click: () => this.handleDeleteGroups(),
@@ -151,6 +161,9 @@ export default class MainContainer extends Component {
   }
   handleDeleteHosts() {
     this.props.actions.deleteHosts();
+  }
+  handleCutHosts() {
+    this.props.actions.cutHosts();
   }
   handleCopyHosts() {
     this.props.actions.copyHosts();
@@ -177,6 +190,12 @@ export default class MainContainer extends Component {
         click: () => this.handleAddHost(),
         accelerator: 'CmdOrCtrl+N',
       },
+      { type: 'separator' },
+      {
+        label: 'Cut',
+        click: () => this.handleCutHosts(),
+        accelerator: 'CmdOrCtrl+Alt+X',
+      },
       {
         label: 'Copy',
         click: () => this.handleCopyHosts(),
@@ -188,6 +207,7 @@ export default class MainContainer extends Component {
         accelerator: 'CmdOrCtrl+Alt+V',
         enabled: hostPastable,
       },
+      { type: 'separator' },
       {
         label: 'Delete',
         click: () => this.handleDeleteHosts(),

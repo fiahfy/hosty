@@ -54,6 +54,10 @@ export default function setupListener(store, history) {
     }, 0);
   });
 
+  ipcRenderer.on('cutGroups', () => {
+    actions.cutGroups();
+  });
+
   ipcRenderer.on('copyGroups', () => {
     actions.copyGroups();
   });
@@ -71,6 +75,10 @@ export default function setupListener(store, history) {
     window.setTimeout(() => {
       actions.focusHost();
     }, 0);
+  });
+
+  ipcRenderer.on('cutHosts', () => {
+    actions.cutHosts();
   });
 
   ipcRenderer.on('copyHosts', () => {
