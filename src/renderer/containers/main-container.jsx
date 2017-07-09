@@ -48,11 +48,19 @@ const styles = {
 };
 
 function mapStateToProps(state) {
+  const { selectedGroupIds, copiedGroups, copiedHosts } = state.mainContainer;
+
+  const selectedGroupId = selectedGroupIds[0] || 0;
+  const selectedGroup = state.groups.find(group => group.id === selectedGroupId);
+  const hosts = selectedGroup ? (selectedGroup.hosts || []) : [];
+
   return {
     groups: state.groups,
+    hosts,
+    selectedGroupId,
+    groupPastable: !!copiedGroups.length,
+    hostPastable: !!copiedHosts.length,
     ...state.mainContainer,
-    groupPastable: !!state.mainContainer.copiedGroups.length,
-    hostPastable: !!state.mainContainer.copiedHosts.length,
   };
 }
 
@@ -67,35 +75,18 @@ export default class MainContainer extends Component {
   };
   static propTypes = {
     groups: PropTypes.arrayOf(PropTypes.object).isRequired,
+    hosts: PropTypes.arrayOf(PropTypes.object).isRequired,
+    selectedGroupId: PropTypes.number.isRequired,
+    groupPastable: PropTypes.bool.isRequired,
+    hostPastable: PropTypes.bool.isRequired,
     focusedGroupId: PropTypes.number.isRequired,
     focusedHostId: PropTypes.number.isRequired,
     selectedGroupIds: PropTypes.arrayOf(PropTypes.number).isRequired,
     selectedHostIds: PropTypes.arrayOf(PropTypes.number).isRequired,
     groupSortOptions: PropTypes.object.isRequired,
     hostSortOptions: PropTypes.object.isRequired,
-    groupPastable: PropTypes.bool.isRequired,
-    hostPastable: PropTypes.bool.isRequired,
     actions: PropTypes.object.isRequired,
   };
-  get selectedGroup() {
-    const selectedGroupIds = this.props.selectedGroupIds;
-    if (!selectedGroupIds) {
-      return null;
-    }
-    return this.props.groups.find(group => group.id === selectedGroupIds[0]);
-  }
-  get selectedGroupId() {
-    return this.selectedGroup ? this.selectedGroup.id : 0;
-  }
-  get groups() {
-    return this.props.groups;
-  }
-  get hosts() {
-    if (!this.selectedGroup) {
-      return [];
-    }
-    return this.selectedGroup.hosts || [];
-  }
   // handle group
   handleAddGroup() {
     this.props.actions.createGroup({ enable: true });
@@ -146,13 +137,13 @@ export default class MainContainer extends Component {
   }
   // handle host
   handleAddHost() {
-    this.props.actions.createHost(this.selectedGroupId, { enable: true });
+    this.props.actions.createHost({ enable: true });
     window.setTimeout(() => {
       this.props.actions.focusHost();
     }, 0);
   }
   handleEditHost(id, host) {
-    this.props.actions.updateHost(this.selectedGroupId, id, host);
+    this.props.actions.updateHost(id, host);
   }
   handleDeleteHosts() {
     this.props.actions.deleteHosts();
@@ -167,12 +158,12 @@ export default class MainContainer extends Component {
     this.props.actions.selectHost(id, mode);
   }
   handleSortHosts(options) {
-    this.props.actions.sortHosts(this.selectedGroupId, options);
+    this.props.actions.sortHosts(options);
   }
   handleContextMenuForHosts(e) {
-    const { hostPastable } = this.props;
+    const { selectedGroupId, hostPastable } = this.props;
 
-    if (!this.selectedGroupId) {
+    if (!selectedGroupId) {
       return;
     }
 
@@ -198,10 +189,10 @@ export default class MainContainer extends Component {
   }
   // render
   renderGroupList() {
-    const { focusedGroupId, selectedGroupIds, groupSortOptions } = this.props;
+    const { groups, focusedGroupId, selectedGroupIds, groupSortOptions } = this.props;
 
     let emptyView = null;
-    if (!this.groups.length) {
+    if (!groups.length) {
       emptyView = (
         <div style={styles.emptyWrapper}>
           <div style={{
@@ -219,7 +210,7 @@ export default class MainContainer extends Component {
         onContextMenu={e => this.handleContextMenuForGroups(e)}
       >
         <GroupList
-          groups={this.groups}
+          groups={groups}
           focusedId={focusedGroupId}
           selectedIds={selectedGroupIds}
           sortOptions={groupSortOptions}
@@ -234,10 +225,10 @@ export default class MainContainer extends Component {
     );
   }
   renderHostList() {
-    const { focusedHostId, selectedHostIds, hostSortOptions } = this.props;
+    const { selectedGroupId, hosts, focusedHostId, selectedHostIds, hostSortOptions } = this.props;
 
     let emptyView = null;
-    if (!this.hosts.length) {
+    if (!hosts.length) {
       emptyView = (
         <div style={styles.emptyWrapper}>
           <div style={{
@@ -255,8 +246,8 @@ export default class MainContainer extends Component {
         onContextMenu={e => this.handleContextMenuForHosts(e)}
       >
         <HostList
-          groupId={this.selectedGroupId}
-          hosts={this.hosts}
+          groupId={selectedGroupId}
+          hosts={hosts}
           focusedId={focusedHostId}
           selectedIds={selectedHostIds}
           sortOptions={hostSortOptions}

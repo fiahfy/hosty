@@ -77,12 +77,12 @@ export const unselectGroupAll = createAction(
 
 export const createHost = createAction(
   CREATE_HOST,
-  (groupId, host) => ({ groupId, host }),
+  host => ({ host }),
 );
 
 export const updateHost = createAction(
   UPDATE_HOST,
-  (groupId, id, host) => ({ groupId, id, host }),
+  (id, host) => ({ id, host }),
 );
 
 export const deleteHosts = createAction(
@@ -99,7 +99,7 @@ export const pasteHosts = createAction(
 
 export const sortHosts = createAction(
   SORT_HOSTS,
-  (groupId, options) => ({ groupId, options }),
+  options => ({ options }),
 );
 
 export const focusHost = createAction(

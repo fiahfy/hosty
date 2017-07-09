@@ -28,9 +28,7 @@ const styles = {
 };
 
 function mapStateToProps(state) {
-  return {
-    ...state.searchContainer,
-  };
+  return { ...state.searchContainer };
 }
 
 function mapDispatchToProps(dispatch) {

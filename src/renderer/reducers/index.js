@@ -42,66 +42,6 @@ const groups = handleActions({
       return Group.compare(a, b, { key: Group.KEY_ID, order: Group.SORT_ASC });
     });
   },
-  [ActionTypes.CREATE_HOST]: (state, action) => {
-    const { groupId, host } = action.payload;
-    return state.map((currentGroup) => {
-      if (currentGroup.id !== groupId) {
-        return currentGroup;
-      }
-      const newGroup = Object.assign({}, currentGroup);
-      if (!newGroup.hosts) {
-        newGroup.hosts = [];
-      }
-      const maxId = newGroup.hosts.reduce((previous, currentHost) => (
-        currentHost.id > previous ? currentHost.id : previous
-      ), 0);
-      host.id = maxId + 1;
-      newGroup.hosts = [...newGroup.hosts, host];
-      return newGroup;
-    });
-  },
-  [ActionTypes.UPDATE_HOST]: (state, action) => {
-    const { groupId, id, host } = action.payload;
-    return state.map((currentGroup) => {
-      if (currentGroup.id !== groupId) {
-        return currentGroup;
-      }
-      const newGroup = Object.assign({}, currentGroup);
-      if (!newGroup.hosts) {
-        newGroup.hosts = [];
-      }
-      newGroup.hosts = newGroup.hosts.map(currentHost => (
-        currentHost.id !== id ? currentHost : host
-      ));
-      return newGroup;
-    });
-  },
-  [ActionTypes.SORT_HOSTS]: (state, action) => {
-    const { groupId, options } = action.payload;
-    return state.map((currentGroup) => {
-      if (currentGroup.id !== groupId) {
-        return currentGroup;
-      }
-      const newGroup = Object.assign({}, currentGroup);
-      if (!newGroup.hosts) {
-        newGroup.hosts = [];
-      }
-      newGroup.hosts = newGroup.hosts.concat().sort((a, b) => {
-        if (!a[Host.KEY_HOST]) {
-          return 1;
-        }
-        if (!b[Host.KEY_HOST]) {
-          return -1;
-        }
-        const result = Host.compare(a, b, options);
-        if (result !== 0) {
-          return result;
-        }
-        return Host.compare(a, b, { key: Host.KEY_ID, order: Host.SORT_ASC });
-      });
-      return newGroup;
-    });
-  },
 }, []);
 
 const settings = handleActions({
@@ -263,22 +203,6 @@ export default reduceReducers(
     router,
   }),
   handleActions({
-    [ActionTypes.FOCUS_GROUP]: (state) => {
-      const { groups: newGroups } = state;
-
-      const group = newGroups[newGroups.length - 1];
-      if (!group) {
-        return state;
-      }
-
-      return Object.assign({}, state, {
-        mainContainer: {
-          ...state.mainContainer,
-          focusedGroupId: group.id,
-          selectedGroupIds: [group.id],
-        },
-      });
-    },
     [ActionTypes.DELETE_GROUPS]: (state) => {
       const { selectedGroupIds } = state.mainContainer;
 
@@ -325,26 +249,72 @@ export default reduceReducers(
         groups: [...state.groups, ...newGroups],
       });
     },
-    [ActionTypes.FOCUS_HOST]: (state) => {
-      const { selectedGroupIds } = state.mainContainer;
+    [ActionTypes.FOCUS_GROUP]: (state) => {
+      const { groups: newGroups } = state;
 
-      const group = state.groups.find(currentGroup => (
-        currentGroup.id === selectedGroupIds[0]
-      ));
+      const group = newGroups[newGroups.length - 1];
       if (!group) {
-        return state;
-      }
-      const host = group.hosts[group.hosts.length - 1];
-      if (!host) {
         return state;
       }
 
       return Object.assign({}, state, {
         mainContainer: {
           ...state.mainContainer,
-          focusedHostId: host.id,
-          selectedHostIds: [host.id],
+          focusedGroupId: group.id,
+          selectedGroupIds: [group.id],
         },
+      });
+    },
+    [ActionTypes.CREATE_HOST]: (state, action) => {
+      const { selectedGroupIds } = state.mainContainer;
+      const { host } = action.payload;
+
+      const selectedGroupId = selectedGroupIds[0];
+      if (!selectedGroupId) {
+        return state;
+      }
+
+      return Object.assign({}, state, {
+        groups: state.groups.map((currentGroup) => {
+          if (currentGroup.id !== selectedGroupId) {
+            return currentGroup;
+          }
+          const newGroup = Object.assign({}, currentGroup);
+          if (!newGroup.hosts) {
+            newGroup.hosts = [];
+          }
+          const maxId = newGroup.hosts.reduce((previous, currentHost) => (
+            currentHost.id > previous ? currentHost.id : previous
+          ), 0);
+          host.id = maxId + 1;
+          newGroup.hosts = [...newGroup.hosts, host];
+          return newGroup;
+        }),
+      });
+    },
+    [ActionTypes.UPDATE_HOST]: (state, action) => {
+      const { selectedGroupIds } = state.mainContainer;
+      const { id, host } = action.payload;
+
+      const selectedGroupId = selectedGroupIds[0];
+      if (!selectedGroupId) {
+        return state;
+      }
+
+      return Object.assign({}, state, {
+        groups: state.groups.map((currentGroup) => {
+          if (currentGroup.id !== selectedGroupId) {
+            return currentGroup;
+          }
+          const newGroup = Object.assign({}, currentGroup);
+          if (!newGroup.hosts) {
+            newGroup.hosts = [];
+          }
+          newGroup.hosts = newGroup.hosts.map(currentHost => (
+            currentHost.id !== id ? currentHost : host
+          ));
+          return newGroup;
+        }),
       });
     },
     [ActionTypes.DELETE_HOSTS]: (state) => {
@@ -429,6 +399,63 @@ export default reduceReducers(
           newGroup.hosts = [...newGroup.hosts, ...newHosts];
           return newGroup;
         }),
+      });
+    },
+    [ActionTypes.SORT_HOSTS]: (state, action) => {
+      const { selectedGroupIds } = state.mainContainer;
+      const { options } = action.payload;
+
+      const selectedGroupId = selectedGroupIds[0];
+      if (!selectedGroupId) {
+        return state;
+      }
+
+      return Object.assign({}, state, {
+        groups: state.groups.map((currentGroup) => {
+          if (currentGroup.id !== selectedGroupId) {
+            return currentGroup;
+          }
+          const newGroup = Object.assign({}, currentGroup);
+          if (!newGroup.hosts) {
+            newGroup.hosts = [];
+          }
+          newGroup.hosts = newGroup.hosts.concat().sort((a, b) => {
+            if (!a[Host.KEY_HOST]) {
+              return 1;
+            }
+            if (!b[Host.KEY_HOST]) {
+              return -1;
+            }
+            const result = Host.compare(a, b, options);
+            if (result !== 0) {
+              return result;
+            }
+            return Host.compare(a, b, { key: Host.KEY_ID, order: Host.SORT_ASC });
+          });
+          return newGroup;
+        }),
+      });
+    },
+    [ActionTypes.FOCUS_HOST]: (state) => {
+      const { selectedGroupIds } = state.mainContainer;
+
+      const group = state.groups.find(currentGroup => (
+        currentGroup.id === selectedGroupIds[0]
+      ));
+      if (!group) {
+        return state;
+      }
+      const host = group.hosts[group.hosts.length - 1];
+      if (!host) {
+        return state;
+      }
+
+      return Object.assign({}, state, {
+        mainContainer: {
+          ...state.mainContainer,
+          focusedHostId: host.id,
+          selectedHostIds: [host.id],
+        },
       });
     },
     [ActionTypes.SEARCH]: (state) => {
