@@ -273,10 +273,8 @@ export default reduceReducers(
                 }
                 return [id];
               }
-              case 'leftClick':
-                return [id];
               default:
-                return selectedGroupIds;
+                return [id];
             }
           })(),
         },
@@ -537,10 +535,8 @@ export default reduceReducers(
                 }
                 return [id];
               }
-              case 'leftClick':
-                return [id];
               default:
-                return selectedHostIds;
+                return [id];
             }
           })(),
         },
