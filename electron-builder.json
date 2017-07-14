@@ -8,5 +8,8 @@
   },
   "win": {
     "target": ["nsis"]
+  },
+  "publish": {
+    "provider": "github"
   }
 }

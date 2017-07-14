@@ -1,7 +1,7 @@
 {
   "name": "hosty",
   "description": "Hosts file manager based on Electron",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "author": {
     "name": "fiahfy",
     "email": "d.fiahfy@gmail.com",
@@ -40,7 +40,6 @@
     "css-loader": "^0.28.4",
     "electron": "^1.6.11",
     "electron-builder": "^19.13.0",
-    "electron-rebuild": "^1.5.11",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^15.0.2",
     "eslint-plugin-import": "^2.7.0",
@@ -69,16 +68,12 @@
     "url": "https://github.com/fiahfy/hosty"
   },
   "scripts": {
-    "archive": "cd dist; ls Hosty* | xargs -I{} zip -r {}.zip {}",
     "build": "webpack --config webpack/config.babel.js",
     "build:main": "webpack --config webpack/config.main.babel.js",
     "build:renderer": "webpack --config webpack/config.renderer.babel.js",
     "hot:renderer": "webpack-dev-server --config webpack/config.renderer.hot.babel.js",
-    "install": "npm run build",
     "lint": "eslint src --ext .js,.jsx",
-    "package": "NODE_ENV=production npm run build && build -mw",
-    "package:mac": "NODE_ENV=production npm run build && build -m",
-    "package:win": "NODE_ENV=production npm run build && build -w",
+    "release": "NODE_ENV=production npm run build && build -mw -p onTagOrDraft",
     "start": "npm run watch & npm run build:main; electron main.js",
     "start:hot": "npm run hot:renderer & npm run build:main; HOT=1 electron main.js",
     "test": "npm run lint",

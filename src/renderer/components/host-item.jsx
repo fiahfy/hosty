@@ -21,7 +21,7 @@ const styles = {
     width: '48px',
   },
   errorTextField: {
-    color: colors.yellow700,
+    borderColor: colors.yellow700,
   },
 };
 
@@ -109,9 +109,8 @@ export default class HostItem extends Component {
             ref={(input) => { this.hostTextInput = input; }}
             defaultValue={host.host}
             hintText="example.com"
-            errorText={isValidHost ? null : ' '}
-            errorStyle={styles.errorTextField}
             fullWidth
+            underlineFocusStyle={isValidHost ? null : styles.errorTextField}
             onKeyDown={e => this.handleKeyDown(e)}
             onBlur={e => this.handleChange(e)}
             onChange={e => this.handleChange(e)}
@@ -125,9 +124,8 @@ export default class HostItem extends Component {
             ref={(input) => { this.ipTextInput = input; }}
             defaultValue={host.ip}
             hintText="192.0.2.0"
-            errorText={isValidIp ? null : ' '}
-            errorStyle={styles.errorTextField}
             fullWidth
+            underlineFocusStyle={isValidIp ? null : styles.errorTextField}
             onKeyDown={e => this.handleKeyDown(e)}
             onBlur={e => this.handleChange(e)}
             onChange={e => this.handleChange(e)}
