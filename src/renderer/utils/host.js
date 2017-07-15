@@ -46,7 +46,7 @@ export function compare(a, b, { key, order }) {
 export function build(hosts) {
   const newHosts = Array.isArray(hosts) ? hosts : [hosts];
   return newHosts
-    .filter(host => isValid(host))
+    .filter(host => isValid(host) && host.enable)
     .sort((a, b) => {
       let result = compare(a, b, { key: KEY_IP });
       if (result !== 0) {
@@ -59,7 +59,7 @@ export function build(hosts) {
       return compare(a, b, { key: KEY_HOST });
     })
     .map(item => (
-      `${(item.enable ? '' : '#')}${item.ip}\t${item.host}`
+      `${item.ip}\t${item.host}`
     ))
     .join('\n');
 }
