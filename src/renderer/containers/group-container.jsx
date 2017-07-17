@@ -60,6 +60,12 @@ export default class GroupContainer extends Component {
   handleEditGroup(id, group) {
     this.props.actions.updateGroup(id, group);
   }
+  handleEnableGroups() {
+    this.props.actions.enableGroups();
+  }
+  handleDisableGroups() {
+    this.props.actions.disableGroups();
+  }
   handleDeleteGroups() {
     this.props.actions.deleteGroups();
   }
@@ -109,6 +115,15 @@ export default class GroupContainer extends Component {
         label: 'Delete',
         click: () => this.handleDeleteGroups(),
         accelerator: 'CmdOrCtrl+Shift+Backspace',
+      },
+      { type: 'separator' },
+      {
+        label: 'Enable',
+        click: () => this.handleEnableGroups(),
+      },
+      {
+        label: 'Disable',
+        click: () => this.handleDisableGroups(),
       },
     ]);
   }

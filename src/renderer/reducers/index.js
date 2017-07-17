@@ -143,6 +143,28 @@ export default reduceReducers(
     router,
   }),
   handleActions({
+    [ActionTypes.ENABLE_GROUPS]: (state) => {
+      const { selectedIds } = state.groupContainer;
+      return Object.assign({}, state, {
+        groups: state.groups.map((group) => {
+          if (!selectedIds.includes(group.id)) {
+            return group;
+          }
+          return Object.assign({}, group, { enable: true });
+        }),
+      });
+    },
+    [ActionTypes.DISABLE_GROUPS]: (state) => {
+      const { selectedIds } = state.groupContainer;
+      return Object.assign({}, state, {
+        groups: state.groups.map((group) => {
+          if (!selectedIds.includes(group.id)) {
+            return group;
+          }
+          return Object.assign({}, group, { enable: false });
+        }),
+      });
+    },
     [ActionTypes.DELETE_GROUPS]: (state) => {
       const { selectedIds } = state.groupContainer;
       const lastIndex = state.groups.reduce((p, c, i) => (
@@ -317,6 +339,58 @@ export default reduceReducers(
           newGroup.hosts = newGroup.hosts.map(currentHost => (
             currentHost.id !== id ? currentHost : host
           ));
+          return newGroup;
+        }),
+      });
+    },
+    [ActionTypes.ENABLE_HOSTS]: (state) => {
+      const { selectedIds: selectedGroupIds } = state.groupContainer;
+      const { selectedIds } = state.hostContainer;
+      const selectedGroupId = selectedGroupIds[0];
+      if (!selectedGroupId) {
+        return state;
+      }
+      return Object.assign({}, state, {
+        groups: state.groups.map((group) => {
+          if (group.id !== selectedGroupId) {
+            return group;
+          }
+          const newGroup = Object.assign({}, group);
+          if (!newGroup.hosts) {
+            newGroup.hosts = [];
+          }
+          newGroup.hosts = newGroup.hosts.map((currentHost) => {
+            if (!selectedIds.includes(currentHost.id)) {
+              return currentHost;
+            }
+            return Object.assign({}, currentHost, { enable: true });
+          });
+          return newGroup;
+        }),
+      });
+    },
+    [ActionTypes.DISABLE_HOSTS]: (state) => {
+      const { selectedIds: selectedGroupIds } = state.groupContainer;
+      const { selectedIds } = state.hostContainer;
+      const selectedGroupId = selectedGroupIds[0];
+      if (!selectedGroupId) {
+        return state;
+      }
+      return Object.assign({}, state, {
+        groups: state.groups.map((group) => {
+          if (group.id !== selectedGroupId) {
+            return group;
+          }
+          const newGroup = Object.assign({}, group);
+          if (!newGroup.hosts) {
+            newGroup.hosts = [];
+          }
+          newGroup.hosts = newGroup.hosts.map((currentHost) => {
+            if (!selectedIds.includes(currentHost.id)) {
+              return currentHost;
+            }
+            return Object.assign({}, currentHost, { enable: false });
+          });
           return newGroup;
         }),
       });

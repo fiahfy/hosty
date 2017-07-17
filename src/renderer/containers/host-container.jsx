@@ -67,6 +67,12 @@ export default class HostContainer extends Component {
   handleEditHost(id, host) {
     this.props.actions.updateHost(id, host);
   }
+  handleEnableHosts() {
+    this.props.actions.enableHosts();
+  }
+  handleDisableHosts() {
+    this.props.actions.disableHosts();
+  }
   handleDeleteHosts() {
     this.props.actions.deleteHosts();
   }
@@ -120,6 +126,15 @@ export default class HostContainer extends Component {
         label: 'Delete',
         click: () => this.handleDeleteHosts(),
         accelerator: 'CmdOrCtrl+Backspace',
+      },
+      { type: 'separator' },
+      {
+        label: 'Enable',
+        click: () => this.handleEnableHosts(),
+      },
+      {
+        label: 'Disable',
+        click: () => this.handleDisableHosts(),
       },
     ]);
   }

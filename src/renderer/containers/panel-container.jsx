@@ -36,15 +36,14 @@ const styles = {
   },
   textField: {
     fontSize: '13px',
-    height: '32px',
   },
   textFieldUnderline: {
-    bottom: '2px',
+    bottom: '12px',
   },
   listWrapper: {
     position: 'relative',
     overflowY: 'auto',
-    height: 'calc(100% - 76px)',
+    height: 'calc(100% - 86px)',
   },
   emptyWrapper: {
     display: 'table',
