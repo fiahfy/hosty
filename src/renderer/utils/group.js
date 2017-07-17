@@ -7,6 +7,26 @@ export const KEY_ID = 'id';
 export const KEY_ENABLE = 'enable';
 export const KEY_NAME = 'name';
 
+export function compare(a, b, { key, order }) {
+  const reversed = order === SORT_DESC ? -1 : 1;
+  if (a[key] === b[key]) {
+    return 0;
+  }
+  if (a[key] === '' || a[key] === null || typeof a[key] === 'undefined') {
+    return reversed;
+  }
+  if (b[key] === '' || b[key] === null || typeof b[key] === 'undefined') {
+    return -1 * reversed;
+  }
+  let result = false;
+  if (key === KEY_ENABLE) {
+    result = a[key] < b[key];
+  } else {
+    result = a[key] > b[key];
+  }
+  return result ? reversed : -1 * reversed;
+}
+
 export function build(groups) {
   const newGroups = Array.isArray(groups) ? groups : [groups];
   const newHosts = newGroups
@@ -34,18 +54,4 @@ export function getHostLength(groups) {
     .reduce((previous, current) => (
       previous + (current.hosts ? current.hosts.length : 0)
     ), 0);
-}
-
-export function compare(a, b, { key, order }) {
-  const reversed = order === SORT_DESC ? -1 : 1;
-  if (a[key] === b[key]) {
-    return 0;
-  }
-  if (a[key] === '' || a[key] === null || typeof a[key] === 'undefined') {
-    return reversed;
-  }
-  if (b[key] === '' || b[key] === null || typeof b[key] === 'undefined') {
-    return -1 * reversed;
-  }
-  return a[key] > b[key] ? reversed : -1 * reversed;
 }
