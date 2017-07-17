@@ -1,15 +1,21 @@
 import { BrowserWindow } from 'electron';
+import windowStateKeeper from 'electron-window-state';
 import MenuBuilder from './menu-builder';
 
 export default class Window {
   constructor(application) {
     this.application = application;
   }
-  open(args) {
-    const options = args || { width: 820, height: 600 };
+  open() {
+    const windowState = windowStateKeeper({
+      defaultWidth: 820,
+      defaultHeight: 600,
+    });
 
-    this.browserWindow = new BrowserWindow(options);
+    this.browserWindow = new BrowserWindow(windowState);
     this.browserWindow.loadURL(`file://${__dirname}/app/index.html`);
+
+    windowState.manage(this.browserWindow);
 
     const builder = new MenuBuilder(this.browserWindow);
     builder.build();
@@ -17,11 +23,6 @@ export default class Window {
     this.handleEvents();
   }
   handleEvents() {
-    this.browserWindow.on('close', () => {
-      const options = this.browserWindow.getBounds();
-      this.application.constructor.saveWindowOptions(options);
-    });
-
     this.browserWindow.on('closed', () => {
       this.browserWindow = null;
       this.application.removeWindow();

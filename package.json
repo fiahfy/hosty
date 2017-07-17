@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "babel-polyfill": "^6.23.0",
+    "electron-window-state": "^4.1.1",
     "history": "^4.6.3",
     "is-electron-renderer": "^2.0.1",
     "material-ui": "^0.18.6",
