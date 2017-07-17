@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Drawer, Snackbar, Menu, MenuItem } from 'material-ui';
-import { ActionList, ActionSearch, ActionSettings } from 'material-ui/svg-icons';
+import { ActionList, ActionSettings } from 'material-ui/svg-icons';
 import {
   MuiThemeProvider, getMuiTheme,
   lightBaseTheme, darkBaseTheme,
@@ -62,7 +62,6 @@ export default class App extends Component {
   }
   static menus = [
     { pathname: '/', IconClass: ActionList },
-    { pathname: '/search', IconClass: ActionSearch },
     { pathname: '/settings', IconClass: ActionSettings },
   ];
   handleDrop(e) {

@@ -5,7 +5,6 @@ import reduceReducers from 'reduce-reducers';
 import * as ActionTypes from '../actions';
 import * as Group from '../utils/group';
 import * as Host from '../utils/host';
-import * as Result from '../utils/result';
 
 const groups = handleActions({
   [ActionTypes.INITIALIZE_GROUPS]: (state, action) => {
@@ -87,72 +86,50 @@ const messages = handleActions({
 }, []);
 
 const mainContainer = handleActions({
+  [ActionTypes.SHOW_PANEL]: state => (
+    Object.assign({}, state, { panelOpen: true })
+  ),
+  [ActionTypes.HIDE_PANEL]: state => (
+    Object.assign({}, state, { panelOpen: false })
+  ),
+}, {
+  panelOpen: false,
+});
+
+const groupContainer = handleActions({
   [ActionTypes.SORT_GROUPS]: (state, action) => {
     const { options } = action.payload;
-    return Object.assign({}, state, { groupSortOptions: options });
-  },
-  [ActionTypes.SORT_HOSTS]: (state, action) => {
-    const { options } = action.payload;
-    return Object.assign({}, state, { hostSortOptions: options });
+    return Object.assign({}, state, { sortOptions: options });
   },
 }, {
-  focusedGroupId: 0,
-  focusedHostId: 0,
-  selectedGroupIds: [],
-  selectedHostIds: [],
-  groupSortOptions: {},
-  hostSortOptions: {},
+  focusedId: 0,
+  selectedIds: [],
+  sortOptions: {},
   copiedGroups: [],
+});
+
+const hostContainer = handleActions({
+  [ActionTypes.SORT_HOSTS]: (state, action) => {
+    const { options } = action.payload;
+    return Object.assign({}, state, { sortOptions: options });
+  },
+}, {
+  focusedId: 0,
+  selectedIds: [],
+  sortOptions: {},
   copiedHosts: [],
 });
 
-const searchContainer = handleActions({
+const panelContainer = handleActions({
   [ActionTypes.SEARCH]: (state, action) => {
     const { query } = action.payload;
     return Object.assign({}, state, { query });
   },
-  [ActionTypes.SORT_RESULTS]: (state, action) => {
-    const { options } = action.payload;
-    const results = state.results.concat()
-      .sort((a, b) => Result.compare(a, b, options));
-    return Object.assign({}, state, {
-      results,
-      sortOptions: options,
-    });
-  },
-  [ActionTypes.SELECT_RESULT]: (state, action) => {
-    const { id, mode } = action.payload;
-    return Object.assign({}, state, {
-      selectedIds: (() => {
-        switch (mode) {
-          case 'append': {
-            const { selectedIds } = state;
-            if (selectedIds.includes(id)) {
-              return selectedIds.filter(currentId => (
-                currentId !== id
-              ));
-            }
-            return [...selectedIds, id];
-          }
-          case 'shift': {
-            const { selectedIds } = state;
-            if (selectedIds.includes(id)) {
-              return selectedIds;
-            }
-            return [id];
-          }
-          default:
-            return [id];
-        }
-      })(),
-    });
-  },
 }, {
   results: [],
   query: '',
-  selectedIds: [],
-  sortOptions: {},
 });
+
 
 export default reduceReducers(
   combineReducers({
@@ -160,58 +137,71 @@ export default reduceReducers(
     settings,
     messages,
     mainContainer,
-    searchContainer,
+    groupContainer,
+    hostContainer,
+    panelContainer,
     router,
   }),
   handleActions({
     [ActionTypes.DELETE_GROUPS]: (state) => {
-      const { selectedGroupIds } = state.mainContainer;
+      const { selectedIds } = state.groupContainer;
       const lastIndex = state.groups.reduce((p, c, i) => (
-        selectedGroupIds.includes(c.id) ? i : p
+        selectedIds.includes(c.id) ? i : p
       ), null);
       const selectedIndex = lastIndex < state.groups.length - 1 ? lastIndex + 1 : lastIndex - 1;
       const newGroup = state.groups[selectedIndex];
-      const newSelectedGroupIds = newGroup ? [newGroup.id] : [];
+      const newSelectedIds = newGroup ? [newGroup.id] : [];
       return Object.assign({}, state, {
-        groups: state.groups.filter(group => !selectedGroupIds.includes(group.id)),
-        mainContainer: {
-          ...state.mainContainer,
-          selectedGroupIds: newSelectedGroupIds,
-          selectedHostIds: [],
-          hostSortOptions: {},
+        groups: state.groups.filter(group => !selectedIds.includes(group.id)),
+        groupContainer: {
+          ...state.groupContainer,
+          selectedIds: newSelectedIds,
+        },
+        hostContainer: {
+          ...state.hostContainer,
+          selectedIds: [],
+          sortOptions: {},
         },
       });
     },
     [ActionTypes.CUT_GROUPS]: (state) => {
-      const { selectedGroupIds } = state.mainContainer;
+      const { selectedIds } = state.groupContainer;
       const lastIndex = state.groups.reduce((p, c, i) => (
-        selectedGroupIds.includes(c.id) ? i : p
+        selectedIds.includes(c.id) ? i : p
       ), null);
       const selectedIndex = lastIndex < state.groups.length - 1 ? lastIndex + 1 : lastIndex - 1;
       const newGroup = state.groups[selectedIndex];
-      const newSelectedGroupIds = newGroup ? [newGroup.id] : [];
+      const newSelectedIds = newGroup ? [newGroup.id] : [];
       return Object.assign({}, state, {
-        groups: state.groups.filter(group => !selectedGroupIds.includes(group.id)),
-        mainContainer: {
-          ...state.mainContainer,
-          selectedGroupIds: newSelectedGroupIds,
-          copiedGroups: state.groups.filter(group => selectedGroupIds.includes(group.id)),
+        groups: state.groups.filter(group => !selectedIds.includes(group.id)),
+        groupContainer: {
+          ...state.groupContainer,
+          selectedGroupIds: newSelectedIds,
+          copiedGroups: state.groups.filter(group => selectedIds.includes(group.id)),
+        },
+        hostContainer: {
+          ...state.hostContainer,
+          selectedIds: [],
+          sortOptions: {},
           copiedHosts: [],
         },
       });
     },
     [ActionTypes.COPY_GROUPS]: (state) => {
-      const { selectedGroupIds } = state.mainContainer;
+      const { selectedIds } = state.groupContainer;
       return Object.assign({}, state, {
-        mainContainer: {
-          ...state.mainContainer,
-          copiedGroups: state.groups.filter(group => selectedGroupIds.includes(group.id)),
+        groupContainer: {
+          ...state.groupContainer,
+          copiedGroups: state.groups.filter(group => selectedIds.includes(group.id)),
+        },
+        hostContainer: {
+          ...state.hostContainer,
           copiedHosts: [],
         },
       });
     },
     [ActionTypes.PASTE_GROUPS]: (state) => {
-      const { copiedGroups } = state.mainContainer;
+      const { copiedGroups } = state.groupContainer;
       const maxId = state.groups.reduce((p, c) => (c.id > p ? c.id : p), 0);
       const newGroups = copiedGroups.map((group, i) => (
         Object.assign({}, group, { id: maxId + i + 1 })
@@ -227,26 +217,24 @@ export default reduceReducers(
         return state;
       }
       return Object.assign({}, state, {
-        mainContainer: {
-          ...state.mainContainer,
-          focusedGroupId: group.id,
-          selectedGroupIds: [group.id],
+        groupContainer: {
+          ...state.groupContainer,
+          focusedId: group.id,
+          selectedIds: [group.id],
         },
       });
     },
     [ActionTypes.SELECT_GROUP]: (state, action) => {
       const { id, option } = action.payload;
-      const { selectedGroupIds } = state.mainContainer;
+      const { selectedIds } = state.groupContainer;
       return Object.assign({}, state, {
-        mainContainer: {
-          ...state.mainContainer,
-          selectedHostIds: [],
-          hostSortOptions: {},
-          selectedGroupIds: (() => {
+        groupContainer: {
+          ...state.groupContainer,
+          selectedIds: (() => {
             switch (option) {
               case 'shift': {
-                const lastId = selectedGroupIds.length
-                  ? selectedGroupIds[selectedGroupIds.length - 1] : 0;
+                const lastId = selectedIds.length
+                  ? selectedIds[selectedIds.length - 1] : 0;
                 let lastIndex = state.groups.findIndex(group => group.id === lastId);
                 let firstIndex = state.groups.findIndex(group => group.id === id);
                 if (firstIndex > lastIndex) {
@@ -256,20 +244,20 @@ export default reduceReducers(
                     firstIndex <= i && i <= lastIndex
                   ))
                   .map(group => group.id)
-                  .filter(currentId => !selectedGroupIds.includes(currentId));
-                return [...selectedGroupIds, ...groupIds];
+                  .filter(currentId => !selectedIds.includes(currentId));
+                return [...selectedIds, ...groupIds];
               }
               case 'ctrl': {
-                if (selectedGroupIds.includes(id)) {
-                  return selectedGroupIds.filter(currentId => (
+                if (selectedIds.includes(id)) {
+                  return selectedIds.filter(currentId => (
                     currentId !== id
                   ));
                 }
-                return [...selectedGroupIds, id];
+                return [...selectedIds, id];
               }
               case 'rightClick': {
-                if (selectedGroupIds.includes(id)) {
-                  return selectedGroupIds;
+                if (selectedIds.includes(id)) {
+                  return selectedIds;
                 }
                 return [id];
               }
@@ -278,10 +266,15 @@ export default reduceReducers(
             }
           })(),
         },
+        hostContainer: {
+          ...state.hostContainer,
+          selectedIds: [],
+          sortOptions: {},
+        },
       });
     },
     [ActionTypes.CREATE_HOST]: (state) => {
-      const { selectedGroupIds } = state.mainContainer;
+      const { selectedIds: selectedGroupIds } = state.groupContainer;
       const selectedGroupId = selectedGroupIds[0];
       if (!selectedGroupId) {
         return state;
@@ -306,7 +299,7 @@ export default reduceReducers(
       });
     },
     [ActionTypes.UPDATE_HOST]: (state, action) => {
-      const { selectedGroupIds } = state.mainContainer;
+      const { selectedIds: selectedGroupIds } = state.groupContainer;
       const { id, host } = action.payload;
       const selectedGroupId = selectedGroupIds[0];
       if (!selectedGroupId) {
@@ -329,7 +322,8 @@ export default reduceReducers(
       });
     },
     [ActionTypes.DELETE_HOSTS]: (state) => {
-      const { selectedGroupIds, selectedHostIds } = state.mainContainer;
+      const { selectedIds: selectedGroupIds } = state.groupContainer;
+      const { selectedIds } = state.hostContainer;
       const selectedGroupId = selectedGroupIds[0];
       if (!selectedGroupId) {
         return state;
@@ -340,11 +334,11 @@ export default reduceReducers(
       }
       const hosts = group.hosts || [];
       const lastIndex = hosts.reduce((p, c, i) => (
-        selectedHostIds.includes(c.id) ? i : p
+        selectedIds.includes(c.id) ? i : p
       ), null);
       const selectedIndex = lastIndex < hosts.length - 1 ? lastIndex + 1 : lastIndex - 1;
       const newHost = hosts[selectedIndex];
-      const newSelectedHostsIds = newHost ? [newHost.id] : [];
+      const newSelectedIds = newHost ? [newHost.id] : [];
       return Object.assign({}, state, {
         groups: state.groups.map((currentGroup) => {
           if (currentGroup.id !== selectedGroupId) {
@@ -352,18 +346,19 @@ export default reduceReducers(
           }
           return Object.assign({}, currentGroup, {
             hosts: (currentGroup.hosts || []).filter(host => (
-              !selectedHostIds.includes(host.id)
+              !selectedIds.includes(host.id)
             )),
           });
         }),
-        mainContainer: {
-          ...state.mainContainer,
-          selectedHostIds: newSelectedHostsIds,
+        hostContainer: {
+          ...state.hostContainer,
+          selectedIds: newSelectedIds,
         },
       });
     },
     [ActionTypes.CUT_HOSTS]: (state) => {
-      const { selectedGroupIds, selectedHostIds } = state.mainContainer;
+      const { selectedIds: selectedGroupIds } = state.groupContainer;
+      const { selectedIds } = state.hostContainer;
       const selectedGroupId = selectedGroupIds[0];
       if (!selectedGroupId) {
         return state;
@@ -374,11 +369,11 @@ export default reduceReducers(
       }
       const hosts = group.hosts || [];
       const lastIndex = hosts.reduce((p, c, i) => (
-        selectedHostIds.includes(c.id) ? i : p
+        selectedIds.includes(c.id) ? i : p
       ), null);
       const selectedIndex = lastIndex < hosts.length - 1 ? lastIndex + 1 : lastIndex - 1;
       const newHost = hosts[selectedIndex];
-      const newSelectedHostsIds = newHost ? [newHost.id] : [];
+      const newSelectedIds = newHost ? [newHost.id] : [];
       return Object.assign({}, state, {
         groups: state.groups.map((currentGroup) => {
           if (currentGroup.id !== selectedGroupId) {
@@ -386,20 +381,24 @@ export default reduceReducers(
           }
           return Object.assign({}, currentGroup, {
             hosts: (currentGroup.hosts || []).filter(host => (
-              !selectedHostIds.includes(host.id)
+              !selectedIds.includes(host.id)
             )),
           });
         }),
-        mainContainer: {
-          ...state.mainContainer,
-          selectedHostIds: newSelectedHostsIds,
-          copiedHosts: hosts.filter(host => selectedHostIds.includes(host.id)),
+        groupContainer: {
+          ...state.groupContainer,
           copiedGroups: [],
+        },
+        hostContainer: {
+          ...state.hostContainer,
+          selectedIds: newSelectedIds,
+          copiedHosts: hosts.filter(host => selectedIds.includes(host.id)),
         },
       });
     },
     [ActionTypes.COPY_HOSTS]: (state) => {
-      const { selectedGroupIds, selectedHostIds } = state.mainContainer;
+      const { selectedIds: selectedGroupIds } = state.groupContainer;
+      const { selectedIds } = state.hostContainer;
       const selectedGroupId = selectedGroupIds[0];
       if (!selectedGroupId) {
         return state;
@@ -410,15 +409,19 @@ export default reduceReducers(
       }
       const hosts = group.hosts || [];
       return Object.assign({}, state, {
-        mainContainer: {
-          ...state.mainContainer,
-          copiedHosts: hosts.filter(host => selectedHostIds.includes(host.id)),
+        groupContainer: {
+          ...state.groupContainer,
           copiedGroups: [],
+        },
+        hostContainer: {
+          ...state.hostContainer,
+          copiedHosts: hosts.filter(host => selectedIds.includes(host.id)),
         },
       });
     },
     [ActionTypes.PASTE_HOSTS]: (state) => {
-      const { selectedGroupIds, copiedHosts } = state.mainContainer;
+      const { selectedIds: selectedGroupIds } = state.groupContainer;
+      const { copiedHosts } = state.hostContainer;
       const selectedGroupId = selectedGroupIds[0];
       if (!selectedGroupId) {
         return state;
@@ -442,7 +445,7 @@ export default reduceReducers(
       });
     },
     [ActionTypes.SORT_HOSTS]: (state, action) => {
-      const { selectedGroupIds } = state.mainContainer;
+      const { selectedIds: selectedGroupIds } = state.groupContainer;
       const { options } = action.payload;
       const selectedGroupId = selectedGroupIds[0];
       if (!selectedGroupId) {
@@ -475,7 +478,7 @@ export default reduceReducers(
       });
     },
     [ActionTypes.FOCUS_HOST]: (state) => {
-      const { selectedGroupIds } = state.mainContainer;
+      const { selectedIds: selectedGroupIds } = state.groupContainer;
       const group = state.groups.find(currentGroup => (
         currentGroup.id === selectedGroupIds[0]
       ));
@@ -487,28 +490,29 @@ export default reduceReducers(
         return state;
       }
       return Object.assign({}, state, {
-        mainContainer: {
-          ...state.mainContainer,
-          focusedHostId: host.id,
-          selectedHostIds: [host.id],
+        hostContainer: {
+          ...state.hostContainer,
+          focusedId: host.id,
+          selectedIds: [host.id],
         },
       });
     },
     [ActionTypes.SELECT_HOST]: (state, action) => {
       const { id, option } = action.payload;
-      const { selectedGroupIds, selectedHostIds } = state.mainContainer;
+      const { selectedIds: selectedGroupIds } = state.groupContainer;
+      const { selectedIds } = state.hostContainer;
       const group = state.groups.find(currentGroup => (
         currentGroup.id === selectedGroupIds[0]
       ));
       const hosts = (group ? group.hosts : []) || [];
       return Object.assign({}, state, {
-        mainContainer: {
-          ...state.mainContainer,
-          selectedHostIds: (() => {
+        hostContainer: {
+          ...state.hostContainer,
+          selectedIds: (() => {
             switch (option) {
               case 'shift': {
-                const lastId = selectedHostIds.length
-                  ? selectedHostIds[selectedHostIds.length - 1] : 0;
+                const lastId = selectedIds.length
+                  ? selectedIds[selectedIds.length - 1] : 0;
                 let lastIndex = hosts.findIndex(host => host.id === lastId);
                 let firstIndex = hosts.findIndex(host => host.id === id);
                 if (firstIndex > lastIndex) {
@@ -518,20 +522,20 @@ export default reduceReducers(
                     firstIndex <= i && i <= lastIndex
                   ))
                   .map(host => host.id)
-                  .filter(currentId => !selectedHostIds.includes(currentId));
-                return [...selectedHostIds, ...hostIds];
+                  .filter(currentId => !selectedIds.includes(currentId));
+                return [...selectedIds, ...hostIds];
               }
               case 'ctrl': {
-                if (selectedHostIds.includes(id)) {
-                  return selectedHostIds.filter(currentId => (
+                if (selectedIds.includes(id)) {
+                  return selectedIds.filter(currentId => (
                     currentId !== id
                   ));
                 }
-                return [...selectedHostIds, id];
+                return [...selectedIds, id];
               }
               case 'rightClick': {
-                if (selectedHostIds.includes(id)) {
-                  return selectedHostIds;
+                if (selectedIds.includes(id)) {
+                  return selectedIds;
                 }
                 return [id];
               }
@@ -543,30 +547,32 @@ export default reduceReducers(
       });
     },
     [ActionTypes.SEARCH]: (state) => {
-      const { query, sortOptions } = state.searchContainer;
+      const { query } = state.panelContainer;
       return Object.assign({}, state, {
-        searchContainer: {
-          ...state.searchContainer,
-          results: state.groups.reduce((p, c) => (
-              p.concat((c.hosts || []).map(host => ({
-                id: `${c.id}-${host.id}`,
-                group: c,
-                host,
-              })))
-            ), [])
-            .filter((result) => {
+        panelContainer: {
+          ...state.panelContainer,
+          results: state.groups.map((group) => {
+            const newGroup = Object.assign({}, group);
+            if (!newGroup.hosts) {
+              newGroup.hosts = [];
+            }
+            newGroup.hosts = newGroup.hosts.filter((host) => {
               if (query === '') {
                 return false;
               }
-              if ((result.host.host || '').indexOf(query) > -1) {
+              if ((host.host || '').indexOf(query) > -1) {
                 return true;
               }
-              if ((result.host.ip || '').indexOf(query) > -1) {
+              if ((host.ip || '').indexOf(query) > -1) {
                 return true;
               }
               return false;
             })
-            .sort((a, b) => Result.compare(a, b, sortOptions)),
+            .sort((a, b) => Host.compare(a, b, { key: Host.KEY_HOST, order: Group.SORT_ASC }));
+            return newGroup;
+          })
+          .filter(group => group.hosts.length)
+          .sort((a, b) => Group.compare(a, b, { key: Group.KEY_NAME, order: Group.SORT_ASC })),
         },
       });
     },

@@ -26,8 +26,8 @@ export const SELECT_HOST = 'SELECT_HOST';
 export const UPDATE_SETTINGS = 'UPDATE_SETTINGS';
 
 export const SEARCH = 'SEARCH';
-export const SORT_RESULTS = 'SORT_RESULTS';
-export const SELECT_RESULT = 'SELECT_RESULT';
+export const SHOW_PANEL = 'SHOW_PANEL';
+export const HIDE_PANEL = 'HIDE_PANEL';
 
 export const CREATE_MESSAGE = 'CREATE_MESSAGE';
 export const CLEAR_MESSAGES = 'CLEAR_MESSAGES';
@@ -106,15 +106,9 @@ export const search = createAction(
   query => ({ query }),
 );
 
-export const sortResults = createAction(
-  SORT_RESULTS,
-  options => ({ options }),
-);
+export const showPanel = createAction(SHOW_PANEL);
 
-export const selectResult = createAction(
-  SELECT_RESULT,
-  (id, mode) => ({ id, mode }),
-);
+export const hidePanel = createAction(HIDE_PANEL);
 
 export const createMessage = createAction(
   CREATE_MESSAGE,

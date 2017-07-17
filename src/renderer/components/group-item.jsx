@@ -24,7 +24,6 @@ const styles = {
     paddingRight: '0',
   },
   shrinkColumn: {
-    color: colors.grey500,
     fontSize: '11px',
     paddingLeft: '0',
     textAlign: 'right',
@@ -114,7 +113,11 @@ export default class GroupItem extends Component {
             editable={editable}
           />
         </TableRowColumn>
-        <TableRowColumn style={styles.shrinkColumn}>
+        <TableRowColumn style={{
+          ...styles.shrinkColumn,
+          color: this.context.muiTheme.palette.primary3Color,
+        }}
+        >
           {count}
         </TableRowColumn>
       </TableRow>

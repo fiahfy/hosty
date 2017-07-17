@@ -21,6 +21,9 @@ const styles = {
   textField: {
     fontSize: 'inherit',
   },
+  textFieldUnderline: {
+    bottom: '12px',
+  },
 };
 
 export default class EditableLabel extends Component {
@@ -91,6 +94,7 @@ export default class EditableLabel extends Component {
         hintText={hintText}
         autoFocus
         style={styles.textField}
+        underlineStyle={styles.textFieldUnderline}
         onKeyDown={onKeyDown}
         onBlur={e => this.handleBlur(e)}
         onClick={e => this.constructor.handleClick(e)}
