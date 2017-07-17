@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { ListItem } from 'material-ui';
+import isUpdateNeeded from '../utils/is-update-needed';
 
 const styles = {
   listItem: {
@@ -24,6 +25,9 @@ export default class ResultItem extends Component {
     result: {},
     onClickResult: () => {},
   };
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    return isUpdateNeeded(this, nextProps, nextState, nextContext);
+  }
   handleClickResult(host) {
     const { result, onClickResult } = this.props;
     onClickResult(result.id, host.id);
