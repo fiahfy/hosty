@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as ActionCreators from '../actions';
-import GroupList from '../components/group-list';
-import HostList from '../components/host-list';
-import ContextMenu from '../utils/context-menu';
+import GroupContainer from './group-container';
+import HostContainer from './host-container';
+import PanelContainer from './panel-container';
 
 const styles = {
   container: {
@@ -45,27 +43,28 @@ const styles = {
     textAlign: 'center',
     verticalAlign: 'middle',
   },
+  panelWrapper: {
+    borderTopWidth: '1px',
+    borderTopStyle: 'solid',
+    boxSizing: 'border-box',
+    height: '100%',
+    overflow: 'hidden',
+  },
+  draggableBar: {
+    height: '5px',
+    cursor: 'row-resize',
+  },
+  panelContentWrapper: {
+    height: 'calc(100% - 5px)',
+  },
 };
 
 function mapStateToProps(state) {
-  const { selectedGroupIds, copiedGroups, copiedHosts } = state.mainContainer;
-
-  const selectedGroupId = selectedGroupIds[0] || 0;
-  const selectedGroup = state.groups.find(group => group.id === selectedGroupId);
-  const hosts = selectedGroup ? (selectedGroup.hosts || []) : [];
-
-  return {
-    groups: state.groups,
-    hosts,
-    selectedGroupId,
-    groupPastable: !!copiedGroups.length,
-    hostPastable: !!copiedHosts.length,
-    ...state.mainContainer,
-  };
+  return { ...state.mainContainer };
 }
 
-function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators(ActionCreators, dispatch) };
+function mapDispatchToProps() {
+  return {};
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -74,231 +73,103 @@ export default class MainContainer extends Component {
     muiTheme: PropTypes.object.isRequired,
   };
   static propTypes = {
-    groups: PropTypes.arrayOf(PropTypes.object).isRequired,
-    hosts: PropTypes.arrayOf(PropTypes.object).isRequired,
-    selectedGroupId: PropTypes.number.isRequired,
-    groupPastable: PropTypes.bool.isRequired,
-    hostPastable: PropTypes.bool.isRequired,
-    focusedGroupId: PropTypes.number.isRequired,
-    focusedHostId: PropTypes.number.isRequired,
-    selectedGroupIds: PropTypes.arrayOf(PropTypes.number).isRequired,
-    selectedHostIds: PropTypes.arrayOf(PropTypes.number).isRequired,
-    groupSortOptions: PropTypes.object.isRequired,
-    hostSortOptions: PropTypes.object.isRequired,
-    actions: PropTypes.object.isRequired,
+    panelOpen: PropTypes.bool.isRequired,
   };
-  // handle group
-  handleAddGroup() {
-    this.props.actions.createGroup();
-    window.setTimeout(() => {
-      this.props.actions.focusGroup();
-    }, 0);
+  state = {
+    dragging: false,
+    panelY: 0,
+    panelHeight: document.body.offsetHeight / 3, // eslint-disable-line no-undef
+  };
+  handleWrapper(e) {
+    const { dragging } = this.state;
+    if (dragging) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
   }
-  handleEditGroup(id, group) {
-    this.props.actions.updateGroup(id, group);
+  handleDragStart(e) {
+    const img = document.createElement('img'); // eslint-disable-line no-undef
+    img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+    e.dataTransfer.setDragImage(img, 0, 0);
+    e.dataTransfer.effectAllowed = 'move';
+    this.setState({ dragging: true, panelY: e.clientY });
   }
-  handleDeleteGroups() {
-    this.props.actions.deleteGroups();
-  }
-  handleCutGroups() {
-    this.props.actions.cutGroups();
-  }
-  handleCopyGroups() {
-    this.props.actions.copyGroups();
-  }
-  handlePasteGroups() {
-    this.props.actions.pasteGroups();
-  }
-  handleSelectGroup(id, option) {
-    this.props.actions.selectGroup(id, option);
-  }
-  handleSortGroups(options) {
-    this.props.actions.sortGroups(options);
-  }
-  handleContextMenuForGroups(e) {
-    const { groupPastable } = this.props;
-
-    ContextMenu.show(e, [
-      {
-        label: 'New Group',
-        click: () => this.handleAddGroup(),
-        accelerator: 'CmdOrCtrl+Shift+N',
-      },
-      { type: 'separator' },
-      {
-        label: 'Cut',
-        click: () => this.handleCutGroups(),
-        accelerator: 'CmdOrCtrl+Shift+X',
-      },
-      {
-        label: 'Copy',
-        click: () => this.handleCopyGroups(),
-        accelerator: 'CmdOrCtrl+Shift+C',
-      },
-      {
-        label: 'Paste',
-        click: () => this.handlePasteGroups(),
-        accelerator: 'CmdOrCtrl+Shift+V',
-        enabled: groupPastable,
-      },
-      { type: 'separator' },
-      {
-        label: 'Delete',
-        click: () => this.handleDeleteGroups(),
-        accelerator: 'CmdOrCtrl+Shift+Backspace',
-      },
-    ]);
-  }
-  // handle host
-  handleAddHost() {
-    this.props.actions.createHost();
-    window.setTimeout(() => {
-      this.props.actions.focusHost();
-    }, 0);
-  }
-  handleEditHost(id, host) {
-    this.props.actions.updateHost(id, host);
-  }
-  handleDeleteHosts() {
-    this.props.actions.deleteHosts();
-  }
-  handleCutHosts() {
-    this.props.actions.cutHosts();
-  }
-  handleCopyHosts() {
-    this.props.actions.copyHosts();
-  }
-  handlePasteHosts() {
-    this.props.actions.pasteHosts();
-  }
-  handleSelectHost(id, option) {
-    this.props.actions.selectHost(id, option);
-  }
-  handleSortHosts(options) {
-    this.props.actions.sortHosts(options);
-  }
-  handleContextMenuForHosts(e) {
-    const { selectedGroupId, hostPastable } = this.props;
-
-    if (!selectedGroupId) {
+  handleDrag(e) {
+    const { panelY, panelHeight } = this.state;
+    const newHeight = panelHeight - (e.clientY - panelY);
+    const maxHeight = document.body.offsetHeight - 100; // eslint-disable-line no-undef
+    if (newHeight < 100 || maxHeight < newHeight) {
       return;
     }
-
-    ContextMenu.show(e, [
-      {
-        label: 'New Host',
-        click: () => this.handleAddHost(),
-        accelerator: 'CmdOrCtrl+N',
-      },
-      { type: 'separator' },
-      {
-        label: 'Cut',
-        click: () => this.handleCutHosts(),
-        accelerator: 'CmdOrCtrl+Alt+X',
-      },
-      {
-        label: 'Copy',
-        click: () => this.handleCopyHosts(),
-        accelerator: 'CmdOrCtrl+Alt+C',
-      },
-      {
-        label: 'Paste',
-        click: () => this.handlePasteHosts(),
-        accelerator: 'CmdOrCtrl+Alt+V',
-        enabled: hostPastable,
-      },
-      { type: 'separator' },
-      {
-        label: 'Delete',
-        click: () => this.handleDeleteHosts(),
-        accelerator: 'CmdOrCtrl+Backspace',
-      },
-    ]);
+    this.setState({ panelY: e.clientY, panelHeight: newHeight });
+  }
+  handleDragEnd() {
+    this.setState({ dragging: false });
   }
   // render
-  renderGroupList() {
-    const { groups, focusedGroupId, selectedGroupIds, groupSortOptions } = this.props;
+  renderPanel() {
+    const { panelOpen } = this.props;
+    const { panelHeight } = this.state;
 
-    let emptyView = null;
-    if (!groups.length) {
-      emptyView = (
-        <div style={styles.emptyWrapper}>
-          <div style={{
-            ...styles.emptyMessage,
-            color: this.context.muiTheme.palette.primary3Color,
-          }}
-          >No groups</div>
-        </div>
-      );
+    if (!panelOpen) {
+      return null;
     }
 
     return (
       <div
-        className="list"
-        onContextMenu={e => this.handleContextMenuForGroups(e)}
+        style={{
+          ...styles.panelWrapper,
+          height: `${panelHeight}px`,
+          borderTopColor: this.context.muiTheme.palette.borderColor,
+        }}
       >
-        <GroupList
-          groups={groups}
-          focusedId={focusedGroupId}
-          selectedIds={selectedGroupIds}
-          sortOptions={groupSortOptions}
-          onEditGroup={(...args) => this.handleEditGroup(...args)}
-          onSelectGroup={(...args) => this.handleSelectGroup(...args)}
-          onSortGroups={(...args) => this.handleSortGroups(...args)}
+        <div
+          draggable
+          style={styles.draggableBar}
+          onDrag={e => this.handleDrag(e)}
+          onDragStart={e => this.handleDragStart(e)}
+          onDragEnd={e => this.handleDragEnd(e)}
         />
-        {emptyView}
-      </div>
-    );
-  }
-  renderHostList() {
-    const { selectedGroupId, hosts, focusedHostId, selectedHostIds, hostSortOptions } = this.props;
-
-    let emptyView = null;
-    if (!hosts.length) {
-      emptyView = (
-        <div style={styles.emptyWrapper}>
-          <div style={{
-            ...styles.emptyMessage,
-            color: this.context.muiTheme.palette.primary3Color,
-          }}
-          >No hosts</div>
+        <div style={styles.panelContentWrapper}>
+          <PanelContainer />
         </div>
-      );
-    }
-
-    return (
-      <div
-        className="list"
-        onContextMenu={e => this.handleContextMenuForHosts(e)}
-      >
-        <HostList
-          groupId={selectedGroupId}
-          hosts={hosts}
-          focusedId={focusedHostId}
-          selectedIds={selectedHostIds}
-          sortOptions={hostSortOptions}
-          onEditHost={(...args) => this.handleEditHost(...args)}
-          onSelectHost={(...args) => this.handleSelectHost(...args)}
-          onSortHosts={(...args) => this.handleSortHosts(...args)}
-        />
-        {emptyView}
       </div>
     );
   }
   render() {
+    const { panelOpen } = this.props;
+    let { panelHeight } = this.state;
+
+    panelHeight = panelOpen ? panelHeight : 0;
+
     return (
-      <div style={styles.container}>
+      <div
+        style={styles.container}
+        onDragOver={e => this.handleWrapper(e)}
+        onDrop={e => this.handleWrapper(e)}
+      >
         <div
-          style={{ ...styles.nav, borderRightColor: this.context.muiTheme.palette.primary3Color }}
-          className="nav"
+          style={{
+            ...styles.container,
+            height: `calc(100% - ${panelHeight}px)`,
+          }}
         >
-          {this.renderGroupList()}
-        </div>
-        <div style={styles.contentWrapper}>
-          <div style={styles.content}>
-            {this.renderHostList()}
+          <div
+            className="nav"
+            style={{
+              ...styles.nav,
+              borderRightColor: this.context.muiTheme.palette.borderColor,
+            }}
+          >
+            <GroupContainer />
+          </div>
+          <div style={styles.contentWrapper}>
+            <div style={styles.content}>
+              <HostContainer />
+            </div>
           </div>
         </div>
+        {this.renderPanel()}
       </div>
     );
   }

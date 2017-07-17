@@ -40,7 +40,7 @@ export default function setupListener(store, history) {
   });
 
   ipcRenderer.on('showSearchWindow', () => {
-    history.push('/search');
+    actions.showPanel();
   });
 
   ipcRenderer.on('showSettingsWindow', () => {

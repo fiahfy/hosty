@@ -1,37 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  IconButton,
-  TableRow, TableRowColumn,
-} from 'material-ui';
-import { colors } from 'material-ui/styles';
-import StatusIcon from './status-icon';
-import EditableLabel from './editable-label';
-import isUpdateNeeded from '../utils/is-update-needed';
-import * as Group from '../utils/group';
-import * as Host from '../utils/host';
+import { ListItem } from 'material-ui';
 
 const styles = {
-  row: {
-    cursor: 'pointer',
+  listItem: {
+    fontSize: '13px',
+    padding: '8px 16px',
   },
-  groupColumn: {
-    width: '111px',
-    paddingRight: '0',
-  },
-  iconColumn: {
-    paddingRight: '0',
-    textAlign: 'center',
-    verticalAlign: 'top',
-    width: '48px',
-  },
-  shrinkColumn: {
-    color: colors.grey500,
-    fontSize: '11px',
-    paddingLeft: '0',
-    paddingRight: '25px',
-    textAlign: 'right',
-    width: '25px',
+  nestedListItem: {
+    padding: '0',
   },
 };
 
@@ -41,86 +18,45 @@ export default class ResultItem extends Component {
   };
   static propTypes = {
     result: PropTypes.object,
-    selected: PropTypes.bool,
-    ...TableRow.propTypes,
+    onClickResult: PropTypes.func,
   };
   static defaultProps = {
     result: {},
-    selected: false,
-    ...TableRow.defaultProps,
+    onClickResult: () => {},
   };
-  shouldComponentUpdate(nextProps, nextState, nextContext) {
-    return isUpdateNeeded(this, nextProps, nextState, nextContext);
+  handleClickResult(host) {
+    const { result, onClickResult } = this.props;
+    onClickResult(result.id, host.id);
   }
   render() {
-    const { result, selected, ...others } = this.props;
-
-    const valid = Host.isValid(result.host);
-    const count = (result.group.hosts || []).length;
-    const isValidHost = Host.isValidHost(result.host.host);
-    const isValidIp = Host.isValidIp(result.host.ip);
+    const { result } = this.props;
 
     return (
-      <TableRow
-        style={styles.row}
-        selected={selected}
-        {...others}
-      >
-        {others.children}
-        <TableRowColumn style={styles.iconColumn}>
-          <IconButton>
-            <StatusIcon
-              valid
-              enable={result.group.enable}
+      <ListItem
+        className="result-list"
+        primaryText={result.name}
+        innerDivStyle={styles.listItem}
+        nestedListStyle={styles.nestedListItem}
+        initiallyOpen
+        primaryTogglesNestedList
+        nestedItems={
+          result.hosts.map(host => (
+            <ListItem
+              key={host.id}
+              primaryText={
+                <span>
+                  {host.host}
+                  <span style={{ color: this.context.muiTheme.palette.primary3Color }}>
+                    &nbsp;- {host.ip}
+                  </span>
+                </span>
+              }
+              innerDivStyle={styles.listItem}
+              onClick={() => this.handleClickResult(host)}
             />
-          </IconButton>
-        </TableRowColumn>
-        <TableRowColumn style={styles.groupColumn}>
-          <EditableLabel
-            name={Group.KEY_NAME}
-            ref={(input) => { this.textInput = input; }}
-            defaultValue={result.group.name}
-            hintText="Group"
-            fullWidth
-            editable={false}
-          />
-        </TableRowColumn>
-        <TableRowColumn style={styles.shrinkColumn}>
-          {count}
-        </TableRowColumn>
-        <TableRowColumn style={styles.iconColumn}>
-          <IconButton>
-            <StatusIcon
-              valid={valid}
-              enable={result.host.enable}
-            />
-          </IconButton>
-        </TableRowColumn>
-        <TableRowColumn>
-          <EditableLabel
-            name={Host.KEY_HOST}
-            ref={(input) => { this.hostTextInput = input; }}
-            defaultValue={result.host.host}
-            hintText="example.com"
-            errorText={isValidHost ? null : ' '}
-            errorStyle={styles.errorTextField}
-            fullWidth
-            editable={false}
-          />
-        </TableRowColumn>
-        <TableRowColumn>
-          <EditableLabel
-            name={Host.KEY_IP}
-            ref={(input) => { this.ipTextInput = input; }}
-            defaultValue={result.host.ip}
-            hintText="192.0.2.0"
-            errorText={isValidIp ? null : ' '}
-            errorStyle={styles.errorTextField}
-            fullWidth
-            editable={false}
-          />
-        </TableRowColumn>
-      </TableRow>
+          ))
+        }
+      />
     );
   }
 }

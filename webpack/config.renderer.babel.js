@@ -20,7 +20,6 @@ rules = rules.concat([
     options: {
       limit: '10000',
       name: 'img/[name].[ext]',
-      context: 'node_modules',
     },
   },
   {
@@ -29,7 +28,6 @@ rules = rules.concat([
     options: {
       limit: '10000',
       name: 'font/[name].[ext]',
-      context: 'node_modules',
     },
   },
 ]);

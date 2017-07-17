@@ -28,20 +28,15 @@ https://github.com/fiahfy/hosty/releases
 $ git clone https://github.com/fiahfy/hosty.git
 $ cd hosty
 $ yarn install
-$ yarn run start:hot
+$ yarn start:hot
 ```
 
 ### Run for Development
 ```
-$ yarn run start
+$ yarn start
 ```
 
 ### Run for Development(HMR)
 ```
-$ yarn run start:hot
-```
-
-### Packaging
-```
-$ yarn run package
+$ yarn start:hot
 ```

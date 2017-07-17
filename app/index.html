@@ -29,24 +29,24 @@
         display: table-cell;
       }
       /* drawer */
-      .drawer>div:first-child>div:first-child {
+      .drawer>div:first-of-type>div:first-of-type {
         width: 48px!important;
       }
-      .drawer>div:first-child>div:first-child>div:first-child {
+      .drawer>div:first-of-type>div:first-of-type>div:first-of-type {
         width: 48px!important;
         padding: 0!important;
       }
-      .drawer>div:first-child>div:first-child>div:first-child
-      >div>span:first-child>div:first-child>div {
+      .drawer>div:first-of-type>div:first-of-type>div:first-of-type
+      >div>span:first-of-type>div:first-of-type>div {
         padding: 0!important;
       }
-      .drawer>div:first-child>div:first-child>div:first-child
-      >div>span:first-child>div:first-child>div>svg:first-child {
+      .drawer>div:first-of-type>div:first-of-type>div:first-of-type
+      >div>span:first-of-type>div:first-of-type>div>svg:first-of-type {
         left: 0!important;
       }
       /* nav */
-      .nav>.list>div:first-child>div:first-child,
-      .nav>.list>div:first-child>div:last-child {
+      .nav>.list>div:first-of-type>div:first-of-type,
+      .nav>.list>div:first-of-type>div:last-of-type {
         width: 256px!important;
       }
       /* list */
@@ -54,27 +54,23 @@
         height: 100%!important;
         position: relative!important;
       }
-      .list>div:first-child {
+      .list>div:first-of-type {
         height: 100%!important;
       }
-      .list>div:first-child>div:first-child {
+      .list>div:first-of-type>div:first-of-type {
         position: fixed!important;
         z-index: 1!important;
       }
-      .list>div:first-child>div:nth-child(2) {
+      .list>div:first-of-type>div:nth-of-type(2) {
         margin-top: 59px!important;
         height: calc(100% - 59px)!important;
       }
-      .list>div:first-child>div:last-child {
-        position: fixed!important;
-        bottom: 0!important;
-        z-index: 1!important;
-      }
-      /* list has-footer */
-      .list.has-footer>div:first-child>div:nth-child(2) {
-        margin-top: 59px!important;
-        margin-bottom: 51px!important;
-        height: calc(100% - 110px)!important;
+      /* result-list */
+      .result-list>div:first-of-type>div:first-of-type>button:first-of-type {
+        margin-right: 10px!important;
+        padding: 0!important;
+        height: 32px!important;
+        width: auto!important;
       }
       /* todo */
       td>div>input {
