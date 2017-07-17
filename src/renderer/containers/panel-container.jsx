@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as ActionCreators from '../actions';
 import { TextField, IconButton, Subheader } from 'material-ui';
 import { NavigationClose } from 'material-ui/svg-icons';
+import * as ActionCreators from '../actions';
 import ResultList from '../components/result-list';
 
 const styles = {
