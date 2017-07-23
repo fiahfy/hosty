@@ -1,15 +1,42 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { ListItem } from 'material-ui';
+import { NavigationCheck } from 'material-ui/svg-icons';
+import { colors } from 'material-ui/styles';
 import isUpdateNeeded from '../utils/is-update-needed';
 
 const styles = {
   listItem: {
     fontSize: '13px',
     padding: '8px 16px',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    verticalAlign: 'middle',
+    whiteSpace: 'nowrap',
   },
   nestedListItem: {
     padding: '0',
+  },
+  chidlListItem: {
+    fontSize: '13px',
+    padding: '4px 16px 4px 6px',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    verticalAlign: 'middle',
+    whiteSpace: 'nowrap',
+  },
+  icon: {
+    marginRight: '8px',
+    verticalAlign: 'middle',
+  },
+  label: {
+    display: 'inline-block',
+    height: '24px',
+    lineHeight: '24px',
+    verticalAlign: 'middle',
+  },
+  subLabel: {
+    paddingLeft: '8px',
   },
 };
 
@@ -38,27 +65,54 @@ export default class ResultItem extends Component {
     return (
       <ListItem
         className="result-list"
-        primaryText={result.name}
+        primaryText={
+          <span>
+            <span style={styles.label}>{result.name}</span>
+            <span style={{
+              ...styles.label,
+              ...styles.subLabel,
+              color: this.context.muiTheme.palette.primary3Color,
+            }}
+            >
+              {(result.hosts || []).length}
+            </span>
+          </span>
+        }
         innerDivStyle={styles.listItem}
         nestedListStyle={styles.nestedListItem}
         initiallyOpen
         primaryTogglesNestedList
         nestedItems={
-          result.hosts.map(host => (
-            <ListItem
-              key={host.id}
-              primaryText={
-                <span>
-                  {host.host}
-                  <span style={{ color: this.context.muiTheme.palette.primary3Color }}>
-                    &nbsp;- {host.ip}
+          result.hosts.map((host) => {
+            const visibility = result.enable && host.enable ? 'visible' : 'hidden';
+            return (
+              <ListItem
+                key={host.id}
+                primaryText={
+                  <span>
+                    <NavigationCheck
+                      color={colors.green400}
+                      style={{
+                        ...styles.icon,
+                        visibility,
+                      }}
+                    />
+                    <span style={styles.label}>{host.host}</span>
+                    <span style={{
+                      ...styles.label,
+                      ...styles.subLabel,
+                      color: this.context.muiTheme.palette.primary3Color,
+                    }}
+                    >
+                      ({host.ip})
+                    </span>
                   </span>
-                </span>
-              }
-              innerDivStyle={styles.listItem}
-              onClick={() => this.handleClickResult(host)}
-            />
-          ))
+                }
+                innerDivStyle={styles.chidlListItem}
+                onClick={() => this.handleClickResult(host)}
+              />
+            );
+          })
         }
       />
     );

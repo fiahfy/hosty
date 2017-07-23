@@ -14,6 +14,7 @@ const styles = {
   subheader: {
     display: 'flex',
     lineHeight: '38px',
+    userSelect: 'none',
   },
   subheaderText: {
     flex: '1',

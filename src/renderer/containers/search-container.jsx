@@ -32,6 +32,9 @@ const styles = {
   resultWrapper: {
     fontSize: '13px',
     padding: '0 16px 8px',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
   },
   listWrapper: {
     position: 'relative',
