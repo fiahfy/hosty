@@ -30,6 +30,7 @@ export const SELECT_HOST = 'SELECT_HOST';
 export const UPDATE_SETTINGS = 'UPDATE_SETTINGS';
 
 export const SEARCH = 'SEARCH';
+export const SET_REGEXP_ENABLED = 'SET_REGEXP_ENABLED';
 export const SHOW_PANEL = 'SHOW_PANEL';
 export const HIDE_PANEL = 'HIDE_PANEL';
 
@@ -116,6 +117,11 @@ export const updateSettings = createAction(
 export const search = createAction(
   SEARCH,
   query => ({ query }),
+);
+
+export const setRegExpEnabled = createAction(
+  SET_REGEXP_ENABLED,
+  enabled => ({ enabled }),
 );
 
 export const showPanel = createAction(SHOW_PANEL);

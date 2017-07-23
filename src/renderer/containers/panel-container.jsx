@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { TextField, IconButton, Subheader } from 'material-ui';
-import { NavigationClose } from 'material-ui/svg-icons';
+import { TextField, IconButton, Subheader, Checkbox } from 'material-ui';
+import { NavigationClose, AvExplicit } from 'material-ui/svg-icons';
 import * as ActionCreators from '../actions';
 import ResultList from '../components/result-list';
 
@@ -14,31 +14,37 @@ const styles = {
     overflow: 'hidden',
   },
   subheader: {
+    display: 'flex',
     lineHeight: '38px',
   },
-  closeButton: {
-    float: 'right',
-    height: '38px',
-    marginRight: '16px',
-    padding: '0px',
-    width: 'auto',
+  subheaderText: {
+    flex: '1',
   },
-  icon: {
-    height: '20px',
-    width: '20px',
+  closeButton: {
+    height: '38px',
+    marginRight: '9px',
+    padding: '0',
+    width: '38px',
+  },
+  closeButtonIcon: {
   },
   textFieldWrapper: {
-    clear: 'both',
-    content: '',
-    display: 'block',
-    paddingLeft: '16px',
-    paddingRight: '16px',
+    display: 'flex',
+    padding: '0 16px',
   },
   textField: {
     fontSize: '13px',
+    flex: '1',
   },
   textFieldUnderline: {
     bottom: '12px',
+  },
+  checkbox: {
+    padding: '12px 0 12px 8px',
+    width: 'auto',
+  },
+  checkboxIcon: {
+    marginRight: '0',
   },
   listWrapper: {
     position: 'relative',
@@ -78,6 +84,7 @@ export default class PanelContainer extends Component {
   static propTypes = {
     results: PropTypes.arrayOf(PropTypes.object).isRequired,
     query: PropTypes.string.isRequired,
+    regExpEnabled: PropTypes.bool.isRequired,
     actions: PropTypes.object.isRequired,
   };
   handleClick() {
@@ -88,12 +95,15 @@ export default class PanelContainer extends Component {
       this.props.actions.search(this.textInput.getValue());
     }
   }
+  handleClickRegExp(e, isInputChecked) {
+    this.props.actions.setRegExpEnabled(isInputChecked);
+  }
   handleClickResult(groupId, hostId) {
     this.props.actions.selectGroup(groupId);
     this.props.actions.selectHost(hostId);
   }
   render() {
-    const { results, query } = this.props;
+    const { results, query, regExpEnabled } = this.props;
 
     let emptyView = null;
     if (!results.length) {
@@ -111,10 +121,10 @@ export default class PanelContainer extends Component {
     return (
       <div style={styles.container}>
         <Subheader style={styles.subheader}>
-          Search
+          <span style={styles.subheaderText}>Search</span>
           <IconButton
             style={styles.closeButton}
-            iconStyle={styles.icon}
+            iconStyle={styles.closeButtonIcon}
             onClick={e => this.handleClick(e)}
           >
             <NavigationClose />
@@ -130,6 +140,14 @@ export default class PanelContainer extends Component {
             autoFocus
             fullWidth
             onKeyDown={e => this.handleKeyDown(e)}
+          />
+          <Checkbox
+            checked={regExpEnabled}
+            checkedIcon={<AvExplicit />}
+            uncheckedIcon={<AvExplicit />}
+            style={styles.checkbox}
+            iconStyle={styles.checkboxIcon}
+            onCheck={(...args) => this.handleClickRegExp(...args)}
           />
         </div>
         <div style={styles.listWrapper}>
