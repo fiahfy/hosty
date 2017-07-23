@@ -54,7 +54,7 @@ export default class PanelContainer extends Component {
     return (
       <div style={styles.container}>
         <Subheader style={styles.subheader}>
-          <span style={styles.subheaderText}>Search</span>
+          <span style={styles.subheaderText}>Find</span>
           <IconButton
             style={styles.iconButton}
             onClick={e => this.handleClick(e)}

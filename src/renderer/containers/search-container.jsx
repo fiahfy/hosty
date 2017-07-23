@@ -98,6 +98,7 @@ export default class SearchContainer extends Component {
           underlineStyle={styles.textFieldUnderline}
           name="query"
           defaultValue={query}
+          hintText="Find"
           ref={(input) => { this.textInput = input; }}
           autoFocus
           fullWidth

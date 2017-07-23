@@ -78,7 +78,7 @@ export default class MenuBuilder {
             ],
           },
           { type: 'separator' },
-          { label: 'Search', accelerator: 'CmdOrCtrl+F', click: () => { this.search(); } },
+          { label: 'Find', accelerator: 'CmdOrCtrl+F', click: () => { this.findHosts(); } },
         ],
       },
       {
@@ -263,8 +263,8 @@ export default class MenuBuilder {
   showGroups() {
     this.window.webContents.send('showGroupsWindow');
   }
-  search() {
-    this.window.webContents.send('showSearchWindow');
+  findHosts() {
+    this.window.webContents.send('showPanel');
   }
   showSettings() {
     this.window.webContents.send('showSettingsWindow');
