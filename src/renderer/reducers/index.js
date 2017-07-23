@@ -120,7 +120,7 @@ const hostContainer = handleActions({
   copiedHosts: [],
 });
 
-const panelContainer = handleActions({
+const searchContainer = handleActions({
   [ActionTypes.SEARCH]: (state, action) => {
     const { query } = action.payload;
     return Object.assign({}, state, { query });
@@ -144,7 +144,7 @@ export default reduceReducers(
     mainContainer,
     groupContainer,
     hostContainer,
-    panelContainer,
+    searchContainer,
     router,
   }),
   handleActions({
@@ -626,12 +626,12 @@ export default reduceReducers(
       });
     },
     [ActionTypes.SEARCH]: (state) => {
-      const { query, regExpEnabled } = state.panelContainer;
+      const { query, regExpEnabled } = state.searchContainer;
       const pattern = regExpEnabled ? query : RegExp.escape(query);
       const regexp = RegExp(pattern, 'i');
       return Object.assign({}, state, {
-        panelContainer: {
-          ...state.panelContainer,
+        searchContainer: {
+          ...state.searchContainer,
           results: state.groups.map((group) => {
             const newGroup = Object.assign({}, group);
             if (!newGroup.hosts) {
