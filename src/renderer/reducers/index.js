@@ -120,14 +120,19 @@ const hostContainer = handleActions({
   copiedHosts: [],
 });
 
-const panelContainer = handleActions({
+const searchContainer = handleActions({
   [ActionTypes.SEARCH]: (state, action) => {
     const { query } = action.payload;
     return Object.assign({}, state, { query });
   },
+  [ActionTypes.SET_REGEXP_ENABLED]: (state, action) => {
+    const { enabled: regExpEnabled } = action.payload;
+    return Object.assign({}, state, { regExpEnabled });
+  },
 }, {
   results: [],
   query: '',
+  regExpEnabled: false,
 });
 
 
@@ -139,7 +144,7 @@ export default reduceReducers(
     mainContainer,
     groupContainer,
     hostContainer,
-    panelContainer,
+    searchContainer,
     router,
   }),
   handleActions({
@@ -621,10 +626,12 @@ export default reduceReducers(
       });
     },
     [ActionTypes.SEARCH]: (state) => {
-      const { query } = state.panelContainer;
+      const { query, regExpEnabled } = state.searchContainer;
+      const pattern = regExpEnabled ? query : RegExp.escape(query);
+      const regexp = RegExp(pattern, 'i');
       return Object.assign({}, state, {
-        panelContainer: {
-          ...state.panelContainer,
+        searchContainer: {
+          ...state.searchContainer,
           results: state.groups.map((group) => {
             const newGroup = Object.assign({}, group);
             if (!newGroup.hosts) {
@@ -634,13 +641,7 @@ export default reduceReducers(
               if (query === '') {
                 return false;
               }
-              if ((host.host || '').indexOf(query) > -1) {
-                return true;
-              }
-              if ((host.ip || '').indexOf(query) > -1) {
-                return true;
-              }
-              return false;
+              return regexp.test(host.host || '') || regexp.test(host.ip || '');
             })
             .sort((a, b) => Host.compare(a, b, { key: Host.KEY_HOST, order: Group.SORT_ASC }));
             return newGroup;

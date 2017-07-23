@@ -11,6 +11,7 @@ import * as Group from '../utils/group';
 
 const styles = {
   iconHeaderColumn: {
+    cursor: 'pointer',
     paddingRight: '0',
     textAlign: 'center',
     userSelect: 'none',
@@ -63,7 +64,7 @@ export default class GroupList extends Component {
   handleHeaderClick(e, rowId, columnId) {
     const { key, order } = this.props.sortOptions;
 
-    const columns = [null, null, Group.KEY_NAME];
+    const columns = [null, Group.KEY_ENABLE, Group.KEY_NAME];
     const newKey = columns[columnId];
     if (!newKey) {
       return;
@@ -102,7 +103,12 @@ export default class GroupList extends Component {
       >
         <TableRow onCellClick={(...args) => this.handleHeaderClick(...args)}>
           <TableHeaderColumn style={styles.iconHeaderColumn}>
-            Status
+            <div style={styles.label}>Status</div>
+            <SortOrderIcon
+              style={styles.icon}
+              hidden={key !== Group.KEY_ENABLE}
+              asc={order === Group.SORT_ASC}
+            />
           </TableHeaderColumn>
           <TableHeaderColumn colSpan="2" style={styles.sortableHeaderColumn}>
             <div style={styles.label}>Group</div>

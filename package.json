@@ -1,7 +1,7 @@
 {
   "name": "hosty",
   "description": "Hosts file manager based on Electron",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "author": {
     "name": "fiahfy",
     "email": "d.fiahfy@gmail.com",
@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "babel-polyfill": "^6.23.0",
+    "electron-window-state": "^4.1.1",
     "history": "^4.6.3",
     "is-electron-renderer": "^2.0.1",
     "material-ui": "^0.18.6",

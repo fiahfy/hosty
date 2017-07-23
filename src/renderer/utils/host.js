@@ -40,7 +40,13 @@ export function compare(a, b, { key, order }) {
   if (b[key] === '' || b[key] === null || typeof b[key] === 'undefined') {
     return -1 * reversed;
   }
-  return a[key] > b[key] ? reversed : -1 * reversed;
+  let result = false;
+  if (key === KEY_ENABLE) {
+    result = a[key] < b[key];
+  } else {
+    result = a[key] > b[key];
+  }
+  return result ? reversed : -1 * reversed;
 }
 
 export function build(hosts) {

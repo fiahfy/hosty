@@ -11,6 +11,7 @@ import * as Host from '../utils/host';
 
 const styles = {
   iconHeaderColumn: {
+    cursor: 'pointer',
     paddingRight: '0',
     textAlign: 'center',
     userSelect: 'none',
@@ -64,7 +65,7 @@ export default class HostList extends Component {
   handleHeaderClick(e, rowId, columnId) {
     const { key, order } = this.props.sortOptions;
 
-    const columns = [null, null, Host.KEY_HOST, Host.KEY_IP];
+    const columns = [null, Host.KEY_ENABLE, Host.KEY_HOST, Host.KEY_IP];
     const newKey = columns[columnId];
     if (!newKey) {
       return;
@@ -103,7 +104,12 @@ export default class HostList extends Component {
       >
         <TableRow onCellClick={(...args) => this.handleHeaderClick(...args)}>
           <TableHeaderColumn style={styles.iconHeaderColumn}>
-            Status
+            <div style={styles.label}>Status</div>
+            <SortOrderIcon
+              style={styles.icon}
+              hidden={key !== Host.KEY_ENABLE}
+              asc={order === Host.SORT_ASC}
+            />
           </TableHeaderColumn>
           <TableHeaderColumn style={styles.sortableHeaderColumn}>
             <div style={styles.label}>Host</div>

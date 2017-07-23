@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { List } from 'material-ui';
 import ResultItem from './result-item';
+import isUpdateNeeded from '../utils/is-update-needed';
 
 const styles = {
   list: {
@@ -18,6 +19,9 @@ export default class ResultList extends Component {
     results: [],
     onClickResult: () => {},
   };
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    return isUpdateNeeded(this, nextProps, nextState, nextContext);
+  }
   render() {
     const { results, onClickResult } = this.props;
 
