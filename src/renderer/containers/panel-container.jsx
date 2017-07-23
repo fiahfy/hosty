@@ -9,9 +9,7 @@ import ResultList from '../components/result-list';
 
 const styles = {
   container: {
-    boxSizing: 'border-box',
     height: '100%',
-    overflow: 'hidden',
   },
   subheader: {
     display: 'flex',

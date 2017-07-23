@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Drawer, Snackbar, Menu, MenuItem } from 'material-ui';
+import { Drawer, Menu, MenuItem, Snackbar } from 'material-ui';
 import { ActionList, ActionSettings } from 'material-ui/svg-icons';
 import {
   MuiThemeProvider, getMuiTheme,
@@ -14,15 +14,13 @@ import * as HostsFileManager from '../utils/hosts-file-manager';
 
 const styles = {
   app: {
-    boxSizing: 'border-box',
     height: '100%',
-    overflow: 'hidden',
   },
   drawer: {
-    boxSizing: 'content-box',
     borderRightWidth: '1px',
     borderRightStyle: 'solid',
     boxShadow: 'none',
+    boxSizing: 'content-box',
   },
   container: {
     height: '100%',

@@ -7,27 +7,18 @@ import PanelContainer from './panel-container';
 
 const styles = {
   container: {
-    boxSizing: 'border-box',
     height: '100%',
-    overflow: 'hidden',
+  },
+  contentWrapper: {
+    display: 'flex',
+  },
+  content: {
+    flex: '1',
   },
   nav: {
     borderRightWidth: '1px',
     borderRightStyle: 'solid',
-    boxSizing: 'content-box',
-    float: 'left',
-    height: '100%',
     width: '256px',
-  },
-  contentWrapper: {
-    height: '100%',
-    float: 'right',
-    marginLeft: '-257px',
-    width: '100%',
-  },
-  content: {
-    height: '100%',
-    paddingLeft: '257px',
   },
   emptyWrapper: {
     display: 'table',
@@ -48,7 +39,6 @@ const styles = {
     borderTopStyle: 'solid',
     boxSizing: 'border-box',
     height: '100%',
-    overflow: 'hidden',
   },
   draggableBar: {
     height: '5px',
@@ -150,7 +140,7 @@ export default class MainContainer extends Component {
       >
         <div
           style={{
-            ...styles.container,
+            ...styles.contentWrapper,
             height: `calc(100% - ${panelHeight}px)`,
           }}
         >
@@ -163,10 +153,8 @@ export default class MainContainer extends Component {
           >
             <GroupContainer />
           </div>
-          <div style={styles.contentWrapper}>
-            <div style={styles.content}>
-              <HostContainer />
-            </div>
+          <div style={styles.content}>
+            <HostContainer />
           </div>
         </div>
         {this.renderPanel()}

@@ -3,15 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {
-  List, ListItem, Subheader, Checkbox,
+  Checkbox, List, ListItem, Subheader,
 } from 'material-ui';
 import * as ActionCreators from '../actions';
 
 const styles = {
   container: {
-    boxSizing: 'border-box',
     height: '100%',
-    overflow: 'hidden',
   },
 };
 
