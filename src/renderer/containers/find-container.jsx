@@ -58,7 +58,7 @@ const styles = {
 };
 
 function mapStateToProps(state) {
-  return { ...state.searchContainer };
+  return { ...state.findContainer };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -66,7 +66,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class SearchContainer extends Component {
+export default class FindContainer extends Component {
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired,
   };
@@ -78,7 +78,7 @@ export default class SearchContainer extends Component {
   };
   handleKeyDown(e) {
     if (e.keyCode === 13) {
-      this.props.actions.search(this.textInput.getValue());
+      this.props.actions.findHosts(this.textInput.getValue());
     }
   }
   handleClickRegExp(e, isInputChecked) {
@@ -88,7 +88,7 @@ export default class SearchContainer extends Component {
     this.props.actions.selectGroup(groupId);
     this.props.actions.selectHost(hostId);
   }
-  renderSearchField() {
+  renderFindField() {
     const { query, regExpEnabled } = this.props;
 
     return (
@@ -165,7 +165,7 @@ export default class SearchContainer extends Component {
   render() {
     return (
       <div style={styles.container}>
-        {this.renderSearchField()}
+        {this.renderFindField()}
         {this.renderResultLabel()}
         {this.renderResultList()}
       </div>

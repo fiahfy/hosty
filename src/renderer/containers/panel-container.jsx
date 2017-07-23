@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { IconButton, Subheader } from 'material-ui';
 import { NavigationClose } from 'material-ui/svg-icons';
 import * as ActionCreators from '../actions';
-import SearchContainer from './search-container';
+import FindContainer from './find-container';
 
 const styles = {
   container: {
@@ -63,7 +63,7 @@ export default class PanelContainer extends Component {
           </IconButton>
         </Subheader>
         <div style={styles.contentWrapper}>
-          <SearchContainer />
+          <FindContainer />
         </div>
       </div>
     );

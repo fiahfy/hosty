@@ -29,7 +29,7 @@ export const SELECT_HOST = 'SELECT_HOST';
 
 export const UPDATE_SETTINGS = 'UPDATE_SETTINGS';
 
-export const SEARCH = 'SEARCH';
+export const FIND_HOSTS = 'FIND_HOSTS';
 export const SET_REGEXP_ENABLED = 'SET_REGEXP_ENABLED';
 export const SHOW_PANEL = 'SHOW_PANEL';
 export const HIDE_PANEL = 'HIDE_PANEL';
@@ -114,8 +114,8 @@ export const updateSettings = createAction(
   settings => ({ settings }),
 );
 
-export const search = createAction(
-  SEARCH,
+export const findHosts = createAction(
+  FIND_HOSTS,
   query => ({ query }),
 );
 
