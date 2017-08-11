@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { TextField, Checkbox } from 'material-ui';
+import { TextField, IconButton } from 'material-ui';
 import { AvExplicit } from 'material-ui/svg-icons';
 import * as ActionCreators from '../actions';
 import ResultList from '../components/result-list';
@@ -13,7 +13,8 @@ const styles = {
   },
   textFieldWrapper: {
     display: 'flex',
-    padding: '0 16px',
+    paddingLeft: '16px',
+    paddingRight: '4px',
   },
   textField: {
     fontSize: '13px',
@@ -21,13 +22,6 @@ const styles = {
   },
   textFieldUnderline: {
     bottom: '12px',
-  },
-  checkbox: {
-    padding: '12px 0 12px 8px',
-    width: 'auto',
-  },
-  checkboxIcon: {
-    marginRight: '0',
   },
   resultWrapper: {
     fontSize: '13px',
@@ -81,8 +75,9 @@ export default class FindContainer extends Component {
       this.props.actions.findHosts(this.textInput.getValue());
     }
   }
-  handleClickRegExp(e, isInputChecked) {
-    this.props.actions.setRegExpEnabled(isInputChecked);
+  handleClickRegExp() {
+    this.textInput.focus();
+    this.props.actions.setRegExpEnabled(!this.props.regExpEnabled);
   }
   handleClickResult(groupId, hostId) {
     this.props.actions.selectGroup(groupId);
@@ -90,6 +85,10 @@ export default class FindContainer extends Component {
   }
   renderFindField() {
     const { query, regExpEnabled } = this.props;
+
+    const color = regExpEnabled
+      ? this.context.muiTheme.palette.primary1Color
+      : this.context.muiTheme.palette.primary3Color;
 
     return (
       <div style={styles.textFieldWrapper}>
@@ -104,14 +103,14 @@ export default class FindContainer extends Component {
           fullWidth
           onKeyDown={e => this.handleKeyDown(e)}
         />
-        <Checkbox
-          checked={regExpEnabled}
-          checkedIcon={<AvExplicit />}
-          uncheckedIcon={<AvExplicit />}
-          style={styles.checkbox}
-          iconStyle={styles.checkboxIcon}
-          onCheck={(...args) => this.handleClickRegExp(...args)}
-        />
+        <IconButton
+          tooltip="Use RegExp"
+          tooltipPosition="bottom-left"
+          style={styles.button}
+          onClick={e => this.handleClickRegExp(e)}
+        >
+          <AvExplicit color={color} />
+        </IconButton>
       </div>
     );
   }
