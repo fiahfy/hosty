@@ -268,8 +268,8 @@ export default reduceReducers(
                   [firstIndex, lastIndex] = [lastIndex, firstIndex];
                 }
                 const groupIds = state.groups.filter((group, i) => (
-                    firstIndex <= i && i <= lastIndex
-                  ))
+                  firstIndex <= i && i <= lastIndex
+                ))
                   .map(group => group.id)
                   .filter(currentId => !selectedIds.includes(currentId));
                 return [...selectedIds, ...groupIds];
@@ -598,8 +598,8 @@ export default reduceReducers(
                   [firstIndex, lastIndex] = [lastIndex, firstIndex];
                 }
                 const hostIds = hosts.filter((host, i) => (
-                    firstIndex <= i && i <= lastIndex
-                  ))
+                  firstIndex <= i && i <= lastIndex
+                ))
                   .map(host => host.id)
                   .filter(currentId => !selectedIds.includes(currentId));
                 return [...selectedIds, ...hostIds];
@@ -643,11 +643,11 @@ export default reduceReducers(
               }
               return regexp.test(host.host || '') || regexp.test(host.ip || '');
             })
-            .sort((a, b) => Host.compare(a, b, { key: Host.KEY_HOST, order: Group.SORT_ASC }));
+              .sort((a, b) => Host.compare(a, b, { key: Host.KEY_HOST, order: Group.SORT_ASC }));
             return newGroup;
           })
-          .filter(group => group.hosts.length)
-          .sort((a, b) => Group.compare(a, b, { key: Group.KEY_NAME, order: Group.SORT_ASC })),
+            .filter(group => group.hosts.length)
+            .sort((a, b) => Group.compare(a, b, { key: Group.KEY_NAME, order: Group.SORT_ASC })),
         },
       });
     },

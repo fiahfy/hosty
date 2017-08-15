@@ -112,8 +112,8 @@ export default class App extends Component {
       <Menu onItemTouchTap={(...args) => this.handleItemTouchTap(...args)}>
         {this.constructor.menus.map(({ pathname, IconClass }) => {
           const color = pathname === currentPathname
-                      ? theme.palette.accent1Color
-                      : theme.palette.primary3Color;
+            ? theme.palette.accent1Color
+            : theme.palette.primary3Color;
           return (
             <MenuItem
               key={pathname}
