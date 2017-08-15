@@ -14,6 +14,8 @@ const styles = {
   subheader: {
     display: 'flex',
     lineHeight: '38px',
+    paddingLeft: '16px',
+    paddingRight: '4px',
     userSelect: 'none',
   },
   subheaderText: {
@@ -21,9 +23,8 @@ const styles = {
   },
   iconButton: {
     height: '38px',
-    marginRight: '9px',
-    padding: '0',
-    width: '38px',
+    paddingBottom: '0',
+    paddingTop: '0',
   },
   contentWrapper: {
     height: 'calc(100% - 38px)',
