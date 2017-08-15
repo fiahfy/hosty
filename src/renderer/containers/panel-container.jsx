@@ -23,8 +23,9 @@ const styles = {
   },
   iconButton: {
     height: '38px',
-    paddingBottom: '0',
-    paddingTop: '0',
+    margin: '0 5px',
+    padding: '7px',
+    width: '38px',
   },
   contentWrapper: {
     height: 'calc(100% - 38px)',

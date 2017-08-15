@@ -8,7 +8,7 @@ import isUpdateNeeded from '../utils/is-update-needed';
 const styles = {
   listItem: {
     fontSize: '13px',
-    padding: '7px 16px',
+    padding: '7px 52px 7px 16px',
     textOverflow: 'ellipsis',
     overflow: 'hidden',
     whiteSpace: 'nowrap',
