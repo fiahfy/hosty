@@ -8,22 +8,13 @@ import isUpdateNeeded from '../utils/is-update-needed';
 const styles = {
   listItem: {
     fontSize: '13px',
-    padding: '8px 16px',
+    padding: '7px 16px',
     textOverflow: 'ellipsis',
     overflow: 'hidden',
-    verticalAlign: 'middle',
     whiteSpace: 'nowrap',
   },
   nestedListItem: {
     padding: '0',
-  },
-  chidlListItem: {
-    fontSize: '13px',
-    padding: '4px 16px 4px 6px',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-    verticalAlign: 'middle',
-    whiteSpace: 'nowrap',
   },
   icon: {
     marginRight: '8px',
@@ -108,7 +99,7 @@ export default class ResultItem extends Component {
                     </span>
                   </span>
                 }
-                innerDivStyle={styles.chidlListItem}
+                innerDivStyle={styles.listItem}
                 onClick={() => this.handleClickResult(host)}
               />
             );
