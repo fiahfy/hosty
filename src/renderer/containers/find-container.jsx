@@ -28,6 +28,7 @@ const styles = {
     padding: '0 16px 8px',
     textOverflow: 'ellipsis',
     overflow: 'hidden',
+    userSelect: 'none',
     whiteSpace: 'nowrap',
   },
   listWrapper: {
@@ -132,7 +133,7 @@ export default class FindContainer extends Component {
       }}
       >
         {hostCount} host{ hostCount > 1 ? 's' : '' } found
-        in {groupCount} group{ groupCount > 1 ? 's' : '' } for {query}
+        in {groupCount} group{ groupCount > 1 ? 's' : '' } for &quot;{query}&quot;
       </div>
     );
   }
