@@ -5,9 +5,9 @@ Hosts file manager based on Electron.
 
 
 ## Features
-* GUI manager
-* Managing with groups
-* Import/Export settings
+* Cross platform support
+* Manage hosts with groups
+* Import/Export hosts settings
 
 
 ## Screenshot
@@ -31,12 +31,12 @@ $ yarn
 $ yarn start:hot
 ```
 
-### Run for Development
+### Run
 ```
 $ yarn start
 ```
 
-### Run for Development(HMR)
+### Run(HMR)
 ```
 $ yarn start:hot
 ```
