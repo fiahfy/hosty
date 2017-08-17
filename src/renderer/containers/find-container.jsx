@@ -44,9 +44,10 @@ const styles = {
   },
   emptyMessage: {
     display: 'table-cell',
-    fontSize: '14px',
+    fontSize: '13px',
     position: 'relative',
     textAlign: 'center',
+    userSelect: 'none',
     verticalAlign: 'middle',
   },
 };

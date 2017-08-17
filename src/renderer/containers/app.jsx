@@ -16,11 +16,30 @@ const styles = {
   app: {
     height: '100%',
   },
+  titleBar: {
+    borderBottomWidth: '1px',
+    borderBottomStyle: 'solid',
+    boxSizing: 'border-box',
+    fontSize: '13px',
+    height: '24px',
+    padding: '0 68px',
+    lineHeight: '24px',
+    overflow: 'hidden',
+    textAlign: 'center',
+    textOverflow: 'ellipsis',
+    userSelect: 'none',
+    WebkitAppRegion: 'drag',
+  },
+  content: {
+    height: 'calc(100% - 24px)',
+  },
   drawer: {
     borderRightWidth: '1px',
     borderRightStyle: 'solid',
     boxShadow: 'none',
     boxSizing: 'content-box',
+    height: 'calc(100% - 24px)',
+    top: '24px',
   },
   container: {
     height: '100%',
@@ -132,20 +151,27 @@ export default class App extends Component {
       <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
         <div
           style={{ ...styles.app, backgroundColor: theme.palette.canvasColor }}
-          onDragOver={e => this.constructor.handleDragOver(e)}
-          onDrop={e => this.handleDrop(e)}
         >
-          <Drawer
-            width={48}
-            className="drawer"
-            containerStyle={{ ...styles.drawer, borderRightColor: theme.palette.borderColor }}
+          <div
+            style={{ ...styles.titleBar, borderBottomColor: theme.palette.borderColor }}
+          >Title</div>
+          <div
+            style={styles.content}
+            onDragOver={e => this.constructor.handleDragOver(e)}
+            onDrop={e => this.handleDrop(e)}
           >
-            {this.renderMenu(theme)}
-          </Drawer>
-          <div style={styles.container}>
-            {children}
+            <Drawer
+              width={48}
+              className="drawer"
+              containerStyle={{ ...styles.drawer, borderRightColor: theme.palette.borderColor }}
+            >
+              {this.renderMenu(theme)}
+            </Drawer>
+            <div style={styles.container}>
+              {children}
+            </div>
+            {this.renderSnackbar()}
           </div>
-          {this.renderSnackbar()}
         </div>
       </MuiThemeProvider>
     );

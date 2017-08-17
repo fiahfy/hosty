@@ -20,20 +20,6 @@ const styles = {
     borderRightStyle: 'solid',
     width: '256px',
   },
-  emptyWrapper: {
-    display: 'table',
-    height: '100%',
-    position: 'absolute',
-    top: '0',
-    width: '100%',
-  },
-  emptyMessage: {
-    display: 'table-cell',
-    fontSize: '14px',
-    position: 'relative',
-    textAlign: 'center',
-    verticalAlign: 'middle',
-  },
   panelWrapper: {
     borderTopWidth: '1px',
     borderTopStyle: 'solid',

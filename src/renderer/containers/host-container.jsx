@@ -16,10 +16,11 @@ const styles = {
   },
   emptyMessage: {
     display: 'table-cell',
-    fontSize: '14px',
+    fontSize: '13px',
     paddingTop: '59px',
     position: 'relative',
     textAlign: 'center',
+    userSelect: 'none',
     verticalAlign: 'middle',
   },
 };
