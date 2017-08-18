@@ -31,15 +31,13 @@ const styles = {
     WebkitAppRegion: 'drag',
   },
   content: {
-    height: 'calc(100% - 24px)',
+    height: '100%',
   },
   drawer: {
     borderRightWidth: '1px',
     borderRightStyle: 'solid',
     boxShadow: 'none',
     boxSizing: 'content-box',
-    height: 'calc(100% - 24px)',
-    top: '24px',
   },
   container: {
     height: '100%',
@@ -144,9 +142,31 @@ export default class App extends Component {
       </Menu>
     );
   }
+  renderTitleBar(theme) {
+    const { title } = this.props;
+
+    if (process.platform === 'win32') {
+      return null;
+    }
+    return (
+      <div
+        style={{
+          ...styles.titleBar,
+          borderBottomColor: theme.palette.borderColor,
+          color: theme.palette.textColor,
+        }}
+      >{title}</div>
+    );
+  }
   render() {
-    const { title, settings, children } = this.props;
+    const { settings, children } = this.props;
     const theme = settings.theme === 'dark' ? darkBaseTheme : lightBaseTheme;
+
+    const titleBar = this.renderTitleBar(theme);
+    if (titleBar) {
+      styles.content = { ...styles.content, height: 'calc(100% - 24px)' };
+      styles.drawer = { ...styles.drawer, height: 'calc(100% - 24px)', top: '24px' };
+    }
 
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
@@ -156,13 +176,7 @@ export default class App extends Component {
             backgroundColor: theme.palette.canvasColor,
           }}
         >
-          <div
-            style={{
-              ...styles.titleBar,
-              borderBottomColor: theme.palette.borderColor,
-              color: theme.palette.textColor,
-            }}
-          >{title}</div>
+          {titleBar}
           <div
             style={styles.content}
             onDragOver={e => this.constructor.handleDragOver(e)}

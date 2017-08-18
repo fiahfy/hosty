@@ -12,7 +12,12 @@ export default class Window {
       defaultHeight: 600,
     });
 
-    this.browserWindow = new BrowserWindow({ ...windowState, titleBarStyle: 'hidden' });
+    let options = windowState;
+    if (process.platform !== 'win32') {
+      options = { ...windowState, titleBarStyle: 'hidden' };
+    }
+
+    this.browserWindow = new BrowserWindow(options);
     this.browserWindow.loadURL(`file://${__dirname}/app/index.html`);
 
     windowState.manage(this.browserWindow);
