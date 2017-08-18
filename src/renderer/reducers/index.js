@@ -259,44 +259,55 @@ export default reduceReducers(
     [ActionTypes.SELECT_GROUP]: (state, action) => {
       const { id, option } = action.payload;
       const { selectedIds } = state.groupContainer;
+
+      const newSelectedIds = (() => {
+        switch (option) {
+          case 'shift': {
+            const lastId = selectedIds.length
+              ? selectedIds[selectedIds.length - 1] : 0;
+            let lastIndex = state.groups.findIndex(group => group.id === lastId);
+            let firstIndex = state.groups.findIndex(group => group.id === id);
+            if (firstIndex > lastIndex) {
+              [firstIndex, lastIndex] = [lastIndex, firstIndex];
+            }
+            const groupIds = state.groups.filter((group, i) => (
+              firstIndex <= i && i <= lastIndex
+            ))
+              .map(group => group.id)
+              .filter(currentId => !selectedIds.includes(currentId));
+            return [...selectedIds, ...groupIds];
+          }
+          case 'ctrl': {
+            if (selectedIds.includes(id)) {
+              return selectedIds.filter(currentId => (
+                currentId !== id
+              ));
+            }
+            return [...selectedIds, id];
+          }
+          case 'rightClick': {
+            if (selectedIds.includes(id)) {
+              return selectedIds;
+            }
+            return [id];
+          }
+          default:
+            return [id];
+        }
+      })();
+
+      const newSelectedId = newSelectedIds[0] || 0;
+      const selectedGroup = state.groups.find(group => group.id === newSelectedId);
+      const title = selectedGroup ? selectedGroup.name : '';
+
       return Object.assign({}, state, {
+        app: {
+          ...state.app,
+          title,
+        },
         groupContainer: {
           ...state.groupContainer,
-          selectedIds: (() => {
-            switch (option) {
-              case 'shift': {
-                const lastId = selectedIds.length
-                  ? selectedIds[selectedIds.length - 1] : 0;
-                let lastIndex = state.groups.findIndex(group => group.id === lastId);
-                let firstIndex = state.groups.findIndex(group => group.id === id);
-                if (firstIndex > lastIndex) {
-                  [firstIndex, lastIndex] = [lastIndex, firstIndex];
-                }
-                const groupIds = state.groups.filter((group, i) => (
-                  firstIndex <= i && i <= lastIndex
-                ))
-                  .map(group => group.id)
-                  .filter(currentId => !selectedIds.includes(currentId));
-                return [...selectedIds, ...groupIds];
-              }
-              case 'ctrl': {
-                if (selectedIds.includes(id)) {
-                  return selectedIds.filter(currentId => (
-                    currentId !== id
-                  ));
-                }
-                return [...selectedIds, id];
-              }
-              case 'rightClick': {
-                if (selectedIds.includes(id)) {
-                  return selectedIds;
-                }
-                return [id];
-              }
-              default:
-                return [id];
-            }
-          })(),
+          selectedIds: newSelectedIds,
         },
         hostContainer: {
           ...state.hostContainer,
