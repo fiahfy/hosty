@@ -25,13 +25,20 @@ const styles = {
     borderTopStyle: 'solid',
     boxSizing: 'border-box',
     height: '100%',
+    position: 'relative',
   },
   draggableBar: {
-    height: '5px',
     cursor: 'row-resize',
+    height: '5px',
+    left: '0',
+    position: 'absolute',
+    right: '0',
+    top: '-2.5px',
   },
   panelContentWrapper: {
-    height: 'calc(100% - 5px)',
+    boxSizing: 'border-box',
+    height: '100%',
+    paddingTop: '5px',
   },
 };
 
