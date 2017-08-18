@@ -66,6 +66,14 @@ export default function setupListener(store, history) {
     actions.pasteGroups();
   });
 
+  ipcRenderer.on('enableGroups', () => {
+    actions.enableGroups();
+  });
+
+  ipcRenderer.on('disableGroups', () => {
+    actions.disableGroups();
+  });
+
   ipcRenderer.on('deleteGroups', () => {
     actions.deleteGroups();
   });
@@ -87,6 +95,14 @@ export default function setupListener(store, history) {
 
   ipcRenderer.on('pasteHosts', () => {
     actions.pasteHosts();
+  });
+
+  ipcRenderer.on('enableHosts', () => {
+    actions.enableHosts();
+  });
+
+  ipcRenderer.on('disableHosts', () => {
+    actions.disableHosts();
   });
 
   ipcRenderer.on('deleteHosts', () => {

@@ -39,8 +39,8 @@ export default class MenuBuilder {
           { label: 'Add Groups from Hosty Files...', click: () => { this.addGroupsFromHostyFiles(); } },
           { label: 'Add Groups from Hosts Files...', click: () => { this.addGroupsFromHostsFiles(); } },
           { type: 'separator' },
-          { label: 'Export Hosty File...', accelerator: 'CmdOrCtrl+E', click: () => { this.exportHostyFile(); } },
-          { label: 'Export Hosts File...', accelerator: 'CmdOrCtrl+Shift+E', click: () => { this.exportHostsFile(); } },
+          { label: 'Export Hosty File...', accelerator: 'CmdOrCtrl+O', click: () => { this.exportHostyFile(); } },
+          { label: 'Export Hosts File...', accelerator: 'CmdOrCtrl+Shift+O', click: () => { this.exportHostsFile(); } },
         ],
       },
       {
@@ -60,10 +60,15 @@ export default class MenuBuilder {
             label: 'Group',
             submenu: [
               { label: 'New Group', accelerator: 'CmdOrCtrl+Shift+N', click: () => { this.createGroup(); } },
-              { label: 'Cut Group', accelerator: 'CmdOrCtrl+Shift+X', click: () => { this.cutGroups(); } },
-              { label: 'Copy Group', accelerator: 'CmdOrCtrl+Shift+C', click: () => { this.copyGroups(); } },
-              { label: 'Paste Group', accelerator: 'CmdOrCtrl+Shift+V', click: () => { this.pasteGroups(); } },
-              { label: 'Delete Group', accelerator: 'CmdOrCtrl+Shift+Backspace', click: () => { this.deleteGroups(); } },
+              { type: 'separator' },
+              { label: 'Cut', accelerator: 'CmdOrCtrl+Shift+X', click: () => { this.cutGroups(); } },
+              { label: 'Copy', accelerator: 'CmdOrCtrl+Shift+C', click: () => { this.copyGroups(); } },
+              { label: 'Paste', accelerator: 'CmdOrCtrl+Shift+V', click: () => { this.pasteGroups(); } },
+              { type: 'separator' },
+              { label: 'Enable', accelerator: 'CmdOrCtrl+Shift+E', click: () => { this.enableGroups(); } },
+              { label: 'Disable', accelerator: 'CmdOrCtrl+Shift+D', click: () => { this.disableGroups(); } },
+              { type: 'separator' },
+              { label: 'Delete', accelerator: 'CmdOrCtrl+Shift+Backspace', click: () => { this.deleteGroups(); } },
             ],
           },
           { type: 'separator' },
@@ -71,10 +76,15 @@ export default class MenuBuilder {
             label: 'Host',
             submenu: [
               { label: 'New Host', accelerator: 'CmdOrCtrl+N', click: () => { this.createHost(); } },
-              { label: 'Cut Host', accelerator: 'CmdOrCtrl+Alt+X', click: () => { this.cutHosts(); } },
-              { label: 'Copy Host', accelerator: 'CmdOrCtrl+Alt+C', click: () => { this.copyHosts(); } },
-              { label: 'Paste Host', accelerator: 'CmdOrCtrl+Alt+V', click: () => { this.pasteHosts(); } },
-              { label: 'Delete Host', accelerator: 'CmdOrCtrl+Backspace', click: () => { this.deleteHosts(); } },
+              { type: 'separator' },
+              { label: 'Cut', accelerator: 'CmdOrCtrl+Alt+X', click: () => { this.cutHosts(); } },
+              { label: 'Copy', accelerator: 'CmdOrCtrl+Alt+C', click: () => { this.copyHosts(); } },
+              { label: 'Paste', accelerator: 'CmdOrCtrl+Alt+V', click: () => { this.pasteHosts(); } },
+              { type: 'separator' },
+              { label: 'Enable', accelerator: 'CmdOrCtrl+E', click: () => { this.enableHosts(); } },
+              { label: 'Disable', accelerator: 'CmdOrCtrl+D', click: () => { this.disableHosts(); } },
+              { type: 'separator' },
+              { label: 'Delete', accelerator: 'CmdOrCtrl+Backspace', click: () => { this.deleteHosts(); } },
             ],
           },
           { type: 'separator' },
@@ -281,6 +291,12 @@ export default class MenuBuilder {
   pasteGroups() {
     this.window.webContents.send('pasteGroups');
   }
+  enableGroups() {
+    this.window.webContents.send('enableGroups');
+  }
+  disableGroups() {
+    this.window.webContents.send('disableGroups');
+  }
   deleteGroups() {
     this.window.webContents.send('deleteGroups');
   }
@@ -295,6 +311,12 @@ export default class MenuBuilder {
   }
   pasteHosts() {
     this.window.webContents.send('pasteHosts');
+  }
+  enableHosts() {
+    this.window.webContents.send('enableHosts');
+  }
+  disableHosts() {
+    this.window.webContents.send('disableHosts');
   }
   deleteHosts() {
     this.window.webContents.send('deleteHosts');

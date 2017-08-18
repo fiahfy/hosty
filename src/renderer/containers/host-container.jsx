@@ -124,18 +124,20 @@ export default class HostContainer extends Component {
       },
       { type: 'separator' },
       {
-        label: 'Delete',
-        click: () => this.handleDeleteHosts(),
-        accelerator: 'CmdOrCtrl+Backspace',
-      },
-      { type: 'separator' },
-      {
         label: 'Enable',
         click: () => this.handleEnableHosts(),
+        accelerator: 'CmdOrCtrl+E',
       },
       {
         label: 'Disable',
         click: () => this.handleDisableHosts(),
+        accelerator: 'CmdOrCtrl+D',
+      },
+      { type: 'separator' },
+      {
+        label: 'Delete',
+        click: () => this.handleDeleteHosts(),
+        accelerator: 'CmdOrCtrl+Backspace',
       },
     ]);
   }
