@@ -151,10 +151,17 @@ export default class App extends Component {
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
         <div
-          style={{ ...styles.app, backgroundColor: theme.palette.canvasColor }}
+          style={{
+            ...styles.app,
+            backgroundColor: theme.palette.canvasColor,
+          }}
         >
           <div
-            style={{ ...styles.titleBar, borderBottomColor: theme.palette.borderColor }}
+            style={{
+              ...styles.titleBar,
+              borderBottomColor: theme.palette.borderColor,
+              color: theme.palette.textColor,
+            }}
           >{title}</div>
           <div
             style={styles.content}
@@ -164,7 +171,10 @@ export default class App extends Component {
             <Drawer
               width={48}
               className="drawer"
-              containerStyle={{ ...styles.drawer, borderRightColor: theme.palette.borderColor }}
+              containerStyle={{
+                ...styles.drawer,
+                borderRightColor: theme.palette.borderColor,
+              }}
             >
               {this.renderMenu(theme)}
             </Drawer>
