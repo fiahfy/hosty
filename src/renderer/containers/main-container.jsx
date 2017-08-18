@@ -80,8 +80,9 @@ export default class MainContainer extends Component {
   handleDrag(e) {
     const { panelY, panelHeight } = this.state;
     const newHeight = panelHeight - (e.clientY - panelY);
+    const minHeight = 100;
     const maxHeight = document.body.offsetHeight - 100; // eslint-disable-line no-undef
-    if (newHeight < 100 || maxHeight < newHeight) {
+    if (newHeight < minHeight || maxHeight < newHeight) {
       return;
     }
     this.setState({ panelY: e.clientY, panelHeight: newHeight });
