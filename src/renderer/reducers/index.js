@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { handleActions } from 'redux-actions';
+import { handleActions, combineActions } from 'redux-actions';
 import { routerReducer as router } from 'react-router-redux';
 import reduceReducers from 'reduce-reducers';
 import * as ActionTypes from '../actions';
@@ -641,7 +641,7 @@ export default reduceReducers(
         },
       });
     },
-    [ActionTypes.FIND_HOSTS]: (state) => {
+    [combineActions(ActionTypes.FIND_HOSTS, ActionTypes.SET_REGEXP_ENABLED)]: (state) => {
       const { query, regExpEnabled } = state.findContainer;
       const pattern = regExpEnabled ? query : RegExp.escape(query);
       const regexp = RegExp(pattern, 'i');
