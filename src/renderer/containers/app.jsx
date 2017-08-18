@@ -52,8 +52,8 @@ const styles = {
 
 function mapStateToProps(state) {
   return {
+    ...state.app,
     settings: state.settings,
-    messages: state.messages,
   };
 }
 
@@ -67,8 +67,9 @@ export default class App extends Component {
     router: PropTypes.object.isRequired,
   };
   static propTypes = {
-    settings: PropTypes.object.isRequired,
+    title: PropTypes.string.isRequired,
     messages: PropTypes.arrayOf(PropTypes.object).isRequired,
+    settings: PropTypes.object.isRequired,
     children: PropTypes.node.isRequired,
     actions: PropTypes.object.isRequired,
   };
@@ -144,7 +145,7 @@ export default class App extends Component {
     );
   }
   render() {
-    const { settings, children } = this.props;
+    const { title, settings, children } = this.props;
     const theme = settings.theme === 'dark' ? darkBaseTheme : lightBaseTheme;
 
     return (
@@ -154,7 +155,7 @@ export default class App extends Component {
         >
           <div
             style={{ ...styles.titleBar, borderBottomColor: theme.palette.borderColor }}
-          >Title</div>
+          >{title}</div>
           <div
             style={styles.content}
             onDragOver={e => this.constructor.handleDragOver(e)}

@@ -75,15 +75,20 @@ const settings = handleActions({
   },
 }, {});
 
-const messages = handleActions({
+const app = handleActions({
   [ActionTypes.CREATE_MESSAGE]: (state, action) => {
     const { message } = action.payload;
-    const maxId = state.reduce((p, c) => (c.id > p ? c.id : p), 0);
+    const maxId = state.messages.reduce((p, c) => (c.id > p ? c.id : p), 0);
     message.id = maxId + 1;
-    return [...state, message];
+    return Object.assign({}, state, { messages: [...state.messages, message] });
   },
-  [ActionTypes.CLEAR_MESSAGES]: () => [],
-}, []);
+  [ActionTypes.CLEAR_MESSAGES]: state => (
+    Object.assign({}, state, { messages: [] })
+  ),
+}, {
+  title: '',
+  messages: [],
+});
 
 const mainContainer = handleActions({
   [ActionTypes.SHOW_PANEL]: state => (
@@ -140,7 +145,7 @@ export default reduceReducers(
   combineReducers({
     groups,
     settings,
-    messages,
+    app,
     mainContainer,
     groupContainer,
     hostContainer,
