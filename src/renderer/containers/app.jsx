@@ -9,11 +9,15 @@ import {
   lightBaseTheme, darkBaseTheme,
 } from 'material-ui/styles';
 import * as ActionCreators from '../actions';
+import TitleContainer from './title-container';
 import * as Group from '../utils/group';
 import * as HostsFileManager from '../utils/hosts-file-manager';
 
 const styles = {
   app: {
+    height: '100%',
+  },
+  content: {
     height: '100%',
   },
   drawer: {
@@ -33,8 +37,8 @@ const styles = {
 
 function mapStateToProps(state) {
   return {
+    ...state.app,
     settings: state.settings,
-    messages: state.messages,
   };
 }
 
@@ -48,8 +52,8 @@ export default class App extends Component {
     router: PropTypes.object.isRequired,
   };
   static propTypes = {
-    settings: PropTypes.object.isRequired,
     messages: PropTypes.arrayOf(PropTypes.object).isRequired,
+    settings: PropTypes.object.isRequired,
     children: PropTypes.node.isRequired,
     actions: PropTypes.object.isRequired,
   };
@@ -112,8 +116,8 @@ export default class App extends Component {
       <Menu onItemTouchTap={(...args) => this.handleItemTouchTap(...args)}>
         {this.constructor.menus.map(({ pathname, IconClass }) => {
           const color = pathname === currentPathname
-                      ? theme.palette.accent1Color
-                      : theme.palette.primary3Color;
+            ? theme.palette.accent1Color
+            : theme.palette.primary3Color;
           return (
             <MenuItem
               key={pathname}
@@ -128,24 +132,42 @@ export default class App extends Component {
     const { settings, children } = this.props;
     const theme = settings.theme === 'dark' ? darkBaseTheme : lightBaseTheme;
 
+    let titleBar = null;
+    if (process.platform !== 'win32') {
+      titleBar = <TitleContainer />;
+      styles.content = { ...styles.content, height: 'calc(100% - 24px)' };
+      styles.drawer = { ...styles.drawer, height: 'calc(100% - 24px)', top: '24px' };
+    }
+
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
         <div
-          style={{ ...styles.app, backgroundColor: theme.palette.canvasColor }}
-          onDragOver={e => this.constructor.handleDragOver(e)}
-          onDrop={e => this.handleDrop(e)}
+          style={{
+            ...styles.app,
+            backgroundColor: theme.palette.canvasColor,
+          }}
         >
-          <Drawer
-            width={48}
-            className="drawer"
-            containerStyle={{ ...styles.drawer, borderRightColor: theme.palette.borderColor }}
+          {titleBar}
+          <div
+            style={styles.content}
+            onDragOver={e => this.constructor.handleDragOver(e)}
+            onDrop={e => this.handleDrop(e)}
           >
-            {this.renderMenu(theme)}
-          </Drawer>
-          <div style={styles.container}>
-            {children}
+            <Drawer
+              width={48}
+              className="drawer"
+              containerStyle={{
+                ...styles.drawer,
+                borderRightColor: theme.palette.borderColor,
+              }}
+            >
+              {this.renderMenu(theme)}
+            </Drawer>
+            <div style={styles.container}>
+              {children}
+            </div>
+            {this.renderSnackbar()}
           </div>
-          {this.renderSnackbar()}
         </div>
       </MuiThemeProvider>
     );

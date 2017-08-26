@@ -49,7 +49,8 @@ async function sudo(command) {
   return new Promise((resolve, reject) => {
     sudoPrompt.exec(command, SUDO_OPTIONS, (error, stdout, stderr) => {
       if (error) {
-        reject('Sudo prompt failed: %o', { command, error, stdout, stderr });
+        console.error('Sudo prompt failed: %o', { command, error, stdout, stderr }); // eslint-disable-line no-console
+        reject('Sudo prompt failed');
         return;
       }
       resolve();
@@ -67,7 +68,15 @@ async function setupHostsFile() {
   } catch (e) {
     //
   }
-  await sudo(`touch "${PATH}"`);
+  if (WIN32) {
+    const commands = [`touch "${PATH}"`, `cacls "${PATH}" /e /g Users:w`];
+    const command = commands.join(' && ');
+    await sudo(`cmd /c ${command}`);
+  } else {
+    const commands = [`touch \\"${PATH}\\"`, `chmod 666 \\"${PATH}\\"`];
+    const command = commands.join('; ');
+    await sudo(`$SHELL -c "${command}"`);
+  }
 }
 
 async function setupUserHostsFile() {
@@ -85,7 +94,9 @@ async function setupUserHostsFile() {
     const command = commands.join(' && ');
     await sudo(`cmd /c ${command}`);
   } else {
-    await sudo(`$SHELL -c "ln -s \\"${PATH}\\" \\"${PATH_USER}\\"; chmod 666 \\"${PATH}\\""`);
+    const commands = [`ln -s \\"${PATH}\\" \\"${PATH_USER}\\"`, `chmod 666 \\"${PATH}\\"`];
+    const command = commands.join('; ');
+    await sudo(`$SHELL -c "${command}"`);
   }
 }
 
@@ -134,24 +145,23 @@ export function readGroupFromHostsFile(filename) {
   };
 }
 
-export function readGroupsFromFiles(filenames) {
-  return filenames.map((filename) => {
-    const { ext } = path.parse(filename);
-    return ext === EXTENSION
-      ? this.readGroupsFromHostyFile(filename)
-      : [this.readGroupFromHostsFile(filename)];
-  }).reduce((previous, current) => [...previous, ...current]);
+export function readGroupsFromFile(filename) {
+  const { ext } = path.parse(filename);
+  return ext === EXTENSION
+    ? readGroupsFromHostyFile(filename)
+    : [readGroupFromHostsFile(filename)];
 }
 
-export function writeGroupsToHostyFile(groups, filename) {
+export function readGroupsFromFiles(filenames) {
+  return filenames.map(readGroupsFromFile)
+    .reduce((previous, current) => [...previous, ...current]);
+}
+
+export function writeGroupsToFile(groups, filename) {
   const { ext } = path.parse(filename);
   let filenameWithExtension = filename;
   if (ext !== EXTENSION) {
     filenameWithExtension += EXTENSION;
   }
   fs.writeFileSync(filenameWithExtension, `${JSON.stringify(groups)}\n`, CHARSET);
-}
-
-export function writeGroupsToHostsFile(groups, filename) {
-  fs.writeFileSync(filename, `${Group.build(groups)}\n`, CHARSET);
 }

@@ -20,32 +20,25 @@ const styles = {
     borderRightStyle: 'solid',
     width: '256px',
   },
-  emptyWrapper: {
-    display: 'table',
-    height: '100%',
-    position: 'absolute',
-    top: '0',
-    width: '100%',
-  },
-  emptyMessage: {
-    display: 'table-cell',
-    fontSize: '14px',
-    position: 'relative',
-    textAlign: 'center',
-    verticalAlign: 'middle',
-  },
   panelWrapper: {
     borderTopWidth: '1px',
     borderTopStyle: 'solid',
     boxSizing: 'border-box',
     height: '100%',
+    position: 'relative',
   },
   draggableBar: {
-    height: '5px',
     cursor: 'row-resize',
+    height: '5px',
+    left: '0',
+    position: 'absolute',
+    right: '0',
+    top: '-2.5px',
   },
   panelContentWrapper: {
-    height: 'calc(100% - 5px)',
+    boxSizing: 'border-box',
+    height: '100%',
+    paddingTop: '5px',
   },
 };
 
@@ -87,8 +80,9 @@ export default class MainContainer extends Component {
   handleDrag(e) {
     const { panelY, panelHeight } = this.state;
     const newHeight = panelHeight - (e.clientY - panelY);
+    const minHeight = 100;
     const maxHeight = document.body.offsetHeight - 100; // eslint-disable-line no-undef
-    if (newHeight < 100 || maxHeight < newHeight) {
+    if (newHeight < minHeight || maxHeight < newHeight) {
       return;
     }
     this.setState({ panelY: e.clientY, panelHeight: newHeight });

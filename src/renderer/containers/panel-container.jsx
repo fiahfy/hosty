@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { IconButton, Subheader } from 'material-ui';
 import { NavigationClose } from 'material-ui/svg-icons';
 import * as ActionCreators from '../actions';
-import SearchContainer from './search-container';
+import FindContainer from './find-container';
 
 const styles = {
   container: {
@@ -14,6 +14,8 @@ const styles = {
   subheader: {
     display: 'flex',
     lineHeight: '38px',
+    paddingLeft: '16px',
+    paddingRight: '4px',
     userSelect: 'none',
   },
   subheaderText: {
@@ -21,8 +23,8 @@ const styles = {
   },
   iconButton: {
     height: '38px',
-    marginRight: '9px',
-    padding: '0',
+    margin: '0 5px',
+    padding: '7px',
     width: '38px',
   },
   contentWrapper: {
@@ -54,7 +56,7 @@ export default class PanelContainer extends Component {
     return (
       <div style={styles.container}>
         <Subheader style={styles.subheader}>
-          <span style={styles.subheaderText}>Search</span>
+          <span style={styles.subheaderText}>Find</span>
           <IconButton
             style={styles.iconButton}
             onClick={e => this.handleClick(e)}
@@ -63,7 +65,7 @@ export default class PanelContainer extends Component {
           </IconButton>
         </Subheader>
         <div style={styles.contentWrapper}>
-          <SearchContainer />
+          <FindContainer />
         </div>
       </div>
     );

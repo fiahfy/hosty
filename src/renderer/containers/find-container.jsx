@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { TextField, Checkbox } from 'material-ui';
+import { TextField, IconButton } from 'material-ui';
 import { AvExplicit } from 'material-ui/svg-icons';
 import * as ActionCreators from '../actions';
 import ResultList from '../components/result-list';
@@ -13,7 +13,8 @@ const styles = {
   },
   textFieldWrapper: {
     display: 'flex',
-    padding: '0 16px',
+    paddingLeft: '16px',
+    paddingRight: '4px',
   },
   textField: {
     fontSize: '13px',
@@ -22,18 +23,12 @@ const styles = {
   textFieldUnderline: {
     bottom: '12px',
   },
-  checkbox: {
-    padding: '12px 0 12px 8px',
-    width: 'auto',
-  },
-  checkboxIcon: {
-    marginRight: '0',
-  },
   resultWrapper: {
     fontSize: '13px',
     padding: '0 16px 8px',
     textOverflow: 'ellipsis',
     overflow: 'hidden',
+    userSelect: 'none',
     whiteSpace: 'nowrap',
   },
   listWrapper: {
@@ -50,15 +45,16 @@ const styles = {
   },
   emptyMessage: {
     display: 'table-cell',
-    fontSize: '14px',
+    fontSize: '13px',
     position: 'relative',
     textAlign: 'center',
+    userSelect: 'none',
     verticalAlign: 'middle',
   },
 };
 
 function mapStateToProps(state) {
-  return { ...state.searchContainer };
+  return { ...state.findContainer };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -66,7 +62,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class SearchContainer extends Component {
+export default class FindContainer extends Component {
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired,
   };
@@ -78,18 +74,23 @@ export default class SearchContainer extends Component {
   };
   handleKeyDown(e) {
     if (e.keyCode === 13) {
-      this.props.actions.search(this.textInput.getValue());
+      this.props.actions.findHosts(this.textInput.getValue());
     }
   }
-  handleClickRegExp(e, isInputChecked) {
-    this.props.actions.setRegExpEnabled(isInputChecked);
+  handleClickRegExp() {
+    this.textInput.focus();
+    this.props.actions.setRegExpEnabled(!this.props.regExpEnabled);
   }
   handleClickResult(groupId, hostId) {
     this.props.actions.selectGroup(groupId);
     this.props.actions.selectHost(hostId);
   }
-  renderSearchField() {
+  renderFindField() {
     const { query, regExpEnabled } = this.props;
+
+    const color = regExpEnabled
+      ? this.context.muiTheme.palette.primary1Color
+      : this.context.muiTheme.palette.primary3Color;
 
     return (
       <div style={styles.textFieldWrapper}>
@@ -98,19 +99,20 @@ export default class SearchContainer extends Component {
           underlineStyle={styles.textFieldUnderline}
           name="query"
           defaultValue={query}
+          hintText="Find"
           ref={(input) => { this.textInput = input; }}
           autoFocus
           fullWidth
           onKeyDown={e => this.handleKeyDown(e)}
         />
-        <Checkbox
-          checked={regExpEnabled}
-          checkedIcon={<AvExplicit />}
-          uncheckedIcon={<AvExplicit />}
-          style={styles.checkbox}
-          iconStyle={styles.checkboxIcon}
-          onCheck={(...args) => this.handleClickRegExp(...args)}
-        />
+        <IconButton
+          tooltip="Use RegExp"
+          tooltipPosition="bottom-left"
+          style={styles.button}
+          onClick={e => this.handleClickRegExp(e)}
+        >
+          <AvExplicit color={color} />
+        </IconButton>
       </div>
     );
   }
@@ -131,7 +133,7 @@ export default class SearchContainer extends Component {
       }}
       >
         {hostCount} host{ hostCount > 1 ? 's' : '' } found
-        in {groupCount} group{ groupCount > 1 ? 's' : '' } for {query}
+        in {groupCount} group{ groupCount > 1 ? 's' : '' } for &quot;{query}&quot;
       </div>
     );
   }
@@ -164,7 +166,7 @@ export default class SearchContainer extends Component {
   render() {
     return (
       <div style={styles.container}>
-        {this.renderSearchField()}
+        {this.renderFindField()}
         {this.renderResultLabel()}
         {this.renderResultList()}
       </div>

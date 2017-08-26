@@ -8,8 +8,8 @@ function isEqualObject(a, b) {
 
 export default function isUpdateNeeded(component, nextProps, nextState, nextContext) {
   return !(
-      isEqualObject(component.props, nextProps)
+    isEqualObject(component.props, nextProps)
       && isEqualObject(component.state, nextState)
       && isEqualObject(component.context, nextContext)
-    );
+  );
 }

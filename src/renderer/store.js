@@ -7,6 +7,8 @@ import rootReducer from './reducers';
 import * as actions from './actions';
 import hostsFileMiddleware from './middlewares/hosts-file-middleware';
 
+const persistKeys = ['groups', 'settings'];
+
 export default function configureStore(history, initialState = {}) {
   // Redux Configuration
   const middlewares = [];
@@ -54,7 +56,7 @@ export default function configureStore(history, initialState = {}) {
   // Create Store
   const store = createStore(rootReducer, initialState, enhancer);
 
-  persistStore(store, { whitelist: ['groups', 'settings'] });
+  persistStore(store, { whitelist: persistKeys });
 
   if (module.hot) {
     module.hot.accept('./reducers', () => {

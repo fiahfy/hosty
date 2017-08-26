@@ -16,10 +16,11 @@ const styles = {
   },
   emptyMessage: {
     display: 'table-cell',
-    fontSize: '14px',
+    fontSize: '13px',
     paddingTop: '59px',
     position: 'relative',
     textAlign: 'center',
+    userSelect: 'none',
     verticalAlign: 'middle',
   },
 };
@@ -112,18 +113,20 @@ export default class GroupContainer extends Component {
       },
       { type: 'separator' },
       {
-        label: 'Delete',
-        click: () => this.handleDeleteGroups(),
-        accelerator: 'CmdOrCtrl+Shift+Backspace',
-      },
-      { type: 'separator' },
-      {
         label: 'Enable',
         click: () => this.handleEnableGroups(),
+        accelerator: 'CmdOrCtrl+Shift+E',
       },
       {
         label: 'Disable',
         click: () => this.handleDisableGroups(),
+        accelerator: 'CmdOrCtrl+Shift+D',
+      },
+      { type: 'separator' },
+      {
+        label: 'Delete',
+        click: () => this.handleDeleteGroups(),
+        accelerator: 'CmdOrCtrl+Shift+Backspace',
       },
     ]);
   }

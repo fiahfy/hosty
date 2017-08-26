@@ -16,10 +16,11 @@ const styles = {
   },
   emptyMessage: {
     display: 'table-cell',
-    fontSize: '14px',
+    fontSize: '13px',
     paddingTop: '59px',
     position: 'relative',
     textAlign: 'center',
+    userSelect: 'none',
     verticalAlign: 'middle',
   },
 };
@@ -123,18 +124,20 @@ export default class HostContainer extends Component {
       },
       { type: 'separator' },
       {
-        label: 'Delete',
-        click: () => this.handleDeleteHosts(),
-        accelerator: 'CmdOrCtrl+Backspace',
-      },
-      { type: 'separator' },
-      {
         label: 'Enable',
         click: () => this.handleEnableHosts(),
+        accelerator: 'CmdOrCtrl+E',
       },
       {
         label: 'Disable',
         click: () => this.handleDisableHosts(),
+        accelerator: 'CmdOrCtrl+D',
+      },
+      { type: 'separator' },
+      {
+        label: 'Delete',
+        click: () => this.handleDeleteHosts(),
+        accelerator: 'CmdOrCtrl+Backspace',
       },
     ]);
   }
