@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { TextField } from 'material-ui';
+import themeable from '../utils/themeable';
 
 const styles = {
   button: {
@@ -26,15 +27,14 @@ const styles = {
   },
 };
 
+@themeable()
 export default class EditableLabel extends Component {
-  static contextTypes = {
-    muiTheme: PropTypes.object.isRequired,
-  };
   static propTypes = {
     focused: PropTypes.bool,
     editable: PropTypes.bool,
     onKeyDown: PropTypes.func,
     ...TextField.propTypes,
+    muiTheme: PropTypes.object.isRequired,
   };
   static defaultProps = {
     focused: false,
@@ -67,7 +67,7 @@ export default class EditableLabel extends Component {
     }
   }
   render() {
-    const { onKeyDown, defaultValue, hintText, ...others } = this.props;
+    const { onKeyDown, defaultValue, hintText, muiTheme, ...others } = this.props;
     delete others.focused;
     delete others.editable;
 
@@ -75,7 +75,7 @@ export default class EditableLabel extends Component {
 
     if (!editing) {
       const text = defaultValue || hintText;
-      const style = this.context.muiTheme.textField;
+      const style = muiTheme.textField;
       const color = defaultValue ? style.textColor : style.hintColor;
       return (
         <button

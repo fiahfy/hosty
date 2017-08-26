@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {
   IconButton, TableRow, TableRowColumn,
 } from 'material-ui';
-import { colors } from 'material-ui/styles';
+import { muiThemeable, colors } from 'material-ui/styles';
 import StatusIcon from './status-icon';
 import EditableLabel from './editable-label';
 import isUpdateNeeded from '../utils/is-update-needed';
@@ -33,10 +33,8 @@ const styles = {
   },
 };
 
+@muiThemeable()
 export default class GroupItem extends Component {
-  static contextTypes = {
-    muiTheme: PropTypes.object.isRequired,
-  };
   static propTypes = {
     group: PropTypes.object,
     selected: PropTypes.bool,
@@ -44,6 +42,7 @@ export default class GroupItem extends Component {
     editable: PropTypes.bool,
     onEditGroup: PropTypes.func,
     ...TableRow.propTypes,
+    muiTheme: PropTypes.object.isRequired,
   };
   static defaultProps = {
     group: {},
@@ -78,7 +77,7 @@ export default class GroupItem extends Component {
     onEditGroup(newGroup);
   }
   render() {
-    const { group, selected, focused, editable, onRowClick, ...others } = this.props;
+    const { group, selected, focused, editable, onRowClick, muiTheme, ...others } = this.props;
     delete others.onEditGroup;
 
     const count = (group.hosts || []).length;
@@ -114,7 +113,7 @@ export default class GroupItem extends Component {
         </TableRowColumn>
         <TableRowColumn style={{
           ...styles.shrinkColumn,
-          color: this.context.muiTheme.palette.primary3Color,
+          color: muiTheme.palette.primary3Color,
         }}
         >
           {count}

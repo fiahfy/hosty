@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { muiThemeable } from 'material-ui/styles';
 import * as ActionCreators from '../actions';
 import HostList from '../components/host-list';
 import ContextMenu from '../utils/context-menu';
@@ -45,11 +46,9 @@ function mapDispatchToProps(dispatch) {
   return { actions: bindActionCreators(ActionCreators, dispatch) };
 }
 
+@muiThemeable()
 @connect(mapStateToProps, mapDispatchToProps)
 export default class HostContainer extends Component {
-  static contextTypes = {
-    muiTheme: PropTypes.object.isRequired,
-  };
   static propTypes = {
     selectedGroupId: PropTypes.number.isRequired,
     hosts: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -58,6 +57,7 @@ export default class HostContainer extends Component {
     selectedIds: PropTypes.arrayOf(PropTypes.number).isRequired,
     sortOptions: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
+    muiTheme: PropTypes.object.isRequired,
   };
   handleAddHost() {
     this.props.actions.createHost();
@@ -142,7 +142,7 @@ export default class HostContainer extends Component {
     ]);
   }
   render() {
-    const { selectedGroupId, hosts, focusedId, selectedIds, sortOptions } = this.props;
+    const { selectedGroupId, hosts, focusedId, selectedIds, sortOptions, muiTheme } = this.props;
 
     let emptyView = null;
     if (!hosts.length) {
@@ -150,7 +150,7 @@ export default class HostContainer extends Component {
         <div style={styles.emptyWrapper}>
           <div style={{
             ...styles.emptyMessage,
-            color: this.context.muiTheme.palette.primary3Color,
+            color: muiTheme.palette.primary3Color,
           }}
           >No hosts</div>
         </div>
