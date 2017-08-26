@@ -25,9 +25,6 @@ const styles = {
 };
 
 export default class HostItem extends Component {
-  static contextTypes = {
-    muiTheme: PropTypes.object.isRequired,
-  };
   static propTypes = {
     host: PropTypes.object,
     selected: PropTypes.bool,

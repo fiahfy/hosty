@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { ListItem } from 'material-ui';
 import { NavigationCheck } from 'material-ui/svg-icons';
-import { colors } from 'material-ui/styles';
+import { muiThemeable, colors } from 'material-ui/styles';
 import isUpdateNeeded from '../utils/is-update-needed';
 
 const styles = {
@@ -31,13 +31,12 @@ const styles = {
   },
 };
 
+@muiThemeable()
 export default class ResultItem extends Component {
-  static contextTypes = {
-    muiTheme: PropTypes.object.isRequired,
-  };
   static propTypes = {
     result: PropTypes.object,
     onClickResult: PropTypes.func,
+    muiTheme: PropTypes.object.isRequired,
   };
   static defaultProps = {
     result: {},
@@ -51,7 +50,7 @@ export default class ResultItem extends Component {
     onClickResult(result.id, host.id);
   }
   render() {
-    const { result } = this.props;
+    const { result, muiTheme } = this.props;
 
     return (
       <ListItem
@@ -62,7 +61,7 @@ export default class ResultItem extends Component {
             <span style={{
               ...styles.label,
               ...styles.subLabel,
-              color: this.context.muiTheme.palette.primary3Color,
+              color: muiTheme.palette.primary3Color,
             }}
             >
               {(result.hosts || []).length}
@@ -92,7 +91,7 @@ export default class ResultItem extends Component {
                     <span style={{
                       ...styles.label,
                       ...styles.subLabel,
-                      color: this.context.muiTheme.palette.primary3Color,
+                      color: muiTheme.palette.primary3Color,
                     }}
                     >
                       ({host.ip})

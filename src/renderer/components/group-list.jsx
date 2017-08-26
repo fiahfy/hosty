@@ -37,9 +37,6 @@ const styles = {
 };
 
 export default class GroupList extends Component {
-  static contextTypes = {
-    muiTheme: PropTypes.object.isRequired,
-  };
   static propTypes = {
     groups: PropTypes.arrayOf(PropTypes.object),
     focusedId: PropTypes.number,

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { muiThemeable } from 'material-ui/styles';
 import GroupContainer from './group-container';
 import HostContainer from './host-container';
 import PanelContainer from './panel-container';
@@ -50,13 +51,12 @@ function mapDispatchToProps() {
   return {};
 }
 
+@muiThemeable()
 @connect(mapStateToProps, mapDispatchToProps)
 export default class MainContainer extends Component {
-  static contextTypes = {
-    muiTheme: PropTypes.object.isRequired,
-  };
   static propTypes = {
     panelOpen: PropTypes.bool.isRequired,
+    muiTheme: PropTypes.object.isRequired,
   };
   state = {
     dragging: false,
@@ -92,7 +92,7 @@ export default class MainContainer extends Component {
   }
   // render
   renderPanel() {
-    const { panelOpen } = this.props;
+    const { panelOpen, muiTheme } = this.props;
     const { panelHeight } = this.state;
 
     if (!panelOpen) {
@@ -104,7 +104,7 @@ export default class MainContainer extends Component {
         style={{
           ...styles.panelWrapper,
           height: `${panelHeight}px`,
-          borderTopColor: this.context.muiTheme.palette.borderColor,
+          borderTopColor: muiTheme.palette.borderColor,
         }}
       >
         <div
@@ -121,7 +121,7 @@ export default class MainContainer extends Component {
     );
   }
   render() {
-    const { panelOpen } = this.props;
+    const { panelOpen, muiTheme } = this.props;
     let { panelHeight } = this.state;
 
     panelHeight = panelOpen ? panelHeight : 0;
@@ -142,7 +142,7 @@ export default class MainContainer extends Component {
             className="nav"
             style={{
               ...styles.nav,
-              borderRightColor: this.context.muiTheme.palette.borderColor,
+              borderRightColor: muiTheme.palette.borderColor,
             }}
           >
             <GroupContainer />

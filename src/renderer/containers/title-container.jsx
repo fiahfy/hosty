@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { muiThemeable } from 'material-ui/styles';
 
 const styles = {
   container: {
@@ -29,23 +30,22 @@ function mapDispatchToProps() {
   return {};
 }
 
+@muiThemeable()
 @connect(mapStateToProps, mapDispatchToProps)
 export default class TitleContainer extends Component {
-  static contextTypes = {
-    muiTheme: PropTypes.object.isRequired,
-  };
   static propTypes = {
     title: PropTypes.string.isRequired,
+    muiTheme: PropTypes.object.isRequired,
   };
   render() {
-    const { title } = this.props;
+    const { title, muiTheme } = this.props;
 
     return (
       <div
         style={{
           ...styles.container,
-          borderBottomColor: this.context.muiTheme.palette.borderColor,
-          color: this.context.muiTheme.palette.textColor,
+          borderBottomColor: muiTheme.palette.borderColor,
+          color: muiTheme.palette.textColor,
         }}
       >{title}</div>
     );

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { TextField, IconButton } from 'material-ui';
+import { muiThemeable } from 'material-ui/styles';
 import { AvExplicit } from 'material-ui/svg-icons';
 import * as ActionCreators from '../actions';
 import ResultList from '../components/result-list';
@@ -61,16 +62,15 @@ function mapDispatchToProps(dispatch) {
   return { actions: bindActionCreators(ActionCreators, dispatch) };
 }
 
+@muiThemeable()
 @connect(mapStateToProps, mapDispatchToProps)
 export default class FindContainer extends Component {
-  static contextTypes = {
-    muiTheme: PropTypes.object.isRequired,
-  };
   static propTypes = {
     results: PropTypes.arrayOf(PropTypes.object).isRequired,
     query: PropTypes.string.isRequired,
     regExpEnabled: PropTypes.bool.isRequired,
     actions: PropTypes.object.isRequired,
+    muiTheme: PropTypes.object.isRequired,
   };
   handleKeyDown(e) {
     if (e.keyCode === 13) {
@@ -86,11 +86,11 @@ export default class FindContainer extends Component {
     this.props.actions.selectHost(hostId);
   }
   renderFindField() {
-    const { query, regExpEnabled } = this.props;
+    const { query, regExpEnabled, muiTheme } = this.props;
 
     const color = regExpEnabled
-      ? this.context.muiTheme.palette.primary1Color
-      : this.context.muiTheme.palette.primary3Color;
+      ? muiTheme.palette.primary1Color
+      : muiTheme.palette.primary3Color;
 
     return (
       <div style={styles.textFieldWrapper}>
@@ -117,7 +117,7 @@ export default class FindContainer extends Component {
     );
   }
   renderResultLabel() {
-    const { results, query } = this.props;
+    const { results, query, muiTheme } = this.props;
 
     if (!query) {
       return null;
@@ -129,7 +129,7 @@ export default class FindContainer extends Component {
     return (
       <div style={{
         ...styles.resultWrapper,
-        color: this.context.muiTheme.palette.primary3Color,
+        color: muiTheme.palette.primary3Color,
       }}
       >
         {hostCount} host{ hostCount > 1 ? 's' : '' } found
@@ -138,7 +138,7 @@ export default class FindContainer extends Component {
     );
   }
   renderResultList() {
-    const { query, results } = this.props;
+    const { query, results, muiTheme } = this.props;
 
     let emptyView = null;
     if (query && !results.length) {
@@ -146,7 +146,7 @@ export default class FindContainer extends Component {
         <div style={styles.emptyWrapper}>
           <div style={{
             ...styles.emptyMessage,
-            color: this.context.muiTheme.palette.primary3Color,
+            color: muiTheme.palette.primary3Color,
           }}
           >No results</div>
         </div>

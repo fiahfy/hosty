@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { muiThemeable } from 'material-ui/styles';
 import * as ActionCreators from '../actions';
 import GroupList from '../components/group-list';
 import ContextMenu from '../utils/context-menu';
@@ -39,11 +40,9 @@ function mapDispatchToProps(dispatch) {
   return { actions: bindActionCreators(ActionCreators, dispatch) };
 }
 
+@muiThemeable()
 @connect(mapStateToProps, mapDispatchToProps)
 export default class GroupContainer extends Component {
-  static contextTypes = {
-    muiTheme: PropTypes.object.isRequired,
-  };
   static propTypes = {
     groups: PropTypes.arrayOf(PropTypes.object).isRequired,
     pastable: PropTypes.bool.isRequired,
@@ -51,6 +50,7 @@ export default class GroupContainer extends Component {
     selectedIds: PropTypes.arrayOf(PropTypes.number).isRequired,
     sortOptions: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
+    muiTheme: PropTypes.object.isRequired,
   };
   handleAddGroup() {
     this.props.actions.createGroup();
@@ -131,7 +131,7 @@ export default class GroupContainer extends Component {
     ]);
   }
   render() {
-    const { groups, focusedId, selectedIds, sortOptions } = this.props;
+    const { groups, focusedId, selectedIds, sortOptions, muiTheme } = this.props;
 
     let emptyView = null;
     if (!groups.length) {
@@ -139,7 +139,7 @@ export default class GroupContainer extends Component {
         <div style={styles.emptyWrapper}>
           <div style={{
             ...styles.emptyMessage,
-            color: this.context.muiTheme.palette.primary3Color,
+            color: muiTheme.palette.primary3Color,
           }}
           >No groups</div>
         </div>

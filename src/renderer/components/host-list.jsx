@@ -37,9 +37,6 @@ const styles = {
 };
 
 export default class HostList extends Component {
-  static contextTypes = {
-    muiTheme: PropTypes.object.isRequired,
-  };
   static propTypes = {
     groupId: PropTypes.number.isRequired,
     hosts: PropTypes.arrayOf(PropTypes.object),
