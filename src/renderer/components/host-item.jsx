@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  IconButton, TableRow, TableRowColumn,
-} from 'material-ui';
-import { colors } from 'material-ui/styles';
+import { IconButton, TableRow, TableRowColumn } from 'material-ui';
+import { muiThemeable, colors } from 'material-ui/styles';
 import StatusIcon from './status-icon';
 import EditableLabel from './editable-label';
 import isUpdateNeeded from '../utils/is-update-needed';
@@ -24,6 +22,7 @@ const styles = {
   },
 };
 
+@muiThemeable()
 export default class HostItem extends Component {
   static propTypes = {
     host: PropTypes.object,

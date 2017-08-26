@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Table, TableHeader, TableBody,
-  TableRow, TableHeaderColumn,
-} from 'material-ui';
+import { Table, TableHeader, TableBody, TableRow, TableHeaderColumn } from 'material-ui';
+import { muiThemeable } from 'material-ui/styles';
 import HostItem from './host-item';
 import SortOrderIcon from './sort-order-icon';
 import isUpdateNeeded from '../utils/is-update-needed';
@@ -36,6 +34,7 @@ const styles = {
   },
 };
 
+@muiThemeable()
 export default class HostList extends Component {
   static propTypes = {
     groupId: PropTypes.number.isRequired,

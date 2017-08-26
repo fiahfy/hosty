@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {
-  Checkbox, List, ListItem, Subheader,
-} from 'material-ui';
+import { Checkbox, List, ListItem, Subheader } from 'material-ui';
+import { muiThemeable } from 'material-ui/styles';
 import * as ActionCreators from '../actions';
 
 const styles = {
@@ -21,6 +20,7 @@ function mapDispatchToProps(dispatch) {
   return { actions: bindActionCreators(ActionCreators, dispatch) };
 }
 
+@muiThemeable()
 @connect(mapStateToProps, mapDispatchToProps)
 export default class SettingsContainers extends Component {
   static propTypes = {

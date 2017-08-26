@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { TextField, IconButton } from 'material-ui';
-import { muiThemeable } from 'material-ui/styles';
 import { AvExplicit } from 'material-ui/svg-icons';
+import { muiThemeable } from 'material-ui/styles';
 import * as ActionCreators from '../actions';
 import ResultList from '../components/result-list';
 

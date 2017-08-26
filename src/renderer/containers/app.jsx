@@ -4,10 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Drawer, Menu, MenuItem, Snackbar } from 'material-ui';
 import { ActionList, ActionSettings } from 'material-ui/svg-icons';
-import {
-  MuiThemeProvider, getMuiTheme,
-  lightBaseTheme, darkBaseTheme,
-} from 'material-ui/styles';
+import { MuiThemeProvider, getMuiTheme, lightBaseTheme, darkBaseTheme } from 'material-ui/styles';
 import * as ActionCreators from '../actions';
 import TitleContainer from './title-container';
 import * as Group from '../utils/group';

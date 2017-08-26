@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  IconButton, TableRow, TableRowColumn,
-} from 'material-ui';
+import { IconButton, TableRow, TableRowColumn } from 'material-ui';
 import { muiThemeable, colors } from 'material-ui/styles';
 import StatusIcon from './status-icon';
 import EditableLabel from './editable-label';
