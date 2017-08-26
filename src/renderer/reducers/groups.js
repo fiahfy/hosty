@@ -36,6 +36,7 @@ export default handleActions({
     const group = {
       id: maxId + 1,
       enable: true,
+      name: '',
       hosts: [],
     };
     return [...state, group];
