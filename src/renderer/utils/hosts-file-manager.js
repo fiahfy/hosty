@@ -145,24 +145,23 @@ export function readGroupFromHostsFile(filename) {
   };
 }
 
-export function readGroupsFromFiles(filenames) {
-  return filenames.map((filename) => {
-    const { ext } = path.parse(filename);
-    return ext === EXTENSION
-      ? this.readGroupsFromHostyFile(filename)
-      : [this.readGroupFromHostsFile(filename)];
-  }).reduce((previous, current) => [...previous, ...current]);
+export function readGroupsFromFile(filename) {
+  const { ext } = path.parse(filename);
+  return ext === EXTENSION
+    ? readGroupsFromHostyFile(filename)
+    : [readGroupFromHostsFile(filename)];
 }
 
-export function writeGroupsToHostyFile(groups, filename) {
+export function readGroupsFromFiles(filenames) {
+  return filenames.map(readGroupsFromFile)
+    .reduce((previous, current) => [...previous, ...current]);
+}
+
+export function writeGroupsToFile(groups, filename) {
   const { ext } = path.parse(filename);
   let filenameWithExtension = filename;
   if (ext !== EXTENSION) {
     filenameWithExtension += EXTENSION;
   }
   fs.writeFileSync(filenameWithExtension, `${JSON.stringify(groups)}\n`, CHARSET);
-}
-
-export function writeGroupsToHostsFile(groups, filename) {
-  fs.writeFileSync(filename, `${Group.build(groups)}\n`, CHARSET);
 }

@@ -34,13 +34,10 @@ export default class MenuBuilder {
       {
         label: 'File',
         submenu: [
-          { label: 'Import Hosty File...', accelerator: 'CmdOrCtrl+I', click: () => { this.importHostyFile(); } },
-          { label: 'Import Hosts File...', accelerator: 'CmdOrCtrl+Shift+I', click: () => { this.importHostsFile(); } },
-          { label: 'Add Groups from Hosty Files...', click: () => { this.addGroupsFromHostyFiles(); } },
-          { label: 'Add Groups from Hosts Files...', click: () => { this.addGroupsFromHostsFiles(); } },
+          { label: 'Import...', accelerator: 'CmdOrCtrl+O', click: () => { this.import(); } },
+          { label: 'Add...', accelerator: 'CmdOrCtrl+Shift+O', click: () => { this.add(); } },
           { type: 'separator' },
-          { label: 'Export Hosty File...', accelerator: 'CmdOrCtrl+O', click: () => { this.exportHostyFile(); } },
-          { label: 'Export Hosts File...', accelerator: 'CmdOrCtrl+Shift+O', click: () => { this.exportHostsFile(); } },
+          { label: 'Export...', accelerator: 'CmdOrCtrl+S', click: () => { this.export(); } },
         ],
       },
       {
@@ -162,27 +159,7 @@ export default class MenuBuilder {
 
     return template;
   }
-  importHostyFile() {
-    dialog.showOpenDialog(
-      { filters: [{ name: 'Hosty File', extensions: ['hosty'] }] },
-      (filenames) => {
-        if (!filenames) {
-          return;
-        }
-        const filename = filenames[0];
-
-        try {
-          const groups = HostsFileManager.readGroupsFromHostyFile(filename);
-          this.window.webContents.send('sendGroups', { method: 'initialize', groups });
-        } catch (e) {
-          this.window.webContents.send('sendMessage', {
-            message: { text: 'Invalid Hosty file' },
-          });
-        }
-      },
-    );
-  }
-  importHostsFile() {
+  import() {
     dialog.showOpenDialog(
       {},
       (filenames) => {
@@ -191,17 +168,26 @@ export default class MenuBuilder {
         }
         const filename = filenames[0];
 
-        const group = HostsFileManager.readGroupFromHostsFile(filename);
-        this.window.webContents.send('sendGroups', { method: 'initialize', groups: [group] });
+        try {
+          const groups = HostsFileManager.readGroupsFromFile(filename);
+          this.window.webContents.send('sendGroups', { method: 'initialize', groups });
+        } catch (e) {
+          if (e instanceof TypeError) {
+            this.window.webContents.send('sendMessage', {
+              message: { text: 'Invalid hosty file' },
+            });
+          } else {
+            this.window.webContents.send('sendMessage', {
+              message: { text: 'Read file error' },
+            });
+          }
+        }
       },
     );
   }
-  addGroupsFromHostyFiles() {
+  add() {
     dialog.showOpenDialog(
-      {
-        filters: [{ name: 'Hosty File', extensions: ['hosty'] }],
-        properties: ['openFile', 'multiSelections'],
-      },
+      { properties: ['openFile', 'multiSelections'] },
       (filenames) => {
         if (!filenames) {
           return;
@@ -211,29 +197,20 @@ export default class MenuBuilder {
           const groups = HostsFileManager.readGroupsFromFiles(filenames);
           this.window.webContents.send('sendGroups', { method: 'add', groups });
         } catch (e) {
-          this.window.webContents.send('sendMessage', {
-            message: { text: 'Invalid Hosty file' },
-          });
+          if (e instanceof TypeError) {
+            this.window.webContents.send('sendMessage', {
+              message: { text: 'Invalid hosty file' },
+            });
+          } else {
+            this.window.webContents.send('sendMessage', {
+              message: { text: 'Read file error' },
+            });
+          }
         }
       },
     );
   }
-  addGroupsFromHostsFiles() {
-    dialog.showOpenDialog(
-      {
-        properties: ['openFile', 'multiSelections'],
-      },
-      (filenames) => {
-        if (!filenames) {
-          return;
-        }
-
-        const groups = HostsFileManager.readGroupsFromFiles(filenames);
-        this.window.webContents.send('sendGroups', { method: 'add', groups });
-      },
-    );
-  }
-  exportHostyFile() {
+  export() {
     dialog.showSaveDialog(
       { filters: [{ name: 'Hosty File', extensions: ['hosty'] }] },
       (filename) => {
@@ -242,42 +219,31 @@ export default class MenuBuilder {
         }
 
         ipcMain.once('sendGroups', (event, { groups }) => {
-          HostsFileManager.writeGroupsToHostyFile(groups, filename);
-          const groupLength = groups.length;
-          const hostLength = Group.getHostLength(groups);
-          this.window.webContents.send('sendMessage', {
-            message: { text: `Exported ${groupLength} group(s), ${hostLength} host(s)` },
-          });
+          try {
+            HostsFileManager.writeGroupsToFile(groups, filename);
+            const groupLength = groups.length;
+            const hostLength = Group.getHostLength(groups);
+            this.window.webContents.send('sendMessage', {
+              message: { text: `Exported ${groupLength} group(s), ${hostLength} host(s)` },
+            });
+          } catch (e) {
+            this.window.webContents.send('sendMessage', {
+              message: { text: 'Write file error' },
+            });
+          }
         });
         this.window.webContents.send('requestGroups');
       },
     );
   }
-  exportHostsFile() {
-    dialog.showSaveDialog({}, (filename) => {
-      if (!filename) {
-        return;
-      }
-
-      ipcMain.once('sendGroups', (event, { groups }) => {
-        HostsFileManager.writeGroupsToHostsFile(groups, filename);
-        const groupLength = groups.length;
-        const hostLength = Group.getHostLength(groups);
-        this.window.webContents.send('sendMessage', {
-          message: { text: `Exported ${groupLength} group(s), ${hostLength} host(s)` },
-        });
-      });
-      this.window.webContents.send('requestGroups');
-    });
-  }
   showGroups() {
     this.window.webContents.send('showGroupsWindow');
   }
-  findHosts() {
-    this.window.webContents.send('showPanel');
-  }
   showSettings() {
     this.window.webContents.send('showSettingsWindow');
+  }
+  findHosts() {
+    this.window.webContents.send('showPanel');
   }
   createGroup() {
     this.window.webContents.send('createGroup');
