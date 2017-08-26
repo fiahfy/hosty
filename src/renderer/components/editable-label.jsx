@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { TextField } from 'material-ui';
-import { muiThemeable } from 'material-ui/styles';
+import themeable from '../utils/themeable';
 
 const styles = {
   button: {
@@ -27,7 +27,7 @@ const styles = {
   },
 };
 
-@muiThemeable()
+@themeable()
 export default class EditableLabel extends Component {
   static propTypes = {
     focused: PropTypes.bool,

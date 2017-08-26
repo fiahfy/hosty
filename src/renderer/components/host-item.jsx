@@ -102,7 +102,7 @@ export default class HostItem extends Component {
         <TableRowColumn>
           <EditableLabel
             name={Host.KEY_HOST}
-            ref={(input) => { this.hostTextInput = input; }}
+            inputRef={(input) => { this.hostTextInput = input; }}
             defaultValue={host.host}
             hintText="example.com"
             fullWidth
@@ -117,7 +117,7 @@ export default class HostItem extends Component {
         <TableRowColumn>
           <EditableLabel
             name={Host.KEY_IP}
-            ref={(input) => { this.ipTextInput = input; }}
+            inputRef={(input) => { this.ipTextInput = input; }}
             defaultValue={host.ip}
             hintText="192.0.2.0"
             fullWidth
