@@ -205,7 +205,8 @@ export default handleActions({
         const host = {
           id: maxId + 1,
           enable: true,
-          name: '',
+          host: '',
+          ip: '',
         };
         newGroup.hosts = [...newGroup.hosts, host];
         return newGroup;
