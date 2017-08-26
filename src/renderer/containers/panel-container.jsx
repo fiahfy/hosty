@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { IconButton, Subheader } from 'material-ui';
 import { NavigationClose } from 'material-ui/svg-icons';
+import { muiThemeable } from 'material-ui/styles';
 import * as ActionCreators from '../actions';
 import FindContainer from './find-container';
 
@@ -41,6 +42,7 @@ function mapDispatchToProps(dispatch) {
   return { actions: bindActionCreators(ActionCreators, dispatch) };
 }
 
+@muiThemeable()
 @connect(mapStateToProps, mapDispatchToProps)
 export default class PanelContainer extends Component {
   static propTypes = {

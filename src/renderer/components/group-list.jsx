@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Table, TableHeader, TableBody,
-  TableRow, TableHeaderColumn,
-} from 'material-ui';
+import { Table, TableHeader, TableBody, TableRow, TableHeaderColumn } from 'material-ui';
+import { muiThemeable } from 'material-ui/styles';
 import GroupItem from './group-item';
 import SortOrderIcon from './sort-order-icon';
 import isUpdateNeeded from '../utils/is-update-needed';
@@ -36,6 +34,7 @@ const styles = {
   },
 };
 
+@muiThemeable()
 export default class GroupList extends Component {
   static propTypes = {
     groups: PropTypes.arrayOf(PropTypes.object),

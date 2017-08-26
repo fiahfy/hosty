@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { List } from 'material-ui';
+import { muiThemeable } from 'material-ui/styles';
 import ResultItem from './result-item';
 import isUpdateNeeded from '../utils/is-update-needed';
 
@@ -10,6 +11,7 @@ const styles = {
   },
 };
 
+@muiThemeable()
 export default class ResultList extends Component {
   static propTypes = {
     results: PropTypes.arrayOf(PropTypes.object),

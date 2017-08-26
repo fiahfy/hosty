@@ -5,7 +5,7 @@ import {
   DeviceSignalCellular4Bar,
   DeviceSignalCellularConnectedNoInternet4Bar,
 } from 'material-ui/svg-icons';
-import { colors } from 'material-ui/styles';
+import { muiThemeable, colors } from 'material-ui/styles';
 
 const StatusIcon = ({ valid, enable, ...others }) => {
   const Icon = valid
@@ -32,4 +32,4 @@ StatusIcon.defaultProps = {
   ...SvgIcon.defaultProps,
 };
 
-export default StatusIcon;
+export default muiThemeable()(StatusIcon);

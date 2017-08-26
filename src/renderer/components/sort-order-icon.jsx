@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { SvgIcon } from 'material-ui';
 import { NavigationArrowDropDown, NavigationArrowDropUp } from 'material-ui/svg-icons';
+import { muiThemeable } from 'material-ui/styles';
 
 const SortOrderIcon = ({ hidden, asc, ...others }) => {
   if (hidden) {
@@ -24,4 +25,4 @@ SortOrderIcon.defaultProps = {
   ...SvgIcon.defaultProps,
 };
 
-export default SortOrderIcon;
+export default muiThemeable()(SortOrderIcon);
