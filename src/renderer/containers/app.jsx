@@ -9,26 +9,13 @@ import {
   lightBaseTheme, darkBaseTheme,
 } from 'material-ui/styles';
 import * as ActionCreators from '../actions';
+import TitleContainer from './title-container';
 import * as Group from '../utils/group';
 import * as HostsFileManager from '../utils/hosts-file-manager';
 
 const styles = {
   app: {
     height: '100%',
-  },
-  titleBar: {
-    borderBottomWidth: '1px',
-    borderBottomStyle: 'solid',
-    boxSizing: 'border-box',
-    fontSize: '13px',
-    height: '24px',
-    padding: '0 68px',
-    lineHeight: '24px',
-    overflow: 'hidden',
-    textAlign: 'center',
-    textOverflow: 'ellipsis',
-    userSelect: 'none',
-    WebkitAppRegion: 'drag',
   },
   content: {
     height: '100%',
@@ -65,7 +52,6 @@ export default class App extends Component {
     router: PropTypes.object.isRequired,
   };
   static propTypes = {
-    title: PropTypes.string.isRequired,
     messages: PropTypes.arrayOf(PropTypes.object).isRequired,
     settings: PropTypes.object.isRequired,
     children: PropTypes.node.isRequired,
@@ -142,28 +128,13 @@ export default class App extends Component {
       </Menu>
     );
   }
-  renderTitleBar(theme) {
-    const { title } = this.props;
-
-    if (process.platform === 'win32') {
-      return null;
-    }
-    return (
-      <div
-        style={{
-          ...styles.titleBar,
-          borderBottomColor: theme.palette.borderColor,
-          color: theme.palette.textColor,
-        }}
-      >{title}</div>
-    );
-  }
   render() {
     const { settings, children } = this.props;
     const theme = settings.theme === 'dark' ? darkBaseTheme : lightBaseTheme;
 
-    const titleBar = this.renderTitleBar(theme);
-    if (titleBar) {
+    let titleBar = null;
+    if (process.platform !== 'win32') {
+      titleBar = <TitleContainer />;
       styles.content = { ...styles.content, height: 'calc(100% - 24px)' };
       styles.drawer = { ...styles.drawer, height: 'calc(100% - 24px)', top: '24px' };
     }

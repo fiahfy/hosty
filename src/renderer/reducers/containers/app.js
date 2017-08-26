@@ -12,6 +12,5 @@ export default handleActions({
     Object.assign({}, state, { messages: [] })
   ),
 }, {
-  title: '',
   messages: [],
 });

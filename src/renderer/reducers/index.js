@@ -5,6 +5,7 @@ import root from './root';
 import groups from './groups';
 import settings from './settings';
 import app from './containers/app';
+import titleContainer from './containers/title-container';
 import mainContainer from './containers/main-container';
 import groupContainer from './containers/group-container';
 import hostContainer from './containers/host-container';
@@ -15,6 +16,7 @@ export default reduceReducers(
     groups,
     settings,
     app,
+    titleContainer,
     mainContainer,
     groupContainer,
     hostContainer,

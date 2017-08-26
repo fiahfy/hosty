@@ -3,7 +3,22 @@ import * as ActionTypes from '../actions';
 import * as Group from '../utils/group';
 import * as Host from '../utils/host';
 
+function getTitle(groups, selectedIds) {
+  const selectedId = selectedIds[0] || 0;
+  const selectedGroup = groups.find(group => group.id === selectedId);
+  return selectedGroup ? selectedGroup.name : '';
+}
+
 export default handleActions({
+  [ActionTypes.UPDATE_GROUP]: (state) => {
+    const { selectedIds } = state.groupContainer;
+    return Object.assign({}, state, {
+      titleContainer: {
+        ...state.titleContainer,
+        title: getTitle(state.groups, selectedIds),
+      },
+    });
+  },
   [ActionTypes.ENABLE_GROUPS]: (state) => {
     const { selectedIds } = state.groupContainer;
     return Object.assign({}, state, {
@@ -36,6 +51,10 @@ export default handleActions({
     const newSelectedIds = newGroup ? [newGroup.id] : [];
     return Object.assign({}, state, {
       groups: state.groups.filter(group => !selectedIds.includes(group.id)),
+      titleContainer: {
+        ...state.titleContainer,
+        title: getTitle(state.groups, newSelectedIds),
+      },
       groupContainer: {
         ...state.groupContainer,
         selectedIds: newSelectedIds,
@@ -57,9 +76,13 @@ export default handleActions({
     const newSelectedIds = newGroup ? [newGroup.id] : [];
     return Object.assign({}, state, {
       groups: state.groups.filter(group => !selectedIds.includes(group.id)),
+      titleContainer: {
+        ...state.titleContainer,
+        title: getTitle(state.groups, newSelectedIds),
+      },
       groupContainer: {
         ...state.groupContainer,
-        selectedGroupIds: newSelectedIds,
+        selectedIds: newSelectedIds,
         copiedGroups: state.groups.filter(group => selectedIds.includes(group.id)),
       },
       hostContainer: {
@@ -147,14 +170,10 @@ export default handleActions({
       }
     })();
 
-    const newSelectedId = newSelectedIds[0] || 0;
-    const selectedGroup = state.groups.find(group => group.id === newSelectedId);
-    const title = selectedGroup ? selectedGroup.name : '';
-
     return Object.assign({}, state, {
-      app: {
-        ...state.app,
-        title,
+      titleContainer: {
+        ...state.titleContainer,
+        title: getTitle(state.groups, newSelectedIds),
       },
       groupContainer: {
         ...state.groupContainer,
