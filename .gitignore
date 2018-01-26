@@ -38,7 +38,9 @@ node_modules
 /app/assets/*/*
 /main.js*
 dist
+!.gitkeep
+
+# Hosty files
 dummyHosts
 hosts
 *.hosty
-!.gitkeep

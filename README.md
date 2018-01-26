@@ -28,15 +28,5 @@ https://github.com/fiahfy/hosty/releases
 $ git clone https://github.com/fiahfy/hosty.git
 $ cd hosty
 $ yarn
-$ yarn start:hot
-```
-
-### Run
-```
-$ yarn start
-```
-
-### Run(HMR)
-```
-$ yarn start:hot
+$ yarn dev
 ```
