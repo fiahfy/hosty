@@ -1,36 +1,33 @@
-import { BrowserWindow } from 'electron';
-import windowStateKeeper from 'electron-window-state';
-import MenuBuilder from './menu-builder';
+import { BrowserWindow } from 'electron'
+import windowStateKeeper from 'electron-window-state'
+import MenuBuilder from './menu-builder'
 
 export default class Window {
-  constructor(application) {
-    this.application = application;
+  constructor (app) {
+    this.app = app
   }
-  open() {
+  open () {
     const windowState = windowStateKeeper({
       defaultWidth: 820,
-      defaultHeight: 600,
-    });
+      defaultHeight: 600
+    })
 
-    let options = windowState;
-    if (process.platform !== 'win32') {
-      options = { ...windowState, titleBarStyle: 'hidden' };
-    }
+    const options = { ...windowState, titleBarStyle: 'hidden' }
 
-    this.browserWindow = new BrowserWindow(options);
-    this.browserWindow.loadURL(`file://${__dirname}/app/index.html`);
+    this.win = new BrowserWindow(options)
+    this.win.loadURL(`file://${__dirname}/app/index.html`)
 
-    windowState.manage(this.browserWindow);
+    windowState.manage(this.win)
 
-    const builder = new MenuBuilder(this.browserWindow);
-    builder.build();
+    const builder = new MenuBuilder(this.win)
+    builder.build()
 
-    this.handleEvents();
+    this.addEventListeners()
   }
-  handleEvents() {
-    this.browserWindow.on('closed', () => {
-      this.browserWindow = null;
-      this.application.removeWindow();
-    });
+  addEventListeners () {
+    this.win.on('closed', () => {
+      this.win = null
+      this.app.removeWindow()
+    })
   }
 }
