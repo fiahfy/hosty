@@ -3,8 +3,8 @@
     <mdc-table-column class="status">
       {{ group.id }}
     </mdc-table-column>
-    <mdc-table-column class="name">
-      {{ group.name }}
+    <mdc-table-column class="name" @click="click">
+      <mdc-text-field ref="name" :disabled="disabled" v-model="name" @blur="blur" />
     </mdc-table-column>
   </mdc-table-row>
 </template>
@@ -13,6 +13,7 @@
 import MdcIcon from './MdcIcon'
 import MdcTableColumn from './MdcTableColumn'
 import MdcTableRow from './MdcTableRow'
+import MdcTextField from './MdcTextField'
 
 export default {
   props: {
@@ -28,9 +29,26 @@ export default {
   components: {
     MdcIcon,
     MdcTableColumn,
-    MdcTableRow
+    MdcTableRow,
+    MdcTextField
+  },
+  data () {
+    return {
+      name: 'test',
+      disabled: true
+    }
   },
   computed: {
+  },
+  methods: {
+    click () {
+      this.disabled = !this.selected
+      // console.log(this.disabled)
+      // this.$refs.name.$el.focus()
+    },
+    blur () {
+      this.disabled = true
+    }
   }
 }
 </script>
@@ -40,5 +58,9 @@ export default {
   line-height: 20px;
   vertical-align: bottom;
   white-space: nowrap;
+  .mdc-text-field {
+    height: auto!important;
+    margin: 0;
+  }
 }
 </style>
