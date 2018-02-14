@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import router from '../router'
+import explorer from './explorer'
 import settings from './settings'
 
 Vue.use(Vuex)
@@ -21,6 +22,7 @@ export default new Vuex.Store({
     }
   },
   modules: {
+    explorer,
     settings
   },
   plugins: [

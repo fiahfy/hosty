@@ -6,8 +6,10 @@
     @dragover.prevent
     @drop.prevent="drop"
   >
-    <title-bar v-if="titleBar" />
-    <divider />
+    <template v-if="titleBar">
+      <title-bar />
+      <divider />
+    </template>
     <div class="container">
       <activity-bar />
       <divider orientation="vertical" />
