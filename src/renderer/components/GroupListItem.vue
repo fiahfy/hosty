@@ -5,11 +5,11 @@
           title="Toggle status"
           @click="statusClick"
         >
-        <mdc-icon slot="icon" :icon="icon" />
+        <mdc-icon slot="icon" :icon="icon" :class="classes" />
       </mdc-button>
     </mdc-table-column>
     <mdc-table-column class="name" @click="nameClick">
-      <mdc-text-field ref="name" :disabled="disabled" v-model="name" @blur="nameBlur" @keydown="nameKeydown" />
+      <mdc-text-field ref="name" placeholder="Group" :disabled="disabled" v-model="name" @blur="nameBlur" @keydown="nameKeydown" />
     </mdc-table-column>
   </mdc-table-row>
 </template>
@@ -49,6 +49,12 @@ export default {
     icon () {
       return this.group.disabled ? 'block' : 'check'
     },
+    classes () {
+      return [
+        'mdc-button__icon',
+        this.icon
+      ]
+    },
     name: {
       get () {
         return this.group.name
@@ -85,9 +91,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "@material/theme/_color-palette";
+
 .group-list-item .mdc-table-column {
   line-height: 20px;
-  padding: 4px;
+  padding: 2px 8px;
   vertical-align: bottom;
   white-space: nowrap;
   &.status {
@@ -102,12 +110,21 @@ export default {
       margin: 0;
       padding: 0;
       width: auto;
+      &.block {
+        color: $material-color-grey-400;
+      }
     }
   }
   .mdc-text-field {
     height: auto!important;
-    margin: 0;
-    padding-top: 8px;
+    margin: 0 0 2px;
+    width: 100%;
+    & /deep/ input {
+      border: 0;
+      &:disabled {
+        color: inherit;
+      }
+    }
   }
 }
 </style>

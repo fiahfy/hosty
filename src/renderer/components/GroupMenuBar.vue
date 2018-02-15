@@ -10,7 +10,7 @@
         title="Delete group"
         @click="deleteGroup"
       >
-      <mdc-icon slot="icon" icon="delete" />
+      <mdc-icon slot="icon" icon="remove" />
     </mdc-button>
   </div>
 </template>

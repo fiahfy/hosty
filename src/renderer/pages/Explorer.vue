@@ -2,17 +2,28 @@
   <div class="explorer">
     <div class="group">
       <group-menu-bar />
-      <group-list />
+      <div class="container">
+        <div class="message" v-if="groupMessage">
+          {{ groupMessage }}
+        </div>
+        <group-list />
+      </div>
     </div>
     <divider orientation="vertical" />
     <div class="host">
       <host-menu-bar />
-      <host-list />
+      <div class="container">
+        <div class="message" v-if="hostMessage">
+          {{ hostMessage }}
+        </div>
+        <host-list />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import Divider from '../components/Divider'
 import GroupList from '../components/GroupList'
 import GroupMenuBar from '../components/GroupMenuBar'
@@ -26,11 +37,25 @@ export default {
     GroupMenuBar,
     HostList,
     HostMenuBar
+  },
+  computed: {
+    groupMessage () {
+      return this.groups.length ? '' : 'No Groups'
+    },
+    hostMessage () {
+      return this.hosts.length ? '' : 'No Hosts'
+    },
+    ...mapGetters({
+      groups: 'explorer/group/groups',
+      hosts: 'explorer/host/hosts'
+    })
   }
 }
 </script>
 
 <style scoped lang="scss">
+@import "@material/theme/_color-palette";
+
 .explorer {
   display: flex;
   height: 100%;
@@ -38,17 +63,33 @@ export default {
     display: flex;
     flex-direction: column;
     width: 256px;
-    .group-list {
+    .container {
       flex: 1;
+      position: relative;
     }
   }
   .host {
     display: flex;
     flex: 1;
     flex-direction: column;
-    .host-list {
+    .container {
       flex: 1;
+      position: relative;
     }
   }
+  .message {
+    align-items: center;
+    bottom: 0;
+    color: $material-color-grey-600;
+    display: flex;
+    justify-content: center;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+}
+.mdc-theme--dark .explorer .message {
+  color: $material-color-grey-300;
 }
 </style>

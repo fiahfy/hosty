@@ -18,7 +18,7 @@
       <label
         class="mdc-text-field__label"
         :for="id"
-      >{{ label }}</label>
+      ></label>
       <div class="mdc-text-field__bottom-line" />
     </template>
   </div>
@@ -32,7 +32,7 @@ export default {
     value: {
       type: String
     },
-    label: {
+    placeholder: {
       type: String
     },
     fullwidth: {
@@ -72,9 +72,6 @@ export default {
         'mdc-text-field--fullwidth': this.fullwidth,
         'mdc-text-field--disabled': this.disabled
       }
-    },
-    placeholder () {
-      return this.fullwidth ? this.label : null
     },
     model: {
       get () {

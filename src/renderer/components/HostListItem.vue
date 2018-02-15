@@ -5,14 +5,14 @@
           title="Toggle status"
           @click="statusClick"
         >
-        <mdc-icon slot="icon" :icon="icon" />
+        <mdc-icon slot="icon" :icon="icon" :class="classes" />
       </mdc-button>
     </mdc-table-column>
     <mdc-table-column class="name" @click="nameClick">
-      <mdc-text-field ref="name" :disabled="nameDisabled" v-model="name" @blur="nameBlur" @keydown="nameKeydown" />
+      <mdc-text-field ref="name" placeholder="example.com" :disabled="nameDisabled" v-model="name" @blur="nameBlur" @keydown="nameKeydown" />
     </mdc-table-column>
     <mdc-table-column class="ip" @click="ipClick">
-      <mdc-text-field ref="ip" :disabled="ipDisabled" v-model="ip" @blur="ipBlur" @keydown="ipKeydown" />
+      <mdc-text-field ref="ip" placeholder="192.0.2.0" :disabled="ipDisabled" v-model="ip" @blur="ipBlur" @keydown="ipKeydown" />
     </mdc-table-column>
   </mdc-table-row>
 </template>
@@ -52,6 +52,12 @@ export default {
   computed: {
     icon () {
       return this.host.disabled ? 'block' : 'check'
+    },
+    classes () {
+      return [
+        'mdc-button__icon',
+        this.icon
+      ]
     },
     name: {
       get () {
@@ -121,8 +127,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "@material/theme/_color-palette";
+
 .mdc-table-column {
   line-height: 20px;
+  padding: 2px 8px;
   vertical-align: bottom;
   white-space: nowrap;
   &.status {
@@ -137,12 +146,20 @@ export default {
       margin: 0;
       padding: 0;
       width: auto;
+      &.block {
+        color: $material-color-grey-400;
+      }
     }
   }
   .mdc-text-field {
     height: auto!important;
-    margin: 0;
-    padding-top: 8px;
+    margin: 0 0 2px;
+    & /deep/ input {
+      border: 0;
+      &:disabled {
+        color: inherit;
+      }
+    }
   }
 }
 </style>
