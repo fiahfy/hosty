@@ -8,12 +8,12 @@
         <mdc-table-row>
           <mdc-table-header-column
             class="status"
-            @click="e => click(e, 'status')"
+            @click="e => click(e, 'disabled')"
           >
             <span>Status</span>
             <mdc-icon
               :icon="icon"
-              v-if="sortOption.key === 'status'"
+              v-if="sortOption.key === 'disabled'"
             />
           </mdc-table-header-column>
           <mdc-table-header-column
@@ -168,7 +168,6 @@ export default {
   .mdc-table {
     outline: none;
     table-layout: fixed;
-    width: auto;
     .mdc-table-header {
       .mdc-table-row {
         height: 40px;
@@ -181,7 +180,7 @@ export default {
           white-space: nowrap;
           z-index: 1;
           &.status {
-            width: 40px;
+            width: 44px;
           }
           .mdc-icon {
             padding: 0;

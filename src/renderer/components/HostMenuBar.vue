@@ -2,9 +2,15 @@
   <div class="host-menu-bar">
     <mdc-button
         title="Create host"
-        @click="create"
+        @click="createHost"
       >
       <mdc-icon slot="icon" icon="add" />
+    </mdc-button>
+    <mdc-button
+        title="Delete host"
+        @click="deleteHost"
+      >
+      <mdc-icon slot="icon" icon="delete" />
     </mdc-button>
   </div>
 </template>
@@ -21,7 +27,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      create: 'explorer/host/create'
+      createHost: 'explorer/host/create',
+      deleteHost: 'explorer/host/delete'
     })
   }
 }

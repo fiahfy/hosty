@@ -2,9 +2,15 @@
   <div class="group-menu-bar">
     <mdc-button
         title="Create group"
-        @click="create"
+        @click="createGroup"
       >
       <mdc-icon slot="icon" icon="add" />
+    </mdc-button>
+    <mdc-button
+        title="Delete group"
+        @click="deleteGroup"
+      >
+      <mdc-icon slot="icon" icon="delete" />
     </mdc-button>
   </div>
 </template>
@@ -21,7 +27,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      create: 'explorer/group/create'
+      createGroup: 'explorer/group/create',
+      deleteGroup: 'explorer/group/delete'
     })
   }
 }

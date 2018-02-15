@@ -10,34 +10,35 @@ export default {
         ...state.groups,
         {
           id,
+          disabled: false,
           name: ''
         }
       ]
       commit('setGroups', { groups })
     },
-    updateGroup ({ commit, state }, { id, name }) {
+    updateGroup ({ commit, state }, { id, params }) {
       const groups = state.groups.map((group) => {
         if (group.id !== id) {
           return group
         }
         return {
           ...group,
-          name
+          ...params
         }
       })
+      commit('setGroups', { groups })
+    },
+    deleteGroup ({ commit, state }, { id }) {
+      const groups = state.groups.filter((group) => group.id !== id)
       commit('setGroups', { groups })
     },
     sortGroups ({ commit, getters, state }, { key, order }) {
       const groups = state.groups.sort((a, b) => {
         let result = 0
-        switch (key) {
-          case 'status':
-            if (a.status > b.status) {
-              result = 1
-            } else if (a.status < b.status) {
-              result = -1
-            }
-            break
+        if (a[key] > b[key]) {
+          result = 1
+        } else if (a[key] < b[key]) {
+          result = -1
         }
         if (result === 0) {
           if (a.name > b.name) {
@@ -63,6 +64,7 @@ export default {
             ...currentHosts,
             {
               id,
+              disabled: false,
               name: '',
               ip: ''
             }
@@ -71,7 +73,7 @@ export default {
       })
       commit('setGroups', { groups })
     },
-    updateHost ({ commit, state }, { groupId, id, name, ip }) {
+    updateHost ({ commit, state }, { groupId, id, params }) {
       const groups = state.groups.map((group) => {
         if (group.id !== groupId) {
           return group
@@ -84,14 +86,52 @@ export default {
             }
             return {
               ...host,
-              name: name !== undefined ? name : host.name,
-              ip: ip !== undefined ? ip : host.ip
+              ...params
             }
           })
         }
       })
       commit('setGroups', { groups })
     },
+    deleteHost ({ commit, state }, { groupId, id }) {
+      const groups = state.groups.map((group) => {
+        if (group.id !== groupId) {
+          return group
+        }
+        return {
+          ...group,
+          hosts: group.hosts.filter((host) => host.id !== id)
+        }
+      })
+      commit('setGroups', { groups })
+    },
+    sortHosts ({ commit, getters, state }, { groupId, key, order }) {
+      const groups = state.groups.map((group) => {
+        if (group.id !== groupId) {
+          return group
+        }
+        return {
+          ...group,
+          hosts: group.hosts.sort((a, b) => {
+            let result = 0
+            if (a[key] > b[key]) {
+              result = 1
+            } else if (a[key] < b[key]) {
+              result = -1
+            }
+            if (result === 0) {
+              if (a.name > b.name) {
+                result = 1
+              } else if (a.name < b.name) {
+                result = -1
+              }
+            }
+            return order === 'asc' ? result : -1 * result
+          })
+        }
+      })
+      commit('setGroups', { groups })
+    }
   },
   mutations: {
     setGroups (state, { groups }) {

@@ -1,5 +1,5 @@
 const sortOrderDefaults = {
-  status: 'asc',
+  disabled: 'asc',
   name: 'asc'
 }
 
@@ -16,6 +16,9 @@ export default {
   actions: {
     create ({ dispatch, state }) {
       dispatch('group/createGroup', null, { root: true })
+    },
+    delete ({ dispatch, state }) {
+      dispatch('group/deleteGroup', { id: state.selectedId }, { root: true })
     },
     select ({ commit }, { id }) {
       commit('setSelectedId', { selectedId: id })

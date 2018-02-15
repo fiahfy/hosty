@@ -1,7 +1,12 @@
 <template>
   <mdc-table-row class="host-list-item" :selected="selected" v-bind="$attrs" v-on="$listeners">
     <mdc-table-column class="status">
-      {{ host.id }}
+      <mdc-button
+          title="Toggle status"
+          @click="statusClick"
+        >
+        <mdc-icon slot="icon" :icon="icon" />
+      </mdc-button>
     </mdc-table-column>
     <mdc-table-column class="name" @click="nameClick">
       <mdc-text-field ref="name" :disabled="nameDisabled" v-model="name" @blur="nameBlur" @keydown="nameKeydown" />
@@ -14,6 +19,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import MdcButton from './MdcButton'
 import MdcIcon from './MdcIcon'
 import MdcTableColumn from './MdcTableColumn'
 import MdcTableRow from './MdcTableRow'
@@ -31,6 +37,7 @@ export default {
     }
   },
   components: {
+    MdcButton,
     MdcIcon,
     MdcTableColumn,
     MdcTableRow,
@@ -43,12 +50,15 @@ export default {
     }
   },
   computed: {
+    icon () {
+      return this.host.disabled ? 'block' : 'check'
+    },
     name: {
       get () {
         return this.host.name
       },
       set (value) {
-        this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, name: value })
+        this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, params: { name: value } })
       }
     },
     ip: {
@@ -56,7 +66,7 @@ export default {
         return this.host.ip
       },
       set (value) {
-        this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, ip: value })
+        this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, params: { ip: value } })
       }
     },
     ...mapState({
@@ -64,6 +74,9 @@ export default {
     })
   },
   methods: {
+    statusClick () {
+      this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, params: { disabled: !this.host.disabled } })
+    },
     nameClick () {
       this.nameDisabled = !this.selected
       this.$nextTick(() => {
@@ -112,6 +125,20 @@ export default {
   line-height: 20px;
   vertical-align: bottom;
   white-space: nowrap;
+  &.status {
+    text-align: center;
+  }
+  .mdc-button {
+    min-width: 36px;
+    padding: 0;
+    .mdc-icon {
+      font-size: 24px;
+      height: auto;
+      margin: 0;
+      padding: 0;
+      width: auto;
+    }
+  }
   .mdc-text-field {
     height: auto!important;
     margin: 0;

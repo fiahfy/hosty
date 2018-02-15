@@ -1,6 +1,7 @@
 const sortOrderDefaults = {
-  status: 'asc',
-  name: 'asc'
+  disabled: 'asc',
+  name: 'asc',
+  ip: 'asc'
 }
 
 export default {
@@ -16,6 +17,9 @@ export default {
   actions: {
     create ({ dispatch, rootState }) {
       dispatch('group/createHost', { groupId: rootState.explorer.group.selectedId }, { root: true })
+    },
+    delete ({ dispatch, rootState, state }) {
+      dispatch('group/deleteHost', { groupId: rootState.explorer.group.selectedId, id: state.selectedId }, { root: true })
     },
     select ({ commit }, { id }) {
       commit('setSelectedId', { selectedId: id })
@@ -36,14 +40,14 @@ export default {
       const selectedId = getters.hosts[index].id
       commit('setSelectedId', { selectedId })
     },
-    changeSortKey ({ commit, dispatch, state }, { sortKey }) {
-      // let sortOrder = sortOrderDefaults[sortKey]
-      // if (state.sortOption.key === sortKey) {
-      //   sortOrder = state.sortOption.order === 'asc' ? 'desc' : 'asc'
-      // }
-      // const sortOption = { key: sortKey, order: sortOrder }
-      // commit('setSortOption', { sortOption })
-      // dispatch('group/sortGroups', sortOption, { root: true })
+    changeSortKey ({ commit, dispatch, rootState, state }, { sortKey }) {
+      let sortOrder = sortOrderDefaults[sortKey]
+      if (state.sortOption.key === sortKey) {
+        sortOrder = state.sortOption.order === 'asc' ? 'desc' : 'asc'
+      }
+      const sortOption = { key: sortKey, order: sortOrder }
+      commit('setSortOption', { sortOption })
+      dispatch('group/sortHosts', { groupId: rootState.explorer.group.selectedId, ...sortOption }, { root: true })
     }
   },
   mutations: {
@@ -59,10 +63,11 @@ export default {
   },
   getters: {
     hosts (state, getters, rootState, rootGetters) {
-      if (!rootGetters['explorer/group/selectedGroup']) {
+      const selectedGroup = rootGetters['explorer/group/selectedGroup']
+      if (!selectedGroup) {
         return []
       }
-      return rootGetters['explorer/group/selectedGroup'].hosts || []
+      return selectedGroup.hosts || []
     },
     selectedGroup (state, getters) {
       return getters.hosts.find((host) => getters.isSelected({ id: host.id }))

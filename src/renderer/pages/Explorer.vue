@@ -37,6 +37,7 @@ export default {
   .group {
     display: flex;
     flex-direction: column;
+    width: 256px;
     .group-list {
       flex: 1;
     }
