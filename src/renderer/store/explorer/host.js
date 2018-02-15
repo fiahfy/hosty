@@ -15,28 +15,37 @@ export default {
     }
   },
   actions: {
-    create ({ dispatch, rootState }) {
+    create ({ dispatch, getters, rootState }) {
       dispatch('group/createHost', { groupId: rootState.explorer.group.selectedId }, { root: true })
+      const index = getters.hosts.length - 1
+      dispatch('selectIndex', { index })
     },
-    delete ({ dispatch, rootState, state }) {
+    delete ({ dispatch, getters, rootState, state }) {
+      const oldSelectedIndex = getters.selectedIndex
       dispatch('group/deleteHost', { groupId: rootState.explorer.group.selectedId, id: state.selectedId }, { root: true })
+      if (oldSelectedIndex > 0) {
+        const index = oldSelectedIndex > getters.hosts.length - 1 ? oldSelectedIndex - 1 : oldSelectedIndex
+        dispatch('selectIndex', { index })
+      }
     },
     select ({ commit }, { id }) {
       commit('setSelectedId', { selectedId: id })
     },
-    selectPrevious ({ commit, getters }) {
+    selectPrevious ({ dispatch, getters }) {
       const index = getters.selectedIndex - 1
       if (index < 0) {
         return
       }
-      const selectedId = getters.hosts[index].id
-      commit('setSelectedId', { selectedId })
+      dispatch('selectIndex', { index })
     },
-    selectNext ({ commit, getters }) {
+    selectNext ({ dispatch, getters }) {
       const index = getters.selectedIndex + 1
       if (index > getters.hosts.length - 1) {
         return
       }
+      dispatch('selectIndex', { index })
+    },
+    selectIndex ({ commit, getters }, { index }) {
       const selectedId = getters.hosts[index].id
       commit('setSelectedId', { selectedId })
     },

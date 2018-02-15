@@ -63,30 +63,27 @@ export default {
     display: flex;
     flex-direction: column;
     width: 256px;
-    .container {
-      flex: 1;
-      position: relative;
-    }
   }
   .host {
     display: flex;
     flex: 1;
     flex-direction: column;
-    .container {
-      flex: 1;
-      position: relative;
-    }
   }
-  .message {
-    align-items: center;
-    bottom: 0;
-    color: $material-color-grey-600;
-    display: flex;
-    justify-content: center;
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
+  .container {
+    flex: 1;
+    overflow-y: auto;
+    position: relative;
+    .message {
+      align-items: center;
+      bottom: 0;
+      color: $material-color-grey-600;
+      display: flex;
+      justify-content: center;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
   }
 }
 .mdc-theme--dark .explorer .message {
