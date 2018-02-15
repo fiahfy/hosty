@@ -1,5 +1,5 @@
 <template>
-  <div class="group-list" :class="classes">
+  <div class="host-list" :class="classes">
     <mdc-table
       tabindex="0"
       @keydown="keydown"
@@ -20,7 +20,7 @@
             class="name"
             @click="e => click(e, 'name')"
           >
-            <span>Group</span>
+            <span>Host</span>
             <mdc-icon
               :icon="icon"
               v-if="sortOption.key === 'name'"
@@ -32,12 +32,12 @@
         </mdc-table-row>
       </mdc-table-header>
       <mdc-table-body >
-        <group-list-item
-          :key="group.id"
-          :group="group"
-          :selected="isSelected({ id: group.id })"
-          @click="select({ id: group.id })"
-          v-for="group in groups"
+        <host-list-item
+          :key="host.id"
+          :host="host"
+          :selected="isSelected({ id: host.id })"
+          @click="select({ id: host.id })"
+          v-for="host in hosts"
         />
       </mdc-table-body>
     </mdc-table>
@@ -46,7 +46,7 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
-import GroupListItem from './GroupListItem'
+import HostListItem from './HostListItem'
 import MdcIcon from './MdcIcon'
 import MdcTable from './MdcTable'
 import MdcTableBody from './MdcTableBody'
@@ -56,7 +56,7 @@ import MdcTableRow from './MdcTableRow'
 
 export default {
   components: {
-    GroupListItem,
+    HostListItem,
     MdcIcon,
     MdcTable,
     MdcTableBody,
@@ -88,14 +88,14 @@ export default {
       return this.sortOption.order === 'asc' ? 'arrow_drop_up' : 'arrow_drop_down'
     },
     ...mapState({
-      selectedId: state => state.explorer.group.selectedId,
-      scrollTop: state => state.explorer.group.scrollTop,
-      sortOption: state => state.explorer.group.sortOption
+      selectedId: state => state.explorer.host.selectedId,
+      scrollTop: state => state.explorer.host.scrollTop,
+      sortOption: state => state.explorer.host.sortOption
     }),
     ...mapGetters({
-      groups: 'explorer/group/groups',
-      selectedIndex: 'explorer/group/selectedIndex',
-      isSelected: 'explorer/group/isSelected'
+      hosts: 'explorer/host/hosts',
+      selectedIndex: 'explorer/host/selectedIndex',
+      isSelected: 'explorer/host/isSelected'
     })
   },
   methods: {
@@ -126,13 +126,13 @@ export default {
       })
     },
     ...mapMutations({
-      setScrollTop: 'explorer/group/setScrollTop'
+      setScrollTop: 'explorer/host/setScrollTop'
     }),
     ...mapActions({
-      select: 'explorer/group/select',
-      selectPrevious: 'explorer/group/selectPrevious',
-      selectNext: 'explorer/group/selectNext',
-      changeSortKey: 'explorer/group/changeSortKey'
+      select: 'explorer/host/select',
+      selectPrevious: 'explorer/host/selectPrevious',
+      selectNext: 'explorer/host/selectNext',
+      changeSortKey: 'explorer/host/changeSortKey'
     })
   },
   watch: {
@@ -162,13 +162,12 @@ export default {
 <style scoped lang="scss">
 @import "@material/theme/_color-palette";
 
-.group-list {
+.host-list {
   height: 100%;
   overflow-y: scroll;
   .mdc-table {
     outline: none;
     table-layout: fixed;
-    width: auto;
     .mdc-table-header {
       .mdc-table-row {
         height: 40px;
@@ -220,7 +219,7 @@ export default {
     box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
   }
 }
-.mdc-theme--dark .group-list {
+.mdc-theme--dark .host-list {
    .mdc-table .mdc-table-row.shadow .mdc-table-header-column:after {
     border-bottom-color: $material-color-grey-600;
   }

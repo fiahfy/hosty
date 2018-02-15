@@ -4,6 +4,7 @@ import createPersistedState from 'vuex-persistedstate'
 import router from '../router'
 import explorer from './explorer'
 import settings from './settings'
+import group from './group'
 
 Vue.use(Vuex)
 
@@ -23,12 +24,13 @@ export default new Vuex.Store({
   },
   modules: {
     explorer,
-    settings
+    settings,
+    group
   },
   plugins: [
     createPersistedState({
       paths: [
-        'explorer.groups',
+        'group',
         'settings'
       ]
     })

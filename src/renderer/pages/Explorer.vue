@@ -1,11 +1,13 @@
 <template>
   <div class="explorer">
-    <div>
+    <div class="group">
       <group-menu-bar />
-      <divider />
       <group-list />
     </div>
-    <div>
+    <divider orientation="vertical" />
+    <div class="host">
+      <host-menu-bar />
+      <host-list />
     </div>
   </div>
 </template>
@@ -14,12 +16,16 @@
 import Divider from '../components/Divider'
 import GroupList from '../components/GroupList'
 import GroupMenuBar from '../components/GroupMenuBar'
+import HostList from '../components/HostList'
+import HostMenuBar from '../components/HostMenuBar'
 
 export default {
   components: {
     Divider,
     GroupList,
-    GroupMenuBar
+    GroupMenuBar,
+    HostList,
+    HostMenuBar
   }
 }
 </script>
@@ -28,10 +34,18 @@ export default {
 .explorer {
   display: flex;
   height: 100%;
-  &>div {
+  .group {
     display: flex;
     flex-direction: column;
     .group-list {
+      flex: 1;
+    }
+  }
+  .host {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    .host-list {
       flex: 1;
     }
   }

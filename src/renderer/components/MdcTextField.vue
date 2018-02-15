@@ -14,11 +14,13 @@
       v-bind="$attrs"
       v-on="listeners"
     />
-    <label
-      class="mdc-text-field__label"
-      :for="id"
-      v-if="!fullwidth"
-    >{{ label }}</label>
+    <template v-if="!fullwidth">
+      <label
+        class="mdc-text-field__label"
+        :for="id"
+      >{{ label }}</label>
+      <div class="mdc-text-field__bottom-line" />
+    </template>
   </div>
 </template>
 

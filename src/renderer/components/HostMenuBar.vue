@@ -1,7 +1,7 @@
 <template>
-  <div class="group-menu-bar">
+  <div class="host-menu-bar">
     <mdc-button
-        title="Create group"
+        title="Create host"
         @click="create"
       >
       <mdc-icon slot="icon" icon="add" />
@@ -21,14 +21,14 @@ export default {
   },
   methods: {
     ...mapActions({
-      create: 'explorer/group/create'
+      create: 'explorer/host/create'
     })
   }
 }
 </script>
 
 <style scoped lang="scss">
-.group-menu-bar {
+.host-menu-bar {
   display: flex;
   height: 40px;
   justify-content: flex-end;

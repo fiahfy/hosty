@@ -1,7 +1,7 @@
 <template>
-  <mdc-table-row class="group-list-item" :selected="selected" v-bind="$attrs" v-on="$listeners">
+  <mdc-table-row class="host-list-item" :selected="selected" v-bind="$attrs" v-on="$listeners">
     <mdc-table-column class="status">
-      {{ group.id }}
+      {{ host.id }}
     </mdc-table-column>
     <mdc-table-column class="name" @click="click">
       <mdc-text-field ref="name" :disabled="disabled" v-model="name" @blur="blur" />
@@ -17,7 +17,7 @@ import MdcTextField from './MdcTextField'
 
 export default {
   props: {
-    group: {
+    host: {
       type: Object,
       required: true
     },
