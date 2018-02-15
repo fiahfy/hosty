@@ -15,6 +15,18 @@ export default {
       ]
       commit('setGroups', { groups })
     },
+    updateGroup ({ commit, state }, { id, name }) {
+      const groups = state.groups.map((group) => {
+        if (group.id !== id) {
+          return group
+        }
+        return {
+          ...group,
+          name
+        }
+      })
+      commit('setGroups', { groups })
+    },
     sortGroups ({ commit, getters, state }, { key, order }) {
       const groups = state.groups.sort((a, b) => {
         let result = 0
@@ -51,13 +63,35 @@ export default {
             ...currentHosts,
             {
               id,
-              name: ''
+              name: '',
+              ip: ''
             }
           ]
         }
       })
       commit('setGroups', { groups })
-    }
+    },
+    updateHost ({ commit, state }, { groupId, id, name, ip }) {
+      const groups = state.groups.map((group) => {
+        if (group.id !== groupId) {
+          return group
+        }
+        return {
+          ...group,
+          hosts: group.hosts.map((host) => {
+            if (host.id !== id) {
+              return host
+            }
+            return {
+              ...host,
+              name: name !== undefined ? name : host.name,
+              ip: ip !== undefined ? ip : host.ip
+            }
+          })
+        }
+      })
+      commit('setGroups', { groups })
+    },
   },
   mutations: {
     setGroups (state, { groups }) {

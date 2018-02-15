@@ -4,12 +4,13 @@
       {{ group.id }}
     </mdc-table-column>
     <mdc-table-column class="name" @click="click">
-      <mdc-text-field ref="name" :disabled="disabled" v-model="name" @blur="blur" />
+      <mdc-text-field ref="name" :disabled="disabled" v-model="name" @blur="blur" @keydown="keydown" />
     </mdc-table-column>
   </mdc-table-row>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import MdcIcon from './MdcIcon'
 import MdcTableColumn from './MdcTableColumn'
 import MdcTableRow from './MdcTableRow'
@@ -34,11 +35,18 @@ export default {
   },
   data () {
     return {
-      name: 'test',
       disabled: true
     }
   },
   computed: {
+    name: {
+      get () {
+        return this.group.name
+      },
+      set (value) {
+        this.updateGroup({ id: this.group.id, name: value })
+      }
+    }
   },
   methods: {
     click () {
@@ -49,7 +57,16 @@ export default {
     },
     blur () {
       this.disabled = true
-    }
+    },
+    keydown (e) {
+      if (e.keyCode === 13) {
+        e.preventDefault()
+        this.$refs.name.$el.querySelector('input').blur()
+      }
+    },
+    ...mapActions({
+      updateGroup: 'group/updateGroup'
+    })
   }
 }
 </script>

@@ -26,9 +26,19 @@
               v-if="sortOption.key === 'name'"
             />
           </mdc-table-header-column>
+          <mdc-table-header-column
+            class="ip"
+            @click="e => click(e, 'ip')"
+          >
+            <span>IP</span>
+            <mdc-icon
+              :icon="icon"
+              v-if="sortOption.key === 'ip'"
+            />
+          </mdc-table-header-column>
         </mdc-table-row>
         <mdc-table-row class="shadow">
-          <mdc-table-header-column colspan="2" />
+          <mdc-table-header-column colspan="3" />
         </mdc-table-row>
       </mdc-table-header>
       <mdc-table-body >
