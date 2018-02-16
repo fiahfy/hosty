@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import ActivityBar from './components/ActivityBar'
 import Divider from './components/Divider'
 import MdcSnackbar from './components/MdcSnackbar'
@@ -36,7 +36,7 @@ export default {
     TitleBar
   },
   async asyncData ({ store }) {
-    //
+    store.dispatch('initHosts')
   },
   computed: {
     classes () {
@@ -51,19 +51,6 @@ export default {
     ...mapGetters({
       titleBar: 'titleBar'
     })
-  },
-  methods: {
-    drop (e) {
-      // const files = Array.from(e.dataTransfer.files)
-      // if (!files.length) {
-      //   return
-      // }
-      // const filepathes = files.map(file => file.path)
-      // this.open({ filepathes })
-    },
-    // ...mapActions({
-    //   open: 'open'
-    // })
   }
 }
 </script>

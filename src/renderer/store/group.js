@@ -4,7 +4,11 @@ export default {
     groups: []
   },
   actions: {
-    createGroup ({ commit, state }) {
+    syncGroups ({ commit, dispatch }, { groups }) {
+      commit('setGroups', { groups })
+      dispatch('syncHosts', null, { root: true })
+    },
+    createGroup ({ dispatch, state }) {
       const id = Math.max.apply(null, [0, ...state.groups.map((group) => group.id)]) + 1
       const groups = [
         ...state.groups,
@@ -14,9 +18,9 @@ export default {
           name: ''
         }
       ]
-      commit('setGroups', { groups })
+      dispatch('syncGroups', { groups })
     },
-    updateGroup ({ commit, state }, { id, params }) {
+    updateGroup ({ dispatch, state }, { id, params }) {
       const groups = state.groups.map((group) => {
         if (group.id !== id) {
           return group
@@ -26,13 +30,13 @@ export default {
           ...params
         }
       })
-      commit('setGroups', { groups })
+      dispatch('syncGroups', { groups })
     },
-    deleteGroup ({ commit, state }, { id }) {
+    deleteGroup ({ dispatch, state }, { id }) {
       const groups = state.groups.filter((group) => group.id !== id)
-      commit('setGroups', { groups })
+      dispatch('syncGroups', { groups })
     },
-    sortGroups ({ commit, getters, state }, { key, order }) {
+    sortGroups ({ dispatch, getters, state }, { key, order }) {
       const groups = state.groups.sort((a, b) => {
         let result = 0
         if (a[key] > b[key]) {
@@ -49,9 +53,9 @@ export default {
         }
         return order === 'asc' ? result : -1 * result
       })
-      commit('setGroups', { groups })
+      dispatch('syncGroups', { groups })
     },
-    createHost ({ commit, state }, { groupId }) {
+    createHost ({ dispatch, state }, { groupId }) {
       const groups = state.groups.map((group) => {
         if (group.id !== groupId) {
           return group
@@ -71,9 +75,9 @@ export default {
           ]
         }
       })
-      commit('setGroups', { groups })
+      dispatch('syncGroups', { groups })
     },
-    updateHost ({ commit, state }, { groupId, id, params }) {
+    updateHost ({ dispatch, state }, { groupId, id, params }) {
       const groups = state.groups.map((group) => {
         if (group.id !== groupId) {
           return group
@@ -91,9 +95,9 @@ export default {
           })
         }
       })
-      commit('setGroups', { groups })
+      dispatch('syncGroups', { groups })
     },
-    deleteHost ({ commit, state }, { groupId, id }) {
+    deleteHost ({ dispatch, state }, { groupId, id }) {
       const groups = state.groups.map((group) => {
         if (group.id !== groupId) {
           return group
@@ -103,9 +107,9 @@ export default {
           hosts: group.hosts.filter((host) => host.id !== id)
         }
       })
-      commit('setGroups', { groups })
+      dispatch('syncGroups', { groups })
     },
-    sortHosts ({ commit, getters, state }, { groupId, key, order }) {
+    sortHosts ({ dispatch, getters, state }, { groupId, key, order }) {
       const groups = state.groups.map((group) => {
         if (group.id !== groupId) {
           return group
@@ -130,7 +134,7 @@ export default {
           })
         }
       })
-      commit('setGroups', { groups })
+      dispatch('syncGroups', { groups })
     }
   },
   mutations: {

@@ -30,7 +30,7 @@ export default class App {
       }
     })
     app.on('will-quit', () => {
-      // HostsFileManager.clear()
+      this.window.sendMessage('clearHosts')
     })
   }
 }

@@ -5,6 +5,7 @@ import router from '../router'
 import explorer from './explorer'
 import settings from './settings'
 import group from './group'
+import * as HostsFileManager from '../utils/hosts-file-manager'
 
 Vue.use(Vuex)
 
@@ -15,6 +16,16 @@ export default new Vuex.Store({
   actions: {
     changeRoute (_, payload) {
       router.push(payload)
+    },
+    async initHosts ({ state }) {
+      await HostsFileManager.init()
+      HostsFileManager.save(state.group.groups)
+    },
+    syncHosts ({ state }) {
+      HostsFileManager.save(state.group.groups)
+    },
+    clearHosts () {
+      HostsFileManager.clear()
     }
   },
   getters: {

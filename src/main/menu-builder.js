@@ -1,36 +1,13 @@
-import { app, shell, dialog, ipcMain, Menu } from 'electron'
-import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+import { app, shell, Menu } from 'electron'
 
 export default class MenuBuilder {
   constructor (window) {
     this.window = window
   }
   build () {
-    if (process.env.NODE_ENV !== 'production') {
-      this.setupDevelopmentEnvironment()
-    }
     const template = this.buildTemplate()
     const menu = Menu.buildFromTemplate(template)
     Menu.setApplicationMenu(menu)
-  }
-  setupDevelopmentEnvironment () {
-    installExtension(VUEJS_DEVTOOLS)
-      .catch((err) => {
-        console.log('Unable to install `vue-devtools`: \n', err) // eslint-disable-line no-console
-      })
-    this.window.openDevTools()
-    this.window.webContents.on('context-menu', (e, props) => {
-      const { x, y } = props
-
-      Menu
-        .buildFromTemplate([{
-          label: 'Inspect element',
-          click: () => {
-            this.window.inspectElement(x, y)
-          }
-        }])
-        .popup(this.window)
-    })
   }
   buildTemplate () {
     const template = [
@@ -83,7 +60,7 @@ export default class MenuBuilder {
         submenu: [
           { role: 'about' },
           { type: 'separator' },
-          { label: 'Preferences...', accelerator: 'CmdOrCtrl+,', click: () => { this.showSettings() } },
+          { label: 'Preferences...', accelerator: 'CmdOrCtrl+,', click: () => { this.window.sendMessage('showSettings') } },
           { type: 'separator' },
           { role: 'services', submenu: [] },
           { type: 'separator' },
@@ -116,8 +93,5 @@ export default class MenuBuilder {
     }
 
     return template
-  }
-  showSettings () {
-    this.window.webContents.send('showSettings')
   }
 }
