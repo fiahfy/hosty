@@ -9,10 +9,10 @@
       </mdc-button>
     </mdc-table-column>
     <mdc-table-column class="name" @click="nameClick">
-      <mdc-text-field ref="name" placeholder="example.com" :disabled="nameDisabled" v-model="name" @blur="nameBlur" @keydown="nameKeydown" />
+      <mdc-text-field ref="name" fullwidth label="example.com" :disabled="nameDisabled" v-model="name" @blur="nameBlur" @keydown="nameKeydown" />
     </mdc-table-column>
     <mdc-table-column class="ip" @click="ipClick">
-      <mdc-text-field ref="ip" placeholder="192.0.2.0" :disabled="ipDisabled" v-model="ip" @blur="ipBlur" @keydown="ipKeydown" />
+      <mdc-text-field ref="ip" fullwidth label="192.0.2.0" :disabled="ipDisabled" v-model="ip" @blur="ipBlur" @keydown="ipKeydown" />
     </mdc-table-column>
   </mdc-table-row>
 </template>
@@ -152,15 +152,11 @@ export default {
     }
   }
   .mdc-text-field {
-    height: auto!important;
+    border: 0;
+    height: 32px;
     margin: 0 0 2px;
-    width: 100%;
-    & /deep/ input {
-      background-color: transparent!important;
-      border: 0;
-      &:disabled {
-        color: inherit;
-      }
+    & /deep/ input:disabled {
+      color: inherit;
     }
   }
 }
