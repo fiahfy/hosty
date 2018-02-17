@@ -154,7 +154,9 @@ export default {
   .mdc-text-field {
     height: auto!important;
     margin: 0 0 2px;
+    width: 100%;
     & /deep/ input {
+      background-color: transparent!important;
       border: 0;
       &:disabled {
         color: inherit;
