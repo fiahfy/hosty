@@ -23,22 +23,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "@material/theme/_color-palette";
-
 .mdc-table-row {
   &:hover /deep/ .mdc-table-column {
-    background-color: $material-color-grey-100;
+    background-color: var(--hover);
   }
   &.selected /deep/ .mdc-table-column {
-    background-color: $material-color-grey-300;
-  }
-}
-.mdc-theme--dark .mdc-table-row {
-  &:hover /deep/ .mdc-table-column {
-    background-color: $material-color-grey-800;
-  }
-  &.selected /deep/ .mdc-table-column {
-    background-color: $material-color-grey-600;
+    background-color: var(--selected);
   }
 }
 </style>

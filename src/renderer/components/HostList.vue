@@ -170,8 +170,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "@material/theme/_color-palette";
-
 .host-list {
   height: 100%;
   overflow-y: scroll;
@@ -221,10 +219,7 @@ export default {
     }
   }
   &.scrolling .mdc-table-row.shadow .mdc-table-header-column:after {
-    box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 3px 1px var(--shadow);
   }
-}
-.mdc-theme--dark .host-list.scrolling .mdc-table-row.shadow .mdc-table-header-column:after {
-  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.9);
 }
 </style>

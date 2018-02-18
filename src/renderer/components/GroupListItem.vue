@@ -91,8 +91,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "@material/theme/_color-palette";
-
 .group-list-item .mdc-table-column {
   line-height: 20px;
   padding: 2px 8px;
@@ -111,7 +109,7 @@ export default {
       padding: 0;
       width: auto;
       &.block {
-        color: $material-color-grey-400;
+        color: var(--mdc-theme-text-icon-on-background);
       }
     }
   }
@@ -120,7 +118,7 @@ export default {
     height: 32px;
     margin: 0 0 2px;
     & /deep/ input:disabled {
-      color: inherit;
+      color: var(--mdc-theme-text-primary-on-background);
     }
   }
 }

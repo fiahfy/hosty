@@ -54,8 +54,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "@material/theme/_color-palette";
-
 .explorer {
   display: flex;
   height: 100%;
@@ -76,7 +74,7 @@ export default {
     .message {
       align-items: center;
       bottom: 0;
-      color: $material-color-grey-600;
+      color: var(--mdc-theme-text-secondary-on-background);
       display: flex;
       justify-content: center;
       left: 0;
@@ -85,8 +83,5 @@ export default {
       top: 0;
     }
   }
-}
-.mdc-theme--dark .explorer .message {
-  color: $material-color-grey-300;
 }
 </style>

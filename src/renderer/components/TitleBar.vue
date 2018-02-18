@@ -5,6 +5,7 @@
 <style scoped lang="scss">
 .title-bar {
   box-sizing: border-box;
+  color: var(--mdc-theme-text-primary-on-background);
   font-size: smaller;
   height: 23px;
   line-height: 23px;
