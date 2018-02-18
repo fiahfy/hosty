@@ -145,3 +145,42 @@ export const save = async (groups = []) => {
 export const clear = () => {
   save()
 }
+
+export const readHostyFile = (filepath) => {
+  const data = fs.readFileSync(filepath, hostyFile.charset)
+  const groups = JSON.parse(data)
+  if (isOldFormat(groups)) {
+    return migrate(groups)
+  }
+  return groups
+}
+
+export const writeHostyFile = (filepath, groups) => {
+  const data = JSON.stringify(groups)
+  fs.writeFileSync(filepath, data, hostyFile.charset)
+}
+
+const isOldFormat = (groups) => {
+  if (!groups) {
+    return false
+  }
+  return groups[0].enable !== undefined
+}
+
+const migrate = (groups) => {
+  return groups.map((group) => {
+    return {
+      id: group.id,
+      disabled: !group.enable,
+      name: group.name,
+      hosts: group.hosts.map((host) => {
+        return {
+          id: host.id,
+          disabled: !host.enable,
+          name: host.host,
+          ip: host.ip
+        }
+      })
+    }
+  })
+}

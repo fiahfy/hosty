@@ -12,6 +12,13 @@ export default class MenuBuilder {
   buildTemplate () {
     const template = [
       {
+        label: 'File',
+        submenu: [
+          { label: 'Import...', accelerator: 'CmdOrCtrl+O', click: () => { this.window.sendMessage('import') } },
+          { label: 'Export...', accelerator: 'CmdOrCtrl+S', click: () => { this.window.sendMessage('export') } }
+        ]
+      },
+      {
         label: 'Edit',
         submenu: [
           { role: 'undo' },
@@ -72,24 +79,26 @@ export default class MenuBuilder {
         ]
       })
 
-      // Edit menu
-      template[0].submenu.push(
-        { type: 'separator' },
-        {
-          label: 'Speech',
-          submenu: [
-            { role: 'startspeaking' },
-            { role: 'stopspeaking' }
-          ]
+      template.forEach((menu) => {
+        if (menu.label === 'Edit') {
+          menu.submenu.push(
+            { type: 'separator' },
+            {
+              label: 'Speech',
+              submenu: [
+                { role: 'startspeaking' },
+                { role: 'stopspeaking' }
+              ]
+            }
+          )
+        } else if (menu.role === 'window') {
+          menu.submenu.push(
+            { role: 'zoom' },
+            { type: 'separator' },
+            { role: 'front' }
+          )
         }
-      )
-
-      // Window menu
-      template[2].submenu.push(
-        { role: 'zoom' },
-        { type: 'separator' },
-        { role: 'front' }
-      )
+      })
     }
 
     return template
