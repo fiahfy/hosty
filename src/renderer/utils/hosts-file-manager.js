@@ -1,10 +1,7 @@
 import fs from 'fs'
 import path from 'path'
-import { app as mainApp, remote } from 'electron'
+import { remote } from 'electron'
 import * as sudoPrompt from 'sudo-prompt'
-import isRenderer from 'is-electron-renderer'
-
-const app = isRenderer ? remote.app : mainApp
 
 const isDev = process.env.NODE_ENV !== 'production'
 const isWin = process.platform === 'win32'
@@ -18,7 +15,7 @@ const hostySection = {
   end: '## hosty end ##'
 }
 
-const userHostsFilepath = path.join(app.getPath('userData'), 'hosts')
+const userHostsFilepath = path.join(remote.app.getPath('userData'), 'hosts')
 const hostsFilepath = (() => {
   if (isDev) {
     return path.join(process.cwd(), 'dummyHosts')
@@ -117,6 +114,31 @@ const build = (groups) => {
     .join('\n')
 }
 
+const isOldFormat = (groups) => {
+  if (!groups) {
+    return false
+  }
+  return groups[0].enable !== undefined
+}
+
+const migrate = (groups) => {
+  return groups.map((group) => {
+    return {
+      id: group.id,
+      disabled: !group.enable,
+      name: group.name,
+      hosts: group.hosts.map((host) => {
+        return {
+          id: host.id,
+          disabled: !host.enable,
+          name: host.host,
+          ip: host.ip
+        }
+      })
+    }
+  })
+}
+
 export const init = async () => {
   await setupHostsFile()
   await setupUserHostsFile()
@@ -158,29 +180,4 @@ export const readHostyFile = (filepath) => {
 export const writeHostyFile = (filepath, groups) => {
   const data = JSON.stringify(groups)
   fs.writeFileSync(filepath, data, hostyFile.charset)
-}
-
-const isOldFormat = (groups) => {
-  if (!groups) {
-    return false
-  }
-  return groups[0].enable !== undefined
-}
-
-const migrate = (groups) => {
-  return groups.map((group) => {
-    return {
-      id: group.id,
-      disabled: !group.enable,
-      name: group.name,
-      hosts: group.hosts.map((host) => {
-        return {
-          id: host.id,
-          disabled: !host.enable,
-          name: host.host,
-          ip: host.ip
-        }
-      })
-    }
-  })
 }

@@ -1,6 +1,5 @@
 import { app } from 'electron'
 import Window from './window'
-// import * as HostsFileManager from '../renderer/utils/hosts-file-manager'
 
 export default class App {
   load () {
@@ -30,7 +29,7 @@ export default class App {
       }
     })
     app.on('will-quit', () => {
-      this.window.sendMessage('clearHosts')
+      this.window.sendMessage('willQuit')
     })
   }
 }

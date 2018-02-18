@@ -2,7 +2,7 @@ import { ipcRenderer, remote } from 'electron'
 import * as HostsFileManager from '../utils/hosts-file-manager'
 
 export const addIpcRendererListeners = (store) => {
-  ipcRenderer.on('clearHosts', () => {
+  ipcRenderer.on('willQuit', () => {
     store.dispatch('clearHosts')
   })
   ipcRenderer.on('showSettings', () => {
