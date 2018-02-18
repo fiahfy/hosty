@@ -27,8 +27,13 @@ export default {
         dispatch('selectIndex', { index })
       }
     },
-    select ({ commit }, { id }) {
+    select ({ commit, dispatch }, { id }) {
       commit('setSelectedId', { selectedId: id })
+      dispatch('explorer/host/sort', null, { root: true })
+    },
+    selectIndex ({ dispatch, getters }, { index }) {
+      const id = getters.groups[index].id
+      dispatch('select', { id })
     },
     selectPrevious ({ dispatch, getters }) {
       const index = getters.selectedIndex - 1
@@ -44,10 +49,6 @@ export default {
       }
       dispatch('selectIndex', { index })
     },
-    selectIndex ({ commit, getters }, { index }) {
-      const selectedId = getters.groups[index].id
-      commit('setSelectedId', { selectedId })
-    },
     changeSortKey ({ commit, dispatch, state }, { sortKey }) {
       let sortOrder = sortOrderDefaults[sortKey]
       if (state.sortOption.key === sortKey) {
@@ -56,9 +57,6 @@ export default {
       const sortOption = { key: sortKey, order: sortOrder }
       commit('setSortOption', { sortOption })
       dispatch('group/sortGroups', sortOption, { root: true })
-    },
-    sort ({ dispatch, state }) {
-      dispatch('group/sortGroups', state.sortOption, { root: true })
     }
   },
   mutations: {

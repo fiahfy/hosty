@@ -31,6 +31,10 @@ export default {
     select ({ commit }, { id }) {
       commit('setSelectedId', { selectedId: id })
     },
+    selectIndex ({ dispatch, getters }, { index }) {
+      const id = getters.hosts[index].id
+      dispatch('select', { id })
+    },
     selectPrevious ({ dispatch, getters }) {
       const index = getters.selectedIndex - 1
       if (index < 0) {
@@ -44,10 +48,6 @@ export default {
         return
       }
       dispatch('selectIndex', { index })
-    },
-    selectIndex ({ commit, getters }, { index }) {
-      const selectedId = getters.hosts[index].id
-      commit('setSelectedId', { selectedId })
     },
     changeSortKey ({ commit, dispatch, getters, state }, { sortKey }) {
       let sortOrder = sortOrderDefaults[sortKey]
