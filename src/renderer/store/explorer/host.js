@@ -15,14 +15,14 @@ export default {
     }
   },
   actions: {
-    create ({ dispatch, getters, rootState }) {
-      dispatch('group/createHost', { groupId: rootState.explorer.group.selectedId }, { root: true })
+    create ({ dispatch, getters }) {
+      dispatch('group/createHost', { groupId: getters.selectedGroupId }, { root: true })
       const index = getters.hosts.length - 1
       dispatch('selectIndex', { index })
     },
-    delete ({ dispatch, getters, rootState, state }) {
+    delete ({ dispatch, getters, state }) {
       const oldSelectedIndex = getters.selectedIndex
-      dispatch('group/deleteHost', { groupId: rootState.explorer.group.selectedId, id: state.selectedId }, { root: true })
+      dispatch('group/deleteHost', { groupId: getters.selectedGroupId, id: state.selectedId }, { root: true })
       if (oldSelectedIndex > 0) {
         const index = oldSelectedIndex > getters.hosts.length - 1 ? oldSelectedIndex - 1 : oldSelectedIndex
         dispatch('selectIndex', { index })
@@ -49,14 +49,17 @@ export default {
       const selectedId = getters.hosts[index].id
       commit('setSelectedId', { selectedId })
     },
-    changeSortKey ({ commit, dispatch, rootState, state }, { sortKey }) {
+    changeSortKey ({ commit, dispatch, getters, state }, { sortKey }) {
       let sortOrder = sortOrderDefaults[sortKey]
       if (state.sortOption.key === sortKey) {
         sortOrder = state.sortOption.order === 'asc' ? 'desc' : 'asc'
       }
       const sortOption = { key: sortKey, order: sortOrder }
       commit('setSortOption', { sortOption })
-      dispatch('group/sortHosts', { groupId: rootState.explorer.group.selectedId, ...sortOption }, { root: true })
+      dispatch('group/sortHosts', { groupId: getters.selectedGroupId, ...sortOption }, { root: true })
+    },
+    sort ({ dispatch, getters, state }) {
+      dispatch('group/sortHosts', { groupId: getters.selectedGroupId, ...state.sortOption }, { root: true })
     }
   },
   mutations: {
@@ -78,14 +81,15 @@ export default {
       }
       return selectedGroup.hosts || []
     },
-    selectedGroup (state, getters) {
-      return getters.hosts.find((host) => getters.isSelected({ id: host.id }))
+    isSelected (state) {
+      return ({ id }) => state.selectedId === id
     },
     selectedIndex (state, getters) {
       return getters.hosts.findIndex((host) => getters.isSelected({ id: host.id }))
     },
-    isSelected (state) {
-      return ({ id }) => state.selectedId === id
+    selectedGroupId (state, getters, rootState, rootGetters) {
+      const selectedGroup = rootGetters['explorer/group/selectedGroup']
+      return selectedGroup ? selectedGroup.id : 0
     }
   }
 }

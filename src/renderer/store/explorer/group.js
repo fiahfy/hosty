@@ -14,7 +14,7 @@ export default {
     }
   },
   actions: {
-    create ({ dispatch, getters, state }) {
+    create ({ dispatch, getters }) {
       dispatch('group/createGroup', null, { root: true })
       const index = getters.groups.length - 1
       dispatch('selectIndex', { index })
@@ -56,6 +56,9 @@ export default {
       const sortOption = { key: sortKey, order: sortOrder }
       commit('setSortOption', { sortOption })
       dispatch('group/sortGroups', sortOption, { root: true })
+    },
+    sort ({ dispatch, state }) {
+      dispatch('group/sortGroups', state.sortOption, { root: true })
     }
   },
   mutations: {
@@ -73,14 +76,14 @@ export default {
     groups (state, getters, rootState) {
       return rootState.group.groups
     },
-    selectedGroup (state, getters) {
-      return getters.groups.find((group) => getters.isSelected({ id: group.id }))
+    isSelected (state) {
+      return ({ id }) => state.selectedId === id
     },
     selectedIndex (state, getters) {
       return getters.groups.findIndex((group) => getters.isSelected({ id: group.id }))
     },
-    isSelected (state) {
-      return ({ id }) => state.selectedId === id
+    selectedGroup (state, getters) {
+      return getters.groups.find((group) => getters.isSelected({ id: group.id }))
     }
   }
 }
