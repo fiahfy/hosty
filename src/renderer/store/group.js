@@ -36,7 +36,7 @@ export default {
       const groups = state.groups.filter((group) => group.id !== id)
       dispatch('syncGroups', { groups })
     },
-    sortGroups ({ dispatch, getters, state }, { key, order }) {
+    sortGroups ({ commit, getters, state }, { key, order }) {
       const groups = state.groups.sort((a, b) => {
         let result = 0
         if (a[key] > b[key]) {
@@ -53,7 +53,7 @@ export default {
         }
         return order === 'asc' ? result : -1 * result
       })
-      dispatch('syncGroups', { groups })
+      commit('setGroups', { groups })
     },
     createHost ({ dispatch, state }, { groupId }) {
       const groups = state.groups.map((group) => {
@@ -109,7 +109,7 @@ export default {
       })
       dispatch('syncGroups', { groups })
     },
-    sortHosts ({ dispatch, getters, state }, { groupId, key, order }) {
+    sortHosts ({ commit, getters, state }, { groupId, key, order }) {
       const groups = state.groups.map((group) => {
         if (group.id !== groupId) {
           return group
@@ -134,7 +134,7 @@ export default {
           })
         }
       })
-      dispatch('syncGroups', { groups })
+      commit('setGroups', { groups })
     }
   },
   mutations: {

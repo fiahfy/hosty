@@ -88,7 +88,7 @@ const build = (groups) => {
     .filter((group) => !group.disabled)
     .map((group) => (group.hosts || []).concat())
     .reduce((carry, hosts) => carry.concat(hosts), [])
-    .filter((host) => !host.disabled)
+    .filter((host) => !host.disabled && host.name && host.ip)
     .sort((a, b) => {
       let result = 0
       if (a.ip > b.ip) {

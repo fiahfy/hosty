@@ -23,16 +23,17 @@ export default {
     delete ({ dispatch, getters, state }) {
       const oldSelectedIndex = getters.selectedIndex
       dispatch('group/deleteHost', { groupId: getters.selectedGroupId, id: state.selectedId }, { root: true })
-      if (oldSelectedIndex > 0) {
-        const index = oldSelectedIndex > getters.hosts.length - 1 ? oldSelectedIndex - 1 : oldSelectedIndex
-        dispatch('selectIndex', { index })
-      }
+      const index = oldSelectedIndex > 0 && oldSelectedIndex > getters.hosts.length - 1 ? oldSelectedIndex - 1 : oldSelectedIndex
+      dispatch('selectIndex', { index })
     },
     select ({ commit }, { id }) {
       commit('setSelectedId', { selectedId: id })
     },
+    unselect ({ commit }) {
+      commit('setSelectedId', { selectedId: 0 })
+    },
     selectIndex ({ dispatch, getters }, { index }) {
-      const id = getters.hosts[index].id
+      const id = getters.hosts[index] ? getters.hosts[index].id : 0
       dispatch('select', { id })
     },
     selectPrevious ({ dispatch, getters }) {
