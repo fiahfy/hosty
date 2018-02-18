@@ -26,6 +26,38 @@ export default new Vuex.Store({
     },
     clearHosts () {
       HostsFileManager.clear()
+    },
+    importHosts ({ dispatch }, { filepath }) {
+      try {
+        const groups = HostsFileManager.readHostyFile(filepath)
+        dispatch('group/syncGroups', { groups })
+        dispatch('showMessage', { message: 'Imported' })
+      } catch (e) {
+        console.error(e)
+        dispatch('showMessage', { message: 'Import failed' })
+      }
+    },
+    exportHosts ({ dispatch, state }, { filepath }) {
+      try {
+        const groups = state.group.groups
+        HostsFileManager.writeHostyFile(filepath, groups)
+        dispatch('showMessage', { message: 'Exported' })
+      } catch (e) {
+        console.error(e)
+        dispatch('showMessage', { message: 'Export failed' })
+      }
+    },
+    showMessage ({ commit }, { message }) {
+      commit('setMessage', { message })
+      // wait dom updated
+      setTimeout(() => {
+        commit('setMessage', { message: '' })
+      })
+    }
+  },
+  mutations: {
+    setMessage (state, { message }) {
+      state.message = message
     }
   },
   getters: {

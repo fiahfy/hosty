@@ -171,6 +171,7 @@ export const clear = () => {
 export const readHostyFile = (filepath) => {
   const data = fs.readFileSync(filepath, hostyFile.charset)
   const groups = JSON.parse(data)
+  // TODO: remove this
   if (isOldFormat(groups)) {
     return migrate(groups)
   }

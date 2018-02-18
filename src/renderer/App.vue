@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import ActivityBar from './components/ActivityBar'
 import Divider from './components/Divider'
 import MdcSnackbar from './components/MdcSnackbar'
@@ -49,6 +49,19 @@ export default {
     }),
     ...mapGetters({
       titleBar: 'titleBar'
+    })
+  },
+  methods: {
+    drop (e) {
+      const files = Array.from(e.dataTransfer.files)
+      if (!files.length) {
+        return
+      }
+      const filepath = files[0].path
+      this.importHosts({ filepath })
+    },
+    ...mapActions({
+      importHosts: 'importHosts'
     })
   }
 }
