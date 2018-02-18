@@ -186,7 +186,7 @@ export default {
           }
         }
         &.shadow {
-          height: 1px;
+          height: 0;
           .mdc-table-header-column {
             padding: 0;
             position: sticky;

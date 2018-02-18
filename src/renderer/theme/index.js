@@ -53,7 +53,7 @@ export default {
     '--mdc-theme-text-disabled-on-dark': 'rgba(255, 255, 255, 0.5)',
     '--mdc-theme-text-icon-on-dark': 'rgba(255, 255, 255, 0.5)',
     '--divider': 'rgba(0, 0, 0, 0.15)',
-    '--shadow': 'rgba(0, 0, 0, 0.1)',
+    '--shadow': 'rgba(0, 0, 0, 0.2)',
     '--hover': 'rgba(0, 0, 0, 0.05)',
     '--selected': 'rgba(0, 0, 0, 0.15)'
   },
@@ -111,7 +111,7 @@ export default {
     '--mdc-theme-text-disabled-on-dark': 'rgba(0, 0, 0, 0.38)',
     '--mdc-theme-text-icon-on-dark': 'rgba(0, 0, 0, 0.38)',
     '--divider': 'rgba(255, 255, 255, 0.38)',
-    '--shadow': 'rgba(0, 0, 0, 0.9)',
+    '--shadow': 'rgba(0, 0, 0, 0.5)',
     '--hover': 'rgba(255, 255, 255, 0.13)',
     '--selected': 'rgba(255, 255, 255, 0.38)'
   }
