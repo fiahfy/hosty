@@ -9,6 +9,11 @@ import * as HostsFileManager from '../utils/hosts-file-manager'
 
 Vue.use(Vuex)
 
+const Selector = {
+  groupList: '.group-list>table',
+  hostList: '.host-list>table'
+}
+
 export default new Vuex.Store({
   state: {
     message: ''
@@ -16,6 +21,21 @@ export default new Vuex.Store({
   actions: {
     changeRoute (_, payload) {
       router.push(payload)
+    },
+    focus (_, { selector }) {
+      // wait dom updated
+      setTimeout(() => {
+        const el = document.querySelector(selector)
+        if (el) {
+          el.focus()
+        }
+      })
+    },
+    focusGroupList ({ dispatch }) {
+      dispatch('focus', { selector: Selector.groupList })
+    },
+    focusHostList ({ dispatch }) {
+      dispatch('focus', { selector: Selector.hostList })
     },
     async initHosts ({ state }) {
       await HostsFileManager.init()

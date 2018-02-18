@@ -69,21 +69,30 @@ export default {
       this.updateGroup({ id: this.group.id, params: { disabled: !this.group.disabled } })
     },
     nameClick () {
-      this.disabled = !this.selected
+      if (!this.disabled || !this.selected) {
+        return
+      }
+      this.disabled = false
       this.$nextTick(() => {
-        this.$refs.name.$el.querySelector('input').focus()
+        const el = this.$refs.name.$el.querySelector('input')
+        el.focus()
+        el.selectionStart = 0
+        el.selectionEnd = el.value.length
       })
     },
     nameBlur () {
       this.disabled = true
+      this.focusGroupList()
     },
     nameKeydown (e) {
+      e.stopPropagation()
       if (e.keyCode === 13) {
         e.preventDefault()
         this.$refs.name.$el.querySelector('input').blur()
       }
     },
     ...mapActions({
+      focusGroupList: 'focusGroupList',
       updateGroup: 'group/updateGroup'
     })
   }

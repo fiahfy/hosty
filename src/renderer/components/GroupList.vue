@@ -109,6 +109,10 @@ export default {
         return
       }
       switch (e.keyCode) {
+        case 8:
+          e.preventDefault()
+          this.delete()
+          break
         case 38:
           e.preventDefault()
           this.selectPrevious()
@@ -129,6 +133,7 @@ export default {
       setScrollTop: 'explorer/group/setScrollTop'
     }),
     ...mapActions({
+      delete: 'explorer/group/delete',
       select: 'explorer/group/select',
       selectPrevious: 'explorer/group/selectPrevious',
       selectNext: 'explorer/group/selectNext',

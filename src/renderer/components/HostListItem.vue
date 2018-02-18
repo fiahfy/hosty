@@ -84,15 +84,23 @@ export default {
       this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, params: { disabled: !this.host.disabled } })
     },
     nameClick () {
-      this.nameDisabled = !this.selected
+      if (!this.nameDisabled || !this.selected) {
+        return
+      }
+      this.nameDisabled = false
       this.$nextTick(() => {
-        this.$refs.name.$el.querySelector('input').focus()
+        const el = this.$refs.name.$el.querySelector('input')
+        el.focus()
+        el.selectionStart = 0
+        el.selectionEnd = el.value.length
       })
     },
     nameBlur () {
       this.nameDisabled = true
+      this.focusHostList()
     },
     nameKeydown (e) {
+      e.stopPropagation()
       if (e.keyCode === 13) {
         e.preventDefault()
         this.$refs.name.$el.querySelector('input').blur()
@@ -102,15 +110,23 @@ export default {
       }
     },
     ipClick () {
-      this.ipDisabled = !this.selected
+      if (!this.ipDisabled || !this.selected) {
+        return
+      }
+      this.ipDisabled = false
       this.$nextTick(() => {
-        this.$refs.ip.$el.querySelector('input').focus()
+        const el = this.$refs.ip.$el.querySelector('input')
+        el.focus()
+        el.selectionStart = 0
+        el.selectionEnd = el.value.length
       })
     },
     ipBlur () {
       this.ipDisabled = true
+      this.focusHostList()
     },
     ipKeydown (e) {
+      e.stopPropagation()
       if (e.keyCode === 13) {
         e.preventDefault()
         this.$refs.ip.$el.querySelector('input').blur()
@@ -120,6 +136,7 @@ export default {
       }
     },
     ...mapActions({
+      focusHostList: 'focusHostList',
       updateHost: 'group/updateHost'
     })
   }
