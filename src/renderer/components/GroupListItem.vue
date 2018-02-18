@@ -65,6 +65,9 @@ export default {
     }
   },
   methods: {
+    focus () {
+      this.nameClick()
+    },
     statusClick () {
       this.updateGroup({ id: this.group.id, params: { disabled: !this.group.disabled } })
     },

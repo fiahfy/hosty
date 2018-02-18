@@ -80,6 +80,9 @@ export default {
     })
   },
   methods: {
+    focus () {
+      this.nameClick()
+    },
     statusClick () {
       this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, params: { disabled: !this.host.disabled } })
     },
