@@ -85,21 +85,8 @@ const setupUserHostsFile = async () => {
 
 const build = (groups) => {
   return groups
-    .map((group) => {
-      if (!group.hosts) {
-        return []
-      }
-      const hosts = group.hosts.concat()
-      if (!group.disabled) {
-        return hosts
-      }
-      return hosts.map((host) => {
-        return {
-          ...host,
-          disabled: true
-        }
-      })
-    })
+    .filter((group) => !group.disabled)
+    .map((group) => (group.hosts || []).concat())
     .reduce((carry, hosts) => carry.concat(hosts), [])
     .filter((host) => !host.disabled)
     .sort((a, b) => {

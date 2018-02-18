@@ -116,7 +116,7 @@ export default {
         }
         return {
           ...group,
-          hosts: group.hosts.sort((a, b) => {
+          hosts: (group.hosts || []).sort((a, b) => {
             let result = 0
             if (a[key] > b[key]) {
               result = 1
