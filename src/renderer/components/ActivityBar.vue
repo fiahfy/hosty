@@ -70,19 +70,13 @@ export default {
       .mdc-icon {
         padding: 12px;
         &:not(.selected) {
-          color: var(--mdc-theme-text-disabled-on-light, rgba(0, 0, 0, 0.38));
+          color: var(--mdc-theme-text-icon-on-background);
           &:hover {
             color: inherit;
           }
         }
       }
     }
-  }
-}
-.mdc-theme--dark .activity-bar ul .mdc-icon:not(.selected) {
-  color: var(--mdc-theme-text-disabled-on-dark, rgba(255, 255, 255, 0.5));
-  &:hover {
-    color: inherit;
   }
 }
 </style>

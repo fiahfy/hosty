@@ -2,7 +2,7 @@
   <div
     id="app"
     class="mdc-theme--background"
-    :class="classes"
+    :style="styles"
     @dragover.prevent
     @drop.prevent="drop"
   >
@@ -27,6 +27,7 @@ import ActivityBar from './components/ActivityBar'
 import Divider from './components/Divider'
 import MdcSnackbar from './components/MdcSnackbar'
 import TitleBar from './components/TitleBar'
+import Theme from './theme'
 
 export default {
   components: {
@@ -39,10 +40,8 @@ export default {
     store.dispatch('initHosts')
   },
   computed: {
-    classes () {
-      return {
-        'mdc-theme--dark': this.darkTheme
-      }
+    styles () {
+      return this.darkTheme ? Theme.dark : Theme.light
     },
     ...mapState({
       message: state => state.message,
@@ -54,6 +53,11 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+@import '~material-design-icons/iconfont/material-icons.css';
+@import '~material-components-web/material-components-web.scss';
+</style>
 
 <style scoped lang="scss">
 #app {
@@ -70,23 +74,6 @@ export default {
     .content {
       flex: 1;
     }
-  }
-}
-</style>
-
-<style lang="scss">
-$mdc-theme-primary: #ff4081;
-$mdc-theme-secondary: #ff4081;
-$mdc-theme-background: #fff;
-
-@import '~material-design-icons/iconfont/material-icons.css';
-@import 'material-components-web/material-components-web';
-@import "@material/theme/_color-palette";
-
-.mdc-theme--dark {
-  color: white;
-  &.mdc-theme--background, .mdc-theme--background {
-    background-color: #303030;
   }
 }
 </style>

@@ -9,7 +9,7 @@
       </mdc-button>
     </mdc-table-column>
     <mdc-table-column class="name" @click="nameClick">
-      <mdc-text-field ref="name" placeholder="Group" :disabled="disabled" v-model="name" @blur="nameBlur" @keydown="nameKeydown" />
+      <mdc-text-field ref="name" fullwidth label="Group" :disabled="disabled" v-model="name" @blur="nameBlur" @keydown="nameKeydown" />
     </mdc-table-column>
   </mdc-table-row>
 </template>
@@ -91,8 +91,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "@material/theme/_color-palette";
-
 .group-list-item .mdc-table-column {
   line-height: 20px;
   padding: 2px 8px;
@@ -111,20 +109,16 @@ export default {
       padding: 0;
       width: auto;
       &.block {
-        color: $material-color-grey-400;
+        color: var(--mdc-theme-text-icon-on-background);
       }
     }
   }
   .mdc-text-field {
-    height: auto!important;
+    border: 0;
+    height: 32px;
     margin: 0 0 2px;
-    width: 100%;
-    & /deep/ input {
-      background-color: transparent!important;
-      border: 0;
-      &:disabled {
-        color: inherit;
-      }
+    & /deep/ input:disabled {
+      color: var(--mdc-theme-text-primary-on-background);
     }
   }
 }

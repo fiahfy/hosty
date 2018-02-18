@@ -14,13 +14,12 @@
       v-bind="$attrs"
       v-on="listeners"
     />
-    <template v-if="!fullwidth">
-      <label
-        class="mdc-text-field__label"
-        :for="id"
-      ></label>
-      <div class="mdc-text-field__bottom-line" />
-    </template>
+    <label
+      class="mdc-text-field__label"
+      :for="id"
+      v-if="!fullwidth"
+    >{{ label }}</label>
+    <div class="mdc-line-ripple" />
   </div>
 </template>
 
@@ -32,7 +31,7 @@ export default {
     value: {
       type: String
     },
-    placeholder: {
+    label: {
       type: String
     },
     fullwidth: {
@@ -72,6 +71,9 @@ export default {
         'mdc-text-field--fullwidth': this.fullwidth,
         'mdc-text-field--disabled': this.disabled
       }
+    },
+    placeholder () {
+      return this.fullwidth ? this.label : null
     },
     model: {
       get () {

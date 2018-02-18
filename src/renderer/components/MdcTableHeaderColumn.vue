@@ -5,18 +5,11 @@
 </template>
 
 <style scoped lang="scss">
-@import "@material/theme/_color-palette";
-
 .mdc-table-header-column {
-  color: $material-color-grey-600;
+  color: var(--mdc-theme-text-secondary-on-background);
   font-size: smaller;
   font-weight: normal;
   padding: 8px;
   user-select: none;
-}
-.mdc-theme--dark {
-  .mdc-table-header-column {
-    color: $material-color-grey-300;
-  }
 }
 </style>
