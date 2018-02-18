@@ -1,5 +1,4 @@
-import 'babel-polyfill';
-import App from './main/app';
+import App from './main/app'
 
-const app = new App();
-app.load();
+const app = new App()
+app.load()

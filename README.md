@@ -5,9 +5,9 @@ Hosts file manager based on Electron.
 
 
 ## Features
-* Cross platform support
 * Manage hosts with groups
 * Import/Export hosts settings
+* Cross platform support
 
 
 ## Screenshot
@@ -25,18 +25,6 @@ https://github.com/fiahfy/hosty/releases
 
 ## Development
 ```
-$ git clone https://github.com/fiahfy/hosty.git
-$ cd hosty
 $ yarn
-$ yarn start:hot
-```
-
-### Run
-```
-$ yarn start
-```
-
-### Run(HMR)
-```
-$ yarn start:hot
+$ yarn dev
 ```

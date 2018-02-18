@@ -1,167 +1,186 @@
-import fs from 'fs';
-import path from 'path';
-import { app as mainApp, remote } from 'electron';
-import * as sudoPrompt from 'sudo-prompt';
-import isRenderer from 'is-electron-renderer';
-import * as Group from './group';
-import * as Host from './host';
+import fs from 'fs'
+import path from 'path'
+import { app as mainApp, remote } from 'electron'
+import * as sudoPrompt from 'sudo-prompt'
+import isRenderer from 'is-electron-renderer'
 
-const app = isRenderer ? remote.app : mainApp;
+const app = isRenderer ? remote.app : mainApp
 
-const DEBUG = process.env.NODE_ENV !== 'production';
-const WIN32 = process.platform === 'win32';
+const isDev = process.env.NODE_ENV !== 'production'
+const isWin = process.platform === 'win32'
 
-const SECTION_BEGIN = '## hosty begin ##';
-const SECTION_END = '## hosty end ##';
-
-const CHARSET = 'utf8';
-const EXTENSION = '.hosty';
-
-const PATH_USER = path.join(app.getPath('userData'), 'hosts');
-const PATH_OSX = '/etc/hosts';
-const PATH_WINDOWS = 'C:\\Windows\\System32\\drivers\\etc\\hosts';
-const PATH_DUMMY = path.join(process.cwd(), 'dummyHosts');
-
-const SUDO_OPTIONS = { name: 'Hosty' };
-
-let PATH = WIN32 ? PATH_WINDOWS : PATH_OSX;
-if (DEBUG) {
-  PATH = PATH_DUMMY;
+const hostyFile = {
+  charset: 'utf8',
+  extension: '.hosty'
+}
+const hostySection = {
+  begin: '## hosty begin ##',
+  end: '## hosty end ##'
 }
 
-function read() {
-  try {
-    return fs.readFileSync(PATH_USER, CHARSET);
-  } catch (e) {
-    throw e;
+const userHostsFilepath = path.join(app.getPath('userData'), 'hosts')
+const hostsFilepath = (() => {
+  if (isDev) {
+    return path.join(process.cwd(), 'dummyHosts')
   }
-}
+  return isWin ? 'C:\\Windows\\System32\\drivers\\etc\\hosts' : '/etc/hosts'
+})()
 
-function write(data) {
-  try {
-    fs.writeFileSync(PATH_USER, data, CHARSET);
-  } catch (e) {
-    throw e;
-  }
-}
+const promptOptions = { name: 'Hosty' }
 
-async function sudo(command) {
+const sudo = async (command) => {
   return new Promise((resolve, reject) => {
-    sudoPrompt.exec(command, SUDO_OPTIONS, (error, stdout, stderr) => {
+    sudoPrompt.exec(command, promptOptions, (error, stdout, stderr) => {
       if (error) {
-        console.error('Sudo prompt failed: %o', { command, error, stdout, stderr }); // eslint-disable-line no-console
-        reject('Sudo prompt failed');
-        return;
+        console.error('Sudo prompt failed: %o', { command, error, stdout, stderr }) // eslint-disable-line no-console
+        reject(new Error('Sudo prompt failed'))
+        return
       }
-      resolve();
-    });
-  });
+      resolve()
+    })
+  })
 }
 
-async function setupHostsFile() {
+const setupHostsFile = async () => {
   try {
-    const stats = fs.lstatSync(PATH);
+    const stats = fs.lstatSync(hostsFilepath)
     if (!stats.isSymbolicLink()) {
-      return;
+      return
     }
-    await sudo(`rm "${PATH}"`);
+    await sudo(`rm "${hostsFilepath}"`)
   } catch (e) {
     //
   }
-  if (WIN32) {
-    const commands = [`touch "${PATH}"`, `cacls "${PATH}" /e /g Users:w`];
-    const command = commands.join(' && ');
-    await sudo(`cmd /c ${command}`);
+  if (isWin) {
+    const commands = [`touch "${hostsFilepath}"`, `cacls "${hostsFilepath}" /e /g Users:w`]
+    const command = commands.join(' && ')
+    await sudo(`cmd /c ${command}`)
   } else {
-    const commands = [`touch \\"${PATH}\\"`, `chmod 666 \\"${PATH}\\"`];
-    const command = commands.join('; ');
-    await sudo(`$SHELL -c "${command}"`);
+    const commands = [`touch \\"${hostsFilepath}\\"`, `chmod 666 \\"${hostsFilepath}\\"`]
+    const command = commands.join('; ')
+    await sudo(`$SHELL -c "${command}"`)
   }
 }
 
-async function setupUserHostsFile() {
+const setupUserHostsFile = async () => {
   try {
-    const stats = fs.lstatSync(PATH_USER);
+    const stats = fs.lstatSync(userHostsFilepath)
     if (stats.isSymbolicLink()) {
-      return;
+      return
     }
-    await sudo(`rm "${PATH_USER}"`);
+    await sudo(`rm "${userHostsFilepath}"`)
   } catch (e) {
     //
   }
-  if (WIN32) {
-    const commands = [`mklink "${PATH_USER}" "${PATH}"`, `cacls "${PATH}" /e /g Users:w`];
-    const command = commands.join(' && ');
-    await sudo(`cmd /c ${command}`);
+  if (isWin) {
+    const commands = [`mklink "${userHostsFilepath}" "${hostsFilepath}"`, `cacls "${hostsFilepath}" /e /g Users:w`]
+    const command = commands.join(' && ')
+    await sudo(`cmd /c ${command}`)
   } else {
-    const commands = [`ln -s \\"${PATH}\\" \\"${PATH_USER}\\"`, `chmod 666 \\"${PATH}\\"`];
-    const command = commands.join('; ');
-    await sudo(`$SHELL -c "${command}"`);
+    const commands = [`ln -s \\"${hostsFilepath}\\" \\"${userHostsFilepath}\\"`, `chmod 666 \\"${hostsFilepath}\\"`]
+    const command = commands.join('; ')
+    await sudo(`$SHELL -c "${command}"`)
   }
 }
 
-export async function setup() {
-  await setupHostsFile();
-  await setupUserHostsFile();
+const build = (groups) => {
+  return groups
+    .filter((group) => !group.disabled)
+    .map((group) => (group.hosts || []).concat())
+    .reduce((carry, hosts) => carry.concat(hosts), [])
+    .filter((host) => !host.disabled && host.name && host.ip)
+    .sort((a, b) => {
+      let result = 0
+      if (a.ip > b.ip) {
+        result = 1
+      } else if (a.ip < b.ip) {
+        result = -1
+      }
+      if (result !== 0) {
+        return result
+      }
+      if (a.disabled > b.disabled) {
+        result = 1
+      } else if (a.disabled < b.disabled) {
+        result = -1
+      }
+      if (result !== 0) {
+        return result
+      }
+      if (a.name > b.name) {
+        result = 1
+      } else if (a.name < b.name) {
+        result = -1
+      }
+    })
+    .map((host) => `${host.ip}\t${host.name}`)
+    .join('\n')
 }
 
-export function save(groups = []) {
-  const data = read();
+export const init = async () => {
+  await setupHostsFile()
+  await setupUserHostsFile()
+}
 
-  let newData = Group.build(groups);
-  newData = `${SECTION_BEGIN}\n${newData}\n${SECTION_END}\n`;
+export const save = async (groups = []) => {
+  const data = fs.readFileSync(userHostsFilepath, hostyFile.charset)
+
+  let newData = build(groups)
+  newData = `${hostySection.begin}\n${newData}\n${hostySection.end}\n`
 
   const reg = new RegExp(
-    String.raw`([\s\S]*\n?)${SECTION_BEGIN}\n[\s\S]*\n${SECTION_END}\n?([\s\S]*)`,
-    'im',
-  );
-  const matches = data.match(reg);
+    String.raw`([\s\S]*\n?)${hostySection.begin}\n[\s\S]*\n${hostySection.end}\n?([\s\S]*)`,
+    'im'
+  )
+  const matches = data.match(reg)
   if (matches) {
-    newData = matches[1] + newData + matches[2];
+    newData = matches[1] + newData + matches[2]
   } else {
-    newData = `${data}\n${newData}`;
+    newData = `${data}\n${newData}`
   }
 
-  write(newData);
+  fs.writeFileSync(userHostsFilepath, newData, hostyFile.charset)
 }
 
-export function clear() {
-  save();
+export const clear = () => {
+  save()
 }
 
-export function readGroupsFromHostyFile(filename) {
-  const data = fs.readFileSync(filename, CHARSET);
-  return JSON.parse(data);
-}
-
-export function readGroupFromHostsFile(filename) {
-  const { name } = path.parse(filename);
-  const data = fs.readFileSync(filename, CHARSET);
-  const hosts = Host.parse(data);
-  return {
-    enable: true,
-    name,
-    hosts,
-  };
-}
-
-export function readGroupsFromFile(filename) {
-  const { ext } = path.parse(filename);
-  return ext === EXTENSION
-    ? readGroupsFromHostyFile(filename)
-    : [readGroupFromHostsFile(filename)];
-}
-
-export function readGroupsFromFiles(filenames) {
-  return filenames.map(readGroupsFromFile)
-    .reduce((previous, current) => [...previous, ...current]);
-}
-
-export function writeGroupsToFile(groups, filename) {
-  const { ext } = path.parse(filename);
-  let filenameWithExtension = filename;
-  if (ext !== EXTENSION) {
-    filenameWithExtension += EXTENSION;
+export const readHostyFile = (filepath) => {
+  const data = fs.readFileSync(filepath, hostyFile.charset)
+  const groups = JSON.parse(data)
+  if (isOldFormat(groups)) {
+    return migrate(groups)
   }
-  fs.writeFileSync(filenameWithExtension, `${JSON.stringify(groups)}\n`, CHARSET);
+  return groups
+}
+
+export const writeHostyFile = (filepath, groups) => {
+  const data = JSON.stringify(groups)
+  fs.writeFileSync(filepath, data, hostyFile.charset)
+}
+
+const isOldFormat = (groups) => {
+  if (!groups) {
+    return false
+  }
+  return groups[0].enable !== undefined
+}
+
+const migrate = (groups) => {
+  return groups.map((group) => {
+    return {
+      id: group.id,
+      disabled: !group.enable,
+      name: group.name,
+      hosts: group.hosts.map((host) => {
+        return {
+          id: host.id,
+          disabled: !host.enable,
+          name: host.host,
+          ip: host.ip
+        }
+      })
+    }
+  })
 }
