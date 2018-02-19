@@ -146,6 +146,10 @@ export default {
           e.preventDefault()
           this.selectPrevious()
           break
+        case 39:
+          e.preventDefault()
+          this.enterHostList()
+          break
         case 40:
           e.preventDefault()
           this.selectNext()
@@ -166,7 +170,8 @@ export default {
       select: 'explorer/group/select',
       selectPrevious: 'explorer/group/selectPrevious',
       selectNext: 'explorer/group/selectNext',
-      changeSortKey: 'explorer/group/changeSortKey'
+      changeSortKey: 'explorer/group/changeSortKey',
+      enterHostList: 'explorer/host/enterHostList'
     })
   }
 }

@@ -141,7 +141,7 @@ export default {
       if (e.keyCode === 13) {
         e.preventDefault()
         this.nameInput.blur()
-        this.focusHostList()
+        this.focusList()
       } else if (e.keyCode === 9) {
         e.preventDefault()
         this.ipClick()
@@ -166,15 +166,15 @@ export default {
       if (e.keyCode === 13) {
         e.preventDefault()
         this.ipInput.blur()
-        this.focusHostList()
+        this.focusList()
       } else if (e.keyCode === 9 && e.shiftKey) {
         e.preventDefault()
         this.nameClick()
       }
     },
     ...mapActions({
-      focusHostList: 'focusHostList',
-      updateHost: 'group/updateHost'
+      updateHost: 'group/updateHost',
+      focusList: 'explorer/host/focusList'
     })
   }
 }

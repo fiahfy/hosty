@@ -152,6 +152,10 @@ export default {
           e.preventDefault()
           this.$refs[`item_${this.selectedId}`][0].focus()
           break
+        case 37:
+          e.preventDefault()
+          this.leaveHostList()
+          break
         case 38:
           e.preventDefault()
           this.selectPrevious()
@@ -176,7 +180,8 @@ export default {
       select: 'explorer/host/select',
       selectPrevious: 'explorer/host/selectPrevious',
       selectNext: 'explorer/host/selectNext',
-      changeSortKey: 'explorer/host/changeSortKey'
+      changeSortKey: 'explorer/host/changeSortKey',
+      leaveHostList: 'explorer/host/leaveHostList'
     })
   }
 }

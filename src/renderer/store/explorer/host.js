@@ -59,6 +59,18 @@ export default {
       commit('setSortOption', { sortOption })
       dispatch('group/sortHosts', { groupId: getters.selectedGroupId, ...sortOption }, { root: true })
     },
+    focusList ({ dispatch }) {
+      dispatch('focusHostList', null, { root: true })
+    },
+    enterHostList ({ dispatch, state }) {
+      if (!state.selectedId) {
+        dispatch('selectIndex', { index: 0 })
+      }
+      dispatch('focusHostList', null, { root: true })
+    },
+    leaveHostList ({ dispatch }) {
+      dispatch('focusGroupList', null, { root: true })
+    },
     sort ({ dispatch, getters, state }) {
       dispatch('group/sortHosts', { groupId: getters.selectedGroupId, ...state.sortOption }, { root: true })
     }

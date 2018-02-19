@@ -114,12 +114,12 @@ export default {
       if (e.keyCode === 13) {
         e.preventDefault()
         this.nameInput.blur()
-        this.focusGroupList()
+        this.focusList()
       }
     },
     ...mapActions({
-      focusGroupList: 'focusGroupList',
-      updateGroup: 'group/updateGroup'
+      updateGroup: 'group/updateGroup',
+      focusList: 'explorer/group/focusList'
     })
   }
 }

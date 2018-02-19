@@ -59,6 +59,9 @@ export default {
       const sortOption = { key: sortKey, order: sortOrder }
       commit('setSortOption', { sortOption })
       dispatch('group/sortGroups', sortOption, { root: true })
+    },
+    focusList ({ dispatch }) {
+      dispatch('focusGroupList', null, { root: true })
     }
   },
   mutations: {
