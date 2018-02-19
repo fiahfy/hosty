@@ -63,6 +63,7 @@ export default {
   },
   data () {
     return {
+      name: this.group.name,
       disabled: true
     }
   },
@@ -75,14 +76,6 @@ export default {
         'mdc-button__icon',
         this.icon
       ]
-    },
-    name: {
-      get () {
-        return this.group.name
-      },
-      set (value) {
-        this.updateGroup({ id: this.group.id, params: { name: value } })
-      }
     }
   },
   mounted () {
@@ -108,6 +101,7 @@ export default {
     },
     nameBlur () {
       this.disabled = true
+      this.updateGroup({ id: this.group.id, params: { name: this.name } })
     },
     nameKeydown (e) {
       e.stopPropagation()

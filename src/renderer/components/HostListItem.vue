@@ -77,6 +77,8 @@ export default {
   },
   data () {
     return {
+      name: this.host.name,
+      ip: this.host.ip,
       nameDisabled: true,
       ipDisabled: true
     }
@@ -90,22 +92,6 @@ export default {
         'mdc-button__icon',
         this.icon
       ]
-    },
-    name: {
-      get () {
-        return this.host.name
-      },
-      set (value) {
-        this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, params: { name: value } })
-      }
-    },
-    ip: {
-      get () {
-        return this.host.ip
-      },
-      set (value) {
-        this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, params: { ip: value } })
-      }
     },
     ...mapState({
       selectedGroupId: state => state.explorer.group.selectedId
@@ -135,6 +121,7 @@ export default {
     },
     nameBlur () {
       this.nameDisabled = true
+      this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, params: { name: this.name } })
     },
     nameKeydown (e) {
       e.stopPropagation()
@@ -160,6 +147,7 @@ export default {
     },
     ipBlur () {
       this.ipDisabled = true
+      this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, params: { ip: this.ip } })
     },
     ipKeydown (e) {
       e.stopPropagation()
