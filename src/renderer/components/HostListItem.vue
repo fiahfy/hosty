@@ -92,7 +92,6 @@ export default {
       this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, params: { disabled: !this.host.disabled } })
     },
     nameClick () {
-      console.log(this.nameDisabled, this.selected)
       if (!this.nameDisabled || !this.selected) {
         return
       }
