@@ -44,6 +44,13 @@ import MdcTableRow from './MdcTableRow'
 import MdcTextField from './MdcTextField'
 
 export default {
+  components: {
+    MdcButton,
+    MdcIcon,
+    MdcTableColumn,
+    MdcTableRow,
+    MdcTextField
+  },
   props: {
     group: {
       type: Object,
@@ -54,20 +61,10 @@ export default {
       default: false
     }
   },
-  components: {
-    MdcButton,
-    MdcIcon,
-    MdcTableColumn,
-    MdcTableRow,
-    MdcTextField
-  },
   data () {
     return {
       disabled: true
     }
-  },
-  mounted () {
-    this.nameInput = this.$refs.name.$el.querySelector('input')
   },
   computed: {
     icon () {
@@ -87,6 +84,9 @@ export default {
         this.updateGroup({ id: this.group.id, params: { name: value } })
       }
     }
+  },
+  mounted () {
+    this.nameInput = this.$refs.name.$el.querySelector('input')
   },
   methods: {
     focus () {

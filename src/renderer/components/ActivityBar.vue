@@ -38,6 +38,11 @@ export default {
       ]
     }
   },
+  watch: {
+    '$route' (to) { // eslint-disable-line object-shorthand
+      this.updateItems(to.name)
+    }
+  },
   mounted () {
     this.updateItems(this.$route.name)
   },
@@ -53,11 +58,6 @@ export default {
     ...mapActions({
       changeRoute: 'changeRoute'
     })
-  },
-  watch: {
-    '$route' (to) { // eslint-disable-line object-shorthand
-      this.updateItems(to.name)
-    }
   }
 }
 </script>

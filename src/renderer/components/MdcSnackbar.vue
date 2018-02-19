@@ -30,6 +30,11 @@ export default {
       mdcSnackbar: null
     }
   },
+  watch: {
+    message () {
+      this.show()
+    }
+  },
   mounted () {
     this.mdcSnackbar = MDCSnackbar.attachTo(this.$el)
     this.show()
@@ -48,11 +53,6 @@ export default {
         actionHandler: () => {}
       }
       this.mdcSnackbar.show(dataObj)
-    }
-  },
-  watch: {
-    message () {
-      this.show()
     }
   }
 }

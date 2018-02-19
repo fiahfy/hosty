@@ -28,27 +28,21 @@
 import { MDCCheckbox } from '@material/checkbox'
 
 export default {
+  inheritAttrs: false,
+  model: {
+    prop: 'checked',
+    event: 'change'
+  },
   props: {
     checked: {
       type: Boolean,
       required: true
     }
   },
-  model: {
-    prop: 'checked',
-    event: 'change'
-  },
-  inheritAttrs: false,
   data () {
     return {
       mdcCheckbox: null
     }
-  },
-  mounted () {
-    this.mdcCheckbox = MDCCheckbox.attachTo(this.$el)
-  },
-  beforeDestroy () {
-    this.mdcCheckbox.destroy()
   },
   computed: {
     listeners () {
@@ -64,6 +58,12 @@ export default {
         this.$emit('change', value)
       }
     }
+  },
+  mounted () {
+    this.mdcCheckbox = MDCCheckbox.attachTo(this.$el)
+  },
+  beforeDestroy () {
+    this.mdcCheckbox.destroy()
   }
 }
 </script>

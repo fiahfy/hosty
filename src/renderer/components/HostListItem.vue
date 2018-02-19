@@ -58,6 +58,13 @@ import MdcTableRow from './MdcTableRow'
 import MdcTextField from './MdcTextField'
 
 export default {
+  components: {
+    MdcButton,
+    MdcIcon,
+    MdcTableColumn,
+    MdcTableRow,
+    MdcTextField
+  },
   props: {
     host: {
       type: Object,
@@ -68,22 +75,11 @@ export default {
       default: false
     }
   },
-  components: {
-    MdcButton,
-    MdcIcon,
-    MdcTableColumn,
-    MdcTableRow,
-    MdcTextField
-  },
   data () {
     return {
       nameDisabled: true,
       ipDisabled: true
     }
-  },
-  mounted () {
-    this.nameInput = this.$refs.name.$el.querySelector('input')
-    this.ipInput = this.$refs.ip.$el.querySelector('input')
   },
   computed: {
     icon () {
@@ -114,6 +110,10 @@ export default {
     ...mapState({
       selectedGroupId: state => state.explorer.group.selectedId
     })
+  },
+  mounted () {
+    this.nameInput = this.$refs.name.$el.querySelector('input')
+    this.ipInput = this.$refs.ip.$el.querySelector('input')
   },
   methods: {
     focus () {

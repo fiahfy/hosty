@@ -15,6 +15,10 @@ import MdcTableBody from '../components/MdcTableBody'
 import MdcTableRow from '../components/MdcTableRow'
 
 export default {
+  components: {
+    MdcTableBody,
+    MdcTableRow
+  },
   props: {
     items: {
       type: Array,
@@ -25,9 +29,19 @@ export default {
       required: true
     }
   },
-  components: {
-    MdcTableBody,
-    MdcTableRow
+  data () {
+    return {
+      container: null,
+      offset: 0,
+      offsetTop: 0,
+      offsetBottom: 0,
+      renderItems: []
+    }
+  },
+  watch: {
+    items () {
+      this.scroll()
+    }
   },
   mounted () {
     this.container = this.$el.parentNode.parentNode
@@ -39,15 +53,6 @@ export default {
     this.container.removeEventListener('scroll', this.scroll)
     window.removeEventListener('resize', this.scroll)
   },
-  data () {
-    return {
-      container: null,
-      offset: 0,
-      offsetTop: 0,
-      offsetBottom: 0,
-      renderItems: []
-    }
-  },
   methods: {
     scroll () {
       const top = this.container.scrollTop
@@ -58,11 +63,6 @@ export default {
       this.offsetTop = startIndex * this.estimatedHeight
       this.offsetBottom = (this.items.length - endIndex) * this.estimatedHeight
       this.renderItems = this.items.slice(startIndex, endIndex)
-    }
-  },
-  watch: {
-    items () {
-      this.scroll()
     }
   }
 }

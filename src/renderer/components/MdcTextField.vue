@@ -27,6 +27,10 @@
 import { MDCTextField } from '@material/textfield'
 
 export default {
+  model: {
+    prop: 'value',
+    event: 'change'
+  },
   props: {
     value: {
       type: String,
@@ -45,22 +49,11 @@ export default {
       default: false
     }
   },
-  model: {
-    prop: 'value',
-    event: 'change'
-  },
   data () {
     return {
       mdcTextField: null,
       id: -1
     }
-  },
-  mounted () {
-    this.mdcTextField = MDCTextField.attachTo(this.$el)
-    this.id = this._uid // eslint-disable-line no-underscore-dangle
-  },
-  beforeDestroy () {
-    this.mdcTextField.destroy()
   },
   computed: {
     listeners () {
@@ -85,6 +78,13 @@ export default {
         this.$emit('change', value)
       }
     }
+  },
+  mounted () {
+    this.mdcTextField = MDCTextField.attachTo(this.$el)
+    this.id = this._uid // eslint-disable-line no-underscore-dangle
+  },
+  beforeDestroy () {
+    this.mdcTextField.destroy()
   }
 }
 </script>

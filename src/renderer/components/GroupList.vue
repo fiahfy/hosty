@@ -73,15 +73,6 @@ export default {
       scrolling: false
     }
   },
-  mounted () {
-    this.$el.addEventListener('scroll', this.scroll)
-    this.$nextTick(() => {
-      this.$el.scrollTop = this.scrollTop
-    })
-  },
-  beforeDestroy () {
-    this.$el.removeEventListener('scroll', this.scroll)
-  },
   computed: {
     classes () {
       return {
@@ -101,6 +92,36 @@ export default {
       selectedIndex: 'explorer/group/selectedIndex',
       isSelected: 'explorer/group/isSelected'
     })
+  },
+  watch: {
+    selectedId () {
+      this.$nextTick(() => {
+        const index = this.selectedIndex
+        if (index === -1) {
+          return
+        }
+        const rowHeight = 41
+        const offsetHeight = 41
+        const el = {
+          offsetTop: rowHeight * index + offsetHeight,
+          offsetHeight: rowHeight
+        }
+        if (el.offsetTop - el.offsetHeight < this.$el.scrollTop) {
+          this.$el.scrollTop = el.offsetTop - el.offsetHeight
+        } else if (el.offsetTop + el.offsetHeight > this.$el.scrollTop + this.$el.offsetHeight) {
+          this.$el.scrollTop = el.offsetTop + el.offsetHeight - this.$el.offsetHeight
+        }
+      })
+    }
+  },
+  mounted () {
+    this.$el.addEventListener('scroll', this.scroll)
+    this.$nextTick(() => {
+      this.$el.scrollTop = this.scrollTop
+    })
+  },
+  beforeDestroy () {
+    this.$el.removeEventListener('scroll', this.scroll)
   },
   methods: {
     scroll () {
@@ -147,27 +168,6 @@ export default {
       selectNext: 'explorer/group/selectNext',
       changeSortKey: 'explorer/group/changeSortKey'
     })
-  },
-  watch: {
-    selectedId () {
-      this.$nextTick(() => {
-        const index = this.selectedIndex
-        if (index === -1) {
-          return
-        }
-        const rowHeight = 41
-        const offsetHeight = 41
-        const el = {
-          offsetTop: rowHeight * index + offsetHeight,
-          offsetHeight: rowHeight
-        }
-        if (el.offsetTop - el.offsetHeight < this.$el.scrollTop) {
-          this.$el.scrollTop = el.offsetTop - el.offsetHeight
-        } else if (el.offsetTop + el.offsetHeight > this.$el.scrollTop + this.$el.offsetHeight) {
-          this.$el.scrollTop = el.offsetTop + el.offsetHeight - this.$el.offsetHeight
-        }
-      })
-    }
   }
 }
 </script>
