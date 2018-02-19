@@ -1,18 +1,50 @@
 <template>
-  <mdc-table-row class="host-list-item" :selected="selected" v-bind="$attrs" v-on="$listeners">
+  <mdc-table-row
+    class="host-list-item"
+    :selected="selected"
+    v-bind="$attrs"
+    v-on="$listeners"
+  >
     <mdc-table-column class="status">
       <mdc-button
-          title="Toggle status"
-          @click="statusClick"
-        >
-        <mdc-icon slot="icon" :icon="icon" :class="classes" />
+        title="Toggle status"
+        tabindex="-1"
+        @click="statusClick"
+      >
+        <mdc-icon
+          slot="icon"
+          :icon="icon"
+          :class="classes"
+        />
       </mdc-button>
     </mdc-table-column>
-    <mdc-table-column class="name" @click="nameClick">
-      <mdc-text-field ref="name" fullwidth label="example.com" :disabled="nameDisabled" v-model="name" @blur="nameBlur" @keydown="nameKeydown" />
+    <mdc-table-column
+      class="name"
+      @click="nameClick"
+    >
+      <mdc-text-field
+        ref="name"
+        fullwidth
+        label="example.com"
+        :disabled="nameDisabled"
+        v-model="name"
+        @blur="nameBlur"
+        @keydown="nameKeydown"
+      />
     </mdc-table-column>
-    <mdc-table-column class="ip" @click="ipClick">
-      <mdc-text-field ref="ip" fullwidth label="192.0.2.0" :disabled="ipDisabled" v-model="ip" @blur="ipBlur" @keydown="ipKeydown" />
+    <mdc-table-column
+      class="ip"
+      @click="ipClick"
+    >
+      <mdc-text-field
+        ref="ip"
+        fullwidth
+        label="192.0.2.0"
+        :disabled="ipDisabled"
+        v-model="ip"
+        @blur="ipBlur"
+        @keydown="ipKeydown"
+      />
     </mdc-table-column>
   </mdc-table-row>
 </template>
@@ -26,6 +58,13 @@ import MdcTableRow from './MdcTableRow'
 import MdcTextField from './MdcTextField'
 
 export default {
+  components: {
+    MdcButton,
+    MdcIcon,
+    MdcTableColumn,
+    MdcTableRow,
+    MdcTextField
+  },
   props: {
     host: {
       type: Object,
@@ -36,15 +75,10 @@ export default {
       default: false
     }
   },
-  components: {
-    MdcButton,
-    MdcIcon,
-    MdcTableColumn,
-    MdcTableRow,
-    MdcTextField
-  },
   data () {
     return {
+      name: this.host.name,
+      ip: this.host.ip,
       nameDisabled: true,
       ipDisabled: true
     }
@@ -59,68 +93,77 @@ export default {
         this.icon
       ]
     },
-    name: {
-      get () {
-        return this.host.name
-      },
-      set (value) {
-        this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, params: { name: value } })
-      }
-    },
-    ip: {
-      get () {
-        return this.host.ip
-      },
-      set (value) {
-        this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, params: { ip: value } })
-      }
-    },
     ...mapState({
       selectedGroupId: state => state.explorer.group.selectedId
     })
   },
+  mounted () {
+    this.nameInput = this.$refs.name.$el.querySelector('input')
+    this.ipInput = this.$refs.ip.$el.querySelector('input')
+  },
   methods: {
+    focus () {
+      this.nameClick()
+    },
     statusClick () {
       this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, params: { disabled: !this.host.disabled } })
+      this.focusList()
     },
     nameClick () {
-      this.nameDisabled = !this.selected
+      if (!this.nameDisabled || !this.selected) {
+        return
+      }
+      this.nameDisabled = false
       this.$nextTick(() => {
-        this.$refs.name.$el.querySelector('input').focus()
+        this.nameInput.focus()
+        this.nameInput.selectionStart = 0
+        this.nameInput.selectionEnd = this.nameInput.value.length
       })
     },
     nameBlur () {
       this.nameDisabled = true
+      this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, params: { name: this.name } })
     },
     nameKeydown (e) {
+      e.stopPropagation()
       if (e.keyCode === 13) {
         e.preventDefault()
-        this.$refs.name.$el.querySelector('input').blur()
+        this.nameInput.blur()
+        this.focusList()
       } else if (e.keyCode === 9) {
         e.preventDefault()
         this.ipClick()
       }
     },
     ipClick () {
-      this.ipDisabled = !this.selected
+      if (!this.ipDisabled || !this.selected) {
+        return
+      }
+      this.ipDisabled = false
       this.$nextTick(() => {
-        this.$refs.ip.$el.querySelector('input').focus()
+        this.ipInput.focus()
+        this.ipInput.selectionStart = 0
+        this.ipInput.selectionEnd = this.ipInput.value.length
       })
     },
     ipBlur () {
       this.ipDisabled = true
+      this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, params: { ip: this.ip } })
     },
     ipKeydown (e) {
+      e.stopPropagation()
       if (e.keyCode === 13) {
         e.preventDefault()
-        this.$refs.ip.$el.querySelector('input').blur()
+        this.ipInput.blur()
+        this.focusList()
       } else if (e.keyCode === 9 && e.shiftKey) {
         e.preventDefault()
         this.nameClick()
       }
     },
     ...mapActions({
-      updateHost: 'group/updateHost'
+      updateHost: 'group/updateHost',
+      focusList: 'explorer/host/focusList'
     })
   }
 }

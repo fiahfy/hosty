@@ -19,12 +19,14 @@ export default {
       dispatch('group/createHost', { groupId: getters.selectedGroupId }, { root: true })
       const index = getters.hosts.length - 1
       dispatch('selectIndex', { index })
+      dispatch('focusList')
     },
     delete ({ dispatch, getters, state }) {
       const oldSelectedIndex = getters.selectedIndex
       dispatch('group/deleteHost', { groupId: getters.selectedGroupId, id: state.selectedId }, { root: true })
       const index = oldSelectedIndex > 0 && oldSelectedIndex > getters.hosts.length - 1 ? oldSelectedIndex - 1 : oldSelectedIndex
       dispatch('selectIndex', { index })
+      dispatch('focusList')
     },
     select ({ commit }, { id }) {
       commit('setSelectedId', { selectedId: id })
@@ -59,6 +61,18 @@ export default {
       commit('setSortOption', { sortOption })
       dispatch('group/sortHosts', { groupId: getters.selectedGroupId, ...sortOption }, { root: true })
     },
+    focusList ({ dispatch }) {
+      dispatch('focusHostList', null, { root: true })
+    },
+    enterList ({ dispatch, state }) {
+      if (!state.selectedId) {
+        dispatch('selectIndex', { index: 0 })
+      }
+      dispatch('focusHostList', null, { root: true })
+    },
+    leaveList ({ dispatch }) {
+      dispatch('focusGroupList', null, { root: true })
+    },
     sort ({ dispatch, getters, state }) {
       dispatch('group/sortHosts', { groupId: getters.selectedGroupId, ...state.sortOption }, { root: true })
     }
@@ -91,6 +105,12 @@ export default {
     selectedGroupId (state, getters, rootState, rootGetters) {
       const selectedGroup = rootGetters['explorer/group/selectedGroup']
       return selectedGroup ? selectedGroup.id : 0
+    },
+    canCreate (state, getters) {
+      return !!getters.selectedGroupId
+    },
+    canDelete (state, getters) {
+      return !!getters.selectedGroupId && !!state.selectedId
     }
   }
 }

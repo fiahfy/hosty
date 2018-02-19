@@ -1,5 +1,9 @@
 <template>
-  <button class="mdc-button" v-bind="$attrs" v-on="$listeners">
+  <button
+    class="mdc-button"
+    v-bind="$attrs"
+    v-on="$listeners"
+  >
     <slot name="icon" />
     <slot />
   </button>

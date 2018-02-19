@@ -1,22 +1,30 @@
 <template>
   <div class="group-menu-bar">
     <mdc-button
-        title="Create group"
-        @click="createGroup"
-      >
-      <mdc-icon slot="icon" icon="add" />
+      title="Create group"
+      :disabled="!canCreate"
+      @click="createGroup"
+    >
+      <mdc-icon
+        slot="icon"
+        icon="add"
+      />
     </mdc-button>
     <mdc-button
-        title="Delete group"
-        @click="deleteGroup"
-      >
-      <mdc-icon slot="icon" icon="remove" />
+      title="Delete group"
+      :disabled="!canDelete"
+      @click="deleteGroup"
+    >
+      <mdc-icon
+        slot="icon"
+        icon="remove"
+      />
     </mdc-button>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import MdcButton from './MdcButton'
 import MdcIcon from './MdcIcon'
 
@@ -24,6 +32,12 @@ export default {
   components: {
     MdcButton,
     MdcIcon
+  },
+  computed: {
+    ...mapGetters({
+      canCreate: 'explorer/group/canCreate',
+      canDelete: 'explorer/group/canDelete'
+    })
   },
   methods: {
     ...mapActions({

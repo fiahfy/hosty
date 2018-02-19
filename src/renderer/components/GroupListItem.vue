@@ -1,15 +1,36 @@
 <template>
-  <mdc-table-row class="group-list-item" :selected="selected" v-bind="$attrs" v-on="$listeners">
+  <mdc-table-row
+    class="group-list-item"
+    :selected="selected"
+    v-bind="$attrs"
+    v-on="$listeners"
+  >
     <mdc-table-column class="status">
       <mdc-button
-          title="Toggle status"
-          @click="statusClick"
-        >
-        <mdc-icon slot="icon" :icon="icon" :class="classes" />
+        title="Toggle status"
+        tabindex="-1"
+        @click="statusClick"
+      >
+        <mdc-icon
+          slot="icon"
+          :icon="icon"
+          :class="classes"
+        />
       </mdc-button>
     </mdc-table-column>
-    <mdc-table-column class="name" @click="nameClick">
-      <mdc-text-field ref="name" fullwidth label="Group" :disabled="disabled" v-model="name" @blur="nameBlur" @keydown="nameKeydown" />
+    <mdc-table-column
+      class="name"
+      @click="nameClick"
+    >
+      <mdc-text-field
+        ref="name"
+        fullwidth
+        label="Group"
+        :disabled="disabled"
+        v-model="name"
+        @blur="nameBlur"
+        @keydown="nameKeydown"
+      />
     </mdc-table-column>
   </mdc-table-row>
 </template>
@@ -23,6 +44,13 @@ import MdcTableRow from './MdcTableRow'
 import MdcTextField from './MdcTextField'
 
 export default {
+  components: {
+    MdcButton,
+    MdcIcon,
+    MdcTableColumn,
+    MdcTableRow,
+    MdcTextField
+  },
   props: {
     group: {
       type: Object,
@@ -33,15 +61,9 @@ export default {
       default: false
     }
   },
-  components: {
-    MdcButton,
-    MdcIcon,
-    MdcTableColumn,
-    MdcTableRow,
-    MdcTextField
-  },
   data () {
     return {
+      name: this.group.name,
       disabled: true
     }
   },
@@ -54,37 +76,45 @@ export default {
         'mdc-button__icon',
         this.icon
       ]
-    },
-    name: {
-      get () {
-        return this.group.name
-      },
-      set (value) {
-        this.updateGroup({ id: this.group.id, params: { name: value } })
-      }
     }
   },
+  mounted () {
+    this.nameInput = this.$refs.name.$el.querySelector('input')
+  },
   methods: {
+    focus () {
+      this.nameClick()
+    },
     statusClick () {
       this.updateGroup({ id: this.group.id, params: { disabled: !this.group.disabled } })
+      this.focusList()
     },
     nameClick () {
-      this.disabled = !this.selected
+      if (!this.disabled || !this.selected) {
+        return
+      }
+      this.disabled = false
       this.$nextTick(() => {
-        this.$refs.name.$el.querySelector('input').focus()
+        this.nameInput.focus()
+        this.nameInput.selectionStart = 0
+        this.nameInput.selectionEnd = this.nameInput.value.length
       })
     },
     nameBlur () {
       this.disabled = true
+      this.updateGroup({ id: this.group.id, params: { name: this.name } })
     },
     nameKeydown (e) {
+      e.stopPropagation()
       if (e.keyCode === 13) {
         e.preventDefault()
-        this.$refs.name.$el.querySelector('input').blur()
+        this.nameInput.blur()
+        this.focusList()
       }
     },
     ...mapActions({
-      updateGroup: 'group/updateGroup'
+      updateGroup: 'group/updateGroup',
+      focusList: 'explorer/group/focusList'
     })
   }
 }

@@ -1,6 +1,18 @@
 <template>
-  <div class="title-bar">Hosty</div>
+  <div class="title-bar">{{ title || '(No name)' }}</div>
 </template>
+
+<script>
+import { mapState } from 'vuex'
+
+export default {
+  computed: {
+    ...mapState({
+      title: state => state.title
+    })
+  }
+}
+</script>
 
 <style scoped lang="scss">
 .title-bar {

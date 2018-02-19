@@ -1,7 +1,11 @@
 <template>
   <mdc-table-body>
     <mdc-table-row :style="`height: ${offsetTop}px;`" />
-    <slot v-for="(item, index) in renderItems" :item="item" :index="index + offset" />
+    <slot
+      :item="item"
+      :index="index + offset"
+      v-for="(item, index) in renderItems"
+    />
     <mdc-table-row :style="`height: ${offsetBottom}px;`" />
   </mdc-table-body>
 </template>
@@ -11,17 +15,33 @@ import MdcTableBody from '../components/MdcTableBody'
 import MdcTableRow from '../components/MdcTableRow'
 
 export default {
-  props: {
-    items: {
-      type: Array
-    },
-    estimatedHeight: {
-      type: Number
-    }
-  },
   components: {
     MdcTableBody,
     MdcTableRow
+  },
+  props: {
+    items: {
+      type: Array,
+      required: true
+    },
+    estimatedHeight: {
+      type: Number,
+      required: true
+    }
+  },
+  data () {
+    return {
+      container: null,
+      offset: 0,
+      offsetTop: 0,
+      offsetBottom: 0,
+      renderItems: []
+    }
+  },
+  watch: {
+    items () {
+      this.scroll()
+    }
   },
   mounted () {
     this.container = this.$el.parentNode.parentNode
@@ -33,15 +53,6 @@ export default {
     this.container.removeEventListener('scroll', this.scroll)
     window.removeEventListener('resize', this.scroll)
   },
-  data () {
-    return {
-      container: null,
-      offset: 0,
-      offsetTop: 0,
-      offsetBottom: 0,
-      renderItems: []
-    }
-  },
   methods: {
     scroll () {
       const top = this.container.scrollTop
@@ -52,11 +63,6 @@ export default {
       this.offsetTop = startIndex * this.estimatedHeight
       this.offsetBottom = (this.items.length - endIndex) * this.estimatedHeight
       this.renderItems = this.items.slice(startIndex, endIndex)
-    }
-  },
-  watch: {
-    items () {
-      this.scroll()
     }
   }
 }

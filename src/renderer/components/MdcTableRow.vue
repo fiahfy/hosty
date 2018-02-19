@@ -1,5 +1,10 @@
 <template>
-  <tr class="mdc-table-row" :class="classes" v-bind="$attrs" v-on="$listeners">
+  <tr
+    class="mdc-table-row"
+    :class="classes"
+    v-bind="$attrs"
+    v-on="$listeners"
+  >
     <slot />
   </tr>
 </template>
@@ -29,6 +34,11 @@ export default {
   }
   &.selected /deep/ .mdc-table-column {
     background-color: var(--selected);
+  }
+}
+.mdc-table:focus {
+  .mdc-table-row.selected /deep/ .mdc-table-column {
+    background-color: var(--focus);
   }
 }
 </style>

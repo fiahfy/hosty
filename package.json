@@ -1,7 +1,7 @@
 {
   "name": "hosty",
   "description": "Hosts file manager based on Electron",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "author": {
     "name": "fiahfy",
     "email": "d.fiahfy@gmail.com",
@@ -10,7 +10,6 @@
   "dependencies": {
     "electron-devtools-installer": "^2.2.0",
     "electron-window-state": "^4.1.1",
-    "is-electron-renderer": "^2.0.1",
     "material-components-web": "^0.30.0",
     "material-design-icons": "^3.0.1",
     "sudo-prompt": "^8.1.0",
@@ -33,11 +32,11 @@
     "electron-builder": "^20.0.4",
     "eslint": "^4.4.1",
     "eslint-config-standard": "^10.2.1",
-    "eslint-plugin-html": "^4.0.1",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-node": "^6.0.0",
     "eslint-plugin-promise": "^3.4.0",
     "eslint-plugin-standard": "^3.0.1",
+    "eslint-plugin-vue": "^4.2.2",
     "file-loader": "^1.1.5",
     "node-sass": "^4.5.3",
     "npm-run-all": "^4.0.2",

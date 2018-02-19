@@ -1,22 +1,30 @@
 <template>
   <div class="host-menu-bar">
     <mdc-button
-        title="Create host"
-        @click="createHost"
-      >
-      <mdc-icon slot="icon" icon="add" />
+      title="Create host"
+      :disabled="!canCreate"
+      @click="createHost"
+    >
+      <mdc-icon
+        slot="icon"
+        icon="add"
+      />
     </mdc-button>
     <mdc-button
-        title="Delete host"
-        @click="deleteHost"
-      >
-      <mdc-icon slot="icon" icon="remove" />
+      title="Delete host"
+      :disabled="!canDelete"
+      @click="deleteHost"
+    >
+      <mdc-icon
+        slot="icon"
+        icon="remove"
+      />
     </mdc-button>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import MdcButton from './MdcButton'
 import MdcIcon from './MdcIcon'
 
@@ -24,6 +32,12 @@ export default {
   components: {
     MdcButton,
     MdcIcon
+  },
+  computed: {
+    ...mapGetters({
+      canCreate: 'explorer/host/canCreate',
+      canDelete: 'explorer/host/canDelete'
+    })
   },
   methods: {
     ...mapActions({

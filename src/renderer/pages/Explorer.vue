@@ -3,7 +3,10 @@
     <div class="group">
       <group-menu-bar />
       <div class="container">
-        <div class="message" v-if="groupMessage">
+        <div
+          class="message"
+          v-if="groupMessage"
+        >
           {{ groupMessage }}
         </div>
         <group-list />
@@ -13,7 +16,10 @@
     <div class="host">
       <host-menu-bar />
       <div class="container">
-        <div class="message" v-if="hostMessage">
+        <div
+          class="message"
+          v-if="hostMessage"
+        >
           {{ hostMessage }}
         </div>
         <host-list />

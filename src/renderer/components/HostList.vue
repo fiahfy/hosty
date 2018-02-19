@@ -1,5 +1,8 @@
 <template>
-  <div class="host-list" :class="classes">
+  <div
+    class="host-list"
+    :class="classes"
+  >
     <mdc-table
       tabindex="0"
       @keydown="keydown"
@@ -43,6 +46,7 @@
       </mdc-table-header>
       <mdc-table-body >
         <host-list-item
+          :ref="`item_${host.id}`"
           :key="host.id"
           :host="host"
           :selected="isSelected({ id: host.id })"
@@ -79,15 +83,6 @@ export default {
       scrolling: false
     }
   },
-  mounted () {
-    this.$el.addEventListener('scroll', this.scroll)
-    this.$nextTick(() => {
-      this.$el.scrollTop = this.scrollTop
-    })
-  },
-  beforeDestroy () {
-    this.$el.removeEventListener('scroll', this.scroll)
-  },
   computed: {
     classes () {
       return {
@@ -106,43 +101,6 @@ export default {
       hosts: 'explorer/host/hosts',
       selectedIndex: 'explorer/host/selectedIndex',
       isSelected: 'explorer/host/isSelected'
-    })
-  },
-  methods: {
-    scroll () {
-      const scrollTop = this.$el.scrollTop
-      this.scrolling = scrollTop > 0
-      this.setScrollTop({ scrollTop })
-    },
-    keydown (e) {
-      if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-        return
-      }
-      switch (e.keyCode) {
-        case 38:
-          e.preventDefault()
-          this.selectPrevious()
-          break
-        case 40:
-          e.preventDefault()
-          this.selectNext()
-          break
-      }
-    },
-    click (e, sortKey) {
-      this.changeSortKey({ sortKey })
-      this.$nextTick(() => {
-        this.$el.scrollTop = 0
-      })
-    },
-    ...mapMutations({
-      setScrollTop: 'explorer/host/setScrollTop'
-    }),
-    ...mapActions({
-      select: 'explorer/host/select',
-      selectPrevious: 'explorer/host/selectPrevious',
-      selectNext: 'explorer/host/selectNext',
-      changeSortKey: 'explorer/host/changeSortKey'
     })
   },
   watch: {
@@ -165,6 +123,66 @@ export default {
         }
       })
     }
+  },
+  mounted () {
+    this.$el.addEventListener('scroll', this.scroll)
+    this.$nextTick(() => {
+      this.$el.scrollTop = this.scrollTop
+    })
+  },
+  beforeDestroy () {
+    this.$el.removeEventListener('scroll', this.scroll)
+  },
+  methods: {
+    scroll () {
+      const scrollTop = this.$el.scrollTop
+      this.scrolling = scrollTop > 0
+      this.setScrollTop({ scrollTop })
+    },
+    keydown (e) {
+      if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+        return
+      }
+      switch (e.keyCode) {
+        case 8:
+          e.preventDefault()
+          this.delete()
+          break
+        case 13:
+          e.preventDefault()
+          this.$refs[`item_${this.selectedId}`][0].focus()
+          break
+        case 37:
+          e.preventDefault()
+          this.leaveList()
+          break
+        case 38:
+          e.preventDefault()
+          this.selectPrevious()
+          break
+        case 40:
+          e.preventDefault()
+          this.selectNext()
+          break
+      }
+    },
+    click (e, sortKey) {
+      this.changeSortKey({ sortKey })
+      this.$nextTick(() => {
+        this.$el.scrollTop = 0
+      })
+    },
+    ...mapMutations({
+      setScrollTop: 'explorer/host/setScrollTop'
+    }),
+    ...mapActions({
+      delete: 'explorer/host/delete',
+      select: 'explorer/host/select',
+      selectPrevious: 'explorer/host/selectPrevious',
+      selectNext: 'explorer/host/selectNext',
+      changeSortKey: 'explorer/host/changeSortKey',
+      leaveList: 'explorer/host/leaveList'
+    })
   }
 }
 </script>
