@@ -107,6 +107,7 @@ export default {
     },
     statusClick () {
       this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, params: { disabled: !this.host.disabled } })
+      this.focusList()
     },
     nameClick () {
       if (!this.nameDisabled || !this.selected) {

@@ -87,6 +87,7 @@ export default {
     },
     statusClick () {
       this.updateGroup({ id: this.group.id, params: { disabled: !this.group.disabled } })
+      this.focusList()
     },
     nameClick () {
       if (!this.disabled || !this.selected) {
