@@ -3,6 +3,7 @@
     <mdc-table-column class="status">
       <mdc-button
           title="Toggle status"
+          tabindex="-1"
           @click="statusClick"
         >
         <mdc-icon slot="icon" :icon="icon" :class="classes" />
@@ -49,6 +50,10 @@ export default {
       ipDisabled: true
     }
   },
+  mounted () {
+    this.nameInput = this.$refs.name.$el.querySelector('input')
+    this.ipInput = this.$refs.ip.$el.querySelector('input')
+  },
   computed: {
     icon () {
       return this.host.disabled ? 'block' : 'check'
@@ -87,26 +92,26 @@ export default {
       this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, params: { disabled: !this.host.disabled } })
     },
     nameClick () {
+      console.log(this.nameDisabled, this.selected)
       if (!this.nameDisabled || !this.selected) {
         return
       }
       this.nameDisabled = false
       this.$nextTick(() => {
-        const el = this.$refs.name.$el.querySelector('input')
-        el.focus()
-        el.selectionStart = 0
-        el.selectionEnd = el.value.length
+        this.nameInput.focus()
+        this.nameInput.selectionStart = 0
+        this.nameInput.selectionEnd = this.nameInput.value.length
       })
     },
     nameBlur () {
       this.nameDisabled = true
-      this.focusHostList()
     },
     nameKeydown (e) {
       e.stopPropagation()
       if (e.keyCode === 13) {
         e.preventDefault()
-        this.$refs.name.$el.querySelector('input').blur()
+        this.nameInput.blur()
+        this.focusHostList()
       } else if (e.keyCode === 9) {
         e.preventDefault()
         this.ipClick()
@@ -118,21 +123,20 @@ export default {
       }
       this.ipDisabled = false
       this.$nextTick(() => {
-        const el = this.$refs.ip.$el.querySelector('input')
-        el.focus()
-        el.selectionStart = 0
-        el.selectionEnd = el.value.length
+        this.ipInput.focus()
+        this.ipInput.selectionStart = 0
+        this.ipInput.selectionEnd = this.ipInput.value.length
       })
     },
     ipBlur () {
       this.ipDisabled = true
-      this.focusHostList()
     },
     ipKeydown (e) {
       e.stopPropagation()
       if (e.keyCode === 13) {
         e.preventDefault()
-        this.$refs.ip.$el.querySelector('input').blur()
+        this.ipInput.blur()
+        this.focusHostList()
       } else if (e.keyCode === 9 && e.shiftKey) {
         e.preventDefault()
         this.nameClick()

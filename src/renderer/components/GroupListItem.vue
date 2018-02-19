@@ -3,6 +3,7 @@
     <mdc-table-column class="status">
       <mdc-button
           title="Toggle status"
+          tabindex="-1"
           @click="statusClick"
         >
         <mdc-icon slot="icon" :icon="icon" :class="classes" />
@@ -45,6 +46,9 @@ export default {
       disabled: true
     }
   },
+  mounted () {
+    this.nameInput = this.$refs.name.$el.querySelector('input')
+  },
   computed: {
     icon () {
       return this.group.disabled ? 'block' : 'check'
@@ -77,21 +81,20 @@ export default {
       }
       this.disabled = false
       this.$nextTick(() => {
-        const el = this.$refs.name.$el.querySelector('input')
-        el.focus()
-        el.selectionStart = 0
-        el.selectionEnd = el.value.length
+        this.nameInput.focus()
+        this.nameInput.selectionStart = 0
+        this.nameInput.selectionEnd = this.nameInput.value.length
       })
     },
     nameBlur () {
       this.disabled = true
-      this.focusGroupList()
     },
     nameKeydown (e) {
       e.stopPropagation()
       if (e.keyCode === 13) {
         e.preventDefault()
-        this.$refs.name.$el.querySelector('input').blur()
+        this.nameInput.blur()
+        this.focusGroupList()
       }
     },
     ...mapActions({
