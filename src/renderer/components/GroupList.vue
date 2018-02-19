@@ -33,7 +33,7 @@
       </mdc-table-header>
       <mdc-table-body >
         <group-list-item
-          ref="item"
+          :ref="`item_${group.id}`"
           :key="group.id"
           :group="group"
           :selected="isSelected({ id: group.id })"
@@ -116,7 +116,7 @@ export default {
           break
         case 13:
           e.preventDefault()
-          this.$refs.item[this.selectedIndex].focus()
+          this.$refs[`item_${this.selectedId}`][0].focus()
           break
         case 38:
           e.preventDefault()

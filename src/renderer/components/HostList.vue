@@ -43,7 +43,7 @@
       </mdc-table-header>
       <mdc-table-body >
         <host-list-item
-          ref="item"
+          :ref="`item_${host.id}`"
           :key="host.id"
           :host="host"
           :selected="isSelected({ id: host.id })"
@@ -126,7 +126,7 @@ export default {
           break
         case 13:
           e.preventDefault()
-          this.$refs.item[this.selectedIndex].focus()
+          this.$refs[`item_${this.selectedId}`][0].focus()
           break
         case 38:
           e.preventDefault()
