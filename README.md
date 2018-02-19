@@ -1,7 +1,7 @@
 # Hosty
 [![Build Status](https://travis-ci.org/fiahfy/hosty.svg?branch=master)](https://travis-ci.org/fiahfy/hosty)
 
-Hosts file manager based on Electron.
+> Hosts file manager based on Electron.
 
 
 ## Features
@@ -24,7 +24,10 @@ https://github.com/fiahfy/hosty/releases
 
 
 ## Development
-```
-$ yarn
-$ yarn dev
+``` bash
+# install dependencies
+yarn
+
+# serve with hot reload
+yarn dev
 ```
