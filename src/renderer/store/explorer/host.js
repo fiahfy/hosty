@@ -19,12 +19,14 @@ export default {
       dispatch('group/createHost', { groupId: getters.selectedGroupId }, { root: true })
       const index = getters.hosts.length - 1
       dispatch('selectIndex', { index })
+      dispatch('focusList')
     },
     delete ({ dispatch, getters, state }) {
       const oldSelectedIndex = getters.selectedIndex
       dispatch('group/deleteHost', { groupId: getters.selectedGroupId, id: state.selectedId }, { root: true })
       const index = oldSelectedIndex > 0 && oldSelectedIndex > getters.hosts.length - 1 ? oldSelectedIndex - 1 : oldSelectedIndex
       dispatch('selectIndex', { index })
+      dispatch('focusList')
     },
     select ({ commit }, { id }) {
       commit('setSelectedId', { selectedId: id })
