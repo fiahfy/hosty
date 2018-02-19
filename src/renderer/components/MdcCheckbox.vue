@@ -6,7 +6,7 @@
       v-model="model"
       v-bind="$attrs"
       v-on="listeners"
-    />
+    >
     <div class="mdc-checkbox__background">
       <svg
         class="mdc-checkbox__checkmark"

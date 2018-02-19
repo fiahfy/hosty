@@ -1,16 +1,22 @@
 <template>
   <div class="host-menu-bar">
     <mdc-button
-        title="Create host"
-        @click="createHost"
-      >
-      <mdc-icon slot="icon" icon="add" />
+      title="Create host"
+      @click="createHost"
+    >
+      <mdc-icon
+        slot="icon"
+        icon="add"
+      />
     </mdc-button>
     <mdc-button
-        title="Delete host"
-        @click="deleteHost"
-      >
-      <mdc-icon slot="icon" icon="remove" />
+      title="Delete host"
+      @click="deleteHost"
+    >
+      <mdc-icon
+        slot="icon"
+        icon="remove"
+      />
     </mdc-button>
   </div>
 </template>

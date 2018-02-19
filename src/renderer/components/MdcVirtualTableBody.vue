@@ -1,7 +1,11 @@
 <template>
   <mdc-table-body>
     <mdc-table-row :style="`height: ${offsetTop}px;`" />
-    <slot v-for="(item, index) in renderItems" :item="item" :index="index + offset" />
+    <slot
+      :item="item"
+      :index="index + offset"
+      v-for="(item, index) in renderItems"
+    />
     <mdc-table-row :style="`height: ${offsetBottom}px;`" />
   </mdc-table-body>
 </template>
@@ -13,10 +17,12 @@ import MdcTableRow from '../components/MdcTableRow'
 export default {
   props: {
     items: {
-      type: Array
+      type: Array,
+      required: true
     },
     estimatedHeight: {
-      type: Number
+      type: Number,
+      required: true
     }
   },
   components: {

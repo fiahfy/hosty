@@ -1,5 +1,8 @@
 <template>
-  <div class="host-list" :class="classes">
+  <div
+    class="host-list"
+    :class="classes"
+  >
     <mdc-table
       tabindex="0"
       @keydown="keydown"

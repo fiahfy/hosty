@@ -13,7 +13,7 @@
       v-model="model"
       v-bind="$attrs"
       v-on="listeners"
-    />
+    >
     <label
       class="mdc-text-field__label"
       :for="id"
@@ -29,10 +29,12 @@ import { MDCTextField } from '@material/textfield'
 export default {
   props: {
     value: {
-      type: String
+      type: String,
+      required: true
     },
     label: {
-      type: String
+      type: String,
+      required: true
     },
     fullwidth: {
       type: Boolean,

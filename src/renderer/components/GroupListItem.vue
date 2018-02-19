@@ -1,16 +1,36 @@
 <template>
-  <mdc-table-row class="group-list-item" :selected="selected" v-bind="$attrs" v-on="$listeners">
+  <mdc-table-row
+    class="group-list-item"
+    :selected="selected"
+    v-bind="$attrs"
+    v-on="$listeners"
+  >
     <mdc-table-column class="status">
       <mdc-button
-          title="Toggle status"
-          tabindex="-1"
-          @click="statusClick"
-        >
-        <mdc-icon slot="icon" :icon="icon" :class="classes" />
+        title="Toggle status"
+        tabindex="-1"
+        @click="statusClick"
+      >
+        <mdc-icon
+          slot="icon"
+          :icon="icon"
+          :class="classes"
+        />
       </mdc-button>
     </mdc-table-column>
-    <mdc-table-column class="name" @click="nameClick">
-      <mdc-text-field ref="name" fullwidth label="Group" :disabled="disabled" v-model="name" @blur="nameBlur" @keydown="nameKeydown" />
+    <mdc-table-column
+      class="name"
+      @click="nameClick"
+    >
+      <mdc-text-field
+        ref="name"
+        fullwidth
+        label="Group"
+        :disabled="disabled"
+        v-model="name"
+        @blur="nameBlur"
+        @keydown="nameKeydown"
+      />
     </mdc-table-column>
   </mdc-table-row>
 </template>

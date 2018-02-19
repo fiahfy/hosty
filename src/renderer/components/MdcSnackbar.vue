@@ -7,7 +7,10 @@
   >
     <div class="mdc-snackbar__text" />
     <div class="mdc-snackbar__action-wrapper">
-      <button type="button" class="mdc-snackbar__action-button" />
+      <button
+        type="button"
+        class="mdc-snackbar__action-button"
+      />
     </div>
   </div>
 </template>
@@ -18,7 +21,8 @@ import { MDCSnackbar } from '@material/snackbar'
 export default {
   props: {
     message: {
-      type: String
+      type: String,
+      default: ''
     }
   },
   data () {

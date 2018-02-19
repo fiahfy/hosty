@@ -1,5 +1,10 @@
 <template>
-  <tr class="mdc-table-row" :class="classes" v-bind="$attrs" v-on="$listeners">
+  <tr
+    class="mdc-table-row"
+    :class="classes"
+    v-bind="$attrs"
+    v-on="$listeners"
+  >
     <slot />
   </tr>
 </template>

@@ -1,16 +1,22 @@
 <template>
   <div class="group-menu-bar">
     <mdc-button
-        title="Create group"
-        @click="createGroup"
-      >
-      <mdc-icon slot="icon" icon="add" />
+      title="Create group"
+      @click="createGroup"
+    >
+      <mdc-icon
+        slot="icon"
+        icon="add"
+      />
     </mdc-button>
     <mdc-button
-        title="Delete group"
-        @click="deleteGroup"
-      >
-      <mdc-icon slot="icon" icon="remove" />
+      title="Delete group"
+      @click="deleteGroup"
+    >
+      <mdc-icon
+        slot="icon"
+        icon="remove"
+      />
     </mdc-button>
   </div>
 </template>

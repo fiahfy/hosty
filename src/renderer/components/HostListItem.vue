@@ -1,19 +1,50 @@
 <template>
-  <mdc-table-row class="host-list-item" :selected="selected" v-bind="$attrs" v-on="$listeners">
+  <mdc-table-row
+    class="host-list-item"
+    :selected="selected"
+    v-bind="$attrs"
+    v-on="$listeners"
+  >
     <mdc-table-column class="status">
       <mdc-button
-          title="Toggle status"
-          tabindex="-1"
-          @click="statusClick"
-        >
-        <mdc-icon slot="icon" :icon="icon" :class="classes" />
+        title="Toggle status"
+        tabindex="-1"
+        @click="statusClick"
+      >
+        <mdc-icon
+          slot="icon"
+          :icon="icon"
+          :class="classes"
+        />
       </mdc-button>
     </mdc-table-column>
-    <mdc-table-column class="name" @click="nameClick">
-      <mdc-text-field ref="name" fullwidth label="example.com" :disabled="nameDisabled" v-model="name" @blur="nameBlur" @keydown="nameKeydown" />
+    <mdc-table-column
+      class="name"
+      @click="nameClick"
+    >
+      <mdc-text-field
+        ref="name"
+        fullwidth
+        label="example.com"
+        :disabled="nameDisabled"
+        v-model="name"
+        @blur="nameBlur"
+        @keydown="nameKeydown"
+      />
     </mdc-table-column>
-    <mdc-table-column class="ip" @click="ipClick">
-      <mdc-text-field ref="ip" fullwidth label="192.0.2.0" :disabled="ipDisabled" v-model="ip" @blur="ipBlur" @keydown="ipKeydown" />
+    <mdc-table-column
+      class="ip"
+      @click="ipClick"
+    >
+      <mdc-text-field
+        ref="ip"
+        fullwidth
+        label="192.0.2.0"
+        :disabled="ipDisabled"
+        v-model="ip"
+        @blur="ipBlur"
+        @keydown="ipKeydown"
+      />
     </mdc-table-column>
   </mdc-table-row>
 </template>

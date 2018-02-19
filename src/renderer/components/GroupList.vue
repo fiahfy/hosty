@@ -1,5 +1,8 @@
 <template>
-  <div class="group-list" :class="classes">
+  <div
+    class="group-list"
+    :class="classes"
+  >
     <mdc-table
       tabindex="0"
       @keydown="keydown"

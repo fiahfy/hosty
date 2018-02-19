@@ -1,5 +1,8 @@
 <template>
-  <div class="divider" :style="styles" />
+  <div
+    class="divider"
+    :style="styles"
+  />
 </template>
 
 <script>
