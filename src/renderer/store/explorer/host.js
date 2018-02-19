@@ -105,6 +105,12 @@ export default {
     selectedGroupId (state, getters, rootState, rootGetters) {
       const selectedGroup = rootGetters['explorer/group/selectedGroup']
       return selectedGroup ? selectedGroup.id : 0
+    },
+    canCreate (state, getters) {
+      return !!getters.selectedGroupId
+    },
+    canDelete (state, getters) {
+      return !!getters.selectedGroupId && !!state.selectedId
     }
   }
 }

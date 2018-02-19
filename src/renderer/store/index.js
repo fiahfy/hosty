@@ -16,6 +16,7 @@ const Selector = {
 
 export default new Vuex.Store({
   state: {
+    title: '',
     message: ''
   },
   actions: {
@@ -67,6 +68,9 @@ export default new Vuex.Store({
         dispatch('showMessage', { message: 'Export failed' })
       }
     },
+    changeTitle ({ commit }, { title }) {
+      commit('setTitle', { title })
+    },
     showMessage ({ commit }, { message }) {
       commit('setMessage', { message })
       // wait dom updated
@@ -76,6 +80,9 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    setTitle (state, { title }) {
+      state.title = title
+    },
     setMessage (state, { message }) {
       state.message = message
     }

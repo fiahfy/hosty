@@ -2,6 +2,7 @@
   <div class="group-menu-bar">
     <mdc-button
       title="Create group"
+      :disabled="!canCreate"
       @click="createGroup"
     >
       <mdc-icon
@@ -11,6 +12,7 @@
     </mdc-button>
     <mdc-button
       title="Delete group"
+      :disabled="!canDelete"
       @click="deleteGroup"
     >
       <mdc-icon
@@ -22,7 +24,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import MdcButton from './MdcButton'
 import MdcIcon from './MdcIcon'
 
@@ -30,6 +32,12 @@ export default {
   components: {
     MdcButton,
     MdcIcon
+  },
+  computed: {
+    ...mapGetters({
+      canCreate: 'explorer/group/canCreate',
+      canDelete: 'explorer/group/canDelete'
+    })
   },
   methods: {
     ...mapActions({

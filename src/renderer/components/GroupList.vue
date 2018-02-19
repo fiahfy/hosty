@@ -119,6 +119,7 @@ export default {
     this.$nextTick(() => {
       this.$el.scrollTop = this.scrollTop
     })
+    this.selectIndex({ index: 0 })
   },
   beforeDestroy () {
     this.$el.removeEventListener('scroll', this.scroll)
@@ -168,6 +169,7 @@ export default {
     ...mapActions({
       delete: 'explorer/group/delete',
       select: 'explorer/group/select',
+      selectIndex: 'explorer/group/selectIndex',
       selectPrevious: 'explorer/group/selectPrevious',
       selectNext: 'explorer/group/selectNext',
       changeSortKey: 'explorer/group/changeSortKey',
