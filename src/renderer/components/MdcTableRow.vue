@@ -31,4 +31,9 @@ export default {
     background-color: var(--selected);
   }
 }
+.mdc-table:focus {
+  .mdc-table-row.selected /deep/ .mdc-table-column {
+    background-color: var(--focus);
+  }
+}
 </style>

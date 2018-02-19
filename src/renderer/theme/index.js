@@ -55,7 +55,8 @@ export default {
     '--divider': 'rgba(0, 0, 0, 0.15)',
     '--shadow': 'rgba(0, 0, 0, 0.2)',
     '--hover': 'rgba(0, 0, 0, 0.05)',
-    '--selected': 'rgba(0, 0, 0, 0.15)'
+    '--selected': 'rgba(0, 0, 0, 0.10)',
+    '--focus': 'rgba(255, 64, 129, 0.15)'
   },
   dark: {
     '--mdc-theme-primary': '#ff4081',
@@ -110,9 +111,10 @@ export default {
     '--mdc-theme-text-hint-on-dark': 'rgba(0, 0, 0, 0.38)',
     '--mdc-theme-text-disabled-on-dark': 'rgba(0, 0, 0, 0.38)',
     '--mdc-theme-text-icon-on-dark': 'rgba(0, 0, 0, 0.38)',
-    '--divider': 'rgba(255, 255, 255, 0.38)',
+    '--divider': 'rgba(255, 255, 255, 0.30)',
     '--shadow': 'rgba(0, 0, 0, 0.5)',
-    '--hover': 'rgba(255, 255, 255, 0.13)',
-    '--selected': 'rgba(255, 255, 255, 0.38)'
+    '--hover': 'rgba(255, 255, 255, 0.10)',
+    '--selected': 'rgba(255, 255, 255, 0.20)',
+    '--focus': 'rgba(255, 64, 129, 0.15)'
   }
 }
