@@ -154,7 +154,7 @@ export default {
           break
         case 37:
           e.preventDefault()
-          this.leaveHostList()
+          this.leaveList()
           break
         case 38:
           e.preventDefault()
@@ -181,7 +181,7 @@ export default {
       selectPrevious: 'explorer/host/selectPrevious',
       selectNext: 'explorer/host/selectNext',
       changeSortKey: 'explorer/host/changeSortKey',
-      leaveHostList: 'explorer/host/leaveHostList'
+      leaveList: 'explorer/host/leaveList'
     })
   }
 }

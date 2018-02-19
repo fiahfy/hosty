@@ -64,13 +64,13 @@ export default {
     focusList ({ dispatch }) {
       dispatch('focusHostList', null, { root: true })
     },
-    enterHostList ({ dispatch, state }) {
+    enterList ({ dispatch, state }) {
       if (!state.selectedId) {
         dispatch('selectIndex', { index: 0 })
       }
       dispatch('focusHostList', null, { root: true })
     },
-    leaveHostList ({ dispatch }) {
+    leaveList ({ dispatch }) {
       dispatch('focusGroupList', null, { root: true })
     },
     sort ({ dispatch, getters, state }) {

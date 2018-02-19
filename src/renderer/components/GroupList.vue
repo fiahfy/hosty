@@ -171,7 +171,7 @@ export default {
       selectPrevious: 'explorer/group/selectPrevious',
       selectNext: 'explorer/group/selectNext',
       changeSortKey: 'explorer/group/changeSortKey',
-      enterHostList: 'explorer/host/enterHostList'
+      enterHostList: 'explorer/host/enterList'
     })
   }
 }
