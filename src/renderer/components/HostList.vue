@@ -46,7 +46,7 @@
       <mdc-table-body >
         <host-list-item
           :ref="`item_${host.id}`"
-          :key="host.id"
+          :key="`${selectedGroupId}_${host.id}`"
           :host="host"
           :selected="isSelected({ id: host.id })"
           @click="select({ id: host.id })"
@@ -99,7 +99,8 @@ export default {
     ...mapGetters({
       hosts: 'explorer/host/hosts',
       selectedIndex: 'explorer/host/selectedIndex',
-      isSelected: 'explorer/host/isSelected'
+      isSelected: 'explorer/host/isSelected',
+      selectedGroupId: 'explorer/host/selectedGroupId'
     })
   },
   watch: {
@@ -208,6 +209,7 @@ export default {
     width: 100%;
     .mdc-table-header {
       .mdc-table-row {
+        cursor: pointer;
         height: 40px;
         .mdc-table-header-column {
           border: 0;
