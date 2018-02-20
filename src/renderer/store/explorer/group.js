@@ -41,6 +41,12 @@ export default {
       const id = getters.groups[index] ? getters.groups[index].id : 0
       dispatch('select', { id })
     },
+    selectFirst ({ dispatch }) {
+      dispatch('selectIndex', { index: 0 })
+    },
+    selectLast ({ dispatch, getters }) {
+      dispatch('selectIndex', { index: getters.groups.length - 1 })
+    },
     selectPrevious ({ dispatch, getters }) {
       const index = getters.selectedIndex - 1
       if (index < 0) {

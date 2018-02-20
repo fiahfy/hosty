@@ -3,6 +3,7 @@
     id="app"
     class="mdc-theme--background"
     :style="styles"
+    @contextmenu="contextmenu"
     @dragover.prevent
     @drop.prevent="drop"
   >
@@ -23,11 +24,12 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
+import Theme from './theme'
 import ActivityBar from './components/ActivityBar'
 import Divider from './components/Divider'
 import MdcSnackbar from './components/MdcSnackbar'
 import TitleBar from './components/TitleBar'
-import Theme from './theme'
+import * as ContextMenu from './utils/context-menu'
 
 export default {
   components: {
@@ -52,6 +54,9 @@ export default {
     })
   },
   methods: {
+    contextmenu (e) {
+      ContextMenu.show(e)
+    },
     drop (e) {
       const files = Array.from(e.dataTransfer.files)
       if (!files.length) {

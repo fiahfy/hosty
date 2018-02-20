@@ -7,10 +7,3 @@
     <slot />
   </table>
 </template>
-
-<style scoped lang="scss">
-.mdc-table {
-  border-spacing: 0;
-  width: 100%;
-}
-</style>

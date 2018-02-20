@@ -84,9 +84,11 @@ export default {
       display: flex;
       justify-content: center;
       left: 0;
+      pointer-events: none;
       position: absolute;
       right: 0;
       top: 0;
+      user-select: none;
     }
   }
 }

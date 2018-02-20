@@ -1,7 +1,7 @@
 <template>
   <mdc-table-row
     class="group-list-item"
-    :selected="selected"
+    :class="classes"
     v-bind="$attrs"
     v-on="$listeners"
   >
@@ -14,7 +14,7 @@
         <mdc-icon
           slot="icon"
           :icon="icon"
-          :class="classes"
+          :class="iconClasses"
         />
       </mdc-button>
     </mdc-table-column>
@@ -68,10 +68,15 @@ export default {
     }
   },
   computed: {
+    classes () {
+      return {
+        selected: this.selected
+      }
+    },
     icon () {
       return this.group.disabled ? 'block' : 'check'
     },
-    classes () {
+    iconClasses () {
       return [
         'mdc-button__icon',
         this.icon
@@ -121,35 +126,48 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.group-list-item .mdc-table-column {
-  line-height: 20px;
-  padding: 2px 8px;
-  vertical-align: bottom;
-  white-space: nowrap;
-  &.status {
-    text-align: center;
-  }
-  .mdc-button {
-    min-width: 36px;
-    padding: 0;
-    .mdc-icon {
-      font-size: 24px;
-      height: auto;
-      margin: 0;
+.group-list-item {
+  cursor: pointer;
+  height: 41px;
+  .mdc-table-column {
+    line-height: 20px;
+    padding: 2px 8px;
+    vertical-align: bottom;
+    white-space: nowrap;
+    &.status {
+      text-align: center;
+    }
+    .mdc-button {
+      min-width: 36px;
       padding: 0;
-      width: auto;
-      &.block {
-        color: var(--mdc-theme-text-icon-on-background);
+      .mdc-icon {
+        font-size: 24px;
+        height: auto;
+        margin: 0;
+        padding: 0;
+        width: auto;
+        &.block {
+          color: var(--mdc-theme-text-icon-on-background);
+        }
+      }
+    }
+    .mdc-text-field {
+      border: 0;
+      height: 32px;
+      margin: 0 0 2px;
+      & /deep/ input:disabled {
+        color: var(--mdc-theme-text-primary-on-background);
       }
     }
   }
-  .mdc-text-field {
-    border: 0;
-    height: 32px;
-    margin: 0 0 2px;
-    & /deep/ input:disabled {
-      color: var(--mdc-theme-text-primary-on-background);
-    }
+  &:hover .mdc-table-column {
+    background-color: var(--hover);
   }
+  &.selected .mdc-table-column {
+    background-color: var(--selected);
+  }
+}
+.group-list:focus .group-list-item.selected .mdc-table-column {
+  background-color: var(--focus);
 }
 </style>

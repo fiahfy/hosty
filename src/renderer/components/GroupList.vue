@@ -1,12 +1,11 @@
 <template>
   <div
     class="group-list"
+    tabindex="0"
     :class="classes"
+    @keydown="keydown"
   >
-    <mdc-table
-      tabindex="0"
-      @keydown="keydown"
-    >
+    <mdc-table>
       <mdc-table-header>
         <mdc-table-row>
           <mdc-table-header-column
@@ -131,9 +130,6 @@ export default {
       this.setScrollTop({ scrollTop })
     },
     keydown (e) {
-      if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-        return
-      }
       switch (e.keyCode) {
         case 8:
           e.preventDefault()
@@ -141,11 +137,15 @@ export default {
           break
         case 13:
           e.preventDefault()
-          this.$refs[`item_${this.selectedId}`][0].focus()
+          this.focusSelectedItem()
           break
         case 38:
           e.preventDefault()
-          this.selectPrevious()
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            this.selectFirst()
+          } else {
+            this.selectPrevious()
+          }
           break
         case 39:
           e.preventDefault()
@@ -153,7 +153,11 @@ export default {
           break
         case 40:
           e.preventDefault()
-          this.selectNext()
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            this.selectLast()
+          } else {
+            this.selectNext()
+          }
           break
       }
     },
@@ -163,6 +167,9 @@ export default {
         this.$el.scrollTop = 0
       })
     },
+    focusSelectedItem () {
+      this.$refs[`item_${this.selectedId}`][0].focus()
+    },
     ...mapMutations({
       setScrollTop: 'explorer/group/setScrollTop'
     }),
@@ -170,6 +177,8 @@ export default {
       delete: 'explorer/group/delete',
       select: 'explorer/group/select',
       selectIndex: 'explorer/group/selectIndex',
+      selectFirst: 'explorer/group/selectFirst',
+      selectLast: 'explorer/group/selectLast',
       selectPrevious: 'explorer/group/selectPrevious',
       selectNext: 'explorer/group/selectNext',
       changeSortKey: 'explorer/group/changeSortKey',
@@ -184,16 +193,23 @@ export default {
   height: 100%;
   overflow-y: scroll;
   .mdc-table {
+    border-spacing: 0;
     outline: none;
     table-layout: fixed;
+    width: 100%;
     .mdc-table-header {
       .mdc-table-row {
         height: 40px;
         .mdc-table-header-column {
           border: 0;
+          color: var(--mdc-theme-text-secondary-on-background);
+          font-size: smaller;
+          font-weight: normal;
           line-height: 20px;
+          padding: 8px;
           position: sticky;
           top: 0;
+          user-select: none;
           vertical-align: bottom;
           white-space: nowrap;
           z-index: 1;
@@ -222,10 +238,6 @@ export default {
           }
         }
       }
-    }
-    .mdc-table-row {
-      cursor: pointer;
-      height: 41px;
     }
   }
   &.scrolling .mdc-table-row.shadow .mdc-table-header-column:after {
