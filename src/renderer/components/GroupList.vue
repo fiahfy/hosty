@@ -130,9 +130,6 @@ export default {
       this.setScrollTop({ scrollTop })
     },
     keydown (e) {
-      if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-        return
-      }
       switch (e.keyCode) {
         case 8:
           e.preventDefault()
@@ -144,7 +141,11 @@ export default {
           break
         case 38:
           e.preventDefault()
-          this.selectPrevious()
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            this.selectFirst()
+          } else {
+            this.selectPrevious()
+          }
           break
         case 39:
           e.preventDefault()
@@ -152,7 +153,11 @@ export default {
           break
         case 40:
           e.preventDefault()
-          this.selectNext()
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            this.selectLast()
+          } else {
+            this.selectNext()
+          }
           break
       }
     },
@@ -172,6 +177,8 @@ export default {
       delete: 'explorer/group/delete',
       select: 'explorer/group/select',
       selectIndex: 'explorer/group/selectIndex',
+      selectFirst: 'explorer/group/selectFirst',
+      selectLast: 'explorer/group/selectLast',
       selectPrevious: 'explorer/group/selectPrevious',
       selectNext: 'explorer/group/selectNext',
       changeSortKey: 'explorer/group/changeSortKey',

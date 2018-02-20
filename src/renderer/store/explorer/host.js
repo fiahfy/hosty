@@ -38,6 +38,12 @@ export default {
       const id = getters.hosts[index] ? getters.hosts[index].id : 0
       dispatch('select', { id })
     },
+    selectFirst ({ dispatch }) {
+      dispatch('selectIndex', { index: 0 })
+    },
+    selectLast ({ dispatch, getters }) {
+      dispatch('selectIndex', { index: getters.hosts.length - 1 })
+    },
     selectPrevious ({ dispatch, getters }) {
       const index = getters.selectedIndex - 1
       if (index < 0) {
@@ -66,7 +72,7 @@ export default {
     },
     enterList ({ dispatch, state }) {
       if (!state.selectedId) {
-        dispatch('selectIndex', { index: 0 })
+        dispatch('selectFirst')
       }
       dispatch('focusHostList', null, { root: true })
     },

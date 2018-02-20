@@ -139,9 +139,6 @@ export default {
       this.setScrollTop({ scrollTop })
     },
     keydown (e) {
-      if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-        return
-      }
       switch (e.keyCode) {
         case 8:
           e.preventDefault()
@@ -157,11 +154,20 @@ export default {
           break
         case 38:
           e.preventDefault()
-          this.selectPrevious()
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            this.selectFirst()
+          } else {
+            this.selectPrevious()
+          }
           break
         case 40:
           e.preventDefault()
-          this.selectNext()
+          e.preventDefault()
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            this.selectLast()
+          } else {
+            this.selectNext()
+          }
           break
       }
     },
@@ -180,6 +186,8 @@ export default {
     ...mapActions({
       delete: 'explorer/host/delete',
       select: 'explorer/host/select',
+      selectFirst: 'explorer/host/selectFirst',
+      selectLast: 'explorer/host/selectLast',
       selectPrevious: 'explorer/host/selectPrevious',
       selectNext: 'explorer/host/selectNext',
       changeSortKey: 'explorer/host/changeSortKey',
