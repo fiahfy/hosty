@@ -10,8 +10,8 @@ import * as HostsFileManager from '../utils/hosts-file-manager'
 Vue.use(Vuex)
 
 const Selector = {
-  groupList: '.group-list>table',
-  hostList: '.host-list>table'
+  groupList: '.group-list',
+  hostList: '.host-list'
 }
 
 export default new Vuex.Store({

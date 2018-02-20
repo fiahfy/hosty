@@ -17,9 +17,9 @@ const appendInspectElementMenu = (e, template) => {
 }
 
 export const Label = {
-  Cut: 'Cut',
-  Copy: 'Copy',
-  Paste: 'Paste'
+  cut: 'Cut',
+  copy: 'Copy',
+  paste: 'Paste'
 }
 
 export const show = (e, template = []) => {
