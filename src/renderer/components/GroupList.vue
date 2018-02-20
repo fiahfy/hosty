@@ -199,6 +199,7 @@ export default {
     width: 100%;
     .mdc-table-header {
       .mdc-table-row {
+        cursor: pointer;
         height: 40px;
         .mdc-table-header-column {
           border: 0;
