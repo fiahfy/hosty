@@ -11,7 +11,7 @@
       />
     </mdc-button>
     <mdc-button
-      title="Delete"
+      :title="'Delete'|accelerator('Delete')"
       :disabled="!canDelete"
       @click="deleteHost"
     >
