@@ -12,7 +12,8 @@ export default {
     sortOption: {
       key: 'name',
       order: 'asc'
-    }
+    },
+    filtered: false
   },
   actions: {
     create ({ dispatch, getters }) {
@@ -58,6 +59,9 @@ export default {
       }
       dispatch('selectIndex', { index })
     },
+    toggleFilter ({ commit, state }) {
+      commit('setFiltered', { filtered: !state.filtered })
+    },
     changeSortKey ({ commit, dispatch, getters, state }, { sortKey }) {
       let sortOrder = sortOrderDefaults[sortKey]
       if (state.sortOption.key === sortKey) {
@@ -92,6 +96,9 @@ export default {
     },
     setSortOption (state, { sortOption }) {
       state.sortOption = sortOption
+    },
+    setFiltered (state, { filtered }) {
+      state.filtered = filtered
     }
   },
   getters: {
@@ -100,7 +107,9 @@ export default {
       if (!selectedGroup) {
         return []
       }
-      return selectedGroup.hosts || []
+      return (selectedGroup.hosts || []).filter((host) => {
+        return !state.filtered || !host.disabled
+      })
     },
     isSelected (state) {
       return ({ id }) => state.selectedId === id

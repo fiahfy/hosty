@@ -1,7 +1,7 @@
 <template>
   <div class="host-menu-bar">
     <mdc-button
-      title="Create host"
+      title="Create"
       :disabled="!canCreate"
       @click="createHost"
     >
@@ -11,7 +11,7 @@
       />
     </mdc-button>
     <mdc-button
-      title="Delete host"
+      title="Delete"
       :disabled="!canDelete"
       @click="deleteHost"
     >
@@ -20,11 +20,21 @@
         icon="remove"
       />
     </mdc-button>
+    <mdc-button
+      title="Filter"
+      :class="classes"
+      @click="toggleFilterHost"
+    >
+      <mdc-icon
+        slot="icon"
+        icon="filter_list"
+      />
+    </mdc-button>
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import MdcButton from './MdcButton'
 import MdcIcon from './MdcIcon'
 
@@ -34,6 +44,14 @@ export default {
     MdcIcon
   },
   computed: {
+    classes () {
+      return {
+        inactive: !this.filtered
+      }
+    },
+    ...mapState({
+      filtered: state => state.explorer.host.filtered
+    }),
     ...mapGetters({
       canCreate: 'explorer/host/canCreate',
       canDelete: 'explorer/host/canDelete'
@@ -42,7 +60,8 @@ export default {
   methods: {
     ...mapActions({
       createHost: 'explorer/host/create',
-      deleteHost: 'explorer/host/delete'
+      deleteHost: 'explorer/host/delete',
+      toggleFilterHost: 'explorer/host/toggleFilter'
     })
   }
 }
@@ -66,6 +85,9 @@ export default {
       margin: 0;
       padding: 0;
       width: auto;
+    }
+    &.inactive .mdc-icon {
+      color: var(--mdc-theme-text-icon-on-background);
     }
   }
 }
