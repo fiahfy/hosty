@@ -50,6 +50,7 @@
           :host="host"
           :selected="isSelected({ id: host.id })"
           @click="select({ id: host.id })"
+          @contextmenu="(e) => contextmenu(e, { id: host.id })"
           v-for="host in hosts"
         />
       </mdc-table-body>
@@ -66,6 +67,7 @@ import MdcTableBody from './MdcTableBody'
 import MdcTableHeader from './MdcTableHeader'
 import MdcTableHeaderColumn from './MdcTableHeaderColumn'
 import MdcTableRow from './MdcTableRow'
+import * as ContextMenu from '../utils/context-menu'
 
 export default {
   components: {
@@ -182,6 +184,26 @@ export default {
       this.$nextTick(() => {
         this.$el.scrollTop = 0
       })
+    },
+    contextmenu (e, { id }) {
+      this.select({ id })
+      ContextMenu.show(e, [
+        {
+          label: 'New Host',
+          click: this.create,
+          accelerator: 'CmdOrCtrl+N'
+        },
+        {
+          label: 'Edit',
+          click: this.focusSelectedItem,
+          accelerator: 'Enter'
+        },
+        {
+          label: 'Delete',
+          click: this.delete,
+          accelerator: 'Delete'
+        }
+      ])
     },
     focusSelectedItem () {
       this.$refs[`item_${this.selectedId}`][0].focus()

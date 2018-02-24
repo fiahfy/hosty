@@ -30,7 +30,7 @@ export const buildText = (accelerator) => {
       case 'Down': return darwin ? '↓' : key
       case 'Left': return darwin ? '←' : key
       case 'Right': return darwin ? '→' : key
-      case 'Delete': return darwin ? '⌫' : key
+      case 'Delete': return darwin ? '⌦' : key
       case 'Enter': return darwin ? '↩' : key
       case 'Esc': return darwin ? '⎋' : key
       case 'Plus': return '+'

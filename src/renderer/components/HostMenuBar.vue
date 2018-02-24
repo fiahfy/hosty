@@ -1,7 +1,7 @@
 <template>
   <div class="host-menu-bar">
     <mdc-button
-      :title="'Create'|accelerator('CmdOrCtrl+N')"
+      :title="'New Host'|accelerator('CmdOrCtrl+N')"
       :disabled="!canCreate"
       @click="createHost"
     >

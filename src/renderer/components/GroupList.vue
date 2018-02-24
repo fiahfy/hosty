@@ -40,6 +40,7 @@
           :group="group"
           :selected="isSelected({ id: group.id })"
           @click="select({ id: group.id })"
+          @contextmenu="(e) => contextmenu(e, { id: group.id })"
           v-for="group in groups"
         />
       </mdc-table-body>
@@ -56,6 +57,7 @@ import MdcTableBody from './MdcTableBody'
 import MdcTableHeader from './MdcTableHeader'
 import MdcTableHeaderColumn from './MdcTableHeaderColumn'
 import MdcTableRow from './MdcTableRow'
+import * as ContextMenu from '../utils/context-menu'
 
 export default {
   components: {
@@ -172,6 +174,26 @@ export default {
       this.$nextTick(() => {
         this.$el.scrollTop = 0
       })
+    },
+    contextmenu (e, { id }) {
+      this.select({ id })
+      ContextMenu.show(e, [
+        {
+          label: 'New Group',
+          click: this.create,
+          accelerator: 'CmdOrCtrl+N'
+        },
+        {
+          label: 'Edit',
+          click: this.focusSelectedItem,
+          accelerator: 'Enter'
+        },
+        {
+          label: 'Delete',
+          click: this.delete,
+          accelerator: 'Delete'
+        }
+      ])
     },
     focusSelectedItem () {
       this.$refs[`item_${this.selectedId}`][0].focus()

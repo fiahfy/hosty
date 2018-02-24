@@ -1,7 +1,7 @@
 <template>
   <div class="group-menu-bar">
     <mdc-button
-      :title="'Create'|accelerator('CmdOrCtrl+N')"
+      :title="'New Group'|accelerator('CmdOrCtrl+N')"
       :disabled="!canCreate"
       @click="createGroup"
     >
