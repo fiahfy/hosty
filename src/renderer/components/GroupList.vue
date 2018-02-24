@@ -130,15 +130,17 @@ export default {
       this.setScrollTop({ scrollTop })
     },
     keydown (e) {
-      e.preventDefault()
       switch (e.keyCode) {
         case 8:
+          e.preventDefault()
           this.delete()
           break
         case 13:
+          e.preventDefault()
           this.focusSelectedItem()
           break
         case 38:
+          e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             this.selectFirst()
           } else {
@@ -146,9 +148,11 @@ export default {
           }
           break
         case 39:
+          e.preventDefault()
           this.enterHostList()
           break
         case 40:
+          e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             this.selectLast()
           } else {
@@ -157,6 +161,7 @@ export default {
           break
         case 78:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            e.preventDefault()
             this.create()
           }
           break
