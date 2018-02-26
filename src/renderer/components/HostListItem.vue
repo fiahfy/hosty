@@ -131,13 +131,22 @@ export default {
     },
     nameKeydown (e) {
       e.stopPropagation()
-      if (e.keyCode === 13) {
-        e.preventDefault()
-        this.nameInput.blur()
-        this.focusList()
-      } else if (e.keyCode === 9) {
-        e.preventDefault()
-        this.ipClick()
+      switch (e.keyCode) {
+        case 9:
+          e.preventDefault()
+          this.ipClick()
+          break
+        case 13:
+          e.preventDefault()
+          this.nameInput.blur()
+          this.focusList()
+          break
+        case 27:
+          e.preventDefault()
+          this.name = this.host.name
+          this.nameInput.blur()
+          this.focusList()
+          break
       }
     },
     ipClick () {
@@ -157,13 +166,24 @@ export default {
     },
     ipKeydown (e) {
       e.stopPropagation()
-      if (e.keyCode === 13) {
-        e.preventDefault()
-        this.ipInput.blur()
-        this.focusList()
-      } else if (e.keyCode === 9 && e.shiftKey) {
-        e.preventDefault()
-        this.nameClick()
+      switch (e.keyCode) {
+        case 9:
+          if (e.shiftKey) {
+            e.preventDefault()
+            this.nameClick()
+          }
+          break
+        case 13:
+          e.preventDefault()
+          this.ipInput.blur()
+          this.focusList()
+          break
+        case 27:
+          e.preventDefault()
+          this.ip = this.host.ip
+          this.ipInput.blur()
+          this.focusList()
+          break
       }
     },
     ...mapActions({

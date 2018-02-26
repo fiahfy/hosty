@@ -111,10 +111,18 @@ export default {
     },
     nameKeydown (e) {
       e.stopPropagation()
-      if (e.keyCode === 13) {
-        e.preventDefault()
-        this.nameInput.blur()
-        this.focusList()
+      switch (e.keyCode) {
+        case 13:
+          e.preventDefault()
+          this.nameInput.blur()
+          this.focusList()
+          break
+        case 27:
+          e.preventDefault()
+          this.name = this.group.name
+          this.nameInput.blur()
+          this.focusList()
+          break
       }
     },
     ...mapActions({
