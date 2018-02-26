@@ -1,7 +1,7 @@
 <template>
   <div class="group-menu-bar">
     <mdc-button
-      title="Create group"
+      :title="'New Group'|accelerator('CmdOrCtrl+N')"
       :disabled="!canCreate"
       @click="createGroup"
     >
@@ -11,7 +11,7 @@
       />
     </mdc-button>
     <mdc-button
-      title="Delete group"
+      :title="'Delete'|accelerator('CmdOrCtrl+Backspace')"
       :disabled="!canDelete"
       @click="deleteGroup"
     >
@@ -20,11 +20,21 @@
         icon="remove"
       />
     </mdc-button>
+    <mdc-button
+      title="Filter"
+      :class="classes"
+      @click="toggleFilterGroup"
+    >
+      <mdc-icon
+        slot="icon"
+        icon="filter_list"
+      />
+    </mdc-button>
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import MdcButton from './MdcButton'
 import MdcIcon from './MdcIcon'
 
@@ -34,6 +44,14 @@ export default {
     MdcIcon
   },
   computed: {
+    classes () {
+      return {
+        inactive: !this.filtered
+      }
+    },
+    ...mapState({
+      filtered: state => state.explorer.group.filtered
+    }),
     ...mapGetters({
       canCreate: 'explorer/group/canCreate',
       canDelete: 'explorer/group/canDelete'
@@ -42,7 +60,8 @@ export default {
   methods: {
     ...mapActions({
       createGroup: 'explorer/group/create',
-      deleteGroup: 'explorer/group/delete'
+      deleteGroup: 'explorer/group/delete',
+      toggleFilterGroup: 'explorer/group/toggleFilter'
     })
   }
 }
@@ -66,6 +85,9 @@ export default {
       margin: 0;
       padding: 0;
       width: auto;
+    }
+    &.inactive .mdc-icon {
+      color: var(--mdc-theme-text-icon-on-background);
     }
   }
 }

@@ -11,11 +11,13 @@ export default {
     sortOption: {
       key: 'name',
       order: 'asc'
-    }
+    },
+    filtered: false,
+    copiedObject: null
   },
   actions: {
-    create ({ dispatch, getters }) {
-      dispatch('group/createGroup', null, { root: true })
+    create ({ dispatch, getters }, { group } = {}) {
+      dispatch('group/createGroup', { group }, { root: true })
       const index = getters.groups.length - 1
       dispatch('selectIndex', { index })
       dispatch('focusList')
@@ -26,6 +28,17 @@ export default {
       const index = oldSelectedIndex > 0 && oldSelectedIndex > getters.groups.length - 1 ? oldSelectedIndex - 1 : oldSelectedIndex
       dispatch('selectIndex', { index })
       dispatch('focusList')
+    },
+    copy ({ commit, getters }) {
+      const copiedObject = getters.selectedGroup
+      commit('setCopiedObject', { copiedObject })
+    },
+    paste ({ dispatch, state }) {
+      const group = state.copiedObject
+      if (!group) {
+        return
+      }
+      dispatch('create', { group })
     },
     select ({ commit, dispatch, getters }, { id }) {
       commit('setSelectedId', { selectedId: id })
@@ -61,6 +74,9 @@ export default {
       }
       dispatch('selectIndex', { index })
     },
+    toggleFilter ({ commit, state }) {
+      commit('setFiltered', { filtered: !state.filtered })
+    },
     changeSortKey ({ commit, dispatch, state }, { sortKey }) {
       let sortOrder = sortOrderDefaults[sortKey]
       if (state.sortOption.key === sortKey) {
@@ -83,11 +99,19 @@ export default {
     },
     setSortOption (state, { sortOption }) {
       state.sortOption = sortOption
+    },
+    setFiltered (state, { filtered }) {
+      state.filtered = filtered
+    },
+    setCopiedObject (state, { copiedObject }) {
+      state.copiedObject = copiedObject
     }
   },
   getters: {
     groups (state, getters, rootState) {
-      return rootState.group.groups
+      return rootState.group.groups.filter((group) => {
+        return !state.filtered || !group.disabled
+      })
     },
     isSelected (state) {
       return ({ id }) => state.selectedId === id

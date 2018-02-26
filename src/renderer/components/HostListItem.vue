@@ -111,7 +111,7 @@ export default {
       this.nameClick()
     },
     statusClick () {
-      this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, params: { disabled: !this.host.disabled } })
+      this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, host: { disabled: !this.host.disabled } })
       this.focusList()
     },
     nameClick () {
@@ -127,17 +127,26 @@ export default {
     },
     nameBlur () {
       this.nameDisabled = true
-      this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, params: { name: this.name } })
+      this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, host: { name: this.name } })
     },
     nameKeydown (e) {
       e.stopPropagation()
-      if (e.keyCode === 13) {
-        e.preventDefault()
-        this.nameInput.blur()
-        this.focusList()
-      } else if (e.keyCode === 9) {
-        e.preventDefault()
-        this.ipClick()
+      switch (e.keyCode) {
+        case 9:
+          e.preventDefault()
+          this.ipClick()
+          break
+        case 13:
+          e.preventDefault()
+          this.nameInput.blur()
+          this.focusList()
+          break
+        case 27:
+          e.preventDefault()
+          this.name = this.host.name
+          this.nameInput.blur()
+          this.focusList()
+          break
       }
     },
     ipClick () {
@@ -153,17 +162,28 @@ export default {
     },
     ipBlur () {
       this.ipDisabled = true
-      this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, params: { ip: this.ip } })
+      this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, host: { ip: this.ip } })
     },
     ipKeydown (e) {
       e.stopPropagation()
-      if (e.keyCode === 13) {
-        e.preventDefault()
-        this.ipInput.blur()
-        this.focusList()
-      } else if (e.keyCode === 9 && e.shiftKey) {
-        e.preventDefault()
-        this.nameClick()
+      switch (e.keyCode) {
+        case 9:
+          if (e.shiftKey) {
+            e.preventDefault()
+            this.nameClick()
+          }
+          break
+        case 13:
+          e.preventDefault()
+          this.ipInput.blur()
+          this.focusList()
+          break
+        case 27:
+          e.preventDefault()
+          this.ip = this.host.ip
+          this.ipInput.blur()
+          this.focusList()
+          break
       }
     },
     ...mapActions({

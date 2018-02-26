@@ -12,11 +12,13 @@ export default {
     sortOption: {
       key: 'name',
       order: 'asc'
-    }
+    },
+    filtered: false,
+    copiedObject: null
   },
   actions: {
-    create ({ dispatch, getters }) {
-      dispatch('group/createHost', { groupId: getters.selectedGroupId }, { root: true })
+    create ({ dispatch, getters }, { host } = {}) {
+      dispatch('group/createHost', { groupId: getters.selectedGroupId, host }, { root: true })
       const index = getters.hosts.length - 1
       dispatch('selectIndex', { index })
       dispatch('focusList')
@@ -27,6 +29,17 @@ export default {
       const index = oldSelectedIndex > 0 && oldSelectedIndex > getters.hosts.length - 1 ? oldSelectedIndex - 1 : oldSelectedIndex
       dispatch('selectIndex', { index })
       dispatch('focusList')
+    },
+    copy ({ commit, getters }) {
+      const copiedObject = getters.selectedHost
+      commit('setCopiedObject', { copiedObject })
+    },
+    paste ({ dispatch, state }) {
+      const host = state.copiedObject
+      if (!host) {
+        return
+      }
+      dispatch('create', { host })
     },
     select ({ commit }, { id }) {
       commit('setSelectedId', { selectedId: id })
@@ -57,6 +70,9 @@ export default {
         return
       }
       dispatch('selectIndex', { index })
+    },
+    toggleFilter ({ commit, state }) {
+      commit('setFiltered', { filtered: !state.filtered })
     },
     changeSortKey ({ commit, dispatch, getters, state }, { sortKey }) {
       let sortOrder = sortOrderDefaults[sortKey]
@@ -92,6 +108,12 @@ export default {
     },
     setSortOption (state, { sortOption }) {
       state.sortOption = sortOption
+    },
+    setFiltered (state, { filtered }) {
+      state.filtered = filtered
+    },
+    setCopiedObject (state, { copiedObject }) {
+      state.copiedObject = copiedObject
     }
   },
   getters: {
@@ -100,13 +122,18 @@ export default {
       if (!selectedGroup) {
         return []
       }
-      return selectedGroup.hosts || []
+      return (selectedGroup.hosts || []).filter((host) => {
+        return !state.filtered || !host.disabled
+      })
     },
     isSelected (state) {
       return ({ id }) => state.selectedId === id
     },
     selectedIndex (state, getters) {
       return getters.hosts.findIndex((host) => getters.isSelected({ id: host.id }))
+    },
+    selectedHost (state, getters) {
+      return getters.hosts.find((host) => getters.isSelected({ id: host.id }))
     },
     selectedGroupId (state, getters, rootState, rootGetters) {
       const selectedGroup = rootGetters['explorer/group/selectedGroup']

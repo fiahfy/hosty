@@ -91,7 +91,7 @@ export default {
       this.nameClick()
     },
     statusClick () {
-      this.updateGroup({ id: this.group.id, params: { disabled: !this.group.disabled } })
+      this.updateGroup({ id: this.group.id, group: { disabled: !this.group.disabled } })
       this.focusList()
     },
     nameClick () {
@@ -107,14 +107,22 @@ export default {
     },
     nameBlur () {
       this.disabled = true
-      this.updateGroup({ id: this.group.id, params: { name: this.name } })
+      this.updateGroup({ id: this.group.id, group: { name: this.name } })
     },
     nameKeydown (e) {
       e.stopPropagation()
-      if (e.keyCode === 13) {
-        e.preventDefault()
-        this.nameInput.blur()
-        this.focusList()
+      switch (e.keyCode) {
+        case 13:
+          e.preventDefault()
+          this.nameInput.blur()
+          this.focusList()
+          break
+        case 27:
+          e.preventDefault()
+          this.name = this.group.name
+          this.nameInput.blur()
+          this.focusList()
+          break
       }
     },
     ...mapActions({

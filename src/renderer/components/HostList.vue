@@ -50,6 +50,7 @@
           :host="host"
           :selected="isSelected({ id: host.id })"
           @click="select({ id: host.id })"
+          @contextmenu="(e) => contextmenu(e, { id: host.id })"
           v-for="host in hosts"
         />
       </mdc-table-body>
@@ -66,6 +67,7 @@ import MdcTableBody from './MdcTableBody'
 import MdcTableHeader from './MdcTableHeader'
 import MdcTableHeaderColumn from './MdcTableHeaderColumn'
 import MdcTableRow from './MdcTableRow'
+import * as ContextMenu from '../utils/context-menu'
 
 export default {
   components: {
@@ -142,8 +144,10 @@ export default {
     keydown (e) {
       switch (e.keyCode) {
         case 8:
-          e.preventDefault()
-          this.delete()
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            e.preventDefault()
+            this.delete()
+          }
           break
         case 13:
           e.preventDefault()
@@ -163,11 +167,28 @@ export default {
           break
         case 40:
           e.preventDefault()
-          e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             this.selectLast()
           } else {
             this.selectNext()
+          }
+          break
+        case 67:
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            e.preventDefault()
+            this.copy()
+          }
+          break
+        case 78:
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            e.preventDefault()
+            this.create()
+          }
+          break
+        case 86:
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            e.preventDefault()
+            this.paste()
           }
           break
       }
@@ -178,6 +199,37 @@ export default {
         this.$el.scrollTop = 0
       })
     },
+    contextmenu (e, { id }) {
+      this.select({ id })
+      ContextMenu.show(e, [
+        {
+          label: 'New Host',
+          click: this.create,
+          accelerator: 'CmdOrCtrl+N'
+        },
+        {
+          label: 'Copy',
+          click: this.copy,
+          accelerator: 'CmdOrCtrl+C'
+        },
+        {
+          label: 'Paste',
+          click: this.paste,
+          accelerator: 'CmdOrCtrl+V'
+        },
+        { type: 'separator' },
+        {
+          label: 'Edit',
+          click: this.focusSelectedItem,
+          accelerator: 'Enter'
+        },
+        {
+          label: 'Delete',
+          click: this.delete,
+          accelerator: 'CmdOrCtrl+Backspace'
+        }
+      ])
+    },
     focusSelectedItem () {
       this.$refs[`item_${this.selectedId}`][0].focus()
     },
@@ -185,7 +237,10 @@ export default {
       setScrollTop: 'explorer/host/setScrollTop'
     }),
     ...mapActions({
+      create: 'explorer/host/create',
       delete: 'explorer/host/delete',
+      copy: 'explorer/host/copy',
+      paste: 'explorer/host/paste',
       select: 'explorer/host/select',
       selectFirst: 'explorer/host/selectFirst',
       selectLast: 'explorer/host/selectLast',
