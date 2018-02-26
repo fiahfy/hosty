@@ -16,7 +16,7 @@ const appendInspectElementMenu = (e, template) => {
   }])
 }
 
-export const Label = {
+export const Role = {
   cut: 'Cut',
   copy: 'Copy',
   paste: 'Paste'
@@ -31,22 +31,22 @@ export const show = (e, template = []) => {
   }
 
   template = template.map((item) => {
-    switch (item.label) {
-      case Label.cut:
+    switch (item.role) {
+      case Role.cut:
         return {
-          label: item.label,
+          label: item.role,
           click: () => document.execCommand('cut'),
           accelerator: 'CmdOrCtrl+X'
         }
-      case Label.copy:
+      case Role.copy:
         return {
-          label: item.label,
+          label: item.role,
           click: () => document.execCommand('copy'),
           accelerator: 'CmdOrCtrl+C'
         }
-      case Label.paste:
+      case Role.paste:
         return {
-          label: item.label,
+          label: item.role,
           click: () => document.execCommand('paste'),
           accelerator: 'CmdOrCtrl+V'
         }

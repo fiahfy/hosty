@@ -111,7 +111,7 @@ export default {
       this.nameClick()
     },
     statusClick () {
-      this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, params: { disabled: !this.host.disabled } })
+      this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, host: { disabled: !this.host.disabled } })
       this.focusList()
     },
     nameClick () {
@@ -127,7 +127,7 @@ export default {
     },
     nameBlur () {
       this.nameDisabled = true
-      this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, params: { name: this.name } })
+      this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, host: { name: this.name } })
     },
     nameKeydown (e) {
       e.stopPropagation()
@@ -153,7 +153,7 @@ export default {
     },
     ipBlur () {
       this.ipDisabled = true
-      this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, params: { ip: this.ip } })
+      this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, host: { ip: this.ip } })
     },
     ipKeydown (e) {
       e.stopPropagation()

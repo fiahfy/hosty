@@ -12,11 +12,12 @@ export default {
       key: 'name',
       order: 'asc'
     },
-    filtered: false
+    filtered: false,
+    copiedObject: null
   },
   actions: {
-    create ({ dispatch, getters }) {
-      dispatch('group/createGroup', null, { root: true })
+    create ({ dispatch, getters }, { group } = {}) {
+      dispatch('group/createGroup', { group }, { root: true })
       const index = getters.groups.length - 1
       dispatch('selectIndex', { index })
       dispatch('focusList')
@@ -27,6 +28,17 @@ export default {
       const index = oldSelectedIndex > 0 && oldSelectedIndex > getters.groups.length - 1 ? oldSelectedIndex - 1 : oldSelectedIndex
       dispatch('selectIndex', { index })
       dispatch('focusList')
+    },
+    copy ({ commit, getters }) {
+      const copiedObject = getters.selectedGroup
+      commit('setCopiedObject', { copiedObject })
+    },
+    paste ({ dispatch, state }) {
+      const group = state.copiedObject
+      if (!group) {
+        return
+      }
+      dispatch('create', { group })
     },
     select ({ commit, dispatch, getters }, { id }) {
       commit('setSelectedId', { selectedId: id })
@@ -90,6 +102,9 @@ export default {
     },
     setFiltered (state, { filtered }) {
       state.filtered = filtered
+    },
+    setCopiedObject (state, { copiedObject }) {
+      state.copiedObject = copiedObject
     }
   },
   getters: {

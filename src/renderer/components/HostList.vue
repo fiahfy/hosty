@@ -173,10 +173,22 @@ export default {
             this.selectNext()
           }
           break
+        case 67:
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            e.preventDefault()
+            this.copy()
+          }
+          break
         case 78:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             e.preventDefault()
             this.create()
+          }
+          break
+        case 86:
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            e.preventDefault()
+            this.paste()
           }
           break
       }
@@ -195,6 +207,17 @@ export default {
           click: this.create,
           accelerator: 'CmdOrCtrl+N'
         },
+        {
+          label: 'Copy',
+          click: this.copy,
+          accelerator: 'CmdOrCtrl+C'
+        },
+        {
+          label: 'Paste',
+          click: this.paste,
+          accelerator: 'CmdOrCtrl+V'
+        },
+        { type: 'separator' },
         {
           label: 'Edit',
           click: this.focusSelectedItem,
@@ -216,6 +239,8 @@ export default {
     ...mapActions({
       create: 'explorer/host/create',
       delete: 'explorer/host/delete',
+      copy: 'explorer/host/copy',
+      paste: 'explorer/host/paste',
       select: 'explorer/host/select',
       selectFirst: 'explorer/host/selectFirst',
       selectLast: 'explorer/host/selectLast',

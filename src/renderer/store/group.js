@@ -8,26 +8,25 @@ export default {
       commit('setGroups', { groups })
       dispatch('syncHosts', null, { root: true })
     },
-    createGroup ({ dispatch, state }) {
+    createGroup ({ dispatch, state }, { group = { disabled: false, name: '', hosts: [] } }) {
       const id = Math.max.apply(null, [0, ...state.groups.map((group) => group.id)]) + 1
       const groups = [
         ...state.groups,
         {
-          id,
-          disabled: false,
-          name: ''
+          ...group,
+          id
         }
       ]
       dispatch('syncGroups', { groups })
     },
-    updateGroup ({ dispatch, state }, { id, params }) {
-      const groups = state.groups.map((group) => {
-        if (group.id !== id) {
-          return group
+    updateGroup ({ dispatch, state }, { id, group = { disabled: false, name: '', hosts: [] } }) {
+      const groups = state.groups.map((currentGroup) => {
+        if (currentGroup.id !== id) {
+          return currentGroup
         }
         return {
-          ...group,
-          ...params
+          ...currentGroup,
+          ...group
         }
       })
       dispatch('syncGroups', { groups })
@@ -55,7 +54,7 @@ export default {
       })
       commit('setGroups', { groups })
     },
-    createHost ({ dispatch, state }, { groupId }) {
+    createHost ({ dispatch, state }, { groupId, host = { disabled: false, name: '', ip: '' } }) {
       const groups = state.groups.map((group) => {
         if (group.id !== groupId) {
           return group
@@ -67,30 +66,28 @@ export default {
           hosts: [
             ...currentHosts,
             {
-              id,
-              disabled: false,
-              name: '',
-              ip: ''
+              ...host,
+              id
             }
           ]
         }
       })
       dispatch('syncGroups', { groups })
     },
-    updateHost ({ dispatch, state }, { groupId, id, params }) {
+    updateHost ({ dispatch, state }, { groupId, id, host = { disabled: false, name: '', ip: '' } }) {
       const groups = state.groups.map((group) => {
         if (group.id !== groupId) {
           return group
         }
         return {
           ...group,
-          hosts: group.hosts.map((host) => {
-            if (host.id !== id) {
-              return host
+          hosts: group.hosts.map((currentHost) => {
+            if (currentHost.id !== id) {
+              return currentHost
             }
             return {
-              ...host,
-              ...params
+              ...currentHost,
+              ...host
             }
           })
         }
