@@ -134,8 +134,10 @@ export default {
     keydown (e) {
       switch (e.keyCode) {
         case 8:
-          e.preventDefault()
-          this.delete()
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            e.preventDefault()
+            this.delete()
+          }
           break
         case 13:
           e.preventDefault()
@@ -191,7 +193,7 @@ export default {
         {
           label: 'Delete',
           click: this.delete,
-          accelerator: 'Delete'
+          accelerator: 'CmdOrCtrl+Backspace'
         }
       ])
     },

@@ -11,7 +11,7 @@
       />
     </mdc-button>
     <mdc-button
-      :title="'Delete'|accelerator('Delete')"
+      :title="'Delete'|accelerator('CmdOrCtrl+Backspace')"
       :disabled="!canDelete"
       @click="deleteGroup"
     >

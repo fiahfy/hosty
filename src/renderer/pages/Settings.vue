@@ -42,5 +42,8 @@ export default {
   h4 {
     color: var(--mdc-theme-text-secondary-on-background);
   }
+  label {
+    cursor: pointer;
+  }
 }
 </style>
