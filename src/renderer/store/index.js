@@ -20,8 +20,10 @@ export default new Vuex.Store({
     message: ''
   },
   actions: {
-    changeRoute (_, payload) {
+    changeRoute ({ dispatch }, payload) {
       router.push(payload)
+      const title = payload.name.charAt(0).toUpperCase() + payload.name.slice(1)
+      dispatch('changeTitle', { title })
     },
     focus (_, { selector }) {
       // wait dom updated
@@ -90,6 +92,9 @@ export default new Vuex.Store({
   getters: {
     titleBar (state) {
       return process.platform === 'darwin' && !state.fullScreen
+    },
+    preview (state) {
+      return HostsFileManager.build(state.group.groups)
     }
   },
   modules: {

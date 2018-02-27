@@ -80,40 +80,6 @@ const setupUserHostsFile = async () => {
   }
 }
 
-const build = (groups) => {
-  return groups
-    .filter((group) => !group.disabled)
-    .map((group) => (group.hosts || []).concat())
-    .reduce((carry, hosts) => carry.concat(hosts), [])
-    .filter((host) => !host.disabled && host.name && host.ip)
-    .sort((a, b) => {
-      let result = 0
-      if (a.ip > b.ip) {
-        result = 1
-      } else if (a.ip < b.ip) {
-        result = -1
-      }
-      if (result !== 0) {
-        return result
-      }
-      if (a.disabled > b.disabled) {
-        result = 1
-      } else if (a.disabled < b.disabled) {
-        result = -1
-      }
-      if (result !== 0) {
-        return result
-      }
-      if (a.name > b.name) {
-        result = 1
-      } else if (a.name < b.name) {
-        result = -1
-      }
-    })
-    .map((host) => `${host.ip}\t${host.name}`)
-    .join('\n')
-}
-
 const isOldFormat = (groups) => {
   if (!groups) {
     return false
@@ -166,6 +132,40 @@ export const save = async (groups = []) => {
 
 export const clear = () => {
   save()
+}
+
+export const build = (groups) => {
+  return groups
+    .filter((group) => !group.disabled)
+    .map((group) => (group.hosts || []).concat())
+    .reduce((carry, hosts) => carry.concat(hosts), [])
+    .filter((host) => !host.disabled && host.name && host.ip)
+    .sort((a, b) => {
+      let result = 0
+      if (a.ip > b.ip) {
+        result = 1
+      } else if (a.ip < b.ip) {
+        result = -1
+      }
+      if (result !== 0) {
+        return result
+      }
+      if (a.disabled > b.disabled) {
+        result = 1
+      } else if (a.disabled < b.disabled) {
+        result = -1
+      }
+      if (result !== 0) {
+        return result
+      }
+      if (a.name > b.name) {
+        result = 1
+      } else if (a.name < b.name) {
+        result = -1
+      }
+    })
+    .map((host) => `${host.ip}\t${host.name}`)
+    .join('\n')
 }
 
 export const readHostyFile = (filepath) => {
