@@ -2,7 +2,7 @@ import config from './config.base.babel'
 
 export default {
   ...config,
-  target: 'electron',
+  target: 'electron-main',
   entry: './main.js',
   output: {
     path: `${__dirname}/../app/assets/`,

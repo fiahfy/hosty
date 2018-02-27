@@ -45,8 +45,9 @@
     "url-loader": "^0.6.2",
     "vue-loader": "^14.1.1",
     "vue-template-compiler": "^2.0.0",
-    "webpack": "^3.5.4",
-    "webpack-dev-server": "^2.7.1"
+    "webpack": "^4.0.1",
+    "webpack-cli": "^2.0.9",
+    "webpack-dev-server": "^3.0.0"
   },
   "keywords": [
     "electron",
@@ -62,11 +63,12 @@
     "url": "https://github.com/fiahfy/hosty"
   },
   "scripts": {
-    "build": "build -mw -p onTagOrDraft",
+    "build": "cross-env NODE_ENV=production run-s webpack",
+    "build:electron": "build -mw -p onTagOrDraft",
     "dev": "cross-env HOT=1 run-p dev-server start:main",
     "dev-server": "webpack-dev-server --config webpack/config.renderer.hot.babel.js",
     "lint": "eslint src --ext .js,.vue",
-    "release": "cross-env NODE_ENV=production run-s webpack build",
+    "release": "run-s build build:electron",
     "start": "run-s webpack:renderer start:main",
     "start:main": "run-s webpack:main start:main:electron",
     "start:main:electron": "electron main.js",
