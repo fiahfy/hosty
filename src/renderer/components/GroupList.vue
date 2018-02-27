@@ -120,7 +120,6 @@ export default {
     this.$nextTick(() => {
       this.$el.scrollTop = this.scrollTop
     })
-    this.selectIndex({ index: 0 })
   },
   beforeDestroy () {
     this.$el.removeEventListener('scroll', this.scroll)

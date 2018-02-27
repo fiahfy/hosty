@@ -44,8 +44,6 @@ export default {
       commit('setSelectedId', { selectedId: id })
       dispatch('explorer/host/sort', null, { root: true })
       dispatch('explorer/host/unselect', null, { root: true })
-      const title = getters.selectedGroup ? getters.selectedGroup.name : ''
-      dispatch('changeTitle', { title }, { root: true })
     },
     unselect ({ commit }) {
       commit('setSelectedId', { selectedId: 0 })
