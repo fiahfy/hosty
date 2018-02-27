@@ -48,9 +48,6 @@ export default {
 
 <style scoped lang="scss">
 .preview {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
   height: 100%;
   position: relative;
   div {
@@ -62,14 +59,17 @@ export default {
   textarea {
     background-color: inherit;
     border: 0;
+    box-sizing: border-box;
     color: var(--mdc-theme-text-primary-on-background);
     flex: 1;
     font-family: inherit;
     font-size: inherit;
+    height: 100%;
     outline: 0;
     padding: 15px;
     resize: none;
     tab-size: 32;
+    width: 100%;
   }
   &.scrolling div {
     box-shadow: 0 0 3px 1px var(--shadow);
