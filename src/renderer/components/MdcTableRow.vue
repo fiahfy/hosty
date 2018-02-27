@@ -1,7 +1,7 @@
 <template>
   <tr
-    class="mdc-table-row"
     v-bind="$attrs"
+    class="mdc-table-row"
     v-on="$listeners"
   >
     <slot />

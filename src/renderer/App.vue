@@ -1,8 +1,8 @@
 <template>
   <div
     id="app"
-    class="mdc-theme--background"
     :style="styles"
+    class="mdc-theme--background"
     @contextmenu="contextmenu"
     @dragover.prevent
     @drop.prevent="drop"

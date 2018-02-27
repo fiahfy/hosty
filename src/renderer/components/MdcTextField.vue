@@ -1,23 +1,23 @@
 <template>
   <div
-    class="mdc-text-field"
     :class="classes"
+    class="mdc-text-field"
   >
     <input
-      type="text"
-      class="mdc-text-field__input"
       :id="id"
       :placeholder="placeholder"
       :aria-label="placeholder"
       :disabled="disabled"
       v-model="model"
       v-bind="$attrs"
+      type="text"
+      class="mdc-text-field__input"
       v-on="listeners"
     >
     <label
-      class="mdc-text-field__label"
-      :for="id"
       v-if="!fullwidth"
+      :for="id"
+      class="mdc-text-field__label"
     >{{ label }}</label>
     <div class="mdc-line-ripple" />
   </div>

@@ -1,7 +1,7 @@
 <template>
   <div
-    class="divider"
     :style="styles"
+    class="divider"
   />
 </template>
 

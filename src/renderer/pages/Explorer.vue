@@ -4,8 +4,8 @@
       <group-menu-bar />
       <div class="container">
         <div
-          class="message"
           v-if="groupMessage"
+          class="message"
         >
           {{ groupMessage }}
         </div>
@@ -17,8 +17,8 @@
       <host-menu-bar />
       <div class="container">
         <div
-          class="message"
           v-if="hostMessage"
+          class="message"
         >
           {{ hostMessage }}
         </div>

@@ -1,8 +1,8 @@
 <template>
   <mdc-table-row
-    class="group-list-item"
     :class="classes"
     v-bind="$attrs"
+    class="group-list-item"
     v-on="$listeners"
   >
     <mdc-table-column class="status">
@@ -24,10 +24,10 @@
     >
       <mdc-text-field
         ref="name"
-        fullwidth
-        label="Group"
         :disabled="disabled"
         v-model="name"
+        fullwidth
+        label="Group"
         @blur="nameBlur"
         @keydown="nameKeydown"
       />

@@ -2,8 +2,8 @@
   <div class="activity-bar">
     <ul>
       <li
-        :key="item.name"
         v-for="item in items"
+        :key="item.name"
       >
         <mdc-button
           :title="item.title"

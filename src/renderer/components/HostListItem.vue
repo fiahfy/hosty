@@ -1,8 +1,8 @@
 <template>
   <mdc-table-row
-    class="host-list-item"
     :class="classes"
     v-bind="$attrs"
+    class="host-list-item"
     v-on="$listeners"
   >
     <mdc-table-column class="status">
@@ -24,10 +24,10 @@
     >
       <mdc-text-field
         ref="name"
-        fullwidth
-        label="example.com"
         :disabled="nameDisabled"
         v-model="name"
+        fullwidth
+        label="example.com"
         @blur="nameBlur"
         @keydown="nameKeydown"
       />
@@ -38,10 +38,10 @@
     >
       <mdc-text-field
         ref="ip"
-        fullwidth
-        label="192.0.2.0"
         :disabled="ipDisabled"
         v-model="ip"
+        fullwidth
+        label="192.0.2.0"
         @blur="ipBlur"
         @keydown="ipKeydown"
       />

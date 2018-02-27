@@ -21,8 +21,8 @@
       />
     </mdc-button>
     <mdc-button
-      title="Filter"
       :class="classes"
+      title="Filter"
       @click="toggleFilterGroup"
     >
       <mdc-icon
