@@ -4,13 +4,22 @@
     class="preview-list-item"
     v-on="$listeners"
   >
-    <mdc-table-column>
+    <mdc-table-column class="icon">
+      <mdc-button
+        title="Edit"
+      >
+        <mdc-icon
+          slot="icon"
+          icon="edit"
+          class="mdc-button__icon"
+        />
+      </mdc-button>
     </mdc-table-column>
     <mdc-table-column class="ip">
-      <span>{{ host.ip }}</span>
+      <span ref="shrink">{{ host.ip }}</span>
     </mdc-table-column>
     <mdc-table-column class="name">
-      {{ host.name }}
+      <span>{{ host.name }}</span>
     </mdc-table-column>
   </mdc-table-row>
 </template>
@@ -33,6 +42,11 @@ export default {
       type: Object,
       required: true
     }
+  },
+  methods: {
+    getShrinkedWidth () {
+      return this.$refs.shrink.offsetWidth
+    }
   }
 }
 </script>
@@ -41,26 +55,37 @@ export default {
 .preview-list-item {
   height: 24px;
   .mdc-table-column {
-    line-height: 20px;
+    line-height: 21px;
     overflow: hidden;
-    padding: 2px 8px;
+    padding: 4px 8px 2px 8px;
     text-overflow: ellipsis;
     vertical-align: bottom;
     white-space: nowrap;
     .mdc-button {
-      min-width: 36px;
+      height: 27px;
+      min-width: 27px;
       padding: 0;
       .mdc-icon {
-        font-size: 24px;
+        font-size: 18px;
         height: auto;
+        line-height: 27px;
         margin: 0;
         padding: 0;
         width: auto;
       }
     }
+    &.icon {
+      padding: 0;
+      .mdc-button {
+        visibility: hidden;
+      }
+    }
   }
   &:hover .mdc-table-column {
     background-color: var(--hover);
+      .mdc-button {
+        visibility: visible;
+      }
   }
 }
 </style>

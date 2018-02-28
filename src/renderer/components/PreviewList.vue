@@ -8,7 +8,7 @@
         <mdc-table-row>
           <mdc-table-header-column class="icon" />
           <mdc-table-header-column
-            :style="ipStyles"
+            :style="shrinkColumnStyles"
             class="ip"
           />
           <mdc-table-header-column class="name" />
@@ -20,6 +20,7 @@
       <mdc-table-body >
         <preview-list-item
           v-for="(host, index) in hosts"
+          ref="item"
           :key="host.id + '-' + index"
           :host="host"
         />
@@ -51,7 +52,7 @@ export default {
   data () {
     return {
       scrolling: false,
-      ipWidth: 0
+      shrinkedWidth: 0
     }
   },
   computed: {
@@ -60,9 +61,9 @@ export default {
         scrolling: this.scrolling
       }
     },
-    ipStyles () {
+    shrinkColumnStyles () {
       return {
-        width: this.ipWidth ? `${this.ipWidth}px` : null
+        width: this.shrinkedWidth ? `${this.shrinkedWidth}px` : null
       }
     },
     ...mapState({
@@ -76,9 +77,7 @@ export default {
     this.$el.addEventListener('scroll', this.scroll)
     this.$nextTick(() => {
       this.$el.scrollTop = this.scrollTop
-      this.ipWidth = Math.max.apply(null, Array.from(
-        this.$el.querySelectorAll('.preview-list-item span')
-      ).map((item) => item.offsetWidth)) + 16
+      this.shrinkedWidth = Math.max.apply(null, this.$refs.item.map((item) => item.getShrinkedWidth())) + 32
     })
   },
   beforeDestroy () {
@@ -112,7 +111,7 @@ export default {
         height: 0;
         .mdc-table-header-column {
           &.icon {
-            width: 44px;
+            width: 25px;
           }
         }
         &.shadow {
