@@ -256,7 +256,6 @@ export default {
 <style scoped lang="scss">
 .host-list {
   height: 100%;
-  outline: none;
   overflow-y: scroll;
   .mdc-table {
     border-spacing: 0;

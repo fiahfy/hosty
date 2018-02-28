@@ -1,78 +1,28 @@
 <template>
-  <div
-    :class="classes"
-    class="preview"
-  >
+  <div class="preview">
     <div />
-    <textarea
-      ref="textarea"
-      v-model="preview"
-      readonly
-    />
+    <preview-list />
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import PreviewList from '../components/PreviewList'
 
 export default {
-  data () {
-    return {
-      scrolling: false
-    }
-  },
-  computed: {
-    classes () {
-      return {
-        scrolling: this.scrolling
-      }
-    },
-    ...mapGetters({
-      preview: 'preview'
-    })
-  },
-  mounted () {
-    this.$refs.textarea.addEventListener('scroll', this.scroll)
-  },
-  beforeDestroy () {
-    this.$refs.textarea.removeEventListener('scroll', this.scroll)
-  },
-  methods: {
-    scroll () {
-      const scrollTop = this.$refs.textarea.scrollTop
-      this.scrolling = scrollTop > 0
-    }
+  components: {
+    PreviewList
   }
 }
 </script>
 
 <style scoped lang="scss">
 .preview {
+  display: flex;
+  flex-direction: column;
   height: 100%;
-  position: relative;
-  div {
-    height: 0;
-    left: 0;
-    position: absolute;
-    right: 0;
-  }
-  textarea {
-    background-color: inherit;
-    border: 0;
-    box-sizing: border-box;
-    color: var(--mdc-theme-text-primary-on-background);
+  width: 100%;
+  .preview-list {
     flex: 1;
-    font-family: inherit;
-    font-size: inherit;
-    height: 100%;
-    outline: 0;
-    padding: 15px;
-    resize: none;
-    tab-size: 32;
-    width: 100%;
-  }
-  &.scrolling div {
-    box-shadow: 0 0 3px 1px var(--shadow);
   }
 }
 </style>
