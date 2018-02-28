@@ -134,7 +134,7 @@ export const clear = () => {
   save()
 }
 
-export const build = (groups) => {
+export const filterHosts = (groups) => {
   return groups
     .filter((group) => !group.disabled)
     .map((group) => (group.hosts || []).concat())
@@ -164,6 +164,10 @@ export const build = (groups) => {
         result = -1
       }
     })
+}
+
+const build = (groups) => {
+  return filterHosts(groups)
     .map((host) => `${host.ip}\t${host.name}`)
     .join('\n')
 }

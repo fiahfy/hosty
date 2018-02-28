@@ -19,22 +19,22 @@
             />
           </mdc-table-header-column>
           <mdc-table-header-column
-            class="name"
-            @click="e => click(e, 'name')"
-          >
-            <span>Host</span>
-            <mdc-icon
-              v-if="sortOption.key === 'name'"
-              :icon="icon"
-            />
-          </mdc-table-header-column>
-          <mdc-table-header-column
             class="ip"
             @click="e => click(e, 'ip')"
           >
             <span>IP</span>
             <mdc-icon
               v-if="sortOption.key === 'ip'"
+              :icon="icon"
+            />
+          </mdc-table-header-column>
+          <mdc-table-header-column
+            class="name"
+            @click="e => click(e, 'name')"
+          >
+            <span>Host</span>
+            <mdc-icon
+              v-if="sortOption.key === 'name'"
               :icon="icon"
             />
           </mdc-table-header-column>
@@ -256,10 +256,10 @@ export default {
 <style scoped lang="scss">
 .host-list {
   height: 100%;
+  outline: none;
   overflow-y: scroll;
   .mdc-table {
     border-spacing: 0;
-    outline: none;
     table-layout: fixed;
     width: 100%;
     .mdc-table-header {

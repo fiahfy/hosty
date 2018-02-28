@@ -3,8 +3,9 @@ import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import router from '../router'
 import explorer from './explorer'
-import settings from './settings'
 import group from './group'
+import preview from './preview'
+import settings from './settings'
 import * as HostsFileManager from '../utils/hosts-file-manager'
 
 Vue.use(Vuex)
@@ -92,15 +93,13 @@ export default new Vuex.Store({
   getters: {
     titleBar (state) {
       return process.platform === 'darwin' && !state.fullScreen
-    },
-    preview (state) {
-      return HostsFileManager.build(state.group.groups)
     }
   },
   modules: {
     explorer,
-    settings,
-    group
+    group,
+    preview,
+    settings
   },
   plugins: [
     createPersistedState({

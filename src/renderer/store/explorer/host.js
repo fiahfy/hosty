@@ -10,7 +10,7 @@ export default {
     selectedId: 0,
     scrollTop: 0,
     sortOption: {
-      key: 'name',
+      key: 'ip',
       order: 'asc'
     },
     filtered: false,

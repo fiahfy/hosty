@@ -246,10 +246,10 @@ export default {
 <style scoped lang="scss">
 .group-list {
   height: 100%;
+  outline: none;
   overflow-y: scroll;
   .mdc-table {
     border-spacing: 0;
-    outline: none;
     table-layout: fixed;
     width: 100%;
     .mdc-table-header {

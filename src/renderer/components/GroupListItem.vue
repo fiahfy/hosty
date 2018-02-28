@@ -112,6 +112,7 @@ export default {
     nameKeydown (e) {
       e.stopPropagation()
       switch (e.keyCode) {
+        case 9:
         case 13:
           e.preventDefault()
           this.nameInput.blur()
