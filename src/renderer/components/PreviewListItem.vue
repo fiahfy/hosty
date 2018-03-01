@@ -7,6 +7,7 @@
     <mdc-table-column class="icon">
       <mdc-button
         title="Edit"
+        @click="click"
       >
         <mdc-icon
           slot="icon"
@@ -25,6 +26,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import MdcButton from './MdcButton'
 import MdcIcon from './MdcIcon'
 import MdcTableColumn from './MdcTableColumn'
@@ -44,9 +46,15 @@ export default {
     }
   },
   methods: {
+    click () {
+      this.edit({ groupId: this.host.groupId, hostId: this.host.hostId })
+    },
     getShrinkedWidth () {
       return this.$refs.shrink.offsetWidth
-    }
+    },
+    ...mapActions({
+      edit: 'preview/edit'
+    })
   }
 }
 </script>

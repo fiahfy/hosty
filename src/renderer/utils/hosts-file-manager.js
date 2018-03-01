@@ -137,7 +137,16 @@ export const clear = () => {
 export const filterHosts = (groups) => {
   return groups
     .filter((group) => !group.disabled)
-    .map((group) => (group.hosts || []).concat())
+    .map((group) => {
+      return (group.hosts || []).map((host) => {
+        return {
+          ...host,
+          groupId: group.id,
+          hostId: host.id,
+          id: `${group.id}-${host.id}`
+        }
+      })
+    })
     .reduce((carry, hosts) => carry.concat(hosts), [])
     .filter((host) => !host.disabled && host.name && host.ip)
     .sort((a, b) => {

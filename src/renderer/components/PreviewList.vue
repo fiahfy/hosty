@@ -19,9 +19,9 @@
       </mdc-table-header>
       <mdc-table-body >
         <preview-list-item
-          v-for="(host, index) in hosts"
+          v-for="host in hosts"
           ref="item"
-          :key="host.id + '-' + index"
+          :key="host.id"
           :host="host"
         />
       </mdc-table-body>
@@ -110,8 +110,9 @@ export default {
       .mdc-table-row {
         height: 0;
         .mdc-table-header-column {
+          padding: 0;
           &.icon {
-            width: 25px;
+            width: 27px;
           }
         }
         &.shadow {
