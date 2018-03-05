@@ -4,8 +4,8 @@
       <group-menu-bar />
       <div class="container">
         <div
-          class="message"
           v-if="groupMessage"
+          class="message"
         >
           {{ groupMessage }}
         </div>
@@ -17,8 +17,8 @@
       <host-menu-bar />
       <div class="container">
         <div
-          class="message"
           v-if="hostMessage"
+          class="message"
         >
           {{ hostMessage }}
         </div>
@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import Divider from '../components/Divider'
 import GroupList from '../components/GroupList'
 import GroupMenuBar from '../components/GroupMenuBar'
@@ -52,8 +52,29 @@ export default {
       return this.hosts.length ? '' : 'No Hosts'
     },
     ...mapGetters({
+      selectedGroup: 'explorer/group/selectedGroup',
       groups: 'explorer/group/groups',
       hosts: 'explorer/host/hosts'
+    })
+  },
+  watch: {
+    selectedGroup () {
+      this.updateTitle()
+    }
+  },
+  mounted () {
+    this.updateTitle()
+  },
+  methods: {
+    updateTitle () {
+      let title = 'Explorer'
+      if (this.selectedGroup) {
+        title = this.selectedGroup.name || '(No name)'
+      }
+      this.changeTitle({ title })
+    },
+    ...mapActions({
+      changeTitle: 'changeTitle'
     })
   }
 }

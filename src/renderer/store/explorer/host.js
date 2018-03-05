@@ -10,7 +10,7 @@ export default {
     selectedId: 0,
     scrollTop: 0,
     sortOption: {
-      key: 'name',
+      key: 'ip',
       order: 'asc'
     },
     filtered: false,
@@ -29,6 +29,9 @@ export default {
       const index = oldSelectedIndex > 0 && oldSelectedIndex > getters.hosts.length - 1 ? oldSelectedIndex - 1 : oldSelectedIndex
       dispatch('selectIndex', { index })
       dispatch('focusList')
+    },
+    sort ({ dispatch, getters, state }) {
+      dispatch('group/sortHosts', { groupId: getters.selectedGroupId, ...state.sortOption }, { root: true })
     },
     copy ({ commit, getters }) {
       const copiedObject = getters.selectedHost
@@ -81,7 +84,7 @@ export default {
       }
       const sortOption = { key: sortKey, order: sortOrder }
       commit('setSortOption', { sortOption })
-      dispatch('group/sortHosts', { groupId: getters.selectedGroupId, ...sortOption }, { root: true })
+      dispatch('sort')
     },
     focusList ({ dispatch }) {
       dispatch('focusHostList', null, { root: true })
@@ -94,9 +97,6 @@ export default {
     },
     leaveList ({ dispatch }) {
       dispatch('focusGroupList', null, { root: true })
-    },
-    sort ({ dispatch, getters, state }) {
-      dispatch('group/sortHosts', { groupId: getters.selectedGroupId, ...state.sortOption }, { root: true })
     }
   },
   mutations: {

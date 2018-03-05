@@ -3,8 +3,9 @@ import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import router from '../router'
 import explorer from './explorer'
-import settings from './settings'
 import group from './group'
+import preview from './preview'
+import settings from './settings'
 import * as HostsFileManager from '../utils/hosts-file-manager'
 
 Vue.use(Vuex)
@@ -20,8 +21,10 @@ export default new Vuex.Store({
     message: ''
   },
   actions: {
-    changeRoute (_, payload) {
+    changeRoute ({ dispatch }, payload) {
       router.push(payload)
+      const title = payload.name.charAt(0).toUpperCase() + payload.name.slice(1)
+      dispatch('changeTitle', { title })
     },
     focus (_, { selector }) {
       // wait dom updated
@@ -38,12 +41,12 @@ export default new Vuex.Store({
     focusHostList ({ dispatch }) {
       dispatch('focus', { selector: Selector.hostList })
     },
-    async initHosts ({ state }) {
-      await HostsFileManager.init()
-      HostsFileManager.save(state.group.groups)
+    async initHosts ({ rootGetters }) {
+      await HostsFileManager.setup()
+      HostsFileManager.save(rootGetters['group/hosts'])
     },
-    syncHosts ({ state }) {
-      HostsFileManager.save(state.group.groups)
+    saveHosts ({ rootGetters }) {
+      HostsFileManager.save(rootGetters['group/hosts'])
     },
     clearHosts () {
       HostsFileManager.clear()
@@ -51,7 +54,8 @@ export default new Vuex.Store({
     importHosts ({ dispatch }, { filepath }) {
       try {
         const groups = HostsFileManager.readHostyFile(filepath)
-        dispatch('group/syncGroups', { groups })
+        dispatch('group/setGroups', { groups })
+        dispatch('explorer/group/sort')
         dispatch('showMessage', { message: 'Imported' })
       } catch (e) {
         console.error(e)
@@ -94,8 +98,9 @@ export default new Vuex.Store({
   },
   modules: {
     explorer,
-    settings,
-    group
+    group,
+    preview,
+    settings
   },
   plugins: [
     createPersistedState({

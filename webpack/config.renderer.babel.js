@@ -13,6 +13,16 @@ export default {
     rules: [
       ...config.module.rules,
       {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        options: {
+          loaders: {
+            scss: 'vue-style-loader!css-loader!sass-loader?' +
+              `{ "includePaths": ["${__dirname}/../node_modules"] }`
+          }
+        }
+      },
+      {
         test: /\.(jpg|gif|png|svg)$/,
         loader: 'url-loader',
         options: {
@@ -29,5 +39,11 @@ export default {
         }
       }
     ]
+  },
+  resolve: {
+    extensions: ['.js', '.json', '.vue'],
+    alias: {
+      vue$: 'vue/dist/vue.esm.js'
+    }
   }
 }

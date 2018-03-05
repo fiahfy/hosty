@@ -1,8 +1,8 @@
 <template>
   <div
     id="app"
-    class="mdc-theme--background"
     :style="styles"
+    class="mdc-theme--background"
     @contextmenu="contextmenu"
     @dragover.prevent
     @drop.prevent="drop"
@@ -39,7 +39,7 @@ export default {
     TitleBar
   },
   async asyncData ({ store }) {
-    store.dispatch('initHosts')
+    await store.dispatch('initHosts')
   },
   computed: {
     styles () {

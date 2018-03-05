@@ -1,8 +1,8 @@
 <template>
   <div
+    :class="classes"
     class="host-list"
     tabindex="0"
-    :class="classes"
     @keydown="keydown"
   >
     <mdc-table>
@@ -14,18 +14,8 @@
           >
             <span>Status</span>
             <mdc-icon
-              :icon="icon"
               v-if="sortOption.key === 'disabled'"
-            />
-          </mdc-table-header-column>
-          <mdc-table-header-column
-            class="name"
-            @click="e => click(e, 'name')"
-          >
-            <span>Host</span>
-            <mdc-icon
               :icon="icon"
-              v-if="sortOption.key === 'name'"
             />
           </mdc-table-header-column>
           <mdc-table-header-column
@@ -34,8 +24,18 @@
           >
             <span>IP</span>
             <mdc-icon
-              :icon="icon"
               v-if="sortOption.key === 'ip'"
+              :icon="icon"
+            />
+          </mdc-table-header-column>
+          <mdc-table-header-column
+            class="name"
+            @click="e => click(e, 'name')"
+          >
+            <span>Host</span>
+            <mdc-icon
+              v-if="sortOption.key === 'name'"
+              :icon="icon"
             />
           </mdc-table-header-column>
         </mdc-table-row>
@@ -45,13 +45,13 @@
       </mdc-table-header>
       <mdc-table-body >
         <host-list-item
+          v-for="host in hosts"
           :ref="`item_${host.id}`"
           :key="`${selectedGroupId}_${host.id}`"
           :host="host"
           :selected="isSelected({ id: host.id })"
           @click="select({ id: host.id })"
           @contextmenu="(e) => contextmenu(e, { id: host.id })"
-          v-for="host in hosts"
         />
       </mdc-table-body>
     </mdc-table>
@@ -256,10 +256,10 @@ export default {
 <style scoped lang="scss">
 .host-list {
   height: 100%;
+  outline: none;
   overflow-y: scroll;
   .mdc-table {
     border-spacing: 0;
-    outline: none;
     table-layout: fixed;
     width: 100%;
     .mdc-table-header {

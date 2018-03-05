@@ -4,10 +4,6 @@ export default {
     groups: []
   },
   actions: {
-    syncGroups ({ commit, dispatch }, { groups }) {
-      commit('setGroups', { groups })
-      dispatch('syncHosts', null, { root: true })
-    },
     createGroup ({ dispatch, state }, { group = { disabled: false, name: '', hosts: [] } }) {
       const id = Math.max.apply(null, [0, ...state.groups.map((group) => group.id)]) + 1
       const groups = [
@@ -17,7 +13,7 @@ export default {
           id
         }
       ]
-      dispatch('syncGroups', { groups })
+      dispatch('setGroups', { groups, save: true })
     },
     updateGroup ({ dispatch, state }, { id, group = { disabled: false, name: '', hosts: [] } }) {
       const groups = state.groups.map((currentGroup) => {
@@ -29,13 +25,13 @@ export default {
           ...group
         }
       })
-      dispatch('syncGroups', { groups })
+      dispatch('setGroups', { groups, save: true })
     },
     deleteGroup ({ dispatch, state }, { id }) {
       const groups = state.groups.filter((group) => group.id !== id)
-      dispatch('syncGroups', { groups })
+      dispatch('setGroups', { groups, save: true })
     },
-    sortGroups ({ commit, getters, state }, { key, order }) {
+    sortGroups ({ dispatch, getters, state }, { key, order }) {
       const groups = state.groups.sort((a, b) => {
         let result = 0
         if (a[key] > b[key]) {
@@ -52,7 +48,7 @@ export default {
         }
         return order === 'asc' ? result : -1 * result
       })
-      commit('setGroups', { groups })
+      dispatch('setGroups', { groups })
     },
     createHost ({ dispatch, state }, { groupId, host = { disabled: false, name: '', ip: '' } }) {
       const groups = state.groups.map((group) => {
@@ -72,7 +68,7 @@ export default {
           ]
         }
       })
-      dispatch('syncGroups', { groups })
+      dispatch('setGroups', { groups, save: true })
     },
     updateHost ({ dispatch, state }, { groupId, id, host = { disabled: false, name: '', ip: '' } }) {
       const groups = state.groups.map((group) => {
@@ -92,7 +88,7 @@ export default {
           })
         }
       })
-      dispatch('syncGroups', { groups })
+      dispatch('setGroups', { groups, save: true })
     },
     deleteHost ({ dispatch, state }, { groupId, id }) {
       const groups = state.groups.map((group) => {
@@ -104,9 +100,9 @@ export default {
           hosts: group.hosts.filter((host) => host.id !== id)
         }
       })
-      dispatch('syncGroups', { groups })
+      dispatch('setGroups', { groups, save: true })
     },
-    sortHosts ({ commit, getters, state }, { groupId, key, order }) {
+    sortHosts ({ dispatch, getters, state }, { groupId, key, order }) {
       const groups = state.groups.map((group) => {
         if (group.id !== groupId) {
           return group
@@ -131,12 +127,60 @@ export default {
           })
         }
       })
+      dispatch('setGroups', { groups })
+    },
+    setGroups ({ commit, dispatch }, { groups, save = true }) {
       commit('setGroups', { groups })
+      if (save) {
+        dispatch('saveHosts', null, { root: true })
+      }
     }
   },
   mutations: {
     setGroups (state, { groups }) {
       state.groups = groups
+    }
+  },
+  getters: {
+    hosts (state) {
+      return state.groups
+        .filter((group) => !group.disabled)
+        .map((group) => {
+          return (group.hosts || []).map((host) => {
+            return {
+              ...host,
+              groupId: group.id,
+              hostId: host.id,
+              id: `${group.id}-${host.id}`
+            }
+          })
+        })
+        .reduce((carry, hosts) => carry.concat(hosts), [])
+        .filter((host) => !host.disabled && host.name && host.ip)
+        .sort((a, b) => {
+          let result = 0
+          if (a.ip > b.ip) {
+            result = 1
+          } else if (a.ip < b.ip) {
+            result = -1
+          }
+          if (result !== 0) {
+            return result
+          }
+          if (a.disabled > b.disabled) {
+            result = 1
+          } else if (a.disabled < b.disabled) {
+            result = -1
+          }
+          if (result !== 0) {
+            return result
+          }
+          if (a.name > b.name) {
+            result = 1
+          } else if (a.name < b.name) {
+            result = -1
+          }
+        })
     }
   }
 }

@@ -2,8 +2,8 @@
   <div class="activity-bar">
     <ul>
       <li
-        :key="item.name"
         v-for="item in items"
+        :key="item.name"
       >
         <mdc-button
           :title="item.title"
@@ -34,6 +34,7 @@ export default {
     return {
       items: [
         { name: 'explorer', icon: 'view_list', title: `explorer (${buildText('CmdOrCtrl+Shift+E')})` },
+        { name: 'preview', icon: 'visibility', title: `preview (${buildText('CmdOrCtrl+P')})` },
         { name: 'settings', icon: 'settings', title: `settings (${buildText('CmdOrCtrl+,')})` }
       ]
     }

@@ -1,7 +1,7 @@
 <template>
   <th
-    class="mdc-table-header-column mdc-theme--background"
     v-bind="$attrs"
+    class="mdc-table-header-column mdc-theme--background"
     v-on="$listeners"
   >
     <slot />

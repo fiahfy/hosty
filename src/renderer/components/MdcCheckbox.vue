@@ -1,10 +1,10 @@
 <template>
   <div class="mdc-checkbox">
     <input
-      type="checkbox"
-      class="mdc-checkbox__native-control"
       v-model="model"
       v-bind="$attrs"
+      type="checkbox"
+      class="mdc-checkbox__native-control"
       v-on="listeners"
     >
     <div class="mdc-checkbox__background">

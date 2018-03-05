@@ -7,7 +7,7 @@ import './renderer/plugins'
 import { addIpcRendererListeners } from './renderer/ipc'
 
 Vue.config.devtools = process.env.NODE_ENV !== 'production'
-Vue.config.productionTip = process.env.NODE_ENV !== 'production'
+Vue.config.productionTip = false
 
 sync(store, router)
 addIpcRendererListeners(store)

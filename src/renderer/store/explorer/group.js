@@ -29,6 +29,9 @@ export default {
       dispatch('selectIndex', { index })
       dispatch('focusList')
     },
+    sort ({ dispatch, state }) {
+      dispatch('group/sortGroups', { ...state.sortOption }, { root: true })
+    },
     copy ({ commit, getters }) {
       const copiedObject = getters.selectedGroup
       commit('setCopiedObject', { copiedObject })
@@ -44,8 +47,6 @@ export default {
       commit('setSelectedId', { selectedId: id })
       dispatch('explorer/host/sort', null, { root: true })
       dispatch('explorer/host/unselect', null, { root: true })
-      const title = getters.selectedGroup ? getters.selectedGroup.name : ''
-      dispatch('changeTitle', { title }, { root: true })
     },
     unselect ({ commit }) {
       commit('setSelectedId', { selectedId: 0 })
@@ -84,7 +85,7 @@ export default {
       }
       const sortOption = { key: sortKey, order: sortOrder }
       commit('setSortOption', { sortOption })
-      dispatch('group/sortGroups', sortOption, { root: true })
+      dispatch('sort')
     },
     focusList ({ dispatch }) {
       dispatch('focusGroupList', null, { root: true })

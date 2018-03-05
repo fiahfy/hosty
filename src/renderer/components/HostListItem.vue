@@ -1,8 +1,8 @@
 <template>
   <mdc-table-row
-    class="host-list-item"
     :class="classes"
     v-bind="$attrs"
+    class="host-list-item"
     v-on="$listeners"
   >
     <mdc-table-column class="status">
@@ -19,31 +19,31 @@
       </mdc-button>
     </mdc-table-column>
     <mdc-table-column
-      class="name"
-      @click="nameClick"
-    >
-      <mdc-text-field
-        ref="name"
-        fullwidth
-        label="example.com"
-        :disabled="nameDisabled"
-        v-model="name"
-        @blur="nameBlur"
-        @keydown="nameKeydown"
-      />
-    </mdc-table-column>
-    <mdc-table-column
       class="ip"
       @click="ipClick"
     >
       <mdc-text-field
         ref="ip"
-        fullwidth
-        label="192.0.2.0"
         :disabled="ipDisabled"
         v-model="ip"
+        fullwidth
+        label="192.0.2.0"
         @blur="ipBlur"
         @keydown="ipKeydown"
+      />
+    </mdc-table-column>
+    <mdc-table-column
+      class="name"
+      @click="nameClick"
+    >
+      <mdc-text-field
+        ref="name"
+        :disabled="nameDisabled"
+        v-model="name"
+        fullwidth
+        label="example.com"
+        @blur="nameBlur"
+        @keydown="nameKeydown"
       />
     </mdc-table-column>
   </mdc-table-row>
@@ -77,10 +77,10 @@ export default {
   },
   data () {
     return {
-      name: this.host.name,
       ip: this.host.ip,
-      nameDisabled: true,
-      ipDisabled: true
+      name: this.host.name,
+      ipDisabled: true,
+      nameDisabled: true
     }
   },
   computed: {
@@ -103,16 +103,51 @@ export default {
     })
   },
   mounted () {
-    this.nameInput = this.$refs.name.$el.querySelector('input')
     this.ipInput = this.$refs.ip.$el.querySelector('input')
+    this.nameInput = this.$refs.name.$el.querySelector('input')
   },
   methods: {
     focus () {
-      this.nameClick()
+      this.ipClick()
     },
     statusClick () {
       this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, host: { disabled: !this.host.disabled } })
       this.focusList()
+    },
+    ipClick () {
+      if (!this.ipDisabled || !this.selected) {
+        return
+      }
+      this.ipDisabled = false
+      this.$nextTick(() => {
+        this.ipInput.focus()
+        this.ipInput.selectionStart = 0
+        this.ipInput.selectionEnd = this.ipInput.value.length
+      })
+    },
+    ipBlur () {
+      this.ipDisabled = true
+      this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, host: { ip: this.ip } })
+    },
+    ipKeydown (e) {
+      e.stopPropagation()
+      switch (e.keyCode) {
+        case 9:
+          e.preventDefault()
+          this.nameClick()
+          break
+        case 13:
+          e.preventDefault()
+          this.ipInput.blur()
+          this.focusList()
+          break
+        case 27:
+          e.preventDefault()
+          this.ip = this.host.ip
+          this.ipInput.blur()
+          this.focusList()
+          break
+      }
     },
     nameClick () {
       if (!this.nameDisabled || !this.selected) {
@@ -134,7 +169,12 @@ export default {
       switch (e.keyCode) {
         case 9:
           e.preventDefault()
-          this.ipClick()
+          if (e.shiftKey) {
+            this.ipClick()
+          } else {
+            this.nameInput.blur()
+            this.focusList()
+          }
           break
         case 13:
           e.preventDefault()
@@ -145,43 +185,6 @@ export default {
           e.preventDefault()
           this.name = this.host.name
           this.nameInput.blur()
-          this.focusList()
-          break
-      }
-    },
-    ipClick () {
-      if (!this.ipDisabled || !this.selected) {
-        return
-      }
-      this.ipDisabled = false
-      this.$nextTick(() => {
-        this.ipInput.focus()
-        this.ipInput.selectionStart = 0
-        this.ipInput.selectionEnd = this.ipInput.value.length
-      })
-    },
-    ipBlur () {
-      this.ipDisabled = true
-      this.updateHost({ groupId: this.selectedGroupId, id: this.host.id, host: { ip: this.ip } })
-    },
-    ipKeydown (e) {
-      e.stopPropagation()
-      switch (e.keyCode) {
-        case 9:
-          if (e.shiftKey) {
-            e.preventDefault()
-            this.nameClick()
-          }
-          break
-        case 13:
-          e.preventDefault()
-          this.ipInput.blur()
-          this.focusList()
-          break
-        case 27:
-          e.preventDefault()
-          this.ip = this.host.ip
-          this.ipInput.blur()
           this.focusList()
           break
       }

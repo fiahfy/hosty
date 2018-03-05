@@ -1,8 +1,8 @@
 <template>
   <div
+    :class="classes"
     class="group-list"
     tabindex="0"
-    :class="classes"
     @keydown="keydown"
   >
     <mdc-table>
@@ -14,8 +14,8 @@
           >
             <span>Status</span>
             <mdc-icon
-              :icon="icon"
               v-if="sortOption.key === 'disabled'"
+              :icon="icon"
             />
           </mdc-table-header-column>
           <mdc-table-header-column
@@ -24,8 +24,8 @@
           >
             <span>Group</span>
             <mdc-icon
-              :icon="icon"
               v-if="sortOption.key === 'name'"
+              :icon="icon"
             />
           </mdc-table-header-column>
         </mdc-table-row>
@@ -35,13 +35,13 @@
       </mdc-table-header>
       <mdc-table-body >
         <group-list-item
+          v-for="group in groups"
           :ref="`item_${group.id}`"
           :key="group.id"
           :group="group"
           :selected="isSelected({ id: group.id })"
           @click="select({ id: group.id })"
           @contextmenu="(e) => contextmenu(e, { id: group.id })"
-          v-for="group in groups"
         />
       </mdc-table-body>
     </mdc-table>
@@ -120,7 +120,6 @@ export default {
     this.$nextTick(() => {
       this.$el.scrollTop = this.scrollTop
     })
-    this.selectIndex({ index: 0 })
   },
   beforeDestroy () {
     this.$el.removeEventListener('scroll', this.scroll)
@@ -247,10 +246,10 @@ export default {
 <style scoped lang="scss">
 .group-list {
   height: 100%;
+  outline: none;
   overflow-y: scroll;
   .mdc-table {
     border-spacing: 0;
-    outline: none;
     table-layout: fixed;
     width: 100%;
     .mdc-table-header {
