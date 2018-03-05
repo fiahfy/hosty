@@ -63,6 +63,7 @@ export default {
 .preview-list-item {
   height: 24px;
   .mdc-table-column {
+    color: var(--mdc-theme-text-primary-on-background);
     line-height: 21px;
     overflow: hidden;
     padding: 4px 8px 2px 8px;
