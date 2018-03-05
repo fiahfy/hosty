@@ -89,7 +89,7 @@ const setupUserHostsFile = async () => {
 }
 
 const isOldFormat = (groups) => {
-  if (!groups) {
+  if (!Array.isArray(groups) || !groups.length) {
     return false
   }
   return groups[0].enable !== undefined
