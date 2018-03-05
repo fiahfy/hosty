@@ -1,5 +1,3 @@
-import * as HostsFileManager from '../utils/hosts-file-manager'
-
 export default {
   namespaced: true,
   state: {
@@ -19,8 +17,8 @@ export default {
     }
   },
   getters: {
-    hosts (state, getters, rootState) {
-      return HostsFileManager.filterHosts(rootState.group.groups)
+    hosts (state, getters, rootState, rootGetters) {
+      return rootGetters['group/hosts']
     }
   }
 }

@@ -49,12 +49,16 @@ const setupHostsFile = async () => {
     //
   }
   if (isWin) {
-    const commands = [`touch "${hostsFilepath}"`, `cacls "${hostsFilepath}" /e /g Users:w`]
-    const command = commands.join(' && ')
+    const command = [
+      `touch "${hostsFilepath}"`,
+      `cacls "${hostsFilepath}" /e /g Users:w`
+    ].join(' && ')
     await sudo(`cmd /c ${command}`)
   } else {
-    const commands = [`touch \\"${hostsFilepath}\\"`, `chmod 666 \\"${hostsFilepath}\\"`]
-    const command = commands.join('; ')
+    const command = [
+      `touch \\"${hostsFilepath}\\"`,
+      `chmod 666 \\"${hostsFilepath}\\"`
+    ].join('; ')
     await sudo(`$SHELL -c "${command}"`)
   }
 }
@@ -70,12 +74,16 @@ const setupUserHostsFile = async () => {
     //
   }
   if (isWin) {
-    const commands = [`mklink "${userHostsFilepath}" "${hostsFilepath}"`, `cacls "${hostsFilepath}" /e /g Users:w`]
-    const command = commands.join(' && ')
+    const command = [
+      `mklink "${userHostsFilepath}" "${hostsFilepath}"`,
+      `cacls "${hostsFilepath}" /e /g Users:w`
+    ].join(' && ')
     await sudo(`cmd /c ${command}`)
   } else {
-    const commands = [`ln -s \\"${hostsFilepath}\\" \\"${userHostsFilepath}\\"`, `chmod 666 \\"${hostsFilepath}\\"`]
-    const command = commands.join('; ')
+    const command = [
+      `ln -s \\"${hostsFilepath}\\" \\"${userHostsFilepath}\\"`,
+      `chmod 666 \\"${hostsFilepath}\\"`
+    ].join('; ')
     await sudo(`$SHELL -c "${command}"`)
   }
 }
@@ -97,23 +105,25 @@ const migrate = (groups) => {
         return {
           id: host.id,
           disabled: !host.enable,
-          name: host.host,
-          ip: host.ip
+          ip: host.ip,
+          name: host.host
         }
       })
     }
   })
 }
 
-export const init = async () => {
+export const setup = async () => {
   await setupHostsFile()
   await setupUserHostsFile()
 }
 
-export const save = async (groups = []) => {
+export const save = async (hosts = []) => {
   const data = fs.readFileSync(userHostsFilepath, hostyFile.charset)
 
-  let newData = build(groups)
+  let newData = hosts
+    .map((host) => `${host.ip}\t${host.name}`)
+    .join('\n')
   newData = `${hostySection.begin}\n${newData}\n${hostySection.end}\n`
 
   const reg = new RegExp(
@@ -134,64 +144,17 @@ export const clear = () => {
   save()
 }
 
-export const filterHosts = (groups) => {
-  return groups
-    .filter((group) => !group.disabled)
-    .map((group) => {
-      return (group.hosts || []).map((host) => {
-        return {
-          ...host,
-          groupId: group.id,
-          hostId: host.id,
-          id: `${group.id}-${host.id}`
-        }
-      })
-    })
-    .reduce((carry, hosts) => carry.concat(hosts), [])
-    .filter((host) => !host.disabled && host.name && host.ip)
-    .sort((a, b) => {
-      let result = 0
-      if (a.ip > b.ip) {
-        result = 1
-      } else if (a.ip < b.ip) {
-        result = -1
-      }
-      if (result !== 0) {
-        return result
-      }
-      if (a.disabled > b.disabled) {
-        result = 1
-      } else if (a.disabled < b.disabled) {
-        result = -1
-      }
-      if (result !== 0) {
-        return result
-      }
-      if (a.name > b.name) {
-        result = 1
-      } else if (a.name < b.name) {
-        result = -1
-      }
-    })
-}
-
-const build = (groups) => {
-  return filterHosts(groups)
-    .map((host) => `${host.ip}\t${host.name}`)
-    .join('\n')
-}
-
 export const readHostyFile = (filepath) => {
   const data = fs.readFileSync(filepath, hostyFile.charset)
-  const groups = JSON.parse(data)
+  const obj = JSON.parse(data)
   // TODO: remove this
-  if (isOldFormat(groups)) {
-    return migrate(groups)
+  if (isOldFormat(obj)) {
+    return migrate(obj)
   }
-  return groups
+  return obj
 }
 
-export const writeHostyFile = (filepath, groups) => {
-  const data = JSON.stringify(groups)
+export const writeHostyFile = (filepath, obj) => {
+  const data = JSON.stringify(obj)
   fs.writeFileSync(filepath, data, hostyFile.charset)
 }

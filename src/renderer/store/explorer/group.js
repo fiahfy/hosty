@@ -29,6 +29,9 @@ export default {
       dispatch('selectIndex', { index })
       dispatch('focusList')
     },
+    sort ({ dispatch, state }) {
+      dispatch('group/sortGroups', { ...state.sortOption }, { root: true })
+    },
     copy ({ commit, getters }) {
       const copiedObject = getters.selectedGroup
       commit('setCopiedObject', { copiedObject })
@@ -82,7 +85,7 @@ export default {
       }
       const sortOption = { key: sortKey, order: sortOrder }
       commit('setSortOption', { sortOption })
-      dispatch('group/sortGroups', sortOption, { root: true })
+      dispatch('sort')
     },
     focusList ({ dispatch }) {
       dispatch('focusGroupList', null, { root: true })

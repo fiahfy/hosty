@@ -39,7 +39,7 @@ export default {
     TitleBar
   },
   async asyncData ({ store }) {
-    store.dispatch('initHosts')
+    await store.dispatch('initHosts')
   },
   computed: {
     styles () {

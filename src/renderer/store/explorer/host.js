@@ -30,6 +30,9 @@ export default {
       dispatch('selectIndex', { index })
       dispatch('focusList')
     },
+    sort ({ dispatch, getters, state }) {
+      dispatch('group/sortHosts', { groupId: getters.selectedGroupId, ...state.sortOption }, { root: true })
+    },
     copy ({ commit, getters }) {
       const copiedObject = getters.selectedHost
       commit('setCopiedObject', { copiedObject })
@@ -81,7 +84,7 @@ export default {
       }
       const sortOption = { key: sortKey, order: sortOrder }
       commit('setSortOption', { sortOption })
-      dispatch('group/sortHosts', { groupId: getters.selectedGroupId, ...sortOption }, { root: true })
+      dispatch('sort')
     },
     focusList ({ dispatch }) {
       dispatch('focusHostList', null, { root: true })
@@ -94,9 +97,6 @@ export default {
     },
     leaveList ({ dispatch }) {
       dispatch('focusGroupList', null, { root: true })
-    },
-    sort ({ dispatch, getters, state }) {
-      dispatch('group/sortHosts', { groupId: getters.selectedGroupId, ...state.sortOption }, { root: true })
     }
   },
   mutations: {

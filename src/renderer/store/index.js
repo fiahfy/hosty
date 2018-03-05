@@ -41,12 +41,12 @@ export default new Vuex.Store({
     focusHostList ({ dispatch }) {
       dispatch('focus', { selector: Selector.hostList })
     },
-    async initHosts ({ state }) {
-      await HostsFileManager.init()
-      HostsFileManager.save(state.group.groups)
+    async initHosts ({ rootGetters }) {
+      await HostsFileManager.setup()
+      HostsFileManager.save(rootGetters['group/hosts'])
     },
-    syncHosts ({ state }) {
-      HostsFileManager.save(state.group.groups)
+    saveHosts ({ rootGetters }) {
+      HostsFileManager.save(rootGetters['group/hosts'])
     },
     clearHosts () {
       HostsFileManager.clear()
@@ -54,7 +54,8 @@ export default new Vuex.Store({
     importHosts ({ dispatch }, { filepath }) {
       try {
         const groups = HostsFileManager.readHostyFile(filepath)
-        dispatch('group/syncGroups', { groups })
+        dispatch('group/setGroups', { groups })
+        dispatch('explorer/group/sort')
         dispatch('showMessage', { message: 'Imported' })
       } catch (e) {
         console.error(e)
