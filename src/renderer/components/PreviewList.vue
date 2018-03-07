@@ -77,7 +77,7 @@ export default {
     this.$el.addEventListener('scroll', this.scroll)
     this.$nextTick(() => {
       this.$el.scrollTop = this.scrollTop
-      this.shrinkedWidth = Math.max.apply(null, this.$refs.item.map((item) => item.getShrinkedWidth())) + 32
+      this.shrinkedWidth = Math.max.apply(null, (this.$refs.item || []).map((item) => item.getShrinkedWidth())) + 32
     })
   },
   beforeDestroy () {
