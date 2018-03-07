@@ -75,10 +75,6 @@ export default {
 <style lang="scss">
 @import '~material-design-icons/iconfont/material-icons.css';
 @import '~material-components-web/material-components-web.scss';
-
-* {
-  user-select: none;
-}
 </style>
 
 <style scoped lang="scss">
@@ -88,6 +84,7 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   font-size: small;
   height: 100%;
+  user-select: none;
   .container {
     display: flex;
     flex: 1;
