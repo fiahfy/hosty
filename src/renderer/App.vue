@@ -75,6 +75,10 @@ export default {
 <style lang="scss">
 @import '~material-design-icons/iconfont/material-icons.css';
 @import '~material-components-web/material-components-web.scss';
+
+* {
+  user-select: none;
+}
 </style>
 
 <style scoped lang="scss">

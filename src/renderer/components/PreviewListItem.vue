@@ -83,6 +83,9 @@ export default {
         width: auto;
       }
     }
+    span {
+      user-select: auto;
+    }
     &.icon {
       padding: 0;
       .mdc-button {

@@ -109,7 +109,6 @@ export default {
       position: absolute;
       right: 0;
       top: 0;
-      user-select: none;
     }
   }
 }
