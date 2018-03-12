@@ -2,9 +2,7 @@
   <div class="mdc-checkbox">
     <input
       v-model="model"
-      v-bind="$attrs"
-      type="checkbox"
-      class="mdc-checkbox__native-control"
+      v-bind="attrs"
       v-on="listeners"
     >
     <div class="mdc-checkbox__background">
@@ -45,6 +43,13 @@ export default {
     }
   },
   computed: {
+    attrs () {
+      return {
+        ...this.$attrs,
+        type: 'checkbox',
+        class: 'mdc-checkbox__native-control'
+      }
+    },
     listeners () {
       const listeners = this.$listeners
       delete listeners.change
