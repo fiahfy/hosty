@@ -50,8 +50,8 @@
           :key="`${selectedGroupId}_${host.id}`"
           :host="host"
           :selected="isSelected({ id: host.id })"
-          @click="select({ id: host.id })"
-          @contextmenu="(e) => contextmenu(e, { id: host.id })"
+          @click.native="select({ id: host.id })"
+          @contextmenu.native="(e) => contextmenu(e, { id: host.id })"
         />
       </mdc-table-body>
     </mdc-table>

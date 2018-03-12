@@ -1,9 +1,5 @@
 <template>
-  <mdc-table-row
-    v-bind="$attrs"
-    class="preview-list-item"
-    v-on="$listeners"
-  >
+  <mdc-table-row class="preview-list-item">
     <mdc-table-column class="icon">
       <mdc-button
         title="Edit"
