@@ -17,11 +17,13 @@ export default {
     styles () {
       if (this.orientation === 'horizontal') {
         return {
-          height: '1px'
+          height: '1px',
+          'min-height': '1px'
         }
       } else {
         return {
-          width: '1px'
+          width: '1px',
+          'min-width': '1px'
         }
       }
     }

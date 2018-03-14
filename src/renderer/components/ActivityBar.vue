@@ -65,7 +65,6 @@ export default {
 
 <style scoped lang="scss">
 .activity-bar {
-  overflow: hidden;
   width: 48px;
   ul {
     list-style: none;

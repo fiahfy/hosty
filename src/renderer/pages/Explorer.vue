@@ -87,12 +87,16 @@ export default {
   .group {
     display: flex;
     flex-direction: column;
+    min-width: 256px;
+    overflow: hidden;
     width: 256px;
   }
   .host {
     display: flex;
     flex: 1;
     flex-direction: column;
+    min-width: 256px;
+    overflow: hidden;
   }
   .container {
     flex: 1;
