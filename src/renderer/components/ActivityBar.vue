@@ -81,9 +81,6 @@ export default {
         padding: 12px;
         &:not(.selected) {
           color: var(--mdc-theme-text-icon-on-background);
-          &:hover {
-            color: inherit;
-          }
         }
       }
     }
