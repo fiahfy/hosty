@@ -24,11 +24,11 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
-import Theme from './theme'
 import ActivityBar from './components/ActivityBar'
 import Divider from './components/Divider'
 import MdcSnackbar from './components/MdcSnackbar'
 import TitleBar from './components/TitleBar'
+import Theme from './theme'
 import * as ContextMenu from './utils/context-menu'
 
 export default {
@@ -84,6 +84,7 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   font-size: small;
   height: 100%;
+  user-select: none;
   .container {
     display: flex;
     flex: 1;
@@ -91,6 +92,8 @@ export default {
     position: relative;
     .content {
       flex: 1;
+      min-width: 256px;
+      overflow: hidden;
     }
   }
 }

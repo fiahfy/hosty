@@ -1,9 +1,7 @@
 <template>
   <mdc-table-row
     :class="classes"
-    v-bind="$attrs"
     class="group-list-item"
-    v-on="$listeners"
   >
     <mdc-table-column class="status">
       <mdc-button
@@ -30,6 +28,7 @@
         label="Group"
         @blur="nameBlur"
         @keydown="nameKeydown"
+        @contextmenu="contextmenu"
       />
     </mdc-table-column>
   </mdc-table-row>
@@ -42,6 +41,7 @@ import MdcIcon from './MdcIcon'
 import MdcTableColumn from './MdcTableColumn'
 import MdcTableRow from './MdcTableRow'
 import MdcTextField from './MdcTextField'
+import * as ContextMenu from '../utils/context-menu'
 
 export default {
   components: {
@@ -125,6 +125,13 @@ export default {
           this.focusList()
           break
       }
+    },
+    contextmenu (e) {
+      ContextMenu.show(e, [
+        { role: ContextMenu.Role.cut },
+        { role: ContextMenu.Role.copy },
+        { role: ContextMenu.Role.paste }
+      ])
     },
     ...mapActions({
       updateGroup: 'group/updateGroup',

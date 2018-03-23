@@ -72,7 +72,6 @@ export default {
   display: flex;
   height: 40px;
   justify-content: flex-end;
-  user-select: none;
   &>* {
     margin: 2px;
   }

@@ -38,7 +38,6 @@ export default {
 <style scoped lang="scss">
 .settings {
   margin: 15px;
-  user-select: none;
   h4 {
     color: var(--mdc-theme-text-secondary-on-background);
   }

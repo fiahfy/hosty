@@ -27,6 +27,7 @@
 import { MDCTextField } from '@material/textfield'
 
 export default {
+  inheritAttrs: false,
   model: {
     prop: 'value',
     event: 'change'

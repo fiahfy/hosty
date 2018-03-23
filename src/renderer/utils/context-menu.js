@@ -8,6 +8,7 @@ const appendInspectElementMenu = (e, template) => {
   if (template.length) {
     template = template.concat([{ type: 'separator' }])
   }
+
   return template.concat([{
     label: 'Inspect Element',
     click: () => {
@@ -54,6 +55,10 @@ export const show = (e, template = []) => {
         return item
     }
   })
+
+  if (!template.length) {
+    return
+  }
 
   Menu
     .buildFromTemplate(template)

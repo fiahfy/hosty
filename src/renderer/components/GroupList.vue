@@ -40,8 +40,8 @@
           :key="group.id"
           :group="group"
           :selected="isSelected({ id: group.id })"
-          @click="select({ id: group.id })"
-          @contextmenu="(e) => contextmenu(e, { id: group.id })"
+          @click.native="select({ id: group.id })"
+          @contextmenu.native="(e) => contextmenu(e, { id: group.id })"
         />
       </mdc-table-body>
     </mdc-table>
@@ -265,7 +265,6 @@ export default {
           padding: 8px;
           position: sticky;
           top: 0;
-          user-select: none;
           vertical-align: bottom;
           white-space: nowrap;
           z-index: 1;
