@@ -1,7 +1,8 @@
 {
   "appId": "net.fiahfy.hosty",
   "files": [
-    "!dist"
+    "main.js",
+    "app/**/*"
   ],
   "mac": {
     "target": ["dmg"]
