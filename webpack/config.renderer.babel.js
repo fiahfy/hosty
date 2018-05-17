@@ -1,26 +1,30 @@
 import config from './config.base.babel'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
+import { VueLoaderPlugin } from 'vue-loader'
 
 export default {
   ...config,
   target: 'electron-renderer',
-  entry: './renderer.js',
+  entry: './js/renderer/index.js',
   output: {
-    path: `${__dirname}/../app/assets/`,
-    publicPath: './assets/',
-    filename: 'js/renderer.js'
+    path: `${__dirname}/../app/`,
+    publicPath: '../',
+    filename: 'js/index.js'
   },
   module: {
     rules: [
       ...config.module.rules,
       {
         test: /\.vue$/,
-        loader: 'vue-loader',
-        options: {
-          loaders: {
-            scss: 'vue-style-loader!css-loader!sass-loader?' +
-              `{ "includePaths": ["${__dirname}/../node_modules"] }`
-          }
-        }
+        loader: 'vue-loader'
+      },
+      {
+        test: /\.s?css$/,
+        use: [
+          'vue-style-loader',
+          'css-loader',
+          'sass-loader'
+        ]
       },
       {
         test: /\.(jpg|gif|png|svg)$/,
@@ -40,6 +44,14 @@ export default {
       }
     ]
   },
+  plugins: [
+    ...config.plugins,
+    new HtmlWebpackPlugin({
+      template: './html/index.html',
+      filename: './html/index.html'
+    }),
+    new VueLoaderPlugin()
+  ],
   resolve: {
     extensions: ['.js', '.json', '.vue'],
     alias: {

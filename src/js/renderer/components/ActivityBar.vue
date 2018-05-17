@@ -1,35 +1,30 @@
 <template>
-  <div class="activity-bar">
-    <ul>
-      <li
+  <v-navigation-drawer
+    class="activity-bar"
+    mini-variant
+    permanent
+    app
+  >
+    <v-list class="pt-0">
+      <v-list-tile
         v-for="item in items"
         :key="item.name"
+        :title="item.title"
+        @click="changeRoute({ name: item.name })"
       >
-        <mdc-button
-          :title="item.title"
-          @click="changeRoute({ name: item.name })"
-        >
-          <mdc-icon
-            :icon="item.icon"
-            :class="item.classes"
-          />
-        </mdc-button>
-      </li>
-    </ul>
-  </div>
+        <v-list-tile-action>
+          <v-icon :color="item.color">{{ item.icon }}</v-icon>
+        </v-list-tile-action>
+      </v-list-tile>
+    </v-list>
+  </v-navigation-drawer>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
-import MdcButton from './MdcButton'
-import MdcIcon from './MdcIcon'
 import { buildText } from '../utils/accelerator'
 
 export default {
-  components: {
-    MdcButton,
-    MdcIcon
-  },
   data () {
     return {
       items: [
@@ -51,9 +46,7 @@ export default {
     updateItems (name) {
       this.items = this.items.map(item => ({
         ...item,
-        classes: {
-          selected: item.name === name
-        }
+        color: item.name === name ? 'primary' : null
       }))
     },
     ...mapActions({
@@ -62,27 +55,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang="scss">
-.activity-bar {
-  width: 48px;
-  ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    .mdc-button {
-      border-radius: 0;
-      height: auto;
-      line-height: initial;
-      min-width: auto;
-      padding: 0;
-      .mdc-icon {
-        padding: 12px;
-        &:not(.selected) {
-          color: var(--mdc-theme-text-icon-on-background);
-        }
-      }
-    }
-  }
-}
-</style>

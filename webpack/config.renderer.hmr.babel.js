@@ -5,7 +5,7 @@ export default {
   ...config,
   output: {
     ...config.output,
-    publicPath: 'http://localhost:3000/assets/'
+    publicPath: 'http://localhost:3000/'
   },
   plugins: [
     ...config.plugins,

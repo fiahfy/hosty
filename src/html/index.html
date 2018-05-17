@@ -12,13 +12,13 @@
         margin: 0;
       }
       #app {
-        font-family: 'Avenir', Helvetica, Arial, sans-serif;
         height: 100%;
       }
       #loader {
         align-items: center;
         color: grey;
         display: flex;
+        font-family: 'Avenir', Helvetica, Arial, sans-serif;
         font-size: small;
         height: 100%;
         justify-content: center;
@@ -37,12 +37,5 @@
         <div>Loading...</div>
       </div>
     </div>
-    <script>
-      (function () {
-        const script = document.createElement('script')
-        script.src = process.env.HOT ? 'http://localhost:3000/assets/js/renderer.js' : './assets/js/renderer.js'
-        document.querySelector('head').appendChild(script)
-      }())
-    </script>
   </body>
 </html>
