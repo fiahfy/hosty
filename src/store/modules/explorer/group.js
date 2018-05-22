@@ -1,17 +1,18 @@
-const sortOrderDefaults = {
-  disabled: 'asc',
-  name: 'asc'
+const reversed = {
+  disabled: false,
+  name: false
 }
 
 export default {
   namespaced: true,
   state: {
-    selectedId: 0,
+    id: 0,
     scrollTop: 0,
-    sortOption: {
-      key: 'name',
-      order: 'asc'
+    order: {
+      by: 'name',
+      descending: false
     },
+
     filtered: false,
     copiedObject: null
   },

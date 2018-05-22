@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import Explorer from '~/pages/Explorer'
+import Explorer from '~/pages/Explorer'
 // import Preview from '~/pages/Preview'
 import Settings from '~/pages/Settings'
 
@@ -11,7 +11,7 @@ export default new Router({
     {
       path: '/',
       name: 'explorer',
-      component: Settings
+      component: Explorer
     },
     {
       path: '/preview',

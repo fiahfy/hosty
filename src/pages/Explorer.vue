@@ -1,5 +1,22 @@
 <template>
-  <div class="explorer">
+  <v-container
+    class="explorer"
+    fill-height
+    fluid
+    pa-0
+  >
+    <v-layout column>
+      <explorer-group-card />
+      <v-container
+        fluid
+        pa-0
+        overflow-hidden
+      >
+        <explorer-group-table class="fill-height" />
+      </v-container>
+    </v-layout>
+  </v-container>
+  <!-- <div class="explorer">
     <div class="group">
       <group-menu-bar />
       <div class="container">
@@ -25,59 +42,69 @@
         <host-list />
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import Divider from '../components/Divider'
-import GroupList from '../components/GroupList'
-import GroupMenuBar from '../components/GroupMenuBar'
-import HostList from '../components/HostList'
-import HostMenuBar from '../components/HostMenuBar'
+import ExplorerGroupCard from '~/components/ExplorerGroupCard'
+import ExplorerGroupTable from '~/components/ExplorerGroupTable'
 
 export default {
   components: {
-    Divider,
-    GroupList,
-    GroupMenuBar,
-    HostList,
-    HostMenuBar
-  },
-  computed: {
-    groupMessage () {
-      return this.groups.length ? '' : 'No Groups'
-    },
-    hostMessage () {
-      return this.hosts.length ? '' : 'No Hosts'
-    },
-    ...mapGetters({
-      selectedGroup: 'explorer/group/selectedGroup',
-      groups: 'explorer/group/groups',
-      hosts: 'explorer/host/hosts'
-    })
-  },
-  watch: {
-    selectedGroup () {
-      this.updateTitle()
-    }
-  },
-  mounted () {
-    this.updateTitle()
-  },
-  methods: {
-    updateTitle () {
-      let title = 'Explorer'
-      if (this.selectedGroup) {
-        title = this.selectedGroup.name || '(No name)'
-      }
-      this.changeTitle({ title })
-    },
-    ...mapActions({
-      changeTitle: 'changeTitle'
-    })
+    ExplorerGroupCard,
+    ExplorerGroupTable
   }
 }
+
+// import Divider from '../components/Divider'
+// import GroupList from '../components/GroupList'
+// import GroupMenuBar from '../components/GroupMenuBar'
+// import HostList from '../components/HostList'
+// import HostMenuBar from '../components/HostMenuBar'
+
+// export default {
+//   components: {
+//     Divider,
+//     GroupList,
+//     GroupMenuBar,
+//     HostList,
+//     HostMenuBar
+//   },
+//   computed: {
+//     groupMessage () {
+//       return this.groups.length ? '' : 'No Groups'
+//     },
+//     hostMessage () {
+//       return this.hosts.length ? '' : 'No Hosts'
+//     },
+//     ...mapGetters({
+//       selectedGroup: 'explorer/group/selectedGroup',
+//       groups: 'explorer/group/groups',
+//       hosts: 'explorer/host/hosts'
+//     })
+//   },
+//   watch: {
+//     selectedGroup () {
+//       this.updateTitle()
+//     }
+//   },
+//   mounted () {
+//     this.updateTitle()
+//   },
+//   methods: {
+//     updateTitle () {
+//       let title = 'Explorer'
+//       if (this.selectedGroup) {
+//         title = this.selectedGroup.name || '(No name)'
+//       }
+//       this.changeTitle({ title })
+//     },
+//     ...mapActions({
+//       changeTitle: 'changeTitle'
+//     })
+//   }
+// }
 </script>
 
 <style scoped lang="scss">

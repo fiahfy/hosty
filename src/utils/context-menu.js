@@ -64,3 +64,11 @@ export const show = (e, template = []) => {
     .buildFromTemplate(template)
     .popup(remote.getCurrentWindow(), { async: true })
 }
+
+export const showTextMenu = (e) => {
+  show(e, [
+    { role: Role.cut },
+    { role: Role.copy },
+    { role: Role.paste }
+  ])
+}

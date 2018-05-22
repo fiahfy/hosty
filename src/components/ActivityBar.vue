@@ -22,7 +22,7 @@
 
 <script>
 import { mapActions } from 'vuex'
-import { buildText } from '../utils/accelerator'
+import { buildText } from '~/utils/accelerator'
 
 export default {
   data () {
@@ -50,7 +50,7 @@ export default {
       }))
     },
     ...mapActions({
-      changeRoute: 'changeRoute'
+      changeRoute: 'app/changeRoute'
     })
   }
 }
