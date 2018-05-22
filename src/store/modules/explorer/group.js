@@ -19,14 +19,14 @@ export default {
   actions: {
     create ({ dispatch, getters }, { group } = {}) {
       dispatch('group/createGroup', { group }, { root: true })
-      const index = getters.groups.length - 1
+      const index = getters.items.length - 1
       dispatch('selectIndex', { index })
       // dispatch('focusList')
     },
     delete ({ dispatch, getters, state }) {
       const oldSelectedIndex = getters.selectedIndex
       dispatch('group/deleteGroup', { id: state.selectedId }, { root: true })
-      const index = oldSelectedIndex > 0 && oldSelectedIndex > getters.groups.length - 1 ? oldSelectedIndex - 1 : oldSelectedIndex
+      const index = oldSelectedIndex > 0 && oldSelectedIndex > getters.items.length - 1 ? oldSelectedIndex - 1 : oldSelectedIndex
       dispatch('selectIndex', { index })
       // dispatch('focusList')
     },
@@ -49,35 +49,11 @@ export default {
     },
     select ({ commit, dispatch, getters }, { id }) {
       commit('setSelectedId', { selectedId: id })
-      dispatch('explorer/host/sort', null, { root: true })
-      dispatch('explorer/host/unselect', null, { root: true })
+      // dispatch('explorer/host/sort', null, { root: true })
+      // dispatch('explorer/host/unselect', null, { root: true })
     },
     unselect ({ commit }) {
       commit('setSelectedId', { selectedId: 0 })
-    },
-    selectIndex ({ dispatch, getters }, { index }) {
-      const id = getters.groups[index] ? getters.groups[index].id : 0
-      dispatch('select', { id })
-    },
-    selectFirst ({ dispatch }) {
-      dispatch('selectIndex', { index: 0 })
-    },
-    selectLast ({ dispatch, getters }) {
-      dispatch('selectIndex', { index: getters.groups.length - 1 })
-    },
-    selectPrevious ({ dispatch, getters }) {
-      const index = getters.selectedIndex - 1
-      if (index < 0) {
-        return
-      }
-      dispatch('selectIndex', { index })
-    },
-    selectNext ({ dispatch, getters }) {
-      const index = getters.selectedIndex + 1
-      if (index > getters.groups.length - 1) {
-        return
-      }
-      dispatch('selectIndex', { index })
     },
     toggleFilter ({ commit, state }) {
       commit('setFiltered', { filtered: !state.filtered })
@@ -99,8 +75,8 @@ export default {
     setScrollTop (state, { scrollTop }) {
       state.scrollTop = scrollTop
     },
-    setSortOption (state, { sortOption }) {
-      state.sortOption = sortOption
+    setOrder (state, { order }) {
+      state.order = order
     },
     setFiltered (state, { filtered }) {
       state.filtered = filtered

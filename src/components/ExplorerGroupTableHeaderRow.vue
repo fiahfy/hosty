@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   props: {
@@ -23,15 +23,15 @@ export default {
       default: () => []
     }
   },
-  // computed: {
-  //   ...mapGetters({
-  //     order: 'app/explorer/order'
-  //   })
-  // },
+  computed: {
+    ...mapState({
+      order: state => state.app.explorer.group.order
+    })
+  },
   methods: {
     getClass (header) {
       return [
-        'column sortable',
+        'column sortable px-0',
         this.order.descending ? 'desc' : 'asc',
         header.value === this.order.by ? 'active' : ''
       ]
@@ -43,7 +43,7 @@ export default {
       }
     },
     ...mapActions({
-      // changeOrderBy: 'app/explorer/changeOrderBy'
+      changeOrderBy: 'app/explorer/group/changeOrderBy'
     })
   }
 }
