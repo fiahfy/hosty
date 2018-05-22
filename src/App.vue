@@ -10,6 +10,15 @@
     <v-content class="fill-height">
       <router-view />
     </v-content>
+    <v-snackbar
+      v-model="snackbar"
+    >
+      {{ message }}
+      <v-btn
+        flat
+        @click.native="snackbar = false"
+      >Close</v-btn>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -25,13 +34,31 @@ export default {
     TitleBar
   },
   computed: {
+    snackbar: {
+      get () {
+        return this.$store.state.app.snackbar
+      },
+      set (value) {
+        this.$store.commit('app/setSnackbar', { snackbar: value })
+      }
+    },
     ...mapState({
-      message: state => state.message,
+      message: state => state.app.message,
       darkTheme: state => state.settings.darkTheme
     }),
     ...mapGetters({
-      titleBar: 'titleBar'
+      titleBar: 'app/titleBar'
     })
+  },
+  watch: {
+    snackbar (value) {
+      if (value) {
+        return
+      }
+      this.$nextTick(() => {
+        this.showNextMessage()
+      })
+    }
   },
   async created () {
     await this.initHosts()
@@ -49,8 +76,9 @@ export default {
       this.importHosts({ filepath })
     },
     ...mapActions({
-      initHosts: 'initHosts',
-      importHosts: 'importHosts'
+      initHosts: 'app/initHosts',
+      importHosts: 'app/importHosts',
+      showNextMessage: 'app/showNextMessage'
     })
   }
 }

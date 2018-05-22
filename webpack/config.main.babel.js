@@ -3,7 +3,7 @@ import config from './config.base.babel'
 export default {
   ...config,
   target: 'electron-main',
-  entry: './js/main/index.js',
+  entry: './main.js',
   output: {
     path: `${__dirname}/../app/`,
     filename: '../main.js'

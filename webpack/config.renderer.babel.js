@@ -5,11 +5,11 @@ import { VueLoaderPlugin } from 'vue-loader'
 export default {
   ...config,
   target: 'electron-renderer',
-  entry: './js/renderer/index.js',
+  entry: './renderer.js',
   output: {
     path: `${__dirname}/../app/`,
-    publicPath: '../',
-    filename: 'js/index.js'
+    publicPath: './',
+    filename: 'index.js'
   },
   module: {
     rules: [
@@ -47,14 +47,15 @@ export default {
   plugins: [
     ...config.plugins,
     new HtmlWebpackPlugin({
-      template: './html/index.html',
-      filename: './html/index.html'
+      template: './index.html',
+      filename: './index.html'
     }),
     new VueLoaderPlugin()
   ],
   resolve: {
     extensions: ['.js', '.json', '.vue'],
     alias: {
+      ...config.resolve.alias,
       vue$: 'vue/dist/vue.esm.js'
     }
   }

@@ -110,10 +110,10 @@ const createWindow = () => {
     titleBarStyle: 'hidden'
   }
 
-  let url = `file://${__dirname}/app/html/index.html`
+  let url = `file://${__dirname}/app/index.html`
 
   if (process.env.HMR) {
-    url = 'http://localhost:3000/html/index.html'
+    url = 'http://localhost:3000/index.html'
     options.webPreferences = {
       ...options.webPreferences,
       webSecurity: false

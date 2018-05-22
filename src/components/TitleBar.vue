@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import Package from '../../../../package.json'
+import Package from '~~/package.json'
 
 export default {
   props: {

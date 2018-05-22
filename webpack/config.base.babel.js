@@ -4,7 +4,7 @@ const mode = process.env.NODE_ENV || 'development'
 
 export default {
   mode,
-  context: `${__dirname}/../src`,
+  context: `${__dirname}/../src/`,
   module: {
     rules: [
       {
@@ -21,5 +21,11 @@ export default {
         HMR: JSON.stringify(process.env.HMR)
       }
     })
-  ]
+  ],
+  resolve: {
+    alias: {
+      '~~': `${__dirname}/../`,
+      '~': `${__dirname}/../src/`
+    }
+  }
 }

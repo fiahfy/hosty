@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { buildText } from '../utils/accelerator'
+import { buildText } from '~/utils/accelerator'
 
 Vue.use(Vuetify, {
   theme: {
