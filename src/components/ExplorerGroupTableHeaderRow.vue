@@ -23,11 +23,11 @@ export default {
       default: () => []
     }
   },
-  computed: {
-    ...mapGetters({
-      order: 'app/explorer/order'
-    })
-  },
+  // computed: {
+  //   ...mapGetters({
+  //     order: 'app/explorer/order'
+  //   })
+  // },
   methods: {
     getClass (header) {
       return [
@@ -43,7 +43,7 @@ export default {
       }
     },
     ...mapActions({
-      changeOrderBy: 'app/explorer/changeOrderBy'
+      // changeOrderBy: 'app/explorer/changeOrderBy'
     })
   }
 }

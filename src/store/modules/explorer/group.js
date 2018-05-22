@@ -21,14 +21,17 @@ export default {
       dispatch('group/createGroup', { group }, { root: true })
       const index = getters.groups.length - 1
       dispatch('selectIndex', { index })
-      dispatch('focusList')
+      // dispatch('focusList')
     },
     delete ({ dispatch, getters, state }) {
       const oldSelectedIndex = getters.selectedIndex
       dispatch('group/deleteGroup', { id: state.selectedId }, { root: true })
       const index = oldSelectedIndex > 0 && oldSelectedIndex > getters.groups.length - 1 ? oldSelectedIndex - 1 : oldSelectedIndex
       dispatch('selectIndex', { index })
-      dispatch('focusList')
+      // dispatch('focusList')
+    },
+    update ({ dispatch }, { id, group }) {
+      dispatch('group/updateGroup', { id, group }, { root: true })
     },
     sort ({ dispatch, state }) {
       dispatch('group/sortGroups', { ...state.sortOption }, { root: true })
@@ -79,18 +82,15 @@ export default {
     toggleFilter ({ commit, state }) {
       commit('setFiltered', { filtered: !state.filtered })
     },
-    changeSortKey ({ commit, dispatch, state }, { sortKey }) {
-      let sortOrder = sortOrderDefaults[sortKey]
-      if (state.sortOption.key === sortKey) {
-        sortOrder = state.sortOption.order === 'asc' ? 'desc' : 'asc'
-      }
-      const sortOption = { key: sortKey, order: sortOrder }
-      commit('setSortOption', { sortOption })
+    changeOrderBy ({ commit, dispatch, state }, { orderBy }) {
+      const descending = state.order.by === orderBy ? !state.order.descending : false
+      const order = { by: orderBy, descending }
+      commit('setOrder', { order })
       dispatch('sort')
-    },
-    focusList ({ dispatch }) {
-      dispatch('focusGroupList', null, { root: true })
     }
+    // focusList ({ dispatch }) {
+    //   dispatch('focusGroupList', null, { root: true })
+    // }
   },
   mutations: {
     setSelectedId (state, { selectedId }) {
@@ -110,25 +110,25 @@ export default {
     }
   },
   getters: {
-    groups (state, getters, rootState) {
+    items (state, getters, rootState) {
       return rootState.group.groups.filter((group) => {
         return !state.filtered || !group.disabled
       })
     },
     isSelected (state) {
-      return ({ id }) => state.selectedId === id
+      return ({ id }) => state.id === id
     },
     selectedIndex (state, getters) {
-      return getters.groups.findIndex((group) => getters.isSelected({ id: group.id }))
+      return getters.items.findIndex((group) => getters.isSelected({ id: group.id }))
     },
     selectedGroup (state, getters) {
-      return getters.groups.find((group) => getters.isSelected({ id: group.id }))
+      return getters.items.find((group) => getters.isSelected({ id: group.id }))
     },
-    canCreate () {
-      return true
-    },
-    canDelete (state) {
-      return !!state.selectedId
-    }
+    // canCreate () {
+    //   return true
+    // },
+    // canDelete (state) {
+    //   return !!state.selectedId
+    // }
   }
 }

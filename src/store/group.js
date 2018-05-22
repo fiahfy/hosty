@@ -132,7 +132,7 @@ export default {
     setGroups ({ commit, dispatch }, { groups, save = true }) {
       commit('setGroups', { groups })
       if (save) {
-        dispatch('saveHosts', null, { root: true })
+        // dispatch('saveHosts', null, { root: true })
       }
     }
   },

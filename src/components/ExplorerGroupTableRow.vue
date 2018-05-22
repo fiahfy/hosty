@@ -1,35 +1,49 @@
 <template>
   <tr
-    :active="isSelected({ filepath: item.path })"
     class="explorer-group-table-row"
-    @click="select({ filepath: item.path })"
-    @dblclick="action({ filepath: item.path })"
     @contextmenu="onContextMenu"
   >
     <td>
-      <v-layout class="align-center">
-        <v-btn
-          flat
-          icon
-          class="my-0"
-          @click="toggleBookmark({ filepath: item.path })"
-        >
-          <v-icon :color="starColor">{{ starIcon }}</v-icon>
-        </v-btn>
-        <v-icon
-          :color="fileColor"
-          class="pa-1"
-        >{{ fileIcon }}</v-icon>
-        <span>{{ item.name }}</span>
-      </v-layout>
+      <v-btn
+        flat
+        icon
+      >
+        <v-icon>star</v-icon>
+      </v-btn>
     </td>
-    <td class="text-xs-right">{{ fileSize | readableSize }}</td>
-    <td class="text-xs-right">{{ item.mtime | moment('YYYY-MM-DD HH:mm') }}</td>
+    <td
+      ref="column"
+      class="text-xs-left"
+      @dblclick="show"
+    >
+      {{ item.name }}
+      <v-menu
+        v-model="menu"
+        :position-x="x"
+        :position-y="y"
+        :min-width="width"
+        :close-on-content-click="false"
+      >
+        <v-card>
+          <v-card-text>
+            <v-text-field
+              ref="input"
+              v-model="name"
+              label="Group"
+              class=""
+              hide-details
+              single-line
+              @blur="onBlur"
+            />
+          </v-card-text>
+        </v-card>
+      </v-menu>
+    </td>
   </tr>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
 
 export default {
@@ -39,54 +53,53 @@ export default {
       default: () => ({})
     }
   },
-  computed: {
-    starColor () {
-      return this.isBookmarked({ filepath: this.item.path }) ? 'yellow darken-2' : 'grey'
-    },
-    starIcon () {
-      return this.isBookmarked({ filepath: this.item.path }) ? 'star' : 'star_outline'
-    },
-    fileIcon () {
-      return this.item.directory ? 'folder' : 'photo'
-    },
-    fileColor () {
-      return this.item.directory ? 'blue lighten-3' : 'green lighten-3'
-    },
-    fileSize () {
-      return this.item.directory ? null : this.item.size
-    },
-    ...mapGetters({
-      isSelected: 'app/explorer/isSelected',
-      isBookmarked: 'app/explorer/isBookmarked'
-    })
+  data () {
+    return {
+      menu: false,
+      x: 0,
+      y: 0,
+      width: 0,
+      name: '',
+      autofocus: false
+    }
+  },
+  watch: {
+    menu (value) {
+      if (value) {
+        this.$nextTick(() => {
+          this.$refs.input.focus()
+        })
+      }
+    }
+  },
+  mounted () {
+    console.log(this.item)
+    const rect = this.$refs.column.getBoundingClientRect()
+    this.x = rect.left
+    this.y = rect.top
+    this.width = rect.width
   },
   methods: {
     onContextMenu (e) {
-      this.select({ filepath: this.item.path })
-      ContextMenu.show(e, [
-        {
-          label: this.isBookmarked({ filepath: this.item.path }) ? 'Unstar' : 'Star',
-          click: () => {
-            this.toggleBookmark({ filepath: this.item.path })
-          },
-          accelerator: 'CmdOrCtrl+D'
-        },
-        {
-          label: 'View',
-          click: () => {
-            this.showViewer({ filepath: this.item.path })
-          },
-          accelerator: 'Enter'
-        },
-        { type: 'separator' },
-        { role: ContextMenu.Role.copy }
-      ])
+      ContextMenu.showTextMenu(e)
+    },
+    onBlur () {
+      this.menu = false
+      this.updateGroup({ id: this.item.id, group: { name: this.name } })
+    },
+    show (e) {
+      this.name = this.item.name
+      this.$nextTick(() => {
+        this.menu = true
+        // setTimeout(() => {
+          // console.log(this.$refs.input)
+          // console.log(this.$refs.input.$el.querySelector('input'))
+          // this.$refs.input.focus()
+        // }, 1000)
+      })
     },
     ...mapActions({
-      select: 'app/explorer/select',
-      action: 'app/explorer/action',
-      showViewer: 'app/explorer/showViewer',
-      toggleBookmark: 'app/explorer/toggleBookmark'
+      updateGroup: 'app/explorer/group/update'
     })
   }
 }
@@ -99,12 +112,6 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    span {
-      flex: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
   }
 }
 </style>

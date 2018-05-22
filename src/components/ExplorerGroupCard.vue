@@ -4,15 +4,15 @@
     flat
   >
     <v-card-title class="py-2 px-0">
-      <!-- <v-btn
+      <v-btn
         :title="'Star'|accelerator('CmdOrCtrl+D')"
-        :disabled="!filepath"
+        color="primary"
         flat
-        icon
-        @click="toggleBookmark({ filepath })"
+        @click="createGroup"
       >
-        <v-icon>{{ isBookmarked({ filepath }) ? 'star' : 'star_border' }}</v-icon>
+        Add
       </v-btn>
+      <!--
       <v-btn
         :title="'View'|accelerator('Enter')"
         :disabled="!filepath"
@@ -75,9 +75,7 @@ export default {
       }
     },
     ...mapActions({
-      search: 'app/explorer/search',
-      showViewer: 'app/explorer/showViewer',
-      toggleBookmark: 'app/explorer/toggleBookmark'
+      createGroup: 'app/explorer/group/create'
     })
   }
 }
