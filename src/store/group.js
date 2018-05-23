@@ -1,21 +1,30 @@
+const reversed = {
+  disabled: false,
+  name: false,
+  ip: false
+}
+
 export default {
   namespaced: true,
   state: {
     groups: []
   },
   actions: {
-    createGroup ({ dispatch, state }, { group = { disabled: false, name: '', hosts: [] } }) {
+    createGroup ({ dispatch, state }, { group }) {
       const id = Math.max.apply(null, [0, ...state.groups.map((group) => group.id)]) + 1
       const groups = [
         ...state.groups,
         {
+          disabled: false,
+          name: '',
+          hosts: [],
           ...group,
           id
         }
       ]
       dispatch('setGroups', { groups, save: true })
     },
-    updateGroup ({ dispatch, state }, { id, group = { disabled: false, name: '', hosts: [] } }) {
+    updateGroup ({ dispatch, state }, { id, group }) {
       const groups = state.groups.map((currentGroup) => {
         if (currentGroup.id !== id) {
           return currentGroup
@@ -31,12 +40,13 @@ export default {
       const groups = state.groups.filter((group) => group.id !== id)
       dispatch('setGroups', { groups, save: true })
     },
-    sortGroups ({ dispatch, getters, state }, { key, order }) {
+    sortGroups ({ dispatch, getters, state }, { order }) {
+      const { by, descending } = order
       const groups = state.groups.sort((a, b) => {
         let result = 0
-        if (a[key] > b[key]) {
+        if (a[by] > b[by]) {
           result = 1
-        } else if (a[key] < b[key]) {
+        } else if (a[by] < b[by]) {
           result = -1
         }
         if (result === 0) {
@@ -46,94 +56,80 @@ export default {
             result = -1
           }
         }
-        return order === 'asc' ? result : -1 * result
+        result = reversed[by] ? -1 * result : result
+        return descending ? -1 * result : result
       })
       dispatch('setGroups', { groups })
     },
-    createHost ({ dispatch, state }, { groupId, host = { disabled: false, name: '', ip: '' } }) {
-      const groups = state.groups.map((group) => {
-        if (group.id !== groupId) {
-          return group
+    createHost ({ dispatch, getters }, { groupId, host }) {
+      const currentHosts = getters.getHosts({ groupId })
+      const id = Math.max.apply(null, [0, ...currentHosts.map((host) => host.id)]) + 1
+      const hosts = [
+        ...currentHosts,
+        {
+          disabled: false,
+          name: '',
+          ip: '',
+          ...host,
+          id
         }
-        const currentHosts = group.hosts || []
-        const id = Math.max.apply(null, [0, ...currentHosts.map((host) => host.id)]) + 1
-        return {
-          ...group,
-          hosts: [
-            ...currentHosts,
-            {
-              ...host,
-              id
-            }
-          ]
-        }
-      })
-      dispatch('setGroups', { groups, save: true })
+      ]
+      dispatch('setHosts', { groupId, hosts, save: true })
     },
-    updateHost ({ dispatch, state }, { groupId, id, host = { disabled: false, name: '', ip: '' } }) {
-      const groups = state.groups.map((group) => {
-        if (group.id !== groupId) {
-          return group
+    updateHost ({ dispatch, getters }, { groupId, id, host }) {
+      const hosts = getters.getHosts({ groupId }).map((currentHost) => {
+        if (currentHost.id !== id) {
+          return currentHost
         }
         return {
-          ...group,
-          hosts: group.hosts.map((currentHost) => {
-            if (currentHost.id !== id) {
-              return currentHost
-            }
-            return {
-              ...currentHost,
-              ...host
-            }
-          })
+          ...currentHost,
+          ...host
         }
       })
-      dispatch('setGroups', { groups, save: true })
+      dispatch('setHosts', { groupId, hosts, save: true })
     },
-    deleteHost ({ dispatch, state }, { groupId, id }) {
-      const groups = state.groups.map((group) => {
-        if (group.id !== groupId) {
-          return group
-        }
-        return {
-          ...group,
-          hosts: group.hosts.filter((host) => host.id !== id)
-        }
-      })
-      dispatch('setGroups', { groups, save: true })
+    deleteHost ({ dispatch, getters }, { groupId, id }) {
+      const hosts = getters.getHosts({ groupId }).filter((host) => host.id !== id)
+      dispatch('setHosts', { groupId, hosts, save: true })
     },
-    sortHosts ({ dispatch, getters, state }, { groupId, key, order }) {
-      const groups = state.groups.map((group) => {
-        if (group.id !== groupId) {
-          return group
+    sortHosts ({ dispatch, getters, state }, { groupId, order }) {
+      const { by, descending } = order
+      const hosts = getters.getHosts({ groupId }).sort((a, b) => {
+        let result = 0
+        if (a[by] > b[by]) {
+          result = 1
+        } else if (a[by] < b[by]) {
+          result = -1
         }
-        return {
-          ...group,
-          hosts: (group.hosts || []).sort((a, b) => {
-            let result = 0
-            if (a[key] > b[key]) {
-              result = 1
-            } else if (a[key] < b[key]) {
-              result = -1
-            }
-            if (result === 0) {
-              if (a.name > b.name) {
-                result = 1
-              } else if (a.name < b.name) {
-                result = -1
-              }
-            }
-            return order === 'asc' ? result : -1 * result
-          })
+        if (result === 0) {
+          if (a.name > b.name) {
+            result = 1
+          } else if (a.name < b.name) {
+            result = -1
+          }
         }
+        result = reversed[by] ? -1 * result : result
+        return descending ? -1 * result : result
       })
-      dispatch('setGroups', { groups })
+      dispatch('setHosts', { groupId, hosts, save: true })
     },
     setGroups ({ commit, dispatch }, { groups, save = true }) {
       commit('setGroups', { groups })
       if (save) {
         // dispatch('saveHosts', null, { root: true })
       }
+    },
+    setHosts ({ dispatch, state }, { groupId, hosts, save = true }) {
+      const groups = state.groups.map((group) => {
+        if (group.id !== groupId) {
+          return group
+        }
+        return {
+          ...group,
+          hosts
+        }
+      })
+      dispatch('setGroups', { groups, save })
     }
   },
   mutations: {
@@ -142,6 +138,12 @@ export default {
     }
   },
   getters: {
+    getHosts (state) {
+      return ({ groupId }) => {
+        const group = state.groups.find((group) => group.id === groupId)
+        return group ? group.hosts : []
+      }
+    },
     hosts (state) {
       return state.groups
         .filter((group) => !group.disabled)

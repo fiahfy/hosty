@@ -1,15 +1,11 @@
 <template>
-  <tr
-    :active="isSelected({ id: item.id })"
-    class="explorer-group-table-row"
-    @click="select({ id: item.id })"
-    @contextmenu="onContextMenu"
-  >
+  <tr class="explorer-group-table-row">
     <td class="px-2">
       <v-btn
         :color="color"
         flat
         icon
+        class="my-0"
         @click="onClick"
       >
         <v-icon>{{ icon }}</v-icon>
@@ -24,7 +20,7 @@
         v-model="menu"
         :transition="false"
         :position-x="x"
-        :position-y="y"
+        :position-y="y - scrollTop"
         :min-width="width"
         :close-on-content-click="false"
       >
@@ -49,7 +45,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
 
 export default {
@@ -76,8 +72,8 @@ export default {
     color () {
       return this.item.disabled ? 'gray' : 'primary'
     },
-    ...mapGetters({
-      isSelected: 'app/explorer/group/isSelected'
+    ...mapState({
+      scrollTop: state => state.app.explorer.group.scrollTop
     })
   },
   mounted () {
@@ -99,10 +95,12 @@ export default {
       switch (e.keyCode) {
         case 13:
           e.target.blur()
+          this.focusTable()
           break
         case 27:
           this.cancel = true
           e.target.blur()
+          this.focusTable()
           break
       }
     },
@@ -114,18 +112,21 @@ export default {
       this.update({ id: this.item.id, group: { name: this.name } })
     },
     onDblClick () {
+      this.focus()
+    },
+    focus () {
       this.name = this.item.name
       this.cancel = false
       this.$nextTick(() => {
         this.menu = true
         setTimeout(() => {
           this.$refs.input.focus()
-        }, 100)
+        }, 200)
       })
     },
     ...mapActions({
-      select: 'app/explorer/group/select',
-      update: 'app/explorer/group/update'
+      update: 'app/explorer/group/update',
+      focusTable: 'app/explorer/group/focusTable'
     })
   }
 }

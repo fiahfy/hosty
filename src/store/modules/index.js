@@ -4,8 +4,8 @@ import explorer from './explorer'
 import preview from './preview'
 
 export const Selector = {
-  groupList: '.group-list',
-  hostList: '.host-list'
+  explorerGroupTable: '.explorer-group-table',
+  explorerHostTable: '.explorer-host-table'
 }
 
 export default {

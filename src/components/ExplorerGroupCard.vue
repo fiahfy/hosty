@@ -10,7 +10,15 @@
         flat
         @click="createGroup"
       >
-        Add
+        New
+      </v-btn>
+      <v-btn
+        :title="'Star'|accelerator('CmdOrCtrl+D')"
+        color="primary"
+        flat
+        @click="deleteGroup"
+      >
+        Delete
       </v-btn>
       <!--
       <v-btn
@@ -75,7 +83,8 @@ export default {
       }
     },
     ...mapActions({
-      createGroup: 'app/explorer/group/create'
+      createGroup: 'app/explorer/group/create',
+      deleteGroup: 'app/explorer/group/delete'
     })
   }
 }

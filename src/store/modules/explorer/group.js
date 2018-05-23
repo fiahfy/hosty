@@ -1,12 +1,9 @@
-const reversed = {
-  disabled: false,
-  name: false
-}
+import { Selector } from '../index'
 
 export default {
   namespaced: true,
   state: {
-    id: 0,
+    selectedId: 0,
     scrollTop: 0,
     order: {
       by: 'name',
@@ -34,39 +31,55 @@ export default {
       dispatch('group/updateGroup', { id, group }, { root: true })
     },
     sort ({ dispatch, state }) {
-      dispatch('group/sortGroups', { ...state.sortOption }, { root: true })
+      dispatch('group/sortGroups', { order: state.order }, { root: true })
     },
-    copy ({ commit, getters }) {
-      const copiedObject = getters.selectedGroup
-      commit('setCopiedObject', { copiedObject })
-    },
-    paste ({ dispatch, state }) {
-      const group = state.copiedObject
-      if (!group) {
-        return
-      }
-      dispatch('create', { group })
-    },
+    // copy ({ commit, getters }) {
+    //   const copiedObject = getters.selectedGroup
+    //   commit('setCopiedObject', { copiedObject })
+    // },
+    // paste ({ dispatch, state }) {
+    //   const group = state.copiedObject
+    //   if (!group) {
+    //     return
+    //   }
+    //   dispatch('create', { group })
+    // },
     select ({ commit, dispatch, getters }, { id }) {
       commit('setSelectedId', { selectedId: id })
       // dispatch('explorer/host/sort', null, { root: true })
       // dispatch('explorer/host/unselect', null, { root: true })
     },
+    selectIndex ({ dispatch, getters }, { index }) {
+      const id = getters.items[index] ? getters.items[index].id : 0
+      dispatch('select', { id })
+    },
     unselect ({ commit }) {
       commit('setSelectedId', { selectedId: 0 })
     },
-    toggleFilter ({ commit, state }) {
-      commit('setFiltered', { filtered: !state.filtered })
+    selectFirst ({ dispatch }) {
+      dispatch('selectIndex', { index: 0 })
     },
+    selectLast ({ dispatch, getters }) {
+      dispatch('selectIndex', { index: getters.filteredItems.length - 1 })
+    },
+    selectPrevious ({ dispatch, getters }) {
+      dispatch('selectIndex', { index: getters.selectedIndex - 1 })
+    },
+    selectNext ({ dispatch, getters, state }) {
+      dispatch('selectIndex', { index: getters.selectedIndex + 1 })
+    },
+    // toggleFilter ({ commit, state }) {
+    //   commit('setFiltered', { filtered: !state.filtered })
+    // },
     changeOrderBy ({ commit, dispatch, state }, { orderBy }) {
       const descending = state.order.by === orderBy ? !state.order.descending : false
       const order = { by: orderBy, descending }
       commit('setOrder', { order })
       dispatch('sort')
+    },
+    focusTable ({ dispatch }) {
+      dispatch('app/focus', { selector: Selector.explorerGroupTable }, { root: true })
     }
-    // focusList ({ dispatch }) {
-    //   dispatch('focusGroupList', null, { root: true })
-    // }
   },
   mutations: {
     setSelectedId (state, { selectedId }) {
@@ -92,7 +105,7 @@ export default {
       })
     },
     isSelected (state) {
-      return ({ id }) => state.id === id
+      return ({ id }) => state.selectedId === id
     },
     selectedIndex (state, getters) {
       return getters.items.findIndex((group) => getters.isSelected({ id: group.id }))

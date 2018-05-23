@@ -8,6 +8,10 @@
     class="explorer-group-table"
     item-key="id"
     hide-actions
+    tabindex="0"
+    @keydown.native="onKeyDown"
+    @click.native="onClick"
+    @contextmenu.native="onContextMenu"
   >
     <template
       slot="headers"
@@ -20,17 +24,21 @@
       slot-scope="props"
     >
       <explorer-group-table-row
-        :active="props.selected"
+        :ref="`row-${props.item.id}`"
+        :active="isSelected({ id: props.item.id })"
         :item="props.item"
+        @click.native.stop="(e) => onClick(e, { id: props.item.id })"
+        @contextmenu.native.stop="(e) => onContextMenu(e, { id: props.item.id })"
       />
     </template>
   </v-data-table>
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapState } from 'vuex'
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import ExplorerGroupTableHeaderRow from './ExplorerGroupTableHeaderRow'
 import ExplorerGroupTableRow from './ExplorerGroupTableRow'
+import * as ContextMenu from '~/utils/context-menu'
 
 export default {
   components: {
@@ -60,11 +68,39 @@ export default {
       }
     },
     ...mapState({
+      selectedId: state => state.app.explorer.group.selectedId,
       scrollTop: state => state.app.explorer.group.scrollTop
     }),
     ...mapGetters({
-      items: 'app/explorer/group/items'
+      items: 'app/explorer/group/items',
+      selectedIndex: 'app/explorer/group/selectedIndex',
+      isSelected: 'app/explorer/group/isSelected'
     })
+  },
+  watch: {
+    selectedId () {
+      this.$nextTick(() => {
+        const index = this.selectedIndex
+        if (index === -1) {
+          return
+        }
+        const rowHeight = 48
+        const headerHeight = 58
+        const el = {
+          offsetTop: rowHeight * (index + 1),
+          offsetHeight: rowHeight
+        }
+        const table = {
+          scrollTop: this.container.scrollTop,
+          offsetHeight: this.container.offsetHeight
+        }
+        if (el.offsetTop - el.offsetHeight < table.scrollTop) {
+          this.container.scrollTop = el.offsetTop - el.offsetHeight
+        } else if (el.offsetTop + headerHeight > table.scrollTop + table.offsetHeight) {
+          this.container.scrollTop = el.offsetTop + headerHeight - table.offsetHeight
+        }
+      })
+    }
   },
   mounted () {
     this.container = this.$el.querySelector('.table__overflow')
@@ -82,8 +118,121 @@ export default {
       this.scrolling = e.target.scrollTop > 0
       this.setScrollTop({ scrollTop: e.target.scrollTop })
     },
+    onKeyDown (e) {
+      switch (e.keyCode) {
+        case 8:
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            e.preventDefault()
+            this.delete()
+          }
+          break
+        case 13:
+          e.preventDefault()
+          this.focusSelectedRow()
+          break
+        case 38:
+          e.preventDefault()
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            this.selectFirst()
+          } else {
+            this.selectPrevious()
+          }
+          break
+        case 40:
+          e.preventDefault()
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            this.selectLast()
+          } else {
+            this.selectNext()
+          }
+          break
+        case 67:
+          if (getSelection().toString()) {
+            break
+          }
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            e.preventDefault()
+            this.copy()
+          }
+          break
+        case 78:
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            e.preventDefault()
+            this.create()
+          }
+          break
+        case 86:
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            e.preventDefault()
+            this.paste()
+          }
+          break
+      }
+    },
+    onClick (e, { id } = { id: 0 }) {
+      this.select({ id })
+    },
+    onContextMenu (e, { id } = { id: 0 }) {
+      this.select({ id })
+      let templates = [
+        {
+          label: 'New Group',
+          click: this.create,
+          accelerator: 'CmdOrCtrl+N'
+        }
+      ]
+      if (id) {
+        templates = [
+          ...templates,
+          {
+            label: 'Copy',
+            click: this.copy,
+            accelerator: 'CmdOrCtrl+C'
+          }
+        ]
+      }
+      templates = [
+        ...templates,
+        {
+          label: 'Paste',
+          click: this.paste,
+          accelerator: 'CmdOrCtrl+V'
+        }
+      ]
+      if (id) {
+        templates = [
+          ...templates,
+          { type: 'separator' },
+          {
+            label: 'Edit',
+            click: this.focusSelectedRow,
+            accelerator: 'Enter'
+          },
+          {
+            label: 'Delete',
+            click: this.delete,
+            accelerator: 'CmdOrCtrl+Backspace'
+          }
+        ]
+      }
+      ContextMenu.show(e, templates)
+    },
+    focusSelectedRow () {
+      this.$refs[`row-${this.selectedId}`].focus()
+    },
     ...mapMutations({
       setScrollTop: 'app/explorer/group/setScrollTop'
+    }),
+    ...mapActions({
+      create: 'app/explorer/group/create',
+      delete: 'app/explorer/group/delete',
+      copy: 'app/explorer/group/copy',
+      paste: 'app/explorer/group/paste',
+      select: 'app/explorer/group/select',
+      selectFirst: 'app/explorer/group/selectFirst',
+      selectLast: 'app/explorer/group/selectLast',
+      selectPrevious: 'app/explorer/group/selectPrevious',
+      selectNext: 'app/explorer/group/selectNext'
     })
   }
 }
