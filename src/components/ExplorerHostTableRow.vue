@@ -17,29 +17,61 @@
       </v-btn>
     </td>
     <td
-      ref="column"
-      @dblclick="onColumnDblClick"
+      ref="ipColumn"
+      :class="ipClasses"
+      @dblclick="(e) => onColumnDblClick(e, 'ip')"
     >
-      {{ host.name }}
+      {{ host.ip || '192.0.2.0' }}
       <v-menu
-        v-model="menu"
+        v-model="ipMenu.show"
         :transition="false"
-        :position-x="x"
-        :position-y="y - scrollTop"
-        :min-width="width"
+        :position-x="ipMenu.x"
+        :position-y="ipMenu.y - scrollTop"
+        :min-width="ipMenu.width"
         :close-on-content-click="false"
       >
         <v-card>
           <v-card-text>
             <v-text-field
-              ref="text"
+              ref="ipText"
+              v-model="ip"
+              label="192.0.2.0"
+              class="pt-0"
+              hide-details
+              single-line
+              @keydown.native="(e) => onTextKeyDown(e, 'ip')"
+              @blur="(e) => onTextBlur(e, 'ip')"
+              @contextmenu.stop="onTextContextMenu"
+            />
+          </v-card-text>
+        </v-card>
+      </v-menu>
+    </td>
+    <td
+      ref="nameColumn"
+      :class="nameClasses"
+      @dblclick="(e) => onColumnDblClick(e, 'name')"
+    >
+      {{ host.name || 'example.com' }}
+      <v-menu
+        v-model="nameMenu.show"
+        :transition="false"
+        :position-x="nameMenu.x"
+        :position-y="nameMenu.y - scrollTop"
+        :min-width="nameMenu.width"
+        :close-on-content-click="false"
+      >
+        <v-card>
+          <v-card-text>
+            <v-text-field
+              ref="nameText"
               v-model="name"
               label="example.com"
               class="pt-0"
               hide-details
               single-line
-              @keyup="onTextKeyup"
-              @blur="onTextBlur"
+              @keydown.native="(e) => onTextKeyDown(e, 'name')"
+              @blur="(e) => onTextBlur(e, 'name')"
               @contextmenu.stop="onTextContextMenu"
             />
           </v-card-text>
@@ -62,10 +94,19 @@ export default {
   },
   data () {
     return {
-      menu: false,
-      x: 0,
-      y: 0,
-      width: 0,
+      ipMenu: {
+        show: false,
+        x: 0,
+        y: 0,
+        width: 0
+      },
+      nameMenu: {
+        show: false,
+        x: 0,
+        y: 0,
+        width: 0
+      },
+      ip: '',
       name: '',
       cancel: false
     }
@@ -80,6 +121,12 @@ export default {
     color () {
       return this.host.disabled ? 'gray' : 'primary'
     },
+    ipClasses () {
+      return this.host.ip ? [] : ['grey--text']
+    },
+    nameClasses () {
+      return this.host.name ? [] : ['grey--text']
+    },
     ...mapState({
       scrollTop: state => state.app.explorer.host.scrollTop
     }),
@@ -90,10 +137,7 @@ export default {
   },
   mounted () {
     this.$nextTick(() => {
-      const rect = this.$refs.column.getBoundingClientRect()
-      this.x = rect.left
-      this.y = rect.top + 1
-      this.width = rect.width
+      this.adjustMenu()
     })
   },
   methods: {
@@ -104,30 +148,30 @@ export default {
       this.select({ id: this.host.id })
       const templates = [
         {
-          label: 'New Group',
-          click: this.create,
+          label: 'New Host',
+          click: () => this.create(),
           accelerator: 'CmdOrCtrl+N'
         },
         {
           label: 'Copy',
-          click: this.copy,
+          click: () => this.copy(),
           accelerator: 'CmdOrCtrl+C'
         },
         {
           label: 'Paste',
-          click: this.paste,
+          click: () => this.paste(),
           accelerator: 'CmdOrCtrl+V',
           enabled: this.canPaste
         },
         { type: 'separator' },
         {
           label: 'Edit',
-          click: this.focus,
+          click: () => this.focus(),
           accelerator: 'Enter'
         },
         {
           label: 'Delete',
-          click: this.delete,
+          click: () => this.delete(),
           accelerator: 'CmdOrCtrl+Backspace'
         }
       ]
@@ -136,41 +180,65 @@ export default {
     onButtonClick () {
       this.update({ host: { disabled: !this.host.disabled } })
     },
-    onColumnDblClick () {
-      this.focus()
+    onColumnDblClick (e, value) {
+      this.focus(value)
     },
-    onTextKeyup (e) {
+    onTextKeyDown (e, value) {
       switch (e.keyCode) {
         case 13:
+          e.preventDefault()
           e.target.blur()
           this.focusTable()
           break
         case 27:
+          e.preventDefault()
           this.cancel = true
           e.target.blur()
           this.focusTable()
           break
+        case 9:
+          e.preventDefault()
+          e.target.blur()
+          if (value === 'name' && e.shiftKey) {
+            this.focus('ip')
+            break
+          } else if (value === 'ip' && !e.shiftKey) {
+            this.focus('name')
+            break
+          }
+          this.focusTable()
+          break
       }
     },
-    onTextBlur () {
-      this.menu = false
+    onTextBlur (e, value) {
+      this[`${value}Menu`].show = false
       if (this.cancel) {
         return
       }
-      this.update({ host: { name: this.name } })
+      this.update({ host: { [value]: this[value] } })
     },
     onTextContextMenu () {
       ContextMenu.showTextMenu()
     },
-    focus () {
-      this.name = this.host.name
+    focus (value = 'ip') {
+      this[value] = this.host[value]
       this.cancel = false
       this.$nextTick(() => {
-        this.menu = true
+        this[`${value}Menu`].show = true
         setTimeout(() => {
-          this.$refs.text.focus()
+          this.$refs[`${value}Text`].focus()
         }, 200)
       })
+    },
+    adjustMenu () {
+      const ipRect = this.$refs.ipColumn.getBoundingClientRect()
+      this.ipMenu.x = ipRect.left
+      this.ipMenu.y = ipRect.top + 1
+      this.ipMenu.width = ipRect.width
+      const nameRect = this.$refs.nameColumn.getBoundingClientRect()
+      this.nameMenu.x = nameRect.left
+      this.nameMenu.y = nameRect.top + 1
+      this.nameMenu.width = nameRect.width
     },
     ...mapActions({
       create: 'app/explorer/host/create',

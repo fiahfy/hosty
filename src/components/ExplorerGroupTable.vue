@@ -7,6 +7,7 @@
     :class="classes"
     class="explorer-group-table"
     item-key="id"
+    no-data-text="No Groups"
     hide-actions
     tabindex="0"
     @keydown.native="onKeyDown"
@@ -174,12 +175,12 @@ export default {
       const templates = [
         {
           label: 'New Group',
-          click: this.create,
+          click: () => this.create(),
           accelerator: 'CmdOrCtrl+N'
         },
         {
           label: 'Paste',
-          click: this.paste,
+          click: () => this.paste(),
           accelerator: 'CmdOrCtrl+V',
           enabled: this.canPaste
         }
@@ -209,6 +210,7 @@ export default {
 
 <style scoped lang="scss">
 .explorer-group-table {
+  outline: none;
   & /deep/ .table__overflow {
     height: 100%;
     overflow-y: scroll;

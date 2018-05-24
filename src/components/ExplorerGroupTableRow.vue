@@ -18,15 +18,16 @@
     </td>
     <td
       ref="column"
+      :class="classes"
       @dblclick="onColumnDblClick"
     >
-      {{ group.name }}
+      {{ group.name || 'Group' }}
       <v-menu
-        v-model="menu"
+        v-model="menu.show"
         :transition="false"
-        :position-x="x"
-        :position-y="y - scrollTop"
-        :min-width="width"
+        :position-x="menu.x"
+        :position-y="menu.y - scrollTop"
+        :min-width="menu.width"
         :close-on-content-click="false"
       >
         <v-card>
@@ -38,7 +39,7 @@
               class="pt-0"
               hide-details
               single-line
-              @keyup="onTextKeyup"
+              @keydown.native="onTextKeyDown"
               @blur="onTextBlur"
               @contextmenu.stop="onTextContextMenu"
             />
@@ -62,10 +63,12 @@ export default {
   },
   data () {
     return {
-      menu: false,
-      x: 0,
-      y: 0,
-      width: 0,
+      menu: {
+        show: false,
+        x: 0,
+        y: 0,
+        width: 0
+      },
       name: '',
       cancel: false
     }
@@ -80,6 +83,9 @@ export default {
     color () {
       return this.group.disabled ? 'gray' : 'primary'
     },
+    classes () {
+      return this.group.name ? [] : ['grey--text']
+    },
     ...mapState({
       scrollTop: state => state.app.explorer.group.scrollTop
     }),
@@ -90,10 +96,7 @@ export default {
   },
   mounted () {
     this.$nextTick(() => {
-      const rect = this.$refs.column.getBoundingClientRect()
-      this.x = rect.left
-      this.y = rect.top + 1
-      this.width = rect.width
+      this.adjustMenu()
     })
   },
   methods: {
@@ -105,29 +108,29 @@ export default {
       const templates = [
         {
           label: 'New Group',
-          click: this.create,
+          click: () => this.create(),
           accelerator: 'CmdOrCtrl+N'
         },
         {
           label: 'Copy',
-          click: this.copy,
+          click: () => this.copy(),
           accelerator: 'CmdOrCtrl+C'
         },
         {
           label: 'Paste',
-          click: this.paste,
+          click: () => this.paste(),
           accelerator: 'CmdOrCtrl+V',
           enabled: this.canPaste
         },
         { type: 'separator' },
         {
           label: 'Edit',
-          click: this.focus,
+          click: () => this.focus(),
           accelerator: 'Enter'
         },
         {
           label: 'Delete',
-          click: this.delete,
+          click: () => this.delete(),
           accelerator: 'CmdOrCtrl+Backspace'
         }
       ]
@@ -139,13 +142,15 @@ export default {
     onColumnDblClick () {
       this.focus()
     },
-    onTextKeyup (e) {
+    onTextKeyDown (e) {
       switch (e.keyCode) {
         case 13:
+          e.preventDefault()
           e.target.blur()
           this.focusTable()
           break
         case 27:
+          e.preventDefault()
           this.cancel = true
           e.target.blur()
           this.focusTable()
@@ -153,7 +158,7 @@ export default {
       }
     },
     onTextBlur () {
-      this.menu = false
+      this.menu.show = false
       if (this.cancel) {
         return
       }
@@ -166,11 +171,17 @@ export default {
       this.name = this.group.name
       this.cancel = false
       this.$nextTick(() => {
-        this.menu = true
+        this.menu.show = true
         setTimeout(() => {
           this.$refs.text.focus()
         }, 200)
       })
+    },
+    adjustMenu () {
+      const rect = this.$refs.column.getBoundingClientRect()
+      this.menu.x = rect.left
+      this.menu.y = rect.top + 1
+      this.menu.width = rect.width
     },
     ...mapActions({
       create: 'app/explorer/group/create',
