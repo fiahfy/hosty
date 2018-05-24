@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="explorer-group-card"
+    class="explorer-host-card"
     flat
   >
     <v-card-title class="py-2 px-0">
@@ -32,11 +32,11 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
   computed: {
     ...mapState({
-      selectedId: state => state.app.explorer.group.selectedId
+      selectedId: state => state.app.explorer.host.selectedId
     }),
     ...mapGetters({
-      canCreate: 'app/explorer/group/canCreate',
-      canDelete: 'app/explorer/group/canDelete'
+      canCreate: 'app/explorer/host/canCreate',
+      canDelete: 'app/explorer/host/canDelete'
     })
   },
   methods: {
@@ -47,8 +47,8 @@ export default {
       this.delete({ id: this.selectedId })
     },
     ...mapActions({
-      create: 'app/explorer/group/create',
-      delete: 'app/explorer/group/delete'
+      create: 'app/explorer/host/create',
+      delete: 'app/explorer/host/delete'
     })
   }
 }

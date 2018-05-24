@@ -9,7 +9,6 @@ export default {
       by: 'name',
       descending: false
     },
-
     filtered: false,
     copiedObject: null
   },
@@ -49,12 +48,12 @@ export default {
       // dispatch('explorer/host/sort', null, { root: true })
       // dispatch('explorer/host/unselect', null, { root: true })
     },
+    unselect ({ commit }) {
+      commit('setSelectedId', { selectedId: 0 })
+    },
     selectIndex ({ dispatch, getters }, { index }) {
       const id = getters.groups[index] ? getters.groups[index].id : 0
       dispatch('select', { id })
-    },
-    unselect ({ commit }) {
-      commit('setSelectedId', { selectedId: 0 })
     },
     selectFirst ({ dispatch }) {
       dispatch('selectIndex', { index: 0 })

@@ -1,7 +1,6 @@
 import router from '~/router'
 import * as HostsFileManager from '~/utils/hosts-file-manager'
 import explorer from './explorer'
-import preview from './preview'
 
 export const Selector = {
   explorerGroupTable: '.explorer-group-table',
@@ -91,7 +90,6 @@ export default {
     }
   },
   modules: {
-    explorer,
-    preview
+    explorer
   }
 }

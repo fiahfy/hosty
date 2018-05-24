@@ -29,7 +29,6 @@ export default {
     return {
       items: [
         { name: 'explorer', icon: 'view_list', title: `explorer (${buildText('CmdOrCtrl+Shift+E')})` },
-        { name: 'preview', icon: 'visibility', title: `preview (${buildText('CmdOrCtrl+P')})` },
         { name: 'settings', icon: 'settings', title: `settings (${buildText('CmdOrCtrl+,')})` }
       ]
     }

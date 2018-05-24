@@ -1,17 +1,13 @@
-const sortOrderDefaults = {
-  disabled: 'asc',
-  name: 'asc',
-  ip: 'asc'
-}
+import { Selector } from '../index'
 
 export default {
   namespaced: true,
   state: {
     selectedId: 0,
     scrollTop: 0,
-    sortOption: {
-      key: 'ip',
-      order: 'asc'
+    order: {
+      by: 'name',
+      descending: false
     },
     filtered: false,
     copiedObject: null
@@ -21,17 +17,20 @@ export default {
       dispatch('group/createHost', { groupId: getters.selectedGroupId, host }, { root: true })
       const index = getters.hosts.length - 1
       dispatch('selectIndex', { index })
-      dispatch('focusList')
+      dispatch('focusTable')
     },
     delete ({ dispatch, getters, state }) {
       const oldSelectedIndex = getters.selectedIndex
       dispatch('group/deleteHost', { groupId: getters.selectedGroupId, id: state.selectedId }, { root: true })
       const index = oldSelectedIndex > 0 && oldSelectedIndex > getters.hosts.length - 1 ? oldSelectedIndex - 1 : oldSelectedIndex
       dispatch('selectIndex', { index })
-      dispatch('focusList')
+      dispatch('focusTable')
+    },
+    update ({ dispatch, getters }, { id, host }) {
+      dispatch('group/updateHost', { groupId: getters.selectedGroupId, id, host }, { root: true })
     },
     sort ({ dispatch, getters, state }) {
-      dispatch('group/sortHosts', { groupId: getters.selectedGroupId, ...state.sortOption }, { root: true })
+      dispatch('group/sortHosts', { groupId: getters.selectedGroupId, order: state.order }, { root: true })
     },
     copy ({ commit, getters }) {
       const copiedObject = getters.selectedHost
@@ -61,43 +60,32 @@ export default {
       dispatch('selectIndex', { index: getters.hosts.length - 1 })
     },
     selectPrevious ({ dispatch, getters }) {
-      const index = getters.selectedIndex - 1
-      if (index < 0) {
-        return
-      }
-      dispatch('selectIndex', { index })
+      dispatch('selectIndex', { index: getters.selectedIndex - 1 })
     },
     selectNext ({ dispatch, getters }) {
-      const index = getters.selectedIndex + 1
-      if (index > getters.hosts.length - 1) {
-        return
-      }
-      dispatch('selectIndex', { index })
+      dispatch('selectIndex', { index: getters.selectedIndex + 1 })
     },
-    toggleFilter ({ commit, state }) {
-      commit('setFiltered', { filtered: !state.filtered })
-    },
-    changeSortKey ({ commit, dispatch, getters, state }, { sortKey }) {
-      let sortOrder = sortOrderDefaults[sortKey]
-      if (state.sortOption.key === sortKey) {
-        sortOrder = state.sortOption.order === 'asc' ? 'desc' : 'asc'
-      }
-      const sortOption = { key: sortKey, order: sortOrder }
-      commit('setSortOption', { sortOption })
+    // toggleFilter ({ commit, state }) {
+    //   commit('setFiltered', { filtered: !state.filtered })
+    // },
+    changeOrderBy ({ commit, dispatch, state }, { orderBy }) {
+      const descending = state.order.by === orderBy ? !state.order.descending : false
+      const order = { by: orderBy, descending }
+      commit('setOrder', { order })
       dispatch('sort')
     },
-    focusList ({ dispatch }) {
-      dispatch('focusHostList', null, { root: true })
-    },
-    enterList ({ dispatch, state }) {
-      if (!state.selectedId) {
-        dispatch('selectFirst')
-      }
-      dispatch('focusHostList', null, { root: true })
-    },
-    leaveList ({ dispatch }) {
-      dispatch('focusGroupList', null, { root: true })
+    focusTable ({ dispatch }) {
+      dispatch('app/focus', { selector: Selector.explorerHostTable }, { root: true })
     }
+    // enterList ({ dispatch, state }) {
+    //   if (!state.selectedId) {
+    //     dispatch('selectFirst')
+    //   }
+    //   dispatch('focusHostList', null, { root: true })
+    // },
+    // leaveList ({ dispatch }) {
+    //   dispatch('focusGroupList', null, { root: true })
+    // }
   },
   mutations: {
     setSelectedId (state, { selectedId }) {
@@ -106,8 +94,8 @@ export default {
     setScrollTop (state, { scrollTop }) {
       state.scrollTop = scrollTop
     },
-    setSortOption (state, { sortOption }) {
-      state.sortOption = sortOption
+    setOrder (state, { order }) {
+      state.order = order
     },
     setFiltered (state, { filtered }) {
       state.filtered = filtered
@@ -117,12 +105,11 @@ export default {
     }
   },
   getters: {
-    hosts (state, getters, rootState, rootGetters) {
-      const selectedGroup = rootGetters['explorer/group/selectedGroup']
-      if (!selectedGroup) {
+    hosts (state, getters) {
+      if (!getters.selectedGroup) {
         return []
       }
-      return (selectedGroup.hosts || []).filter((host) => {
+      return (getters.selectedGroup.hosts || []).filter((host) => {
         return !state.filtered || !host.disabled
       })
     },
@@ -135,15 +122,20 @@ export default {
     selectedHost (state, getters) {
       return getters.hosts.find((host) => getters.isSelected({ id: host.id }))
     },
-    selectedGroupId (state, getters, rootState, rootGetters) {
-      const selectedGroup = rootGetters['explorer/group/selectedGroup']
-      return selectedGroup ? selectedGroup.id : 0
+    selectedGroup (state, getters, rootState, rootGetters) {
+      return rootGetters['app/explorer/group/selectedGroup']
+    },
+    selectedGroupId (state, getters, rootState) {
+      return getters.selectedGroup ? getters.selectedGroup.id : 0
     },
     canCreate (state, getters) {
       return !!getters.selectedGroupId
     },
     canDelete (state, getters) {
       return !!getters.selectedGroupId && !!state.selectedId
+    },
+    canPaste (state) {
+      return !!state.copiedObject
     }
   }
 }
