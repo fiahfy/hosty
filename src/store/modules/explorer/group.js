@@ -26,8 +26,8 @@ export default {
       dispatch('selectIndex', { index })
       dispatch('focusTable')
     },
-    update ({ dispatch }, { id, group }) {
-      dispatch('group/updateGroup', { id, group }, { root: true })
+    update ({ dispatch, state }, { group }) {
+      dispatch('group/updateGroup', { id: state.selectedId, group }, { root: true })
     },
     sort ({ dispatch, state }) {
       dispatch('group/sortGroups', { order: state.order }, { root: true })

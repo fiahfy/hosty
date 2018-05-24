@@ -26,8 +26,8 @@ export default {
       dispatch('selectIndex', { index })
       dispatch('focusTable')
     },
-    update ({ dispatch, getters }, { id, host }) {
-      dispatch('group/updateHost', { groupId: getters.selectedGroupId, id, host }, { root: true })
+    update ({ dispatch, getters, state }, { host }) {
+      dispatch('group/updateHost', { groupId: getters.selectedGroupId, id: state.selectedId, host }, { root: true })
     },
     sort ({ dispatch, getters, state }) {
       dispatch('group/sortHosts', { groupId: getters.selectedGroupId, order: state.order }, { root: true })

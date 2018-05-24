@@ -27,13 +27,10 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   computed: {
-    ...mapState({
-      selectedId: state => state.app.explorer.group.selectedId
-    }),
     ...mapGetters({
       canCreate: 'app/explorer/group/canCreate',
       canDelete: 'app/explorer/group/canDelete'
@@ -44,7 +41,7 @@ export default {
       this.create()
     },
     onDeleteClick () {
-      this.delete({ id: this.selectedId })
+      this.delete()
     },
     ...mapActions({
       create: 'app/explorer/group/create',

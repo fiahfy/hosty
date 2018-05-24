@@ -134,7 +134,7 @@ export default {
       ContextMenu.show(e, templates)
     },
     onButtonClick () {
-      this.update({ id: this.host.id, host: { disabled: !this.host.disabled } })
+      this.update({ host: { disabled: !this.host.disabled } })
     },
     onColumnDblClick () {
       this.focus()
@@ -157,7 +157,7 @@ export default {
       if (this.cancel) {
         return
       }
-      this.update({ id: this.host.id, host: { name: this.name } })
+      this.update({ host: { name: this.name } })
     },
     onTextContextMenu () {
       ContextMenu.showTextMenu()

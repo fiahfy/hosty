@@ -120,7 +120,7 @@ export default {
         case 8:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             e.preventDefault()
-            this.delete({ id: this.selectedId })
+            this.delete()
           }
           break
         case 13:
