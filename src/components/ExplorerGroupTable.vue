@@ -2,7 +2,7 @@
   <v-data-table
     ref="table"
     :headers="headers"
-    :items="items"
+    :items="groups"
     :disable-initial-sort="true"
     :class="classes"
     class="explorer-group-table"
@@ -11,7 +11,7 @@
     tabindex="0"
     @keydown.native="onKeyDown"
     @click.native="onClick"
-    @contextmenu.native="onContextMenu"
+    @contextmenu.native.stop="onContextMenu"
   >
     <template
       slot="headers"
@@ -25,10 +25,7 @@
     >
       <explorer-group-table-row
         :ref="`row-${props.item.id}`"
-        :active="isSelected({ id: props.item.id })"
-        :item="props.item"
-        @click.native.stop="(e) => onClick(e, { id: props.item.id })"
-        @contextmenu.native.stop="(e) => onContextMenu(e, { id: props.item.id })"
+        :group="props.item"
       />
     </template>
   </v-data-table>
@@ -72,9 +69,9 @@ export default {
       scrollTop: state => state.app.explorer.group.scrollTop
     }),
     ...mapGetters({
-      items: 'app/explorer/group/items',
+      groups: 'app/explorer/group/groups',
       selectedIndex: 'app/explorer/group/selectedIndex',
-      isSelected: 'app/explorer/group/isSelected'
+      canPaste: 'app/explorer/group/canPaste'
     })
   },
   watch: {
@@ -169,52 +166,24 @@ export default {
           break
       }
     },
-    onClick (e, { id } = { id: 0 }) {
-      this.select({ id })
+    onClick () {
+      this.unselect()
     },
-    onContextMenu (e, { id } = { id: 0 }) {
-      this.select({ id })
-      let templates = [
+    onContextMenu (e) {
+      this.unselect()
+      const templates = [
         {
           label: 'New Group',
           click: this.create,
           accelerator: 'CmdOrCtrl+N'
-        }
-      ]
-      if (id) {
-        templates = [
-          ...templates,
-          {
-            label: 'Copy',
-            click: this.copy,
-            accelerator: 'CmdOrCtrl+C'
-          }
-        ]
-      }
-      templates = [
-        ...templates,
+        },
         {
           label: 'Paste',
           click: this.paste,
-          accelerator: 'CmdOrCtrl+V'
+          accelerator: 'CmdOrCtrl+V',
+          enabled: this.canPaste
         }
       ]
-      if (id) {
-        templates = [
-          ...templates,
-          { type: 'separator' },
-          {
-            label: 'Edit',
-            click: this.focusSelectedRow,
-            accelerator: 'Enter'
-          },
-          {
-            label: 'Delete',
-            click: this.delete,
-            accelerator: 'CmdOrCtrl+Backspace'
-          }
-        ]
-      }
       ContextMenu.show(e, templates)
     },
     focusSelectedRow () {
@@ -228,7 +197,7 @@ export default {
       delete: 'app/explorer/group/delete',
       copy: 'app/explorer/group/copy',
       paste: 'app/explorer/group/paste',
-      select: 'app/explorer/group/select',
+      unselect: 'app/explorer/group/unselect',
       selectFirst: 'app/explorer/group/selectFirst',
       selectLast: 'app/explorer/group/selectLast',
       selectPrevious: 'app/explorer/group/selectPrevious',

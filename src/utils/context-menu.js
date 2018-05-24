@@ -24,9 +24,6 @@ export const Role = {
 }
 
 export const show = (e, template = []) => {
-  e.preventDefault()
-  e.stopPropagation()
-
   if (process.env.NODE_ENV !== 'production') {
     template = appendInspectElementMenu(e, template)
   }

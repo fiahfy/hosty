@@ -1,21 +1,26 @@
 <template>
-  <tr class="explorer-group-table-row">
+  <tr
+    :active="active"
+    class="explorer-group-table-row"
+    @click.stop="onClick"
+    @contextmenu.stop="onContextMenu"
+  >
     <td class="px-2">
       <v-btn
         :color="color"
         flat
         icon
         class="my-0"
-        @click="onClick"
+        @click="onButtonClick"
       >
         <v-icon>{{ icon }}</v-icon>
       </v-btn>
     </td>
     <td
       ref="column"
-      @dblclick="onDblClick"
+      @dblclick="onColumnDblClick"
     >
-      {{ item.name }}
+      {{ group.name }}
       <v-menu
         v-model="menu"
         :transition="false"
@@ -27,15 +32,15 @@
         <v-card>
           <v-card-text>
             <v-text-field
-              ref="input"
+              ref="text"
               v-model="name"
               label="Group"
               class="pt-0"
               hide-details
               single-line
-              @keyup="onKeyup"
-              @blur="onBlur"
-              @contextmenu="onContextMenu"
+              @keyup="onTextKeyup"
+              @blur="onTextBlur"
+              @contextmenu.stop="onTextContextMenu"
             />
           </v-card-text>
         </v-card>
@@ -45,12 +50,12 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
 
 export default {
   props: {
-    item: {
+    group: {
       type: Object,
       default: () => ({})
     }
@@ -66,14 +71,21 @@ export default {
     }
   },
   computed: {
+    active () {
+      return this.isSelected({ id: this.group.id })
+    },
     icon () {
-      return this.item.disabled ? 'block' : 'done'
+      return this.group.disabled ? 'block' : 'done'
     },
     color () {
-      return this.item.disabled ? 'gray' : 'primary'
+      return this.group.disabled ? 'gray' : 'primary'
     },
     ...mapState({
       scrollTop: state => state.app.explorer.group.scrollTop
+    }),
+    ...mapGetters({
+      isSelected: 'app/explorer/group/isSelected',
+      canPaste: 'app/explorer/group/canPaste'
     })
   },
   mounted () {
@@ -85,13 +97,49 @@ export default {
     })
   },
   methods: {
-    onContextMenu (e) {
-      ContextMenu.showTextMenu(e)
-    },
     onClick () {
-      this.update({ id: this.item.id, group: { disabled: !this.item.disabled } })
+      this.select({ id: this.group.id })
     },
-    onKeyup (e) {
+    onContextMenu (e) {
+      this.select({ id: this.group.id })
+      const templates = [
+        {
+          label: 'New Group',
+          click: this.create,
+          accelerator: 'CmdOrCtrl+N'
+        },
+        {
+          label: 'Copy',
+          click: this.copy,
+          accelerator: 'CmdOrCtrl+C'
+        },
+        {
+          label: 'Paste',
+          click: this.paste,
+          accelerator: 'CmdOrCtrl+V',
+          enabled: this.canPaste
+        },
+        { type: 'separator' },
+        {
+          label: 'Edit',
+          click: this.focus,
+          accelerator: 'Enter'
+        },
+        {
+          label: 'Delete',
+          click: this.delete,
+          accelerator: 'CmdOrCtrl+Backspace'
+        }
+      ]
+      ContextMenu.show(e, templates)
+    },
+    onButtonClick () {
+      this.update({ id: this.group.id, group: { disabled: !this.group.disabled } })
+    },
+    onColumnDblClick () {
+      this.focus()
+    },
+    onTextKeyup (e) {
       switch (e.keyCode) {
         case 13:
           e.target.blur()
@@ -104,28 +152,33 @@ export default {
           break
       }
     },
-    onBlur () {
+    onTextBlur () {
       this.menu = false
       if (this.cancel) {
         return
       }
-      this.update({ id: this.item.id, group: { name: this.name } })
+      this.update({ id: this.group.id, group: { name: this.name } })
     },
-    onDblClick () {
-      this.focus()
+    onTextContextMenu () {
+      ContextMenu.showTextMenu()
     },
     focus () {
-      this.name = this.item.name
+      this.name = this.group.name
       this.cancel = false
       this.$nextTick(() => {
         this.menu = true
         setTimeout(() => {
-          this.$refs.input.focus()
+          this.$refs.text.focus()
         }, 200)
       })
     },
     ...mapActions({
+      create: 'app/explorer/group/create',
       update: 'app/explorer/group/update',
+      delete: 'app/explorer/group/delete',
+      copy: 'app/explorer/group/copy',
+      paste: 'app/explorer/group/paste',
+      select: 'app/explorer/group/select',
       focusTable: 'app/explorer/group/focusTable'
     })
   }

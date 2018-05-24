@@ -6,92 +6,47 @@
     <v-card-title class="py-2 px-0">
       <v-btn
         :title="'Star'|accelerator('CmdOrCtrl+D')"
+        :disabled="!canCreate"
         color="primary"
         flat
-        @click="createGroup"
+        @click="onNewClick"
       >
         New
       </v-btn>
       <v-btn
         :title="'Star'|accelerator('CmdOrCtrl+D')"
+        :disabled="!canDelete"
         color="primary"
         flat
-        @click="deleteGroup"
+        @click="onDeleteClick"
       >
         Delete
       </v-btn>
-      <!--
-      <v-btn
-        :title="'View'|accelerator('Enter')"
-        :disabled="!filepath"
-        flat
-        icon
-        @click="showViewer({ filepath })"
-      >
-        <v-icon>photo</v-icon>
-      </v-btn>
-      <v-spacer />
-      <v-text-field
-        v-model="queryInput"
-        name="query"
-        class="mx-3 my-2 pt-0"
-        label="Search"
-        append-icon="search"
-        single-line
-        hide-details
-        clearable
-        @keyup="onKeyUp"
-        @contextmenu="onContextMenu"
-      /> -->
     </v-card-title>
   </v-card>
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
-import * as ContextMenu from '~/utils/context-menu'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  // computed: {
-  //   queryInput: {
-  //     get () {
-  //       return this.$store.state.app.explorer.queryInput
-  //     },
-  //     set (value) {
-  //       this.$store.commit('app/explorer/setQueryInput', { queryInput: value })
-  //     }
-  //   },
-  //   ...mapState({
-  //     filepath: state => state.app.explorer.filepath
-  //   }),
-  //   ...mapGetters({
-  //     isBookmarked: 'app/explorer/isBookmarked'
-  //   })
-  // },
-  watch: {
-    queryInput () {
-      this.search()
-    }
+  computed: {
+    ...mapGetters({
+      canCreate: 'app/explorer/group/canCreate',
+      canDelete: 'app/explorer/group/canDelete'
+    })
   },
   methods: {
-    onContextMenu (e) {
-      ContextMenu.showTextMenu(e)
+    onNewClick () {
+      this.create()
     },
-    onKeyUp (e) {
-      if (e.keyCode === 13) {
-        this.search()
-      }
+    onDeleteClick () {
+      this.delete()
     },
     ...mapActions({
-      createGroup: 'app/explorer/group/create',
-      deleteGroup: 'app/explorer/group/delete'
+      create: 'app/explorer/group/create',
+      delete: 'app/explorer/group/delete'
     })
   }
 }
 </script>
-
-<style scoped lang="scss">
-.explorer-group-card /deep/ .input-group--text-field label {
-  top: 0;
-}
-</style>
