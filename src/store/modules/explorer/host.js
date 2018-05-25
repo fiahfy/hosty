@@ -50,8 +50,10 @@ export default {
       commit('setSelectedId', { selectedId: 0 })
     },
     selectIndex ({ dispatch, getters }, { index }) {
-      const id = getters.hosts[index] ? getters.hosts[index].id : 0
-      dispatch('select', { id })
+      const host = getters.hosts[index]
+      if (host) {
+        dispatch('select', { id: host.id })
+      }
     },
     selectFirst ({ dispatch }) {
       dispatch('selectIndex', { index: 0 })
@@ -65,14 +67,14 @@ export default {
     selectNext ({ dispatch, getters }) {
       dispatch('selectIndex', { index: getters.selectedIndex + 1 })
     },
-    // toggleFilter ({ commit, state }) {
-    //   commit('setFiltered', { filtered: !state.filtered })
-    // },
     changeOrderBy ({ commit, dispatch, state }, { orderBy }) {
       const descending = state.order.by === orderBy ? !state.order.descending : false
       const order = { by: orderBy, descending }
       commit('setOrder', { order })
       dispatch('sort')
+    },
+    toggleFilter ({ commit, state }) {
+      commit('setFiltered', { filtered: !state.filtered })
     },
     focusTable ({ dispatch }) {
       dispatch('app/focus', { selector: Selector.explorerHostTable }, { root: true })

@@ -121,13 +121,13 @@ export default {
       return this.host.disabled ? 'block' : 'done'
     },
     color () {
-      return this.host.disabled ? 'gray' : 'primary'
+      return this.host.disabled ? 'grey' : 'primary'
     },
     ipClasses () {
-      return this.host.ip ? [] : ['grey--text']
+      return this.host.ip ? '' : 'grey--text'
     },
     nameClasses () {
-      return this.host.name ? [] : ['grey--text']
+      return this.host.name ? '' : 'grey--text'
     },
     ...mapState({
       scrollTop: state => state.app.explorer.host.scrollTop
@@ -180,6 +180,7 @@ export default {
       ContextMenu.show(e, templates)
     },
     onButtonClick () {
+      this.select({ id: this.host.id })
       this.update({ host: { disabled: !this.host.disabled } })
     },
     onColumnDblClick (e, value) {

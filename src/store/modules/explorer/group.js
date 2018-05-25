@@ -52,8 +52,10 @@ export default {
       commit('setSelectedId', { selectedId: 0 })
     },
     selectIndex ({ dispatch, getters }, { index }) {
-      const id = getters.groups[index] ? getters.groups[index].id : 0
-      dispatch('select', { id })
+      const group = getters.groups[index]
+      if (group) {
+        dispatch('select', { id: group.id })
+      }
     },
     selectFirst ({ dispatch }) {
       dispatch('selectIndex', { index: 0 })
@@ -67,14 +69,14 @@ export default {
     selectNext ({ dispatch, getters, state }) {
       dispatch('selectIndex', { index: getters.selectedIndex + 1 })
     },
-    // toggleFilter ({ commit, state }) {
-    //   commit('setFiltered', { filtered: !state.filtered })
-    // },
     changeOrderBy ({ commit, dispatch, state }, { orderBy }) {
       const descending = state.order.by === orderBy ? !state.order.descending : false
       const order = { by: orderBy, descending }
       commit('setOrder', { order })
       dispatch('sort')
+    },
+    toggleFilter ({ commit, state }) {
+      commit('setFiltered', { filtered: !state.filtered })
     },
     focusTable ({ dispatch }) {
       dispatch('app/focus', { selector: Selector.explorerGroupTable }, { root: true })

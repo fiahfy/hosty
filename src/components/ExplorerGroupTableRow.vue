@@ -82,10 +82,10 @@ export default {
       return this.group.disabled ? 'block' : 'done'
     },
     color () {
-      return this.group.disabled ? 'gray' : 'primary'
+      return this.group.disabled ? 'grey' : 'primary'
     },
     classes () {
-      return this.group.name ? [] : ['grey--text']
+      return this.group.name ? '' : 'grey--text'
     },
     ...mapState({
       scrollTop: state => state.app.explorer.group.scrollTop
@@ -138,6 +138,7 @@ export default {
       ContextMenu.show(e, templates)
     },
     onButtonClick () {
+      this.select({ id: this.group.id })
       this.update({ group: { disabled: !this.group.disabled } })
     },
     onColumnDblClick () {

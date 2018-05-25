@@ -5,7 +5,7 @@
   >
     <v-card-title class="py-2 px-0">
       <v-btn
-        :title="'Star'|accelerator('CmdOrCtrl+N')"
+        :title="'New Host'|accelerator('CmdOrCtrl+N')"
         :disabled="!canCreate"
         flat
         icon
@@ -14,7 +14,7 @@
         <v-icon>add</v-icon>
       </v-btn>
       <v-btn
-        :title="'Star'|accelerator('CmdOrCtrl+Backspace')"
+        :title="'Delete'|accelerator('CmdOrCtrl+Backspace')"
         :disabled="!canDelete"
         flat
         icon
@@ -22,15 +22,31 @@
       >
         <v-icon>remove</v-icon>
       </v-btn>
+      <v-spacer />
+      <v-btn
+        :color="color"
+        title="Filter Active"
+        flat
+        icon
+        @click="onFilterClick"
+      >
+        <v-icon>filter_list</v-icon>
+      </v-btn>
     </v-card-title>
   </v-card>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default {
   computed: {
+    color () {
+      return this.filtered ? 'primary' : ''
+    },
+    ...mapState({
+      filtered: state => state.app.explorer.host.filtered
+    }),
     ...mapGetters({
       canCreate: 'app/explorer/host/canCreate',
       canDelete: 'app/explorer/host/canDelete'
@@ -43,9 +59,13 @@ export default {
     onDeleteClick () {
       this.delete()
     },
+    onFilterClick () {
+      this.toggleFilter()
+    },
     ...mapActions({
       create: 'app/explorer/host/create',
-      delete: 'app/explorer/host/delete'
+      delete: 'app/explorer/host/delete',
+      toggleFilter: 'app/explorer/host/toggleFilter'
     })
   }
 }
