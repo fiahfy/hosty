@@ -5,22 +5,22 @@
   >
     <v-card-title class="py-2 px-0">
       <v-btn
-        :title="'Star'|accelerator('CmdOrCtrl+D')"
+        :title="'Star'|accelerator('CmdOrCtrl+N')"
         :disabled="!canCreate"
-        color="primary"
         flat
+        icon
         @click="onNewClick"
       >
-        New
+        <v-icon>add</v-icon>
       </v-btn>
       <v-btn
-        :title="'Star'|accelerator('CmdOrCtrl+D')"
+        :title="'Star'|accelerator('CmdOrCtrl+Backspace')"
         :disabled="!canDelete"
-        color="primary"
         flat
+        icon
         @click="onDeleteClick"
       >
-        Delete
+        <v-icon>remove</v-icon>
       </v-btn>
     </v-card-title>
   </v-card>

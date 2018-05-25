@@ -29,6 +29,7 @@
         :position-y="menu.y - scrollTop"
         :min-width="menu.width"
         :close-on-content-click="false"
+        lazy
       >
         <v-card>
           <v-card-text>

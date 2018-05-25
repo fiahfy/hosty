@@ -29,6 +29,7 @@
         :position-y="ipMenu.y - scrollTop"
         :min-width="ipMenu.width"
         :close-on-content-click="false"
+        lazy
       >
         <v-card>
           <v-card-text>
@@ -60,6 +61,7 @@
         :position-y="nameMenu.y - scrollTop"
         :min-width="nameMenu.width"
         :close-on-content-click="false"
+        lazy
       >
         <v-card>
           <v-card-text>

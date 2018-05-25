@@ -45,8 +45,8 @@ export default {
     },
     select ({ commit, dispatch, getters }, { id }) {
       commit('setSelectedId', { selectedId: id })
-      // dispatch('explorer/host/sort', null, { root: true })
-      // dispatch('explorer/host/unselect', null, { root: true })
+      dispatch('app/explorer/host/sort', null, { root: true })
+      dispatch('app/explorer/host/unselect', null, { root: true })
     },
     unselect ({ commit }) {
       commit('setSelectedId', { selectedId: 0 })
