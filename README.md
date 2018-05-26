@@ -6,12 +6,12 @@
 
 ## Features
 * Manage hosts with groups
-* Import/Export hosts settings
 * Cross platform support
+* Change theme (Light/Dark)
 
 
 ## Screenshot
-![screenshot](./build/screenshot.png?raw=true)
+![screenshot](./build/screenshots/screenshot.png?raw=true)
 
 
 ## Installation
