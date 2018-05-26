@@ -29,8 +29,8 @@ const sudo = async (command) => {
   return new Promise((resolve, reject) => {
     sudoPrompt.exec(command, promptOptions, (error, stdout, stderr) => {
       if (error) {
-        console.error('Sudo prompt failed: %o', { command, error, stdout, stderr }) // eslint-disable-line no-console
-        reject(new Error('Sudo prompt failed'))
+        console.error('Sudo prompt exec failed: %o', { command, error, stdout, stderr }) // eslint-disable-line no-console
+        reject(error)
         return
       }
       resolve()
@@ -113,31 +113,41 @@ const migrate = (groups) => {
   })
 }
 
+const debounce = (() => {
+  let timer
+  return (callback, milli) => {
+    clearTimeout(timer)
+    timer = setTimeout(callback, milli)
+  }
+})()
+
 export const setup = async () => {
   await setupHosts()
   await setupUserHosts()
 }
 
 export const store = async (hosts = []) => {
-  const data = fs.readFileSync(userHostsFilepath, hostyFile.charset)
+  debounce(() => {
+    const data = fs.readFileSync(userHostsFilepath, hostyFile.charset)
 
-  let newData = hosts
-    .map((host) => `${host.ip}\t${host.name}`)
-    .join('\n')
-  newData = `${hostySection.begin}\n${newData}\n${hostySection.end}\n`
+    let newData = hosts
+      .map((host) => `${host.ip}\t${host.name}`)
+      .join('\n')
+    newData = `${hostySection.begin}\n${newData}\n${hostySection.end}\n`
 
-  const reg = new RegExp(
-    String.raw`([\s\S]*\n?)${hostySection.begin}\n[\s\S]*\n${hostySection.end}\n?([\s\S]*)`,
-    'im'
-  )
-  const matches = data.match(reg)
-  if (matches) {
-    newData = matches[1] + newData + matches[2]
-  } else {
-    newData = `${data}\n${newData}`
-  }
+    const reg = new RegExp(
+      String.raw`([\s\S]*\n?)${hostySection.begin}\n[\s\S]*\n${hostySection.end}\n?([\s\S]*)`,
+      'im'
+    )
+    const matches = data.match(reg)
+    if (matches) {
+      newData = matches[1] + newData + matches[2]
+    } else {
+      newData = `${data}\n${newData}`
+    }
 
-  fs.writeFileSync(userHostsFilepath, newData, hostyFile.charset)
+    fs.writeFileSync(userHostsFilepath, newData, hostyFile.charset)
+  }, 1000)
 }
 
 export const clear = () => {
