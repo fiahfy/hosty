@@ -4,7 +4,7 @@ const mode = process.env.NODE_ENV || 'development'
 
 export default {
   mode,
-  context: `${__dirname}/../src`,
+  context: `${__dirname}/../src/`,
   module: {
     rules: [
       {
@@ -17,8 +17,15 @@ export default {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify(mode)
+        NODE_ENV: JSON.stringify(mode),
+        HMR: JSON.stringify(process.env.HMR)
       }
     })
-  ]
+  ],
+  resolve: {
+    alias: {
+      '~~': `${__dirname}/../`,
+      '~': `${__dirname}/../src/`
+    }
+  }
 }

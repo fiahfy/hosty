@@ -5,9 +5,8 @@ export default {
   target: 'electron-main',
   entry: './main.js',
   output: {
-    path: `${__dirname}/../app/assets/`,
-    publicPath: '/assets/',
-    filename: '../../main.js'
+    path: `${__dirname}/../app/`,
+    filename: '../main.js'
   },
   node: {
     __dirname: false,
