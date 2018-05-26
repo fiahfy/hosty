@@ -1,5 +1,5 @@
 import router from '~/router'
-import * as HostsFileManager from '~/utils/hosts-file-manager'
+import * as Hosts from '~/utils/hosts'
 import explorer from './explorer'
 
 export const Selector = {
@@ -17,18 +17,18 @@ export default {
   },
   actions: {
     async initialize ({ dispatch }) {
-      await HostsFileManager.setup()
+      await Hosts.setup()
       dispatch('store')
     },
     finalize () {
-      HostsFileManager.clear()
+      Hosts.clear()
     },
     store ({ rootGetters }) {
-      HostsFileManager.store(rootGetters['group/hosts'])
+      Hosts.store(rootGetters['group/hosts'])
     },
     import ({ dispatch }, { filepath }) {
       try {
-        const groups = HostsFileManager.readHostyFile(filepath)
+        const groups = Hosts.read(filepath)
         dispatch('group/setGroups', { groups }, { root: true })
         dispatch('showMessage', { message: 'Imported' })
       } catch (e) {
@@ -39,7 +39,7 @@ export default {
     export ({ dispatch, rootState }, { filepath }) {
       try {
         const groups = rootState.group.groups
-        HostsFileManager.writeHostyFile(filepath, groups)
+        Hosts.write(filepath, groups)
         dispatch('showMessage', { message: 'Exported' })
       } catch (e) {
         console.error(e)

@@ -45,12 +45,13 @@ export default {
     },
     select ({ commit, dispatch, getters }, { id }) {
       commit('setSelectedId', { selectedId: id })
-      dispatch('app/changeTitle', { title: getters.selectedGroup.name || '(Untitled)' }, { root: true })
+      const title = getters.selectedGroup ? getters.selectedGroup.name || '(Untitled)' : ''
+      dispatch('app/changeTitle', { title }, { root: true })
       dispatch('app/explorer/host/sort', null, { root: true })
       dispatch('app/explorer/host/unselect', null, { root: true })
     },
-    unselect ({ commit }) {
-      commit('setSelectedId', { selectedId: 0 })
+    unselect ({ dispatch }) {
+      dispatch('select', { id: 0 })
     },
     selectIndex ({ dispatch, getters }, { index }) {
       const group = getters.groups[index]

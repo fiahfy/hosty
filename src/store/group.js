@@ -22,7 +22,7 @@ export default {
           id
         }
       ]
-      dispatch('setGroups', { groups, save: true })
+      dispatch('setGroups', { groups })
     },
     updateGroup ({ dispatch, state }, { id, group }) {
       const groups = state.groups.map((currentGroup) => {
@@ -34,11 +34,11 @@ export default {
           ...group
         }
       })
-      dispatch('setGroups', { groups, save: true })
+      dispatch('setGroups', { groups })
     },
     deleteGroup ({ dispatch, state }, { id }) {
       const groups = state.groups.filter((group) => group.id !== id)
-      dispatch('setGroups', { groups, save: true })
+      dispatch('setGroups', { groups })
     },
     sortGroups ({ dispatch, getters, state }, { order }) {
       const { by, descending } = order
@@ -61,11 +61,9 @@ export default {
       })
       dispatch('setGroups', { groups })
     },
-    setGroups ({ commit, dispatch }, { groups, save = true }) {
+    setGroups ({ commit, dispatch }, { groups }) {
       commit('setGroups', { groups })
-      if (save) {
-        dispatch('app/store', null, { root: true })
-      }
+      dispatch('app/store', null, { root: true })
     },
     createHost ({ dispatch, getters }, { groupId, host }) {
       const currentHosts = getters.getHosts({ groupId })
@@ -80,7 +78,7 @@ export default {
           id
         }
       ]
-      dispatch('setHosts', { groupId, hosts, save: true })
+      dispatch('setHosts', { groupId, hosts })
     },
     updateHost ({ dispatch, getters }, { groupId, id, host }) {
       const hosts = getters.getHosts({ groupId }).map((currentHost) => {
@@ -92,11 +90,11 @@ export default {
           ...host
         }
       })
-      dispatch('setHosts', { groupId, hosts, save: true })
+      dispatch('setHosts', { groupId, hosts })
     },
     deleteHost ({ dispatch, getters }, { groupId, id }) {
       const hosts = getters.getHosts({ groupId }).filter((host) => host.id !== id)
-      dispatch('setHosts', { groupId, hosts, save: true })
+      dispatch('setHosts', { groupId, hosts })
     },
     sortHosts ({ dispatch, getters, state }, { groupId, order }) {
       const { by, descending } = order
@@ -117,9 +115,9 @@ export default {
         result = reversed[by] ? -1 * result : result
         return descending ? -1 * result : result
       })
-      dispatch('setHosts', { groupId, hosts, save: true })
+      dispatch('setHosts', { groupId, hosts })
     },
-    setHosts ({ dispatch, state }, { groupId, hosts, save = true }) {
+    setHosts ({ dispatch, state }, { groupId, hosts }) {
       const groups = state.groups.map((group) => {
         if (group.id !== groupId) {
           return group
@@ -129,7 +127,7 @@ export default {
           hosts
         }
       })
-      dispatch('setGroups', { groups, save })
+      dispatch('setGroups', { groups })
     }
   },
   mutations: {

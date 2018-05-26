@@ -15,13 +15,13 @@ const hostySection = {
   end: '## hosty end ##'
 }
 
-const userHostsFilepath = path.join(remote.app.getPath('userData'), 'hosts')
 const hostsFilepath = (() => {
   if (isDev) {
     return path.join(process.cwd(), 'dummyHosts')
   }
   return isWin ? 'C:\\Windows\\System32\\drivers\\etc\\hosts' : '/etc/hosts'
 })()
+const userHostsFilepath = path.join(remote.app.getPath('userData'), 'hosts')
 
 const promptOptions = { name: 'Hosty' }
 
@@ -38,7 +38,7 @@ const sudo = async (command) => {
   })
 }
 
-const setupHostsFile = async () => {
+const setupHosts = async () => {
   try {
     const stats = fs.lstatSync(hostsFilepath)
     if (!stats.isSymbolicLink()) {
@@ -63,7 +63,7 @@ const setupHostsFile = async () => {
   }
 }
 
-const setupUserHostsFile = async () => {
+const setupUserHosts = async () => {
   try {
     const stats = fs.lstatSync(userHostsFilepath)
     if (stats.isSymbolicLink()) {
@@ -114,8 +114,8 @@ const migrate = (groups) => {
 }
 
 export const setup = async () => {
-  await setupHostsFile()
-  await setupUserHostsFile()
+  await setupHosts()
+  await setupUserHosts()
 }
 
 export const store = async (hosts = []) => {
@@ -144,7 +144,7 @@ export const clear = () => {
   store()
 }
 
-export const readHostyFile = (filepath) => {
+export const read = (filepath) => {
   const data = fs.readFileSync(filepath, hostyFile.charset)
   const obj = JSON.parse(data)
   // TODO: remove this
@@ -154,7 +154,7 @@ export const readHostyFile = (filepath) => {
   return obj
 }
 
-export const writeHostyFile = (filepath, obj) => {
+export const write = (filepath, obj) => {
   const data = JSON.stringify(obj)
   fs.writeFileSync(filepath, data, hostyFile.charset)
 }

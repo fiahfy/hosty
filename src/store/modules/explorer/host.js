@@ -46,8 +46,8 @@ export default {
     select ({ commit }, { id }) {
       commit('setSelectedId', { selectedId: id })
     },
-    unselect ({ commit }) {
-      commit('setSelectedId', { selectedId: 0 })
+    unselect ({ dispatch }) {
+      dispatch('select', { id: 0 })
     },
     selectIndex ({ dispatch, getters }, { index }) {
       const host = getters.hosts[index]
