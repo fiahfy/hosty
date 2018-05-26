@@ -45,6 +45,7 @@ export default {
     },
     select ({ commit, dispatch, getters }, { id }) {
       commit('setSelectedId', { selectedId: id })
+      dispatch('app/changeTitle', { title: getters.selectedGroup.name || '(Untitled)' }, { root: true })
       dispatch('app/explorer/host/sort', null, { root: true })
       dispatch('app/explorer/host/unselect', null, { root: true })
     },

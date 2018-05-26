@@ -2,10 +2,10 @@ import { ipcRenderer, remote } from 'electron'
 
 export const addIpcRendererListeners = (store) => {
   ipcRenderer.on('willQuit', () => {
-    store.dispatch('clearHosts')
+    store.dispatch('app/finalize')
   })
   ipcRenderer.on('showSettings', () => {
-    store.dispatch('changeRoute', { name: 'settings' })
+    store.dispatch('app/changeRoute', { name: 'settings' })
   })
   ipcRenderer.on('import', () => {
     const filepathes = remote.dialog.showOpenDialog({
@@ -15,7 +15,7 @@ export const addIpcRendererListeners = (store) => {
       return
     }
     const filepath = filepathes[0]
-    store.dispatch('importHosts', { filepath })
+    store.dispatch('app/import', { filepath })
   })
   ipcRenderer.on('export', () => {
     const filepath = remote.dialog.showSaveDialog({
@@ -24,6 +24,6 @@ export const addIpcRendererListeners = (store) => {
     if (!filepath) {
       return
     }
-    store.dispatch('exportHosts', { filepath })
+    store.dispatch('app/export', { filepath })
   })
 }

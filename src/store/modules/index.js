@@ -11,13 +11,40 @@ export default {
   namespaced: true,
   state: {
     title: '',
-    message: ''
+    message: '',
+    messages: [],
+    snackbar: false
   },
   actions: {
-    changeRoute ({ dispatch }, payload) {
-      router.push(payload)
-      const title = payload.name.charAt(0).toUpperCase() + payload.name.slice(1)
-      dispatch('changeTitle', { title })
+    async initialize ({ dispatch }) {
+      await HostsFileManager.setup()
+      dispatch('store')
+    },
+    finalize () {
+      HostsFileManager.clear()
+    },
+    store ({ rootGetters }) {
+      HostsFileManager.store(rootGetters['group/hosts'])
+    },
+    import ({ dispatch }, { filepath }) {
+      try {
+        const groups = HostsFileManager.readHostyFile(filepath)
+        dispatch('group/setGroups', { groups }, { root: true })
+        dispatch('showMessage', { message: 'Imported' })
+      } catch (e) {
+        console.error(e)
+        dispatch('showMessage', { message: 'Import failed' })
+      }
+    },
+    export ({ dispatch, rootState }, { filepath }) {
+      try {
+        const groups = rootState.group.groups
+        HostsFileManager.writeHostyFile(filepath, groups)
+        dispatch('showMessage', { message: 'Exported' })
+      } catch (e) {
+        console.error(e)
+        dispatch('showMessage', { message: 'Export failed' })
+      }
     },
     focus (_, { selector }) {
       // wait dom updated
@@ -28,52 +55,28 @@ export default {
         }
       })
     },
-    focusGroupList ({ dispatch }) {
-      dispatch('focus', { selector: Selector.groupList })
-    },
-    focusHostList ({ dispatch }) {
-      dispatch('focus', { selector: Selector.hostList })
-    },
-    async initHosts ({ rootGetters }) {
-      await HostsFileManager.setup()
-      HostsFileManager.save(rootGetters['group/hosts'])
-    },
-    saveHosts ({ rootGetters }) {
-      HostsFileManager.save(rootGetters['group/hosts'])
-    },
-    clearHosts () {
-      HostsFileManager.clear()
-    },
-    importHosts ({ dispatch }, { filepath }) {
-      try {
-        const groups = HostsFileManager.readHostyFile(filepath)
-        dispatch('group/setGroups', { groups })
-        dispatch('explorer/group/sort')
-        dispatch('showMessage', { message: 'Imported' })
-      } catch (e) {
-        console.error(e)
-        dispatch('showMessage', { message: 'Import failed' })
-      }
-    },
-    exportHosts ({ dispatch, state }, { filepath }) {
-      try {
-        const groups = state.group.groups
-        HostsFileManager.writeHostyFile(filepath, groups)
-        dispatch('showMessage', { message: 'Exported' })
-      } catch (e) {
-        console.error(e)
-        dispatch('showMessage', { message: 'Export failed' })
-      }
+    changeRoute ({ dispatch }, payload) {
+      router.push(payload)
     },
     changeTitle ({ commit }, { title }) {
       commit('setTitle', { title })
     },
-    showMessage ({ commit }, { message }) {
+    showMessage ({ commit, dispatch, state }, { message }) {
+      if (state.snackbar) {
+        commit('setMessages', { messages: [...state.messages, message] })
+        return
+      }
       commit('setMessage', { message })
-      // wait dom updated
-      setTimeout(() => {
-        commit('setMessage', { message: '' })
-      })
+      commit('setSnackbar', { snackbar: true })
+    },
+    showNextMessage ({ commit, state }) {
+      if (!state.messages.length) {
+        return
+      }
+      const message = state.messages[0]
+      commit('setMessage', { message })
+      commit('setMessages', { messages: state.messages.slice(1) })
+      commit('setSnackbar', { snackbar: true })
     }
   },
   mutations: {
@@ -82,6 +85,12 @@ export default {
     },
     setMessage (state, { message }) {
       state.message = message
+    },
+    setMessages (state, { messages }) {
+      state.messages = messages
+    },
+    setSnackbar (state, { snackbar }) {
+      state.snackbar = snackbar
     }
   },
   getters: {

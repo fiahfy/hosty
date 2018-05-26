@@ -61,6 +61,12 @@ export default {
       })
       dispatch('setGroups', { groups })
     },
+    setGroups ({ commit, dispatch }, { groups, save = true }) {
+      commit('setGroups', { groups })
+      if (save) {
+        dispatch('app/store', null, { root: true })
+      }
+    },
     createHost ({ dispatch, getters }, { groupId, host }) {
       const currentHosts = getters.getHosts({ groupId })
       const id = Math.max.apply(null, [0, ...currentHosts.map((host) => host.id)]) + 1
@@ -113,12 +119,6 @@ export default {
       })
       dispatch('setHosts', { groupId, hosts, save: true })
     },
-    setGroups ({ commit, dispatch }, { groups, save = true }) {
-      commit('setGroups', { groups })
-      if (save) {
-        // dispatch('saveHosts', null, { root: true })
-      }
-    },
     setHosts ({ dispatch, state }, { groupId, hosts, save = true }) {
       const groups = state.groups.map((group) => {
         if (group.id !== groupId) {
@@ -147,16 +147,7 @@ export default {
     hosts (state) {
       return state.groups
         .filter((group) => !group.disabled)
-        .map((group) => {
-          return (group.hosts || []).map((host) => {
-            return {
-              ...host,
-              groupId: group.id,
-              hostId: host.id,
-              id: `${group.id}-${host.id}`
-            }
-          })
-        })
+        .map((group) => group.hosts || [])
         .reduce((carry, hosts) => carry.concat(hosts), [])
         .filter((host) => !host.disabled && host.name && host.ip)
         .sort((a, b) => {
@@ -166,22 +157,14 @@ export default {
           } else if (a.ip < b.ip) {
             result = -1
           }
-          if (result !== 0) {
-            return result
+          if (result === 0) {
+            if (a.name > b.name) {
+              result = 1
+            } else if (a.name < b.name) {
+              result = -1
+            }
           }
-          if (a.disabled > b.disabled) {
-            result = 1
-          } else if (a.disabled < b.disabled) {
-            result = -1
-          }
-          if (result !== 0) {
-            return result
-          }
-          if (a.name > b.name) {
-            result = 1
-          } else if (a.name < b.name) {
-            result = -1
-          }
+          return result
         })
     }
   }

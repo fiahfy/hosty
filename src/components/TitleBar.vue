@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import Package from '~~/package.json'
 
 export default {
@@ -22,9 +23,11 @@ export default {
     }
   },
   computed: {
-    title () {
-      return Package.productName
-    }
+    ...mapState({
+      title: state => {
+        return state.app.title || Package.productName
+      }
+    })
   }
 }
 </script>

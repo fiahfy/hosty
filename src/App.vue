@@ -61,7 +61,7 @@ export default {
     }
   },
   async created () {
-    await this.initHosts()
+    await this.initialize()
   },
   methods: {
     onContextMenu (e) {
@@ -73,11 +73,11 @@ export default {
         return
       }
       const filepath = files[0].path
-      this.importHosts({ filepath })
+      this.import({ filepath })
     },
     ...mapActions({
-      initHosts: 'app/initHosts',
-      importHosts: 'app/importHosts',
+      initialize: 'app/initialize',
+      import: 'app/import',
       showNextMessage: 'app/showNextMessage'
     })
   }
