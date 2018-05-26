@@ -63,7 +63,7 @@ export default {
     },
     setGroups ({ commit, dispatch }, { groups }) {
       commit('setGroups', { groups })
-      dispatch('app/store', null, { root: true })
+      dispatch('app/sync', null, { root: true })
     },
     createHost ({ dispatch, getters }, { groupId, host }) {
       const currentHosts = getters.getHosts({ groupId })

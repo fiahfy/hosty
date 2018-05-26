@@ -23,13 +23,13 @@ export default {
         dispatch('showMessage', { message: e.message })
       }
       dispatch('app/explorer/group/sort', null, { root: true })
-      dispatch('store')
+      dispatch('sync')
     },
     finalize () {
       Hosts.clear()
     },
-    store ({ rootGetters }) {
-      Hosts.store(rootGetters['group/hosts'])
+    sync ({ rootGetters }) {
+      Hosts.sync(rootGetters['group/hosts'])
     },
     import ({ dispatch }, { filepath }) {
       try {
