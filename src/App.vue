@@ -16,7 +16,7 @@
       {{ message }}
       <v-btn
         flat
-        @click.native="snackbar = false"
+        @click.native="onCloseClick"
       >Close</v-btn>
     </v-snackbar>
   </v-app>
@@ -74,6 +74,9 @@ export default {
       }
       const filepath = files[0].path
       this.import({ filepath })
+    },
+    onCloseClick () {
+      this.snackbar = false
     },
     ...mapActions({
       initialize: 'app/initialize',
