@@ -126,7 +126,7 @@ export const setup = async () => {
   await setupUserHosts()
 }
 
-export const sync = async (hosts = []) => {
+export const sync = (hosts = []) => {
   debounce(() => {
     const data = fs.readFileSync(userHostsFilepath, hostyFile.charset)
 
