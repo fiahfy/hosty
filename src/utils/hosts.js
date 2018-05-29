@@ -113,42 +113,42 @@ const migrate = (groups) => {
   })
 }
 
-const debounce = (() => {
+const debounce = (callback, milli) => {
   let timer
-  return (callback, milli) => {
+  return (...args) => {
     clearTimeout(timer)
-    timer = setTimeout(callback, milli)
+    timer = setTimeout(() => {
+      callback(...args) // eslint-disable-line standard/no-callback-literal
+    }, milli)
   }
-})()
+}
 
 export const setup = async () => {
   await setupHosts()
   await setupUserHosts()
 }
 
-export const sync = (hosts = []) => {
-  debounce(() => {
-    const data = fs.readFileSync(userHostsFilepath, hostyFile.charset)
+export const sync = debounce((hosts = []) => {
+  const data = fs.readFileSync(userHostsFilepath, hostyFile.charset)
 
-    let newData = hosts
-      .map((host) => `${host.ip}\t${host.name}`)
-      .join('\n')
-    newData = `${hostySection.begin}\n${newData}\n${hostySection.end}\n`
+  let newData = hosts
+    .map((host) => `${host.ip}\t${host.name}`)
+    .join('\n')
+  newData = `${hostySection.begin}\n${newData}\n${hostySection.end}\n`
 
-    const reg = new RegExp(
-      String.raw`([\s\S]*\n?)${hostySection.begin}\n[\s\S]*\n${hostySection.end}\n?([\s\S]*)`,
-      'im'
-    )
-    const matches = data.match(reg)
-    if (matches) {
-      newData = matches[1] + newData + matches[2]
-    } else {
-      newData = `${data}\n${newData}`
-    }
+  const reg = new RegExp(
+    String.raw`([\s\S]*\n?)${hostySection.begin}\n[\s\S]*\n${hostySection.end}\n?([\s\S]*)`,
+    'im'
+  )
+  const matches = data.match(reg)
+  if (matches) {
+    newData = matches[1] + newData + matches[2]
+  } else {
+    newData = `${data}\n${newData}`
+  }
 
-    fs.writeFileSync(userHostsFilepath, newData, hostyFile.charset)
-  }, 1000)
-}
+  fs.writeFileSync(userHostsFilepath, newData, hostyFile.charset)
+}, 1000)
 
 export const clear = () => {
   sync()
