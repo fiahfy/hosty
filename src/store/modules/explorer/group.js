@@ -3,6 +3,7 @@ import { Selector } from '../index'
 export default {
   namespaced: true,
   state: {
+    items: [],
     selectedId: 0,
     scrollTop: 0,
     order: {
@@ -13,8 +14,14 @@ export default {
     copiedObject: null
   },
   actions: {
-    create ({ dispatch, getters }, { group } = {}) {
-      dispatch('group/createGroup', { group }, { root: true })
+    load ({ commit, rootState }) {
+      const items = rootState.group.groups
+      commit('setItems', { items })
+    },
+    async create ({ commit, dispatch, getters, state }, { group } = {}) {
+      const newGroup = await dispatch('group/createGroup', { group }, { root: true })
+      const items = [...state.items, newGroup]
+      commit('setItems', { items })
       const index = getters.groups.length - 1
       dispatch('selectIndex', { index })
       dispatch('focusTable')
@@ -85,6 +92,9 @@ export default {
     }
   },
   mutations: {
+    setItems (state, { items }) {
+      state.items = items
+    },
     setSelectedId (state, { selectedId }) {
       state.selectedId = selectedId
     },
@@ -102,8 +112,8 @@ export default {
     }
   },
   getters: {
-    groups (state, getters, rootState) {
-      return rootState.group.groups.filter((group) => {
+    groups (state, getters) {
+      return state.items.filter((group) => {
         return !state.filtered || !group.disabled
       })
     },

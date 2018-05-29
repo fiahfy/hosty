@@ -12,17 +12,19 @@ export default {
   actions: {
     createGroup ({ dispatch, state }, { group }) {
       const id = Math.max.apply(null, [0, ...state.groups.map((group) => group.id)]) + 1
+      const newGroup = {
+        disabled: false,
+        name: '',
+        hosts: [],
+        ...group,
+        id
+      }
       const groups = [
         ...state.groups,
-        {
-          disabled: false,
-          name: '',
-          hosts: [],
-          ...group,
-          id
-        }
+        newGroup
       ]
       dispatch('setGroups', { groups })
+      return newGroup
     },
     updateGroup ({ dispatch, state }, { id, group }) {
       const groups = state.groups.map((currentGroup) => {
