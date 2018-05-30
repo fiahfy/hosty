@@ -1,9 +1,3 @@
-const reversed = {
-  disabled: false,
-  name: false,
-  ip: false
-}
-
 export default {
   namespaced: true,
   state: {
@@ -19,10 +13,7 @@ export default {
         ...group,
         id
       }
-      const groups = [
-        ...state.groups,
-        newGroup
-      ]
+      const groups = [...state.groups, newGroup]
       dispatch('setGroups', { groups })
       return newGroup
     },
@@ -42,27 +33,6 @@ export default {
       const groups = state.groups.filter((group) => group.id !== id)
       dispatch('setGroups', { groups })
     },
-    sortGroups ({ dispatch, getters, state }, { order }) {
-      const { by, descending } = order
-      const groups = state.groups.sort((a, b) => {
-        let result = 0
-        if (a[by] > b[by]) {
-          result = 1
-        } else if (a[by] < b[by]) {
-          result = -1
-        }
-        if (result === 0) {
-          if (a.name > b.name) {
-            result = 1
-          } else if (a.name < b.name) {
-            result = -1
-          }
-        }
-        result = reversed[by] ? -1 * result : result
-        return descending ? -1 * result : result
-      })
-      dispatch('setGroups', { groups })
-    },
     setGroups ({ commit, dispatch }, { groups }) {
       commit('setGroups', { groups })
       dispatch('app/sync', null, { root: true })
@@ -70,17 +40,16 @@ export default {
     createHost ({ dispatch, getters }, { groupId, host }) {
       const currentHosts = getters.getHosts({ groupId })
       const id = Math.max.apply(null, [0, ...currentHosts.map((host) => host.id)]) + 1
-      const hosts = [
-        ...currentHosts,
-        {
-          disabled: false,
-          name: '',
-          ip: '',
-          ...host,
-          id
-        }
-      ]
+      const newHost = {
+        disabled: false,
+        name: '',
+        ip: '',
+        ...host,
+        id
+      }
+      const hosts = [...currentHosts, newHost]
       dispatch('setHosts', { groupId, hosts })
+      return newHost
     },
     updateHost ({ dispatch, getters }, { groupId, id, host }) {
       const hosts = getters.getHosts({ groupId }).map((currentHost) => {
@@ -96,27 +65,6 @@ export default {
     },
     deleteHost ({ dispatch, getters }, { groupId, id }) {
       const hosts = getters.getHosts({ groupId }).filter((host) => host.id !== id)
-      dispatch('setHosts', { groupId, hosts })
-    },
-    sortHosts ({ dispatch, getters, state }, { groupId, order }) {
-      const { by, descending } = order
-      const hosts = getters.getHosts({ groupId }).sort((a, b) => {
-        let result = 0
-        if (a[by] > b[by]) {
-          result = 1
-        } else if (a[by] < b[by]) {
-          result = -1
-        }
-        if (result === 0) {
-          if (a.name > b.name) {
-            result = 1
-          } else if (a.name < b.name) {
-            result = -1
-          }
-        }
-        result = reversed[by] ? -1 * result : result
-        return descending ? -1 * result : result
-      })
       dispatch('setHosts', { groupId, hosts })
     },
     setHosts ({ dispatch, state }, { groupId, hosts }) {

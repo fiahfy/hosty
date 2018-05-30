@@ -70,7 +70,7 @@ export default {
       scrollTop: state => state.app.explorer.group.scrollTop
     }),
     ...mapGetters({
-      groups: 'app/explorer/group/groups',
+      groups: 'app/explorer/group/filteredGroups',
       selectedIndex: 'app/explorer/group/selectedIndex',
       canPaste: 'app/explorer/group/canPaste'
     })

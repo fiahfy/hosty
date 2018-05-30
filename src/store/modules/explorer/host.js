@@ -1,8 +1,15 @@
 import { Selector } from '../index'
 
+const reversed = {
+  disabled: false,
+  name: false,
+  ip: false
+}
+
 export default {
   namespaced: true,
   state: {
+    hosts: [],
     selectedId: 0,
     scrollTop: 0,
     order: {
@@ -10,34 +17,60 @@ export default {
       descending: false
     },
     filtered: false,
-    copiedObject: null
+    clip: null
   },
   actions: {
-    create ({ dispatch, getters }, { host } = {}) {
-      dispatch('group/createHost', { groupId: getters.selectedGroupId, host }, { root: true })
-      const index = getters.hosts.length - 1
+    load ({ commit, dispatch, getters, rootGetters }) {
+      const hosts = JSON.parse(JSON.stringify(rootGetters['group/getHosts']({ groupId: getters.selectedGroupId })))
+      commit('setHosts', { hosts })
+      dispatch('sort')
+    },
+    async create ({ commit, dispatch, getters }, { host } = {}) {
+      const newHost = await dispatch('group/createHost', { groupId: getters.selectedGroupId, host }, { root: true })
+      commit('addHost', { host: newHost })
+      const index = getters.filteredHosts.length - 1
       dispatch('selectIndex', { index })
       dispatch('focusTable')
     },
-    delete ({ dispatch, getters, state }) {
+    delete ({ commit, dispatch, getters, state }) {
       const oldSelectedIndex = getters.selectedIndex
       dispatch('group/deleteHost', { groupId: getters.selectedGroupId, id: state.selectedId }, { root: true })
-      const index = oldSelectedIndex > 0 && oldSelectedIndex > getters.hosts.length - 1 ? oldSelectedIndex - 1 : oldSelectedIndex
+      commit('removeHost', { id: state.selectedId })
+      const index = oldSelectedIndex > 0 && oldSelectedIndex > getters.filteredHosts.length - 1 ? oldSelectedIndex - 1 : oldSelectedIndex
       dispatch('selectIndex', { index })
       dispatch('focusTable')
     },
-    update ({ dispatch, getters, state }, { host }) {
+    update ({ commit, dispatch, getters, state }, { host }) {
       dispatch('group/updateHost', { groupId: getters.selectedGroupId, id: state.selectedId, host }, { root: true })
+      commit('setHost', { id: state.selectedId, host })
     },
-    sort ({ dispatch, getters, state }) {
-      dispatch('group/sortHosts', { groupId: getters.selectedGroupId, order: state.order }, { root: true })
+    sort ({ commit, state }) {
+      const { by, descending } = state.order
+      const hosts = state.hosts.sort((a, b) => {
+        let result = 0
+        if (a[by] > b[by]) {
+          result = 1
+        } else if (a[by] < b[by]) {
+          result = -1
+        }
+        if (result === 0) {
+          if (a.name > b.name) {
+            result = 1
+          } else if (a.name < b.name) {
+            result = -1
+          }
+        }
+        result = reversed[by] ? -1 * result : result
+        return descending ? -1 * result : result
+      })
+      commit('setHosts', { hosts })
     },
     copy ({ commit, getters }) {
-      const copiedObject = getters.selectedHost
-      commit('setCopiedObject', { copiedObject })
+      const clip = getters.selectedHost
+      commit('setClip', { clip })
     },
     paste ({ dispatch, state }) {
-      const host = state.copiedObject
+      const host = state.clip
       if (!host) {
         return
       }
@@ -50,7 +83,7 @@ export default {
       dispatch('select', { id: 0 })
     },
     selectIndex ({ dispatch, getters }, { index }) {
-      const host = getters.hosts[index]
+      const host = getters.filteredHosts[index]
       if (host) {
         dispatch('select', { id: host.id })
       }
@@ -59,7 +92,7 @@ export default {
       dispatch('selectIndex', { index: 0 })
     },
     selectLast ({ dispatch, getters }) {
-      dispatch('selectIndex', { index: getters.hosts.length - 1 })
+      dispatch('selectIndex', { index: getters.filteredHosts.length - 1 })
     },
     selectPrevious ({ dispatch, getters }) {
       dispatch('selectIndex', { index: getters.selectedIndex - 1 })
@@ -79,17 +112,20 @@ export default {
     focusTable ({ dispatch }) {
       dispatch('app/focus', { selector: Selector.explorerHostTable }, { root: true })
     }
-    // enterList ({ dispatch, state }) {
-    //   if (!state.selectedId) {
-    //     dispatch('selectFirst')
-    //   }
-    //   dispatch('focusHostList', null, { root: true })
-    // },
-    // leaveList ({ dispatch }) {
-    //   dispatch('focusGroupList', null, { root: true })
-    // }
   },
   mutations: {
+    setHosts (state, { hosts }) {
+      state.hosts = hosts
+    },
+    setHost (state, { id, host }) {
+      state.hosts = state.hosts.map((current) => current.id !== id ? current : { ...current, ...host })
+    },
+    addHost (state, { host }) {
+      state.hosts = [...state.hosts, host]
+    },
+    removeHost (state, { id }) {
+      state.hosts = state.hosts.filter((host) => host.id !== id)
+    },
     setSelectedId (state, { selectedId }) {
       state.selectedId = selectedId
     },
@@ -102,16 +138,13 @@ export default {
     setFiltered (state, { filtered }) {
       state.filtered = filtered
     },
-    setCopiedObject (state, { copiedObject }) {
-      state.copiedObject = copiedObject
+    setClip (state, { clip }) {
+      state.clip = clip
     }
   },
   getters: {
-    hosts (state, getters) {
-      if (!getters.selectedGroup) {
-        return []
-      }
-      return (getters.selectedGroup.hosts || []).filter((host) => {
+    filteredHosts (state) {
+      return state.hosts.filter((host) => {
         return !state.filtered || !host.disabled
       })
     },
@@ -119,15 +152,15 @@ export default {
       return ({ id }) => state.selectedId === id
     },
     selectedIndex (state, getters) {
-      return getters.hosts.findIndex((host) => getters.isSelected({ id: host.id }))
+      return getters.filteredHosts.findIndex((host) => getters.isSelected({ id: host.id }))
     },
     selectedHost (state, getters) {
-      return getters.hosts.find((host) => getters.isSelected({ id: host.id }))
+      return getters.filteredHosts.find((host) => getters.isSelected({ id: host.id }))
     },
     selectedGroup (state, getters, rootState, rootGetters) {
       return rootGetters['app/explorer/group/selectedGroup']
     },
-    selectedGroupId (state, getters, rootState) {
+    selectedGroupId (state, getters) {
       return getters.selectedGroup ? getters.selectedGroup.id : 0
     },
     canCreate (state, getters) {
@@ -137,7 +170,7 @@ export default {
       return !!getters.selectedGroupId && !!state.selectedId
     },
     canPaste (state) {
-      return !!state.copiedObject
+      return !!state.clip
     }
   }
 }

@@ -46,9 +46,6 @@ export default {
     ExplorerGroupTable,
     ExplorerHostCard,
     ExplorerHostTable
-  },
-  created () {
-    this.$store.dispatch('app/explorer/group/load')
   }
 }
 </script>

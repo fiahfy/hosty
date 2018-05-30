@@ -74,7 +74,7 @@ export default {
       scrollTop: state => state.app.explorer.host.scrollTop
     }),
     ...mapGetters({
-      hosts: 'app/explorer/host/hosts',
+      hosts: 'app/explorer/host/filteredHosts',
       selectedIndex: 'app/explorer/host/selectedIndex',
       canPaste: 'app/explorer/host/canPaste'
     })

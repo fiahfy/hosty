@@ -22,8 +22,7 @@ export default {
       } catch (e) {
         dispatch('showMessage', { message: e.message })
       }
-      dispatch('app/explorer/group/sort', null, { root: true })
-      dispatch('sync')
+      dispatch('explorer/group/load')
     },
     finalize () {
       Hosts.clear()
@@ -35,7 +34,7 @@ export default {
       try {
         const groups = Hosts.read(filepath)
         dispatch('group/setGroups', { groups }, { root: true })
-        dispatch('app/explorer/group/sort', null, { root: true })
+        dispatch('explorer/group/load')
         dispatch('showMessage', { message: 'Imported' })
       } catch (e) {
         console.error(e)
