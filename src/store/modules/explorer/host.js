@@ -143,25 +143,14 @@ export default {
     }
   },
   getters: {
-    filteredHosts (state) {
-      return state.hosts.filter((host) => {
-        return !state.filtered || !host.disabled
-      })
-    },
-    isSelected (state) {
-      return ({ id }) => state.selectedId === id
+    selectedGroupId (state, getters, rootState) {
+      return rootState.app.explorer.group.selectedId
     },
     selectedIndex (state, getters) {
       return getters.filteredHosts.findIndex((host) => getters.isSelected({ id: host.id }))
     },
     selectedHost (state, getters) {
-      return getters.filteredHosts.find((host) => getters.isSelected({ id: host.id }))
-    },
-    selectedGroup (state, getters, rootState, rootGetters) {
-      return rootGetters['app/explorer/group/selectedGroup']
-    },
-    selectedGroupId (state, getters) {
-      return getters.selectedGroup ? getters.selectedGroup.id : 0
+      return getters.filteredHosts[getters.selectedIndex]
     },
     canCreate (state, getters) {
       return !!getters.selectedGroupId
@@ -171,6 +160,14 @@ export default {
     },
     canPaste (state) {
       return !!state.clip
+    },
+    filteredHosts (state) {
+      return state.hosts.filter((host) => {
+        return !state.filtered || !host.disabled
+      })
+    },
+    isSelected (state) {
+      return ({ id }) => state.selectedId === id
     }
   }
 }

@@ -146,19 +146,11 @@ export default {
     }
   },
   getters: {
-    filteredGroups (state) {
-      return state.groups.filter((group) => {
-        return !state.filtered || !group.disabled
-      })
-    },
-    isSelected (state) {
-      return ({ id }) => state.selectedId === id
-    },
     selectedIndex (state, getters) {
       return getters.filteredGroups.findIndex((group) => getters.isSelected({ id: group.id }))
     },
     selectedGroup (state, getters) {
-      return getters.filteredGroups.find((group) => getters.isSelected({ id: group.id }))
+      return getters.filteredGroups[getters.selectedIndex]
     },
     canCreate () {
       return true
@@ -168,6 +160,14 @@ export default {
     },
     canPaste (state) {
       return !!state.clip
+    },
+    filteredGroups (state) {
+      return state.groups.filter((group) => {
+        return !state.filtered || !group.disabled
+      })
+    },
+    isSelected (state) {
+      return ({ id }) => state.selectedId === id
     }
   }
 }
