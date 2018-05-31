@@ -92,7 +92,7 @@ export default {
         return group ? group.hosts : []
       }
     },
-    hosts (state) {
+    validHosts (state) {
       return state.groups
         .filter((group) => !group.disabled)
         .map((group) => group.hosts || [])

@@ -3,8 +3,8 @@ import * as Hosts from '~/utils/hosts'
 import explorer from './explorer'
 
 export const Selector = {
-  explorerGroupTable: '.explorer-group-table',
-  explorerHostTable: '.explorer-host-table'
+  explorerTable: '.explorer-table',
+  explorerChildTable: '.explorer-child-table'
 }
 
 export default {
@@ -22,19 +22,19 @@ export default {
       } catch (e) {
         dispatch('showMessage', { message: e.message })
       }
-      dispatch('explorer/group/load')
+      dispatch('explorer/load')
     },
     finalize () {
       Hosts.clear()
     },
     sync ({ rootGetters }) {
-      Hosts.sync(rootGetters['group/hosts'])
+      Hosts.sync(rootGetters['group/validHosts'])
     },
     import ({ dispatch }, { filepath }) {
       try {
         const groups = Hosts.read(filepath)
         dispatch('group/setGroups', { groups }, { root: true })
-        dispatch('explorer/group/load')
+        dispatch('explorer/load')
         dispatch('showMessage', { message: 'Imported' })
       } catch (e) {
         console.error(e)

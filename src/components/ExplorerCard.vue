@@ -1,11 +1,11 @@
 <template>
   <v-card
-    class="explorer-host-card"
+    class="explorer-card"
     flat
   >
     <v-card-title class="py-2 px-0">
       <v-btn
-        :title="'New Host'|accelerator('CmdOrCtrl+N')"
+        :title="'New Group'|accelerator('CmdOrCtrl+N')"
         :disabled="!canCreate"
         flat
         icon
@@ -45,11 +45,11 @@ export default {
       return this.filtered ? 'primary' : ''
     },
     ...mapState({
-      filtered: state => state.app.explorer.host.filtered
+      filtered: state => state.app.explorer.filtered
     }),
     ...mapGetters({
-      canCreate: 'app/explorer/host/canCreate',
-      canDelete: 'app/explorer/host/canDelete'
+      canCreate: 'app/explorer/canCreate',
+      canDelete: 'app/explorer/canDelete'
     })
   },
   methods: {
@@ -63,9 +63,9 @@ export default {
       this.toggleFilter()
     },
     ...mapActions({
-      create: 'app/explorer/host/create',
-      delete: 'app/explorer/host/delete',
-      toggleFilter: 'app/explorer/host/toggleFilter'
+      create: 'app/explorer/create',
+      delete: 'app/explorer/delete',
+      toggleFilter: 'app/explorer/toggleFilter'
     })
   }
 }

@@ -110,7 +110,7 @@ export default {
       commit('setFiltered', { filtered: !state.filtered })
     },
     focusTable ({ dispatch }) {
-      dispatch('app/focus', { selector: Selector.explorerHostTable }, { root: true })
+      dispatch('app/focus', { selector: Selector.explorerChildTable }, { root: true })
     }
   },
   mutations: {
@@ -144,7 +144,7 @@ export default {
   },
   getters: {
     selectedGroupId (state, getters, rootState) {
-      return rootState.app.explorer.group.selectedId
+      return rootState.app.explorer.selectedId
     },
     selectedIndex (state, getters) {
       return getters.filteredHosts.findIndex((host) => getters.isSelected({ id: host.id }))

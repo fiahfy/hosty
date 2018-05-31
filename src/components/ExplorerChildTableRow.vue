@@ -1,7 +1,7 @@
 <template>
   <tr
     :active="active"
-    class="explorer-host-table-row"
+    class="explorer-child-table-row"
     @click.stop="onClick"
     @contextmenu.stop="onContextMenu"
   >
@@ -130,11 +130,11 @@ export default {
       return this.host.name ? '' : 'grey--text'
     },
     ...mapState({
-      scrollTop: state => state.app.explorer.host.scrollTop
+      scrollTop: state => state.app.explorer.child.scrollTop
     }),
     ...mapGetters({
-      isSelected: 'app/explorer/host/isSelected',
-      canPaste: 'app/explorer/host/canPaste'
+      isSelected: 'app/explorer/child/isSelected',
+      canPaste: 'app/explorer/child/canPaste'
     })
   },
   mounted () {
@@ -244,13 +244,13 @@ export default {
       this.nameMenu.width = nameRect.width
     },
     ...mapActions({
-      create: 'app/explorer/host/create',
-      update: 'app/explorer/host/update',
-      delete: 'app/explorer/host/delete',
-      copy: 'app/explorer/host/copy',
-      paste: 'app/explorer/host/paste',
-      select: 'app/explorer/host/select',
-      focusTable: 'app/explorer/host/focusTable'
+      create: 'app/explorer/child/create',
+      update: 'app/explorer/child/update',
+      delete: 'app/explorer/child/delete',
+      copy: 'app/explorer/child/copy',
+      paste: 'app/explorer/child/paste',
+      select: 'app/explorer/child/select',
+      focusTable: 'app/explorer/child/focusTable'
     })
   }
 }
@@ -263,7 +263,7 @@ export default {
 </style>
 
 <style scoped lang="scss">
-.explorer-host-table-row {
+.explorer-child-table-row {
   cursor: pointer;
   td {
     overflow: hidden;

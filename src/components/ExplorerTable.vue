@@ -2,12 +2,12 @@
   <v-data-table
     ref="table"
     :headers="headers"
-    :items="hosts"
+    :items="groups"
     :disable-initial-sort="true"
     :class="classes"
-    class="explorer-host-table"
+    class="explorer-table"
     item-key="id"
-    no-data-text="No Hosts"
+    no-data-text="No Groups"
     hide-actions
     tabindex="0"
     @keydown.native="onKeyDown"
@@ -18,15 +18,15 @@
       slot="headers"
       slot-scope="props"
     >
-      <explorer-host-table-header-row :headers="props.headers" />
+      <explorer-table-header-row :headers="props.headers" />
     </template>
     <template
       slot="items"
       slot-scope="props"
     >
-      <explorer-host-table-row
+      <explorer-table-row
         :ref="`row-${props.item.id}`"
-        :host="props.item"
+        :group="props.item"
       />
     </template>
   </v-data-table>
@@ -34,14 +34,14 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
-import ExplorerHostTableHeaderRow from './ExplorerHostTableHeaderRow'
-import ExplorerHostTableRow from './ExplorerHostTableRow'
+import ExplorerTableHeaderRow from './ExplorerTableHeaderRow'
+import ExplorerTableRow from './ExplorerTableRow'
 import * as ContextMenu from '~/utils/context-menu'
 
 export default {
   components: {
-    ExplorerHostTableHeaderRow,
-    ExplorerHostTableRow
+    ExplorerTableHeaderRow,
+    ExplorerTableRow
   },
   data () {
     return {
@@ -52,11 +52,7 @@ export default {
           width: 68
         },
         {
-          text: 'IP',
-          value: 'ip'
-        },
-        {
-          text: 'Host',
+          text: 'Group',
           value: 'name'
         }
       ],
@@ -70,13 +66,13 @@ export default {
       }
     },
     ...mapState({
-      selectedId: state => state.app.explorer.host.selectedId,
-      scrollTop: state => state.app.explorer.host.scrollTop
+      selectedId: state => state.app.explorer.selectedId,
+      scrollTop: state => state.app.explorer.scrollTop
     }),
     ...mapGetters({
-      hosts: 'app/explorer/host/filteredHosts',
-      selectedIndex: 'app/explorer/host/selectedIndex',
-      canPaste: 'app/explorer/host/canPaste'
+      groups: 'app/explorer/filteredGroups',
+      selectedIndex: 'app/explorer/selectedIndex',
+      canPaste: 'app/explorer/canPaste'
     })
   },
   watch: {
@@ -178,7 +174,7 @@ export default {
       this.unselect()
       const templates = [
         {
-          label: 'New Host',
+          label: 'New Group',
           click: () => this.create(),
           accelerator: 'CmdOrCtrl+N'
         },
@@ -195,25 +191,25 @@ export default {
       this.$refs[`row-${this.selectedId}`].focus()
     },
     ...mapMutations({
-      setScrollTop: 'app/explorer/host/setScrollTop'
+      setScrollTop: 'app/explorer/setScrollTop'
     }),
     ...mapActions({
-      create: 'app/explorer/host/create',
-      delete: 'app/explorer/host/delete',
-      copy: 'app/explorer/host/copy',
-      paste: 'app/explorer/host/paste',
-      unselect: 'app/explorer/host/unselect',
-      selectFirst: 'app/explorer/host/selectFirst',
-      selectLast: 'app/explorer/host/selectLast',
-      selectPrevious: 'app/explorer/host/selectPrevious',
-      selectNext: 'app/explorer/host/selectNext'
+      create: 'app/explorer/create',
+      delete: 'app/explorer/delete',
+      copy: 'app/explorer/copy',
+      paste: 'app/explorer/paste',
+      unselect: 'app/explorer/unselect',
+      selectFirst: 'app/explorer/selectFirst',
+      selectLast: 'app/explorer/selectLast',
+      selectPrevious: 'app/explorer/selectPrevious',
+      selectNext: 'app/explorer/selectNext'
     })
   }
 }
 </script>
 
 <style scoped lang="scss">
-.explorer-host-table {
+.explorer-table {
   outline: none;
   & /deep/ .table__overflow {
     height: 100%;
