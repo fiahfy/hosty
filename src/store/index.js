@@ -19,6 +19,13 @@ export default new Vuex.Store({
         'group',
         'settings'
       ]
-    })
+    }),
+    (store) => {
+      store.subscribe((mutation) => {
+        if (mutation.type === 'group/setGroups') {
+          store.dispatch('app/sync')
+        }
+      })
+    }
   ]
 })

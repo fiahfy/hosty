@@ -4,7 +4,7 @@ export default {
     groups: []
   },
   actions: {
-    createGroup ({ dispatch, state }, { group }) {
+    createGroup ({ commit, state }, { group }) {
       const id = Math.max.apply(null, [0, ...state.groups.map((group) => group.id)]) + 1
       const newGroup = {
         disabled: false,
@@ -14,10 +14,10 @@ export default {
         id
       }
       const groups = [...state.groups, newGroup]
-      dispatch('setGroups', { groups })
+      commit('setGroups', { groups })
       return newGroup
     },
-    updateGroup ({ dispatch, state }, { id, group }) {
+    updateGroup ({ commit, state }, { id, group }) {
       const groups = state.groups.map((currentGroup) => {
         if (currentGroup.id !== id) {
           return currentGroup
@@ -27,15 +27,11 @@ export default {
           ...group
         }
       })
-      dispatch('setGroups', { groups })
-    },
-    deleteGroup ({ dispatch, state }, { id }) {
-      const groups = state.groups.filter((group) => group.id !== id)
-      dispatch('setGroups', { groups })
-    },
-    setGroups ({ commit, dispatch }, { groups }) {
       commit('setGroups', { groups })
-      dispatch('app/sync', null, { root: true })
+    },
+    deleteGroup ({ commit, state }, { id }) {
+      const groups = state.groups.filter((group) => group.id !== id)
+      commit('setGroups', { groups })
     },
     createHost ({ dispatch, getters }, { groupId, host }) {
       const currentHosts = getters.getHosts({ groupId })
@@ -67,7 +63,7 @@ export default {
       const hosts = getters.getHosts({ groupId }).filter((host) => host.id !== id)
       dispatch('setHosts', { groupId, hosts })
     },
-    setHosts ({ dispatch, state }, { groupId, hosts }) {
+    setHosts ({ commit, state }, { groupId, hosts }) {
       const groups = state.groups.map((group) => {
         if (group.id !== groupId) {
           return group
@@ -77,7 +73,7 @@ export default {
           hosts
         }
       })
-      dispatch('setGroups', { groups })
+      commit('setGroups', { groups })
     }
   },
   mutations: {
