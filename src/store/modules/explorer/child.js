@@ -1,4 +1,4 @@
-import { Selector } from '../index'
+import { Selector } from '..'
 
 const reversed = {
   disabled: false,
@@ -23,7 +23,9 @@ export default {
     load ({ commit, dispatch, getters, rootGetters }) {
       const hosts = JSON.parse(JSON.stringify(rootGetters['group/getHosts']({ groupId: getters.selectedGroupId })))
       commit('setHosts', { hosts })
+      commit('setScrollTop', { scrollTop: 0 })
       dispatch('sort')
+      dispatch('unselect')
     },
     async create ({ commit, dispatch, getters }, { host } = {}) {
       const newHost = await dispatch('group/createHost', { groupId: getters.selectedGroupId, host }, { root: true })

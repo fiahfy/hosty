@@ -1,4 +1,4 @@
-import { Selector } from '../index'
+import { Selector } from '..'
 import child from './child'
 
 const reversed = {
@@ -23,7 +23,9 @@ export default {
     load ({ commit, dispatch, rootState }) {
       const groups = JSON.parse(JSON.stringify(rootState.group.groups))
       commit('setGroups', { groups })
+      commit('setScrollTop', { scrollTop: 0 })
       dispatch('sort')
+      dispatch('unselect')
     },
     async create ({ commit, dispatch, getters, state }, { group } = {}) {
       const newGroup = await dispatch('group/createGroup', { group }, { root: true })
