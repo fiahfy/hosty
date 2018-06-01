@@ -40,10 +40,10 @@ export default new Vuex.Store({
     finalize () {
       Hosts.exit()
     },
-    import ({ dispatch }, { filepath }) {
+    import ({ commit, dispatch }, { filepath }) {
       try {
         const groups = Hosts.read(filepath)
-        dispatch('group/setGroups', { groups })
+        commit('group/setGroups', { groups })
         dispatch('explorer/loadGroups')
         dispatch('showMessage', { message: 'Imported' })
       } catch (e) {

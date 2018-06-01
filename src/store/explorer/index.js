@@ -63,7 +63,7 @@ export default {
       const oldIndex = getters.selectedGroupIndex
       dispatch('group/deleteGroup', { id: state.selectedGroupId }, { root: true })
       commit('removeGroup', { id: state.selectedGroupId })
-      const index = oldIndex > 0 && oldIndex > getters.filteredGroups.length - 1 ? oldIndex - 1 : oldIndex
+      const index = oldIndex < getters.filteredGroups.length ? oldIndex : getters.filteredGroups.length - 1
       dispatch('selectGroupIndex', { index })
       dispatch('focusTable')
     },
@@ -117,19 +117,33 @@ export default {
       const group = getters.filteredGroups[index]
       if (group) {
         dispatch('selectGroup', { id: group.id })
+      } else {
+        dispatch('unselectGroup')
       }
     },
-    selectFirstGroup ({ dispatch }) {
-      dispatch('selectGroupIndex', { index: 0 })
+    selectFirstGroup ({ dispatch, getters }) {
+      const index = 0
+      if (index > -1 && index < getters.filteredGroups.length) {
+        dispatch('selectGroupIndex', { index })
+      }
     },
     selectLastGroup ({ dispatch, getters }) {
-      dispatch('selectGroupIndex', { index: getters.filteredGroups.length - 1 })
+      const index = getters.filteredGroups.length - 1
+      if (index > -1 && index < getters.filteredGroups.length) {
+        dispatch('selectGroupIndex', { index })
+      }
     },
     selectPreviousGroup ({ dispatch, getters }) {
-      dispatch('selectGroupIndex', { index: getters.selectedGroupIndex - 1 })
+      const index = getters.selectedGroupIndex - 1
+      if (index > -1 && index < getters.filteredGroups.length) {
+        dispatch('selectGroupIndex', { index })
+      }
     },
     selectNextGroup ({ dispatch, getters }) {
-      dispatch('selectGroupIndex', { index: getters.selectedGroupIndex + 1 })
+      const index = getters.selectedGroupIndex + 1
+      if (index > -1 && index < getters.filteredGroups.length) {
+        dispatch('selectGroupIndex', { index })
+      }
     },
     changeOrderBy ({ commit, dispatch, state }, { orderBy }) {
       const descending = state.order.by === orderBy ? !state.order.descending : false

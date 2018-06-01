@@ -66,7 +66,7 @@ export default {
       const oldIndex = getters.selectedHostIndex
       dispatch('group/deleteHost', { groupId: getters.selectedGroupId, id: state.selectedHostId }, { root: true })
       commit('removeHost', { id: state.selectedHostId })
-      const index = oldIndex > 0 && oldIndex > getters.filteredHosts.length - 1 ? oldIndex - 1 : oldIndex
+      const index = oldIndex < getters.filteredHosts.length ? oldIndex : getters.filteredHosts.length - 1
       dispatch('selectHostIndex', { index })
       dispatch('focusTable')
     },
@@ -116,19 +116,33 @@ export default {
       const host = getters.filteredHosts[index]
       if (host) {
         dispatch('selectHost', { id: host.id })
+      } else {
+        dispatch('unselectHost')
       }
     },
-    selectFirstHost ({ dispatch }) {
-      dispatch('selectHostIndex', { index: 0 })
+    selectFirstHost ({ dispatch, getters }) {
+      const index = 0
+      if (index > -1 && index < getters.filteredHosts.length) {
+        dispatch('selectHostIndex', { index })
+      }
     },
     selectLastHost ({ dispatch, getters }) {
-      dispatch('selectHostIndex', { index: getters.filteredHosts.length - 1 })
+      const index = getters.filteredHosts.length - 1
+      if (index > -1 && index < getters.filteredHosts.length) {
+        dispatch('selectHostIndex', { index })
+      }
     },
     selectPreviousHost ({ dispatch, getters }) {
-      dispatch('selectHostIndex', { index: getters.selectedHostIndex - 1 })
+      const index = getters.selectedHostIndex - 1
+      if (index > -1 && index < getters.filteredHosts.length) {
+        dispatch('selectHostIndex', { index })
+      }
     },
     selectNextHost ({ dispatch, getters }) {
-      dispatch('selectHostIndex', { index: getters.selectedHostIndex + 1 })
+      const index = getters.selectedHostIndex + 1
+      if (index > -1 && index < getters.filteredHosts.length) {
+        dispatch('selectHostIndex', { index })
+      }
     },
     changeOrderBy ({ commit, dispatch, state }, { orderBy }) {
       const descending = state.order.by === orderBy ? !state.order.descending : false
