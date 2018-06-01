@@ -1,4 +1,4 @@
-import { Selector } from '..'
+import { Selector } from '~/store'
 
 const reversed = {
   disabled: false,
@@ -18,6 +18,34 @@ export default {
     },
     filtered: false,
     clip: null
+  },
+  getters: {
+    selectedGroupId (state, getters, rootState) {
+      return rootState.explorer.selectedId
+    },
+    selectedIndex (state, getters) {
+      return getters.filteredHosts.findIndex((host) => getters.isSelected({ id: host.id }))
+    },
+    selectedHost (state, getters) {
+      return getters.filteredHosts[getters.selectedIndex]
+    },
+    canCreate (state, getters) {
+      return !!getters.selectedGroupId
+    },
+    canDelete (state, getters) {
+      return !!getters.selectedGroupId && !!state.selectedId
+    },
+    canPaste (state) {
+      return !!state.clip
+    },
+    filteredHosts (state) {
+      return state.hosts.filter((host) => {
+        return !state.filtered || !host.disabled
+      })
+    },
+    isSelected (state) {
+      return ({ id }) => state.selectedId === id
+    }
   },
   actions: {
     load ({ commit, dispatch, getters, rootGetters }) {
@@ -112,7 +140,7 @@ export default {
       commit('setFiltered', { filtered: !state.filtered })
     },
     focusTable ({ dispatch }) {
-      dispatch('app/focus', { selector: Selector.explorerChildTable }, { root: true })
+      dispatch('focus', { selector: Selector.explorerChildTable }, { root: true })
     }
   },
   mutations: {
@@ -142,34 +170,6 @@ export default {
     },
     setClip (state, { clip }) {
       state.clip = clip
-    }
-  },
-  getters: {
-    selectedGroupId (state, getters, rootState) {
-      return rootState.app.explorer.selectedId
-    },
-    selectedIndex (state, getters) {
-      return getters.filteredHosts.findIndex((host) => getters.isSelected({ id: host.id }))
-    },
-    selectedHost (state, getters) {
-      return getters.filteredHosts[getters.selectedIndex]
-    },
-    canCreate (state, getters) {
-      return !!getters.selectedGroupId
-    },
-    canDelete (state, getters) {
-      return !!getters.selectedGroupId && !!state.selectedId
-    },
-    canPaste (state) {
-      return !!state.clip
-    },
-    filteredHosts (state) {
-      return state.hosts.filter((host) => {
-        return !state.filtered || !host.disabled
-      })
-    },
-    isSelected (state) {
-      return ({ id }) => state.selectedId === id
     }
   }
 }

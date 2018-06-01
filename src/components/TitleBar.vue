@@ -13,7 +13,6 @@
 
 <script>
 import { mapState } from 'vuex'
-import Package from '~~/package.json'
 
 export default {
   props: {
@@ -24,9 +23,7 @@ export default {
   },
   computed: {
     ...mapState({
-      title: state => {
-        return state.app.title || Package.productName
-      }
+      title: state => state.title
     })
   }
 }

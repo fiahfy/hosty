@@ -66,13 +66,13 @@ export default {
       }
     },
     ...mapState({
-      selectedId: state => state.app.explorer.selectedId,
-      scrollTop: state => state.app.explorer.scrollTop
+      selectedId: state => state.explorer.selectedId,
+      scrollTop: state => state.explorer.scrollTop
     }),
     ...mapGetters({
-      groups: 'app/explorer/filteredGroups',
-      selectedIndex: 'app/explorer/selectedIndex',
-      canPaste: 'app/explorer/canPaste'
+      groups: 'explorer/filteredGroups',
+      selectedIndex: 'explorer/selectedIndex',
+      canPaste: 'explorer/canPaste'
     })
   },
   watch: {
@@ -191,18 +191,18 @@ export default {
       this.$refs[`row-${this.selectedId}`].focus()
     },
     ...mapMutations({
-      setScrollTop: 'app/explorer/setScrollTop'
+      setScrollTop: 'explorer/setScrollTop'
     }),
     ...mapActions({
-      create: 'app/explorer/create',
-      delete: 'app/explorer/delete',
-      copy: 'app/explorer/copy',
-      paste: 'app/explorer/paste',
-      unselect: 'app/explorer/unselect',
-      selectFirst: 'app/explorer/selectFirst',
-      selectLast: 'app/explorer/selectLast',
-      selectPrevious: 'app/explorer/selectPrevious',
-      selectNext: 'app/explorer/selectNext'
+      create: 'explorer/create',
+      delete: 'explorer/delete',
+      copy: 'explorer/copy',
+      paste: 'explorer/paste',
+      unselect: 'explorer/unselect',
+      selectFirst: 'explorer/selectFirst',
+      selectLast: 'explorer/selectLast',
+      selectPrevious: 'explorer/selectPrevious',
+      selectNext: 'explorer/selectNext'
     })
   }
 }

@@ -88,11 +88,11 @@ export default {
       return this.group.name ? '' : 'grey--text'
     },
     ...mapState({
-      scrollTop: state => state.app.explorer.scrollTop
+      scrollTop: state => state.explorer.scrollTop
     }),
     ...mapGetters({
-      isSelected: 'app/explorer/isSelected',
-      canPaste: 'app/explorer/canPaste'
+      isSelected: 'explorer/isSelected',
+      canPaste: 'explorer/canPaste'
     })
   },
   mounted () {
@@ -186,13 +186,13 @@ export default {
       this.menu.width = rect.width
     },
     ...mapActions({
-      create: 'app/explorer/create',
-      update: 'app/explorer/update',
-      delete: 'app/explorer/delete',
-      copy: 'app/explorer/copy',
-      paste: 'app/explorer/paste',
-      select: 'app/explorer/select',
-      focusTable: 'app/explorer/focusTable'
+      create: 'explorer/create',
+      update: 'explorer/update',
+      delete: 'explorer/delete',
+      copy: 'explorer/copy',
+      paste: 'explorer/paste',
+      select: 'explorer/select',
+      focusTable: 'explorer/focusTable'
     })
   }
 }

@@ -3,6 +3,37 @@ export default {
   state: {
     groups: []
   },
+  getters: {
+    getHosts (state) {
+      return ({ groupId }) => {
+        const group = state.groups.find((group) => group.id === groupId)
+        return group ? group.hosts : []
+      }
+    },
+    validHosts (state) {
+      return state.groups
+        .filter((group) => !group.disabled)
+        .map((group) => group.hosts || [])
+        .reduce((carry, hosts) => carry.concat(hosts), [])
+        .filter((host) => !host.disabled && host.name && host.ip)
+        .sort((a, b) => {
+          let result = 0
+          if (a.ip > b.ip) {
+            result = 1
+          } else if (a.ip < b.ip) {
+            result = -1
+          }
+          if (result === 0) {
+            if (a.name > b.name) {
+              result = 1
+            } else if (a.name < b.name) {
+              result = -1
+            }
+          }
+          return result
+        })
+    }
+  },
   actions: {
     createGroup ({ commit, state }, { group }) {
       const id = Math.max.apply(null, [0, ...state.groups.map((group) => group.id)]) + 1
@@ -79,37 +110,6 @@ export default {
   mutations: {
     setGroups (state, { groups }) {
       state.groups = groups
-    }
-  },
-  getters: {
-    getHosts (state) {
-      return ({ groupId }) => {
-        const group = state.groups.find((group) => group.id === groupId)
-        return group ? group.hosts : []
-      }
-    },
-    validHosts (state) {
-      return state.groups
-        .filter((group) => !group.disabled)
-        .map((group) => group.hosts || [])
-        .reduce((carry, hosts) => carry.concat(hosts), [])
-        .filter((host) => !host.disabled && host.name && host.ip)
-        .sort((a, b) => {
-          let result = 0
-          if (a.ip > b.ip) {
-            result = 1
-          } else if (a.ip < b.ip) {
-            result = -1
-          }
-          if (result === 0) {
-            if (a.name > b.name) {
-              result = 1
-            } else if (a.name < b.name) {
-              result = -1
-            }
-          }
-          return result
-        })
     }
   }
 }

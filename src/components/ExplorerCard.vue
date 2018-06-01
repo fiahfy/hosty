@@ -45,11 +45,11 @@ export default {
       return this.filtered ? 'primary' : ''
     },
     ...mapState({
-      filtered: state => state.app.explorer.filtered
+      filtered: state => state.explorer.filtered
     }),
     ...mapGetters({
-      canCreate: 'app/explorer/canCreate',
-      canDelete: 'app/explorer/canDelete'
+      canCreate: 'explorer/canCreate',
+      canDelete: 'explorer/canDelete'
     })
   },
   methods: {
@@ -63,9 +63,9 @@ export default {
       this.toggleFilter()
     },
     ...mapActions({
-      create: 'app/explorer/create',
-      delete: 'app/explorer/delete',
-      toggleFilter: 'app/explorer/toggleFilter'
+      create: 'explorer/create',
+      delete: 'explorer/delete',
+      toggleFilter: 'explorer/toggleFilter'
     })
   }
 }

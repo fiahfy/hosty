@@ -10,55 +10,30 @@
     <v-content class="fill-height">
       <router-view />
     </v-content>
-    <v-snackbar
-      v-model="snackbar"
-    >
-      {{ message }}
-      <v-btn
-        flat
-        @click.native="onCloseClick"
-      >Close</v-btn>
-    </v-snackbar>
+    <notification-bar />
   </v-app>
 </template>
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
 import ActivityBar from './components/ActivityBar'
+import NotificationBar from './components/NotificationBar'
 import TitleBar from './components/TitleBar'
 import * as ContextMenu from './utils/context-menu'
 
 export default {
   components: {
     ActivityBar,
+    NotificationBar,
     TitleBar
   },
   computed: {
-    snackbar: {
-      get () {
-        return this.$store.state.app.snackbar
-      },
-      set (value) {
-        this.$store.commit('app/setSnackbar', { snackbar: value })
-      }
-    },
     ...mapState({
-      message: state => state.app.message,
       darkTheme: state => state.settings.darkTheme
     }),
     ...mapGetters({
-      titleBar: 'app/titleBar'
+      titleBar: 'titleBar'
     })
-  },
-  watch: {
-    snackbar (value) {
-      if (value) {
-        return
-      }
-      this.$nextTick(() => {
-        this.showNextMessage()
-      })
-    }
   },
   async created () {
     await this.initialize()
@@ -75,13 +50,9 @@ export default {
       const filepath = files[0].path
       this.import({ filepath })
     },
-    onCloseClick () {
-      this.snackbar = false
-    },
     ...mapActions({
-      initialize: 'app/initialize',
-      import: 'app/import',
-      showNextMessage: 'app/showNextMessage'
+      initialize: 'initialize',
+      import: 'import'
     })
   }
 }

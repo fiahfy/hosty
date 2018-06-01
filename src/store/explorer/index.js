@@ -1,4 +1,4 @@
-import { Selector } from '..'
+import { Selector } from '~/store'
 import child from './child'
 
 const reversed = {
@@ -18,6 +18,31 @@ export default {
     },
     filtered: false,
     clip: null
+  },
+  getters: {
+    selectedIndex (state, getters) {
+      return getters.filteredGroups.findIndex((group) => getters.isSelected({ id: group.id }))
+    },
+    selectedGroup (state, getters) {
+      return getters.filteredGroups[getters.selectedIndex]
+    },
+    canCreate () {
+      return true
+    },
+    canDelete (state) {
+      return !!state.selectedId
+    },
+    canPaste (state) {
+      return !!state.clip
+    },
+    filteredGroups (state) {
+      return state.groups.filter((group) => {
+        return !state.filtered || !group.disabled
+      })
+    },
+    isSelected (state) {
+      return ({ id }) => state.selectedId === id
+    }
   },
   actions: {
     load ({ commit, dispatch, rootState }) {
@@ -80,8 +105,8 @@ export default {
     },
     select ({ commit, dispatch, getters }, { id }) {
       commit('setSelectedId', { selectedId: id })
-      const title = getters.selectedGroup ? getters.selectedGroup.name || '(Untitled)' : ''
-      dispatch('app/changeTitle', { title }, { root: true })
+      const title = getters.selectedGroup ? getters.selectedGroup.name || '(Untitled)' : undefined
+      dispatch('changeTitle', { title }, { root: true })
       dispatch('child/load')
       dispatch('child/unselect')
     },
@@ -116,7 +141,7 @@ export default {
       commit('setFiltered', { filtered: !state.filtered })
     },
     focusTable ({ dispatch }) {
-      dispatch('app/focus', { selector: Selector.explorerTable }, { root: true })
+      dispatch('focus', { selector: Selector.explorerTable }, { root: true })
     }
   },
   mutations: {
@@ -146,31 +171,6 @@ export default {
     },
     setClip (state, { clip }) {
       state.clip = clip
-    }
-  },
-  getters: {
-    selectedIndex (state, getters) {
-      return getters.filteredGroups.findIndex((group) => getters.isSelected({ id: group.id }))
-    },
-    selectedGroup (state, getters) {
-      return getters.filteredGroups[getters.selectedIndex]
-    },
-    canCreate () {
-      return true
-    },
-    canDelete (state) {
-      return !!state.selectedId
-    },
-    canPaste (state) {
-      return !!state.clip
-    },
-    filteredGroups (state) {
-      return state.groups.filter((group) => {
-        return !state.filtered || !group.disabled
-      })
-    },
-    isSelected (state) {
-      return ({ id }) => state.selectedId === id
     }
   },
   modules: {

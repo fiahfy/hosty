@@ -130,11 +130,11 @@ export default {
       return this.host.name ? '' : 'grey--text'
     },
     ...mapState({
-      scrollTop: state => state.app.explorer.child.scrollTop
+      scrollTop: state => state.explorer.child.scrollTop
     }),
     ...mapGetters({
-      isSelected: 'app/explorer/child/isSelected',
-      canPaste: 'app/explorer/child/canPaste'
+      isSelected: 'explorer/child/isSelected',
+      canPaste: 'explorer/child/canPaste'
     })
   },
   mounted () {
@@ -244,13 +244,13 @@ export default {
       this.nameMenu.width = nameRect.width
     },
     ...mapActions({
-      create: 'app/explorer/child/create',
-      update: 'app/explorer/child/update',
-      delete: 'app/explorer/child/delete',
-      copy: 'app/explorer/child/copy',
-      paste: 'app/explorer/child/paste',
-      select: 'app/explorer/child/select',
-      focusTable: 'app/explorer/child/focusTable'
+      create: 'explorer/child/create',
+      update: 'explorer/child/update',
+      delete: 'explorer/child/delete',
+      copy: 'explorer/child/copy',
+      paste: 'explorer/child/paste',
+      select: 'explorer/child/select',
+      focusTable: 'explorer/child/focusTable'
     })
   }
 }

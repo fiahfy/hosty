@@ -140,6 +140,14 @@ const createWindow = () => {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+
+  mainWindow.on('enter-full-screen', () => {
+    mainWindow.webContents.send('enterFullScreen')
+  })
+
+  mainWindow.on('leave-full-screen', () => {
+    mainWindow.webContents.send('leaveFullScreen')
+  })
 }
 
 app.on('ready', () => {

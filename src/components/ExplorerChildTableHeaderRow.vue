@@ -25,7 +25,7 @@ export default {
   },
   computed: {
     ...mapState({
-      order: state => state.app.explorer.child.order
+      order: state => state.explorer.child.order
     })
   },
   methods: {
@@ -46,7 +46,7 @@ export default {
       this.changeOrderBy({ orderBy: header.value })
     },
     ...mapActions({
-      changeOrderBy: 'app/explorer/child/changeOrderBy'
+      changeOrderBy: 'explorer/child/changeOrderBy'
     })
   }
 }
