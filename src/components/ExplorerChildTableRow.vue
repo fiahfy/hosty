@@ -26,7 +26,7 @@
         v-model="ipMenu.show"
         :transition="false"
         :position-x="ipMenu.x"
-        :position-y="ipMenu.y - scrollTop"
+        :position-y="ipMenu.y"
         :min-width="ipMenu.width"
         :close-on-content-click="false"
         lazy
@@ -58,7 +58,7 @@
         v-model="nameMenu.show"
         :transition="false"
         :position-x="nameMenu.x"
-        :position-y="nameMenu.y - scrollTop"
+        :position-y="nameMenu.y"
         :min-width="nameMenu.width"
         :close-on-content-click="false"
         lazy
@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
 
 export default {
@@ -129,17 +129,9 @@ export default {
     nameClasses () {
       return this.host.name ? '' : 'grey--text'
     },
-    ...mapState({
-      scrollTop: state => state.explorer.child.scrollTop
-    }),
     ...mapGetters({
       isSelectedHost: 'explorer/child/isSelectedHost',
       canPasteHost: 'explorer/child/canPasteHost'
-    })
-  },
-  mounted () {
-    this.$nextTick(() => {
-      this.adjustMenu()
     })
   },
   methods: {
@@ -224,26 +216,18 @@ export default {
       ContextMenu.showTextMenu()
     },
     focus (value = 'ip') {
-      this.adjustMenu()
       this[value] = this.host[value]
       this.cancel = false
       this.$nextTick(() => {
+        const rect = this.$refs[`${value}Column`].getBoundingClientRect()
+        this[`${value}Menu`].x = rect.left
+        this[`${value}Menu`].y = rect.top + 1
+        this[`${value}Menu`].width = rect.width
         this[`${value}Menu`].show = true
         setTimeout(() => {
           this.$refs[`${value}Text`].focus()
         }, 200)
       })
-    },
-    adjustMenu () {
-      const ipRect = this.$refs.ipColumn.getBoundingClientRect()
-      this.ipMenu.x = ipRect.left
-      this.ipMenu.y = ipRect.top + 1
-      this.ipMenu.width = ipRect.width
-      const nameRect = this.$refs.nameColumn.getBoundingClientRect()
-      this.nameMenu.x = nameRect.left
-      this.nameMenu.y = nameRect.top + 1
-      this.nameMenu.width = nameRect.width
-      console.log(this.ipMenu)
     },
     ...mapActions({
       createHost: 'explorer/child/createHost',

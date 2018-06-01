@@ -26,7 +26,7 @@
         v-model="menu.show"
         :transition="false"
         :position-x="menu.x"
-        :position-y="menu.y - scrollTop"
+        :position-y="menu.y"
         :min-width="menu.width"
         :close-on-content-click="false"
         lazy
@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
 
 export default {
@@ -87,17 +87,9 @@ export default {
     classes () {
       return this.group.name ? '' : 'grey--text'
     },
-    ...mapState({
-      scrollTop: state => state.explorer.scrollTop
-    }),
     ...mapGetters({
       isSelectedGroup: 'explorer/isSelectedGroup',
       canPasteGroup: 'explorer/canPasteGroup'
-    })
-  },
-  mounted () {
-    this.$nextTick(() => {
-      this.adjustMenu()
     })
   },
   methods: {
@@ -173,17 +165,15 @@ export default {
       this.name = this.group.name
       this.cancel = false
       this.$nextTick(() => {
+        const rect = this.$refs.column.getBoundingClientRect()
+        this.menu.x = rect.left
+        this.menu.y = rect.top + 1
+        this.menu.width = rect.width
         this.menu.show = true
         setTimeout(() => {
           this.$refs.text.focus()
         }, 200)
       })
-    },
-    adjustMenu () {
-      const rect = this.$refs.column.getBoundingClientRect()
-      this.menu.x = rect.left
-      this.menu.y = rect.top + 1
-      this.menu.width = rect.width
     },
     ...mapActions({
       createGroup: 'explorer/createGroup',
