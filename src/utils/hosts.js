@@ -113,22 +113,12 @@ const migrate = (groups) => {
   })
 }
 
-const debounce = (callback, milli) => {
-  let timer
-  return (...args) => {
-    clearTimeout(timer)
-    timer = setTimeout(() => {
-      callback(...args) // eslint-disable-line standard/no-callback-literal
-    }, milli)
-  }
-}
-
 export const setup = async () => {
   await setupHosts()
   await setupUserHosts()
 }
 
-export const sync = debounce((hosts = []) => {
+export const sync = (hosts = []) => {
   const data = fs.readFileSync(userHostsFilepath, hostyFile.charset)
 
   let newData = hosts
@@ -148,7 +138,7 @@ export const sync = debounce((hosts = []) => {
   }
 
   fs.writeFileSync(userHostsFilepath, newData, hostyFile.charset)
-}, 1000)
+}
 
 export const exit = () => {
   sync()
