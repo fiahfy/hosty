@@ -1,7 +1,7 @@
 <template>
   <tr
     :active="active"
-    class="explorer-host-table-row"
+    class="explorer-child-table-row"
     @click.stop="onClick"
     @contextmenu.stop="onContextMenu"
   >
@@ -26,7 +26,7 @@
         v-model="ipMenu.show"
         :transition="false"
         :position-x="ipMenu.x"
-        :position-y="ipMenu.y - scrollTop"
+        :position-y="ipMenu.y"
         :min-width="ipMenu.width"
         :close-on-content-click="false"
         lazy
@@ -58,7 +58,7 @@
         v-model="nameMenu.show"
         :transition="false"
         :position-x="nameMenu.x"
-        :position-y="nameMenu.y - scrollTop"
+        :position-y="nameMenu.y"
         :min-width="nameMenu.width"
         :close-on-content-click="false"
         lazy
@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
 
 export default {
@@ -115,7 +115,7 @@ export default {
   },
   computed: {
     active () {
-      return this.isSelected({ id: this.host.id })
+      return this.isSelectedHost({ id: this.host.id })
     },
     icon () {
       return this.host.disabled ? 'block' : 'done'
@@ -129,39 +129,31 @@ export default {
     nameClasses () {
       return this.host.name ? '' : 'grey--text'
     },
-    ...mapState({
-      scrollTop: state => state.app.explorer.host.scrollTop
-    }),
     ...mapGetters({
-      isSelected: 'app/explorer/host/isSelected',
-      canPaste: 'app/explorer/host/canPaste'
-    })
-  },
-  mounted () {
-    this.$nextTick(() => {
-      this.adjustMenu()
+      isSelectedHost: 'explorer/child/isSelectedHost',
+      canPasteHost: 'explorer/child/canPasteHost'
     })
   },
   methods: {
     onClick () {
-      this.select({ id: this.host.id })
+      this.selectHost({ id: this.host.id })
     },
     onContextMenu (e) {
-      this.select({ id: this.host.id })
+      this.selectHost({ id: this.host.id })
       const templates = [
         {
           label: 'New Host',
-          click: () => this.create(),
+          click: () => this.createHost(),
           accelerator: 'CmdOrCtrl+N'
         },
         {
           label: 'Copy',
-          click: () => this.copy(),
+          click: () => this.copyHost(),
           accelerator: 'CmdOrCtrl+C'
         },
         {
           label: 'Paste',
-          click: () => this.paste(),
+          click: () => this.pasteHost(),
           accelerator: 'CmdOrCtrl+V',
           enabled: this.canPaste
         },
@@ -173,15 +165,15 @@ export default {
         },
         {
           label: 'Delete',
-          click: () => this.delete(),
+          click: () => this.deleteHost(),
           accelerator: 'CmdOrCtrl+Backspace'
         }
       ]
       ContextMenu.show(e, templates)
     },
     onButtonClick () {
-      this.select({ id: this.host.id })
-      this.update({ host: { disabled: !this.host.disabled } })
+      this.selectHost({ id: this.host.id })
+      this.updateHost({ host: { disabled: !this.host.disabled } })
     },
     onColumnDblClick (e, value) {
       this.focus(value)
@@ -218,7 +210,7 @@ export default {
       if (this.cancel) {
         return
       }
-      this.update({ host: { [value]: this[value] } })
+      this.updateHost({ host: { [value]: this[value] } })
     },
     onTextContextMenu () {
       ContextMenu.showTextMenu()
@@ -227,30 +219,24 @@ export default {
       this[value] = this.host[value]
       this.cancel = false
       this.$nextTick(() => {
+        const rect = this.$refs[`${value}Column`].getBoundingClientRect()
+        this[`${value}Menu`].x = rect.left
+        this[`${value}Menu`].y = rect.top + 1
+        this[`${value}Menu`].width = rect.width
         this[`${value}Menu`].show = true
         setTimeout(() => {
           this.$refs[`${value}Text`].focus()
         }, 200)
       })
     },
-    adjustMenu () {
-      const ipRect = this.$refs.ipColumn.getBoundingClientRect()
-      this.ipMenu.x = ipRect.left
-      this.ipMenu.y = ipRect.top + 1
-      this.ipMenu.width = ipRect.width
-      const nameRect = this.$refs.nameColumn.getBoundingClientRect()
-      this.nameMenu.x = nameRect.left
-      this.nameMenu.y = nameRect.top + 1
-      this.nameMenu.width = nameRect.width
-    },
     ...mapActions({
-      create: 'app/explorer/host/create',
-      update: 'app/explorer/host/update',
-      delete: 'app/explorer/host/delete',
-      copy: 'app/explorer/host/copy',
-      paste: 'app/explorer/host/paste',
-      select: 'app/explorer/host/select',
-      focusTable: 'app/explorer/host/focusTable'
+      createHost: 'explorer/child/createHost',
+      updateHost: 'explorer/child/updateHost',
+      deleteHost: 'explorer/child/deleteHost',
+      copyHost: 'explorer/child/copyHost',
+      pasteHost: 'explorer/child/pasteHost',
+      selectHost: 'explorer/child/selectHost',
+      focusTable: 'explorer/child/focusTable'
     })
   }
 }
@@ -263,7 +249,7 @@ export default {
 </style>
 
 <style scoped lang="scss">
-.explorer-host-table-row {
+.explorer-child-table-row {
   cursor: pointer;
   td {
     overflow: hidden;

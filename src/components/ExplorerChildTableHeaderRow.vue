@@ -1,5 +1,5 @@
 <template>
-  <tr class="explorer-host-table-header-row">
+  <tr class="explorer-child-table-header-row">
     <th
       v-for="header in headers"
       :key="header.text"
@@ -25,7 +25,7 @@ export default {
   },
   computed: {
     ...mapState({
-      order: state => state.app.explorer.host.order
+      order: state => state.explorer.child.order
     })
   },
   methods: {
@@ -46,7 +46,7 @@ export default {
       this.changeOrderBy({ orderBy: header.value })
     },
     ...mapActions({
-      changeOrderBy: 'app/explorer/host/changeOrderBy'
+      changeOrderBy: 'explorer/child/changeOrderBy'
     })
   }
 }

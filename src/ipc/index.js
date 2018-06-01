@@ -2,10 +2,16 @@ import { ipcRenderer, remote } from 'electron'
 
 export const addIpcRendererListeners = (store) => {
   ipcRenderer.on('willQuit', () => {
-    store.dispatch('app/finalize')
+    store.dispatch('finalize')
+  })
+  ipcRenderer.on('enterFullScreen', () => {
+    store.commit('setFullScreen', { fullScreen: true })
+  })
+  ipcRenderer.on('leaveFullScreen', () => {
+    store.commit('setFullScreen', { fullScreen: false })
   })
   ipcRenderer.on('showSettings', () => {
-    store.dispatch('app/changeRoute', { name: 'settings' })
+    store.dispatch('changeRoute', { name: 'settings' })
   })
   ipcRenderer.on('import', () => {
     const filepathes = remote.dialog.showOpenDialog({
@@ -15,7 +21,7 @@ export const addIpcRendererListeners = (store) => {
       return
     }
     const filepath = filepathes[0]
-    store.dispatch('app/import', { filepath })
+    store.dispatch('import', { filepath })
   })
   ipcRenderer.on('export', () => {
     const filepath = remote.dialog.showSaveDialog({
@@ -24,6 +30,6 @@ export const addIpcRendererListeners = (store) => {
     if (!filepath) {
       return
     }
-    store.dispatch('app/export', { filepath })
+    store.dispatch('export', { filepath })
   })
 }

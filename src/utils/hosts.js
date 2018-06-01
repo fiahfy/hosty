@@ -150,7 +150,7 @@ export const sync = debounce((hosts = []) => {
   fs.writeFileSync(userHostsFilepath, newData, hostyFile.charset)
 }, 1000)
 
-export const clear = () => {
+export const exit = () => {
   sync()
 }
 

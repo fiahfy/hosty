@@ -1,12 +1,12 @@
 <template>
   <v-card
-    class="explorer-host-card"
+    class="explorer-child-card"
     flat
   >
     <v-card-title class="py-2 px-0">
       <v-btn
         :title="'New Host'|accelerator('CmdOrCtrl+N')"
-        :disabled="!canCreate"
+        :disabled="!canCreateHost"
         flat
         icon
         @click="onNewClick"
@@ -15,7 +15,7 @@
       </v-btn>
       <v-btn
         :title="'Delete'|accelerator('CmdOrCtrl+Backspace')"
-        :disabled="!canDelete"
+        :disabled="!canDeleteHost"
         flat
         icon
         @click="onDeleteClick"
@@ -45,27 +45,27 @@ export default {
       return this.filtered ? 'primary' : ''
     },
     ...mapState({
-      filtered: state => state.app.explorer.host.filtered
+      filtered: state => state.explorer.child.filtered
     }),
     ...mapGetters({
-      canCreate: 'app/explorer/host/canCreate',
-      canDelete: 'app/explorer/host/canDelete'
+      canCreateHost: 'explorer/child/canCreateHost',
+      canDeleteHost: 'explorer/child/canDeleteHost'
     })
   },
   methods: {
     onNewClick () {
-      this.create()
+      this.createHost()
     },
     onDeleteClick () {
-      this.delete()
+      this.deleteHost()
     },
     onFilterClick () {
       this.toggleFilter()
     },
     ...mapActions({
-      create: 'app/explorer/host/create',
-      delete: 'app/explorer/host/delete',
-      toggleFilter: 'app/explorer/host/toggleFilter'
+      createHost: 'explorer/child/createHost',
+      deleteHost: 'explorer/child/deleteHost',
+      toggleFilter: 'explorer/child/toggleFilter'
     })
   }
 }

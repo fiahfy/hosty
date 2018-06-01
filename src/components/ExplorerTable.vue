@@ -2,12 +2,12 @@
   <v-data-table
     ref="table"
     :headers="headers"
-    :items="hosts"
+    :items="groups"
     :disable-initial-sort="true"
     :class="classes"
-    class="explorer-host-table"
+    class="explorer-table"
     item-key="id"
-    no-data-text="No Hosts"
+    no-data-text="No Groups"
     hide-actions
     tabindex="0"
     @keydown.native="onKeyDown"
@@ -18,15 +18,15 @@
       slot="headers"
       slot-scope="props"
     >
-      <explorer-host-table-header-row :headers="props.headers" />
+      <explorer-table-header-row :headers="props.headers" />
     </template>
     <template
       slot="items"
       slot-scope="props"
     >
-      <explorer-host-table-row
+      <explorer-table-row
         :ref="`row-${props.item.id}`"
-        :host="props.item"
+        :group="props.item"
       />
     </template>
   </v-data-table>
@@ -34,14 +34,14 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
-import ExplorerHostTableHeaderRow from './ExplorerHostTableHeaderRow'
-import ExplorerHostTableRow from './ExplorerHostTableRow'
+import ExplorerTableHeaderRow from './ExplorerTableHeaderRow'
+import ExplorerTableRow from './ExplorerTableRow'
 import * as ContextMenu from '~/utils/context-menu'
 
 export default {
   components: {
-    ExplorerHostTableHeaderRow,
-    ExplorerHostTableRow
+    ExplorerTableHeaderRow,
+    ExplorerTableRow
   },
   data () {
     return {
@@ -52,11 +52,7 @@ export default {
           width: 68
         },
         {
-          text: 'IP',
-          value: 'ip'
-        },
-        {
-          text: 'Host',
+          text: 'Group',
           value: 'name'
         }
       ],
@@ -70,19 +66,19 @@ export default {
       }
     },
     ...mapState({
-      selectedId: state => state.app.explorer.host.selectedId,
-      scrollTop: state => state.app.explorer.host.scrollTop
+      selectedGroupId: state => state.explorer.selectedGroupId,
+      scrollTop: state => state.explorer.scrollTop
     }),
     ...mapGetters({
-      hosts: 'app/explorer/host/hosts',
-      selectedIndex: 'app/explorer/host/selectedIndex',
-      canPaste: 'app/explorer/host/canPaste'
+      groups: 'explorer/filteredGroups',
+      selectedGroupIndex: 'explorer/selectedGroupIndex',
+      canPasteGroup: 'explorer/canPasteGroup'
     })
   },
   watch: {
-    selectedId () {
+    selectedGroupIndex (value) {
       this.$nextTick(() => {
-        const index = this.selectedIndex
+        const index = value
         if (index === -1) {
           return
         }
@@ -125,7 +121,7 @@ export default {
         case 8:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             e.preventDefault()
-            this.delete()
+            this.deleteGroup()
           }
           break
         case 13:
@@ -135,17 +131,17 @@ export default {
         case 38:
           e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectFirst()
+            this.selectFirstGroup()
           } else {
-            this.selectPrevious()
+            this.selectPreviousGroup()
           }
           break
         case 40:
           e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectLast()
+            this.selectLastGroup()
           } else {
-            this.selectNext()
+            this.selectNextGroup()
           }
           break
         case 67:
@@ -154,66 +150,66 @@ export default {
           }
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             e.preventDefault()
-            this.copy()
+            this.copyGroup()
           }
           break
         case 78:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             e.preventDefault()
-            this.create()
+            this.createGroup()
           }
           break
         case 86:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             e.preventDefault()
-            this.paste()
+            this.pasteGroup()
           }
           break
       }
     },
     onClick () {
-      this.unselect()
+      this.unselectGroup()
     },
     onContextMenu (e) {
-      this.unselect()
+      this.unselectGroup()
       const templates = [
         {
-          label: 'New Host',
-          click: () => this.create(),
+          label: 'New Group',
+          click: () => this.createGroup(),
           accelerator: 'CmdOrCtrl+N'
         },
         {
           label: 'Paste',
-          click: () => this.paste(),
+          click: () => this.pasteGroup(),
           accelerator: 'CmdOrCtrl+V',
-          enabled: this.canPaste
+          enabled: this.canPasteGroup
         }
       ]
       ContextMenu.show(e, templates)
     },
     focusSelectedRow () {
-      this.$refs[`row-${this.selectedId}`].focus()
+      this.$refs[`row-${this.selectedGroupId}`].focus()
     },
     ...mapMutations({
-      setScrollTop: 'app/explorer/host/setScrollTop'
+      setScrollTop: 'explorer/setScrollTop'
     }),
     ...mapActions({
-      create: 'app/explorer/host/create',
-      delete: 'app/explorer/host/delete',
-      copy: 'app/explorer/host/copy',
-      paste: 'app/explorer/host/paste',
-      unselect: 'app/explorer/host/unselect',
-      selectFirst: 'app/explorer/host/selectFirst',
-      selectLast: 'app/explorer/host/selectLast',
-      selectPrevious: 'app/explorer/host/selectPrevious',
-      selectNext: 'app/explorer/host/selectNext'
+      createGroup: 'explorer/createGroup',
+      deleteGroup: 'explorer/deleteGroup',
+      copyGroup: 'explorer/copyGroup',
+      pasteGroup: 'explorer/pasteGroup',
+      unselectGroup: 'explorer/unselectGroup',
+      selectFirstGroup: 'explorer/selectFirstGroup',
+      selectLastGroup: 'explorer/selectLastGroup',
+      selectPreviousGroup: 'explorer/selectPreviousGroup',
+      selectNextGroup: 'explorer/selectNextGroup'
     })
   }
 }
 </script>
 
 <style scoped lang="scss">
-.explorer-host-table {
+.explorer-table {
   outline: none;
   & /deep/ .table__overflow {
     height: 100%;

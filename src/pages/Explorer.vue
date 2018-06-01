@@ -8,25 +8,25 @@
     <v-layout row>
       <v-flex xs4>
         <v-layout column>
-          <explorer-group-card />
+          <explorer-card />
           <v-container
             fluid
             pa-0
             overflow-hidden
           >
-            <explorer-group-table class="fill-height" />
+            <explorer-table class="fill-height" />
           </v-container>
         </v-layout>
       </v-flex>
       <v-flex xs8>
         <v-layout column>
-          <explorer-host-card />
+          <explorer-child-card />
           <v-container
             fluid
             pa-0
             overflow-hidden
           >
-            <explorer-host-table class="fill-height" />
+            <explorer-child-table class="fill-height" />
           </v-container>
         </v-layout>
       </v-flex>
@@ -35,17 +35,17 @@
 </template>
 
 <script>
-import ExplorerGroupCard from '~/components/ExplorerGroupCard'
-import ExplorerGroupTable from '~/components/ExplorerGroupTable'
-import ExplorerHostCard from '~/components/ExplorerHostCard'
-import ExplorerHostTable from '~/components/ExplorerHostTable'
+import ExplorerCard from '~/components/ExplorerCard'
+import ExplorerTable from '~/components/ExplorerTable'
+import ExplorerChildCard from '~/components/ExplorerChildCard'
+import ExplorerChildTable from '~/components/ExplorerChildTable'
 
 export default {
   components: {
-    ExplorerGroupCard,
-    ExplorerGroupTable,
-    ExplorerHostCard,
-    ExplorerHostTable
+    ExplorerCard,
+    ExplorerTable,
+    ExplorerChildCard,
+    ExplorerChildTable
   }
 }
 </script>
