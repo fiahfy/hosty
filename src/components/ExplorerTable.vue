@@ -66,19 +66,19 @@ export default {
       }
     },
     ...mapState({
-      selectedId: state => state.explorer.selectedId,
+      selectedGroupId: state => state.explorer.selectedGroupId,
       scrollTop: state => state.explorer.scrollTop
     }),
     ...mapGetters({
       groups: 'explorer/filteredGroups',
-      selectedIndex: 'explorer/selectedIndex',
-      canPaste: 'explorer/canPaste'
+      selectedGroupIndex: 'explorer/selectedGroupIndex',
+      canPasteGroup: 'explorer/canPasteGroup'
     })
   },
   watch: {
-    selectedId () {
+    selectedGroupIndex (value) {
       this.$nextTick(() => {
-        const index = this.selectedIndex
+        const index = value
         if (index === -1) {
           return
         }
@@ -121,7 +121,7 @@ export default {
         case 8:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             e.preventDefault()
-            this.delete()
+            this.deleteGroup()
           }
           break
         case 13:
@@ -131,17 +131,17 @@ export default {
         case 38:
           e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectFirst()
+            this.selectFirstGroup()
           } else {
-            this.selectPrevious()
+            this.selectPreviousGroup()
           }
           break
         case 40:
           e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectLast()
+            this.selectLastGroup()
           } else {
-            this.selectNext()
+            this.selectNextGroup()
           }
           break
         case 67:
@@ -150,59 +150,59 @@ export default {
           }
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             e.preventDefault()
-            this.copy()
+            this.copyGroup()
           }
           break
         case 78:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             e.preventDefault()
-            this.create()
+            this.createGroup()
           }
           break
         case 86:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             e.preventDefault()
-            this.paste()
+            this.pasteGroup()
           }
           break
       }
     },
     onClick () {
-      this.unselect()
+      this.unselectGroup()
     },
     onContextMenu (e) {
-      this.unselect()
+      this.unselectGroup()
       const templates = [
         {
           label: 'New Group',
-          click: () => this.create(),
+          click: () => this.createGroup(),
           accelerator: 'CmdOrCtrl+N'
         },
         {
           label: 'Paste',
-          click: () => this.paste(),
+          click: () => this.pasteGroup(),
           accelerator: 'CmdOrCtrl+V',
-          enabled: this.canPaste
+          enabled: this.canPasteGroup
         }
       ]
       ContextMenu.show(e, templates)
     },
     focusSelectedRow () {
-      this.$refs[`row-${this.selectedId}`].focus()
+      this.$refs[`row-${this.selectedGroupId}`].focus()
     },
     ...mapMutations({
       setScrollTop: 'explorer/setScrollTop'
     }),
     ...mapActions({
-      create: 'explorer/create',
-      delete: 'explorer/delete',
-      copy: 'explorer/copy',
-      paste: 'explorer/paste',
-      unselect: 'explorer/unselect',
-      selectFirst: 'explorer/selectFirst',
-      selectLast: 'explorer/selectLast',
-      selectPrevious: 'explorer/selectPrevious',
-      selectNext: 'explorer/selectNext'
+      createGroup: 'explorer/createGroup',
+      deleteGroup: 'explorer/deleteGroup',
+      copyGroup: 'explorer/copyGroup',
+      pasteGroup: 'explorer/pasteGroup',
+      unselectGroup: 'explorer/unselectGroup',
+      selectFirstGroup: 'explorer/selectFirstGroup',
+      selectLastGroup: 'explorer/selectLastGroup',
+      selectPreviousGroup: 'explorer/selectPreviousGroup',
+      selectNextGroup: 'explorer/selectNextGroup'
     })
   }
 }

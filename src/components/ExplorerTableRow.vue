@@ -76,7 +76,7 @@ export default {
   },
   computed: {
     active () {
-      return this.isSelected({ id: this.group.id })
+      return this.isSelectedGroup({ id: this.group.id })
     },
     icon () {
       return this.group.disabled ? 'block' : 'done'
@@ -91,8 +91,8 @@ export default {
       scrollTop: state => state.explorer.scrollTop
     }),
     ...mapGetters({
-      isSelected: 'explorer/isSelected',
-      canPaste: 'explorer/canPaste'
+      isSelectedGroup: 'explorer/isSelectedGroup',
+      canPasteGroup: 'explorer/canPasteGroup'
     })
   },
   mounted () {
@@ -102,26 +102,26 @@ export default {
   },
   methods: {
     onClick () {
-      this.select({ id: this.group.id })
+      this.selectGroup({ id: this.group.id })
     },
     onContextMenu (e) {
-      this.select({ id: this.group.id })
+      this.selectGroup({ id: this.group.id })
       const templates = [
         {
           label: 'New Group',
-          click: () => this.create(),
+          click: () => this.createGroup(),
           accelerator: 'CmdOrCtrl+N'
         },
         {
           label: 'Copy',
-          click: () => this.copy(),
+          click: () => this.copyGroup(),
           accelerator: 'CmdOrCtrl+C'
         },
         {
           label: 'Paste',
-          click: () => this.paste(),
+          click: () => this.pasteGroup(),
           accelerator: 'CmdOrCtrl+V',
-          enabled: this.canPaste
+          enabled: this.canPasteGroup
         },
         { type: 'separator' },
         {
@@ -131,15 +131,15 @@ export default {
         },
         {
           label: 'Delete',
-          click: () => this.delete(),
+          click: () => this.deleteGroup(),
           accelerator: 'CmdOrCtrl+Backspace'
         }
       ]
       ContextMenu.show(e, templates)
     },
     onButtonClick () {
-      this.select({ id: this.group.id })
-      this.update({ group: { disabled: !this.group.disabled } })
+      this.selectGroup({ id: this.group.id })
+      this.updateGroup({ group: { disabled: !this.group.disabled } })
     },
     onColumnDblClick () {
       this.focus()
@@ -164,7 +164,7 @@ export default {
       if (this.cancel) {
         return
       }
-      this.update({ group: { name: this.name } })
+      this.updateGroup({ group: { name: this.name } })
     },
     onTextContextMenu () {
       ContextMenu.showTextMenu()
@@ -186,12 +186,12 @@ export default {
       this.menu.width = rect.width
     },
     ...mapActions({
-      create: 'explorer/create',
-      update: 'explorer/update',
-      delete: 'explorer/delete',
-      copy: 'explorer/copy',
-      paste: 'explorer/paste',
-      select: 'explorer/select',
+      createGroup: 'explorer/createGroup',
+      updateGroup: 'explorer/updateGroup',
+      deleteGroup: 'explorer/deleteGroup',
+      copyGroup: 'explorer/copyGroup',
+      pasteGroup: 'explorer/pasteGroup',
+      selectGroup: 'explorer/selectGroup',
       focusTable: 'explorer/focusTable'
     })
   }

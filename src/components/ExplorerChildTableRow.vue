@@ -115,7 +115,7 @@ export default {
   },
   computed: {
     active () {
-      return this.isSelected({ id: this.host.id })
+      return this.isSelectedHost({ id: this.host.id })
     },
     icon () {
       return this.host.disabled ? 'block' : 'done'
@@ -133,8 +133,8 @@ export default {
       scrollTop: state => state.explorer.child.scrollTop
     }),
     ...mapGetters({
-      isSelected: 'explorer/child/isSelected',
-      canPaste: 'explorer/child/canPaste'
+      isSelectedHost: 'explorer/child/isSelectedHost',
+      canPasteHost: 'explorer/child/canPasteHost'
     })
   },
   mounted () {
@@ -144,24 +144,24 @@ export default {
   },
   methods: {
     onClick () {
-      this.select({ id: this.host.id })
+      this.selectHost({ id: this.host.id })
     },
     onContextMenu (e) {
-      this.select({ id: this.host.id })
+      this.selectHost({ id: this.host.id })
       const templates = [
         {
           label: 'New Host',
-          click: () => this.create(),
+          click: () => this.createHost(),
           accelerator: 'CmdOrCtrl+N'
         },
         {
           label: 'Copy',
-          click: () => this.copy(),
+          click: () => this.copyHost(),
           accelerator: 'CmdOrCtrl+C'
         },
         {
           label: 'Paste',
-          click: () => this.paste(),
+          click: () => this.pasteHost(),
           accelerator: 'CmdOrCtrl+V',
           enabled: this.canPaste
         },
@@ -173,15 +173,15 @@ export default {
         },
         {
           label: 'Delete',
-          click: () => this.delete(),
+          click: () => this.deleteHost(),
           accelerator: 'CmdOrCtrl+Backspace'
         }
       ]
       ContextMenu.show(e, templates)
     },
     onButtonClick () {
-      this.select({ id: this.host.id })
-      this.update({ host: { disabled: !this.host.disabled } })
+      this.selectHost({ id: this.host.id })
+      this.updateHost({ host: { disabled: !this.host.disabled } })
     },
     onColumnDblClick (e, value) {
       this.focus(value)
@@ -218,12 +218,13 @@ export default {
       if (this.cancel) {
         return
       }
-      this.update({ host: { [value]: this[value] } })
+      this.updateHost({ host: { [value]: this[value] } })
     },
     onTextContextMenu () {
       ContextMenu.showTextMenu()
     },
     focus (value = 'ip') {
+      this.adjustMenu()
       this[value] = this.host[value]
       this.cancel = false
       this.$nextTick(() => {
@@ -242,14 +243,15 @@ export default {
       this.nameMenu.x = nameRect.left
       this.nameMenu.y = nameRect.top + 1
       this.nameMenu.width = nameRect.width
+      console.log(this.ipMenu)
     },
     ...mapActions({
-      create: 'explorer/child/create',
-      update: 'explorer/child/update',
-      delete: 'explorer/child/delete',
-      copy: 'explorer/child/copy',
-      paste: 'explorer/child/paste',
-      select: 'explorer/child/select',
+      createHost: 'explorer/child/createHost',
+      updateHost: 'explorer/child/updateHost',
+      deleteHost: 'explorer/child/deleteHost',
+      copyHost: 'explorer/child/copyHost',
+      pasteHost: 'explorer/child/pasteHost',
+      selectHost: 'explorer/child/selectHost',
       focusTable: 'explorer/child/focusTable'
     })
   }

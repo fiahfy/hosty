@@ -70,19 +70,19 @@ export default {
       }
     },
     ...mapState({
-      selectedId: state => state.explorer.child.selectedId,
+      selectedHostId: state => state.explorer.child.selectedHostId,
       scrollTop: state => state.explorer.child.scrollTop
     }),
     ...mapGetters({
       hosts: 'explorer/child/filteredHosts',
-      selectedIndex: 'explorer/child/selectedIndex',
-      canPaste: 'explorer/child/canPaste'
+      selectedHostIndex: 'explorer/child/selectedHostIndex',
+      canPasteHost: 'explorer/child/canPasteHost'
     })
   },
   watch: {
-    selectedId () {
+    selectedHostIndex (value) {
       this.$nextTick(() => {
-        const index = this.selectedIndex
+        const index = value
         if (index === -1) {
           return
         }
@@ -125,7 +125,7 @@ export default {
         case 8:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             e.preventDefault()
-            this.delete()
+            this.deleteHost()
           }
           break
         case 13:
@@ -135,17 +135,17 @@ export default {
         case 38:
           e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectFirst()
+            this.selectFirstHost()
           } else {
-            this.selectPrevious()
+            this.selectPreviousHost()
           }
           break
         case 40:
           e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectLast()
+            this.selectLastHost()
           } else {
-            this.selectNext()
+            this.selectNextHost()
           }
           break
         case 67:
@@ -154,59 +154,59 @@ export default {
           }
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             e.preventDefault()
-            this.copy()
+            this.copyHost()
           }
           break
         case 78:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             e.preventDefault()
-            this.create()
+            this.createHost()
           }
           break
         case 86:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             e.preventDefault()
-            this.paste()
+            this.pasteHost()
           }
           break
       }
     },
     onClick () {
-      this.unselect()
+      this.unselectHost()
     },
     onContextMenu (e) {
-      this.unselect()
+      this.unselectHost()
       const templates = [
         {
           label: 'New Host',
-          click: () => this.create(),
+          click: () => this.createHost(),
           accelerator: 'CmdOrCtrl+N'
         },
         {
           label: 'Paste',
-          click: () => this.paste(),
+          click: () => this.pasteHost(),
           accelerator: 'CmdOrCtrl+V',
-          enabled: this.canPaste
+          enabled: this.canPasteHost
         }
       ]
       ContextMenu.show(e, templates)
     },
     focusSelectedRow () {
-      this.$refs[`row-${this.selectedId}`].focus()
+      this.$refs[`row-${this.selectedHostId}`].focus()
     },
     ...mapMutations({
       setScrollTop: 'explorer/child/setScrollTop'
     }),
     ...mapActions({
-      create: 'explorer/child/create',
-      delete: 'explorer/child/delete',
-      copy: 'explorer/child/copy',
-      paste: 'explorer/child/paste',
-      unselect: 'explorer/child/unselect',
-      selectFirst: 'explorer/child/selectFirst',
-      selectLast: 'explorer/child/selectLast',
-      selectPrevious: 'explorer/child/selectPrevious',
-      selectNext: 'explorer/child/selectNext'
+      createHost: 'explorer/child/createHost',
+      deleteHost: 'explorer/child/deleteHost',
+      copyHost: 'explorer/child/copyHost',
+      pasteHost: 'explorer/child/pasteHost',
+      unselectHost: 'explorer/child/unselectHost',
+      selectFirstHost: 'explorer/child/selectFirstHost',
+      selectLastHost: 'explorer/child/selectLastHost',
+      selectPreviousHost: 'explorer/child/selectPreviousHost',
+      selectNextHost: 'explorer/child/selectNextHost'
     })
   }
 }

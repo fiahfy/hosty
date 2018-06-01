@@ -35,7 +35,7 @@ export default new Vuex.Store({
         console.error(e)
         dispatch('showMessage', { message: e.message })
       }
-      dispatch('explorer/load')
+      dispatch('explorer/loadGroups')
     },
     finalize () {
       Hosts.exit()
@@ -44,7 +44,7 @@ export default new Vuex.Store({
       try {
         const groups = Hosts.read(filepath)
         dispatch('group/setGroups', { groups })
-        dispatch('explorer/load')
+        dispatch('explorer/loadGroups')
         dispatch('showMessage', { message: 'Imported' })
       } catch (e) {
         console.error(e)
@@ -71,7 +71,6 @@ export default new Vuex.Store({
       })
     },
     changeRoute ({ dispatch }, payload) {
-      dispatch('showMessage', { message: 'Export failed' })
       router.push(payload)
     },
     changeTitle ({ commit }, { title = Package.productName }) {

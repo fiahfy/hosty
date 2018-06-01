@@ -6,7 +6,7 @@
     <v-card-title class="py-2 px-0">
       <v-btn
         :title="'New Host'|accelerator('CmdOrCtrl+N')"
-        :disabled="!canCreate"
+        :disabled="!canCreateHost"
         flat
         icon
         @click="onNewClick"
@@ -15,7 +15,7 @@
       </v-btn>
       <v-btn
         :title="'Delete'|accelerator('CmdOrCtrl+Backspace')"
-        :disabled="!canDelete"
+        :disabled="!canDeleteHost"
         flat
         icon
         @click="onDeleteClick"
@@ -48,23 +48,23 @@ export default {
       filtered: state => state.explorer.child.filtered
     }),
     ...mapGetters({
-      canCreate: 'explorer/child/canCreate',
-      canDelete: 'explorer/child/canDelete'
+      canCreateHost: 'explorer/child/canCreateHost',
+      canDeleteHost: 'explorer/child/canDeleteHost'
     })
   },
   methods: {
     onNewClick () {
-      this.create()
+      this.createHost()
     },
     onDeleteClick () {
-      this.delete()
+      this.deleteHost()
     },
     onFilterClick () {
       this.toggleFilter()
     },
     ...mapActions({
-      create: 'explorer/child/create',
-      delete: 'explorer/child/delete',
+      createHost: 'explorer/child/createHost',
+      deleteHost: 'explorer/child/deleteHost',
       toggleFilter: 'explorer/child/toggleFilter'
     })
   }

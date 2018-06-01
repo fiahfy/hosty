@@ -6,7 +6,7 @@
     <v-card-title class="py-2 px-0">
       <v-btn
         :title="'New Group'|accelerator('CmdOrCtrl+N')"
-        :disabled="!canCreate"
+        :disabled="!canCreateGroup"
         flat
         icon
         @click="onNewClick"
@@ -15,7 +15,7 @@
       </v-btn>
       <v-btn
         :title="'Delete'|accelerator('CmdOrCtrl+Backspace')"
-        :disabled="!canDelete"
+        :disabled="!canDeleteGroup"
         flat
         icon
         @click="onDeleteClick"
@@ -48,23 +48,23 @@ export default {
       filtered: state => state.explorer.filtered
     }),
     ...mapGetters({
-      canCreate: 'explorer/canCreate',
-      canDelete: 'explorer/canDelete'
+      canCreateGroup: 'explorer/canCreateGroup',
+      canDeleteGroup: 'explorer/canDeleteGroup'
     })
   },
   methods: {
     onNewClick () {
-      this.create()
+      this.createGroup()
     },
     onDeleteClick () {
-      this.delete()
+      this.deleteGroup()
     },
     onFilterClick () {
       this.toggleFilter()
     },
     ...mapActions({
-      create: 'explorer/create',
-      delete: 'explorer/delete',
+      createGroup: 'explorer/createGroup',
+      deleteGroup: 'explorer/deleteGroup',
       toggleFilter: 'explorer/toggleFilter'
     })
   }
