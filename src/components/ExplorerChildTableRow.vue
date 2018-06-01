@@ -124,10 +124,16 @@ export default {
       return this.host.disabled ? 'grey' : 'primary'
     },
     ipClasses () {
-      return this.host.ip ? '' : 'grey--text'
+      return [
+        'ellipsis',
+        this.host.ip ? '' : 'grey--text'
+      ]
     },
     nameClasses () {
-      return this.host.name ? '' : 'grey--text'
+      return [
+        'ellipsis',
+        this.host.name ? '' : 'grey--text'
+      ]
     },
     ...mapGetters({
       isSelectedHost: 'explorer/child/isSelectedHost',
@@ -251,10 +257,5 @@ export default {
 <style scoped lang="scss">
 .explorer-child-table-row {
   cursor: pointer;
-  td {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
 }
 </style>

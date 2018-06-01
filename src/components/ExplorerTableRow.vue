@@ -18,35 +18,37 @@
     </td>
     <td
       ref="column"
-      :class="classes"
       @dblclick="onColumnDblClick"
     >
-      {{ group.name || 'Group' }}
-      <v-menu
-        v-model="menu.show"
-        :transition="false"
-        :position-x="menu.x"
-        :position-y="menu.y"
-        :min-width="menu.width"
-        :close-on-content-click="false"
-        lazy
-      >
-        <v-card>
-          <v-card-text>
-            <v-text-field
-              ref="text"
-              v-model="name"
-              label="Group"
-              class="pt-0"
-              hide-details
-              single-line
-              @keydown.native="onTextKeyDown"
-              @blur="onTextBlur"
-              @contextmenu.stop="onTextContextMenu"
-            />
-          </v-card-text>
-        </v-card>
-      </v-menu>
+      <v-layout class="align-center">
+        <span :class="nameClasses">{{ group.name || 'Group' }}</span>
+        <span :class="numberClasses">{{ group.hosts.length }}</span>
+        <v-menu
+          v-model="menu.show"
+          :transition="false"
+          :position-x="menu.x"
+          :position-y="menu.y"
+          :min-width="menu.width"
+          :close-on-content-click="false"
+          lazy
+        >
+          <v-card>
+            <v-card-text>
+              <v-text-field
+                ref="text"
+                v-model="name"
+                label="Group"
+                class="pt-0"
+                hide-details
+                single-line
+                @keydown.native="onTextKeyDown"
+                @blur="onTextBlur"
+                @contextmenu.stop="onTextContextMenu"
+              />
+            </v-card-text>
+          </v-card>
+        </v-menu>
+      </v-layout>
     </td>
   </tr>
 </template>
@@ -84,8 +86,17 @@ export default {
     color () {
       return this.group.disabled ? 'grey' : 'primary'
     },
-    classes () {
-      return this.group.name ? '' : 'grey--text'
+    nameClasses () {
+      return [
+        'spacer ellipsis',
+        this.group.name ? '' : 'grey--text'
+      ]
+    },
+    numberClasses () {
+      return [
+        'ml-3 text-xs-right',
+        this.group.hosts.length ? '' : 'grey--text'
+      ]
     },
     ...mapGetters({
       isSelectedGroup: 'explorer/isSelectedGroup',
@@ -197,10 +208,5 @@ export default {
 <style scoped lang="scss">
 .explorer-table-row {
   cursor: pointer;
-  td {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
 }
 </style>
