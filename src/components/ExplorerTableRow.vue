@@ -13,7 +13,7 @@
         class="my-0"
         @click="onButtonClick"
       >
-        <v-icon>{{ icon }}</v-icon>
+        <v-icon>check_circle</v-icon>
       </v-btn>
     </td>
     <td
@@ -80,11 +80,8 @@ export default {
     active () {
       return this.isSelectedGroup({ id: this.group.id })
     },
-    icon () {
-      return this.group.disabled ? 'block' : 'done'
-    },
     color () {
-      return this.group.disabled ? 'grey' : 'primary'
+      return this.group.disabled ? 'grey' : 'success'
     },
     nameClasses () {
       return [

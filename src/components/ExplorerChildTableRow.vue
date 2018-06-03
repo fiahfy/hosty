@@ -13,7 +13,7 @@
         class="my-0"
         @click="onButtonClick"
       >
-        <v-icon>{{ icon }}</v-icon>
+        <v-icon>check_circle</v-icon>
       </v-btn>
     </td>
     <td
@@ -117,11 +117,8 @@ export default {
     active () {
       return this.isSelectedHost({ id: this.host.id })
     },
-    icon () {
-      return this.host.disabled ? 'block' : 'done'
-    },
     color () {
-      return this.host.disabled ? 'grey' : 'primary'
+      return this.host.disabled ? 'grey' : 'success'
     },
     ipClasses () {
       return [
