@@ -47,7 +47,7 @@ export default {
     return {
       headers: [
         {
-          text: 'Status',
+          text: 'Enabled',
           value: 'disabled',
           width: 68
         },
