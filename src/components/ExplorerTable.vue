@@ -66,11 +66,11 @@ export default {
       }
     },
     ...mapState({
+      groups: state => state.explorer.groups,
       selectedGroupId: state => state.explorer.selectedGroupId,
       scrollTop: state => state.explorer.scrollTop
     }),
     ...mapGetters({
-      groups: 'explorer/filteredGroups',
       selectedGroupIndex: 'explorer/selectedGroupIndex',
       canPasteGroup: 'explorer/canPasteGroup'
     })

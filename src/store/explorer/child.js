@@ -24,10 +24,10 @@ export default {
       return rootState.explorer.selectedGroupId
     },
     selectedHostIndex (state, getters) {
-      return getters.filteredHosts.findIndex((host) => getters.isSelectedHost({ id: host.id }))
+      return state.hosts.findIndex((host) => getters.isSelectedHost({ id: host.id }))
     },
     selectedHost (state, getters) {
-      return getters.filteredHosts[getters.selectedHostIndex]
+      return state.hosts[getters.selectedHostIndex]
     },
     canCreateHost (state, getters) {
       return !!getters.selectedGroupId
@@ -38,27 +38,24 @@ export default {
     canPasteHost (state) {
       return !!state.clippedHost
     },
-    filteredHosts (state) {
-      return state.hosts.filter((host) => {
-        return !state.filtered || !host.disabled
-      })
-    },
     isSelectedHost (state) {
       return ({ id }) => state.selectedHostId === id
     }
   },
   actions: {
-    loadHosts ({ commit, dispatch, getters, rootGetters }) {
-      const hosts = JSON.parse(JSON.stringify(rootGetters['group/getHosts']({ groupId: getters.selectedGroupId })))
+    loadHosts ({ commit, dispatch, getters, rootGetters, state }) {
+      const hosts = JSON.parse(JSON.stringify(rootGetters['group/getHosts']({ groupId: getters.selectedGroupId }))).filter((host) => {
+        return !state.filtered || !host.disabled
+      })
       commit('setHosts', { hosts })
       commit('setScrollTop', { scrollTop: 0 })
       dispatch('sortHosts')
       dispatch('unselectHost')
     },
-    async createHost ({ commit, dispatch, getters }, { host } = {}) {
+    async createHost ({ commit, dispatch, getters, state }, { host } = {}) {
       const newHost = await dispatch('group/createHost', { groupId: getters.selectedGroupId, host }, { root: true })
       commit('addHost', { host: newHost })
-      const index = getters.filteredHosts.length - 1
+      const index = state.hosts.length - 1
       dispatch('selectHostIndex', { index })
       dispatch('focusTable')
     },
@@ -66,7 +63,7 @@ export default {
       const oldIndex = getters.selectedHostIndex
       dispatch('group/deleteHost', { groupId: getters.selectedGroupId, id: state.selectedHostId }, { root: true })
       commit('removeHost', { id: state.selectedHostId })
-      const index = oldIndex < getters.filteredHosts.length ? oldIndex : getters.filteredHosts.length - 1
+      const index = oldIndex < state.hosts.length ? oldIndex : state.hosts.length - 1
       dispatch('selectHostIndex', { index })
       dispatch('focusTable')
     },
@@ -112,35 +109,35 @@ export default {
     unselectHost ({ dispatch }) {
       dispatch('selectHost', { id: 0 })
     },
-    selectHostIndex ({ dispatch, getters }, { index }) {
-      const host = getters.filteredHosts[index]
+    selectHostIndex ({ dispatch, state }, { index }) {
+      const host = state.hosts[index]
       if (host) {
         dispatch('selectHost', { id: host.id })
       } else {
         dispatch('unselectHost')
       }
     },
-    selectFirstHost ({ dispatch, getters }) {
+    selectFirstHost ({ dispatch, state }) {
       const index = 0
-      if (index > -1 && index < getters.filteredHosts.length) {
+      if (index > -1 && index < state.hosts.length) {
         dispatch('selectHostIndex', { index })
       }
     },
-    selectLastHost ({ dispatch, getters }) {
-      const index = getters.filteredHosts.length - 1
-      if (index > -1 && index < getters.filteredHosts.length) {
+    selectLastHost ({ dispatch, state }) {
+      const index = state.hosts.length - 1
+      if (index > -1 && index < state.hosts.length) {
         dispatch('selectHostIndex', { index })
       }
     },
-    selectPreviousHost ({ dispatch, getters }) {
+    selectPreviousHost ({ dispatch, getters, state }) {
       const index = getters.selectedHostIndex - 1
-      if (index > -1 && index < getters.filteredHosts.length) {
+      if (index > -1 && index < state.hosts.length) {
         dispatch('selectHostIndex', { index })
       }
     },
-    selectNextHost ({ dispatch, getters }) {
+    selectNextHost ({ dispatch, getters, state }) {
       const index = getters.selectedHostIndex + 1
-      if (index > -1 && index < getters.filteredHosts.length) {
+      if (index > -1 && index < state.hosts.length) {
         dispatch('selectHostIndex', { index })
       }
     },
@@ -150,8 +147,9 @@ export default {
       commit('setOrder', { order })
       dispatch('sortHosts')
     },
-    toggleFilter ({ commit, state }) {
+    toggleFilter ({ commit, dispatch, state }) {
       commit('setFiltered', { filtered: !state.filtered })
+      dispatch('loadHosts')
     },
     focusTable ({ dispatch }) {
       dispatch('focus', { selector: Selector.explorerChildTable }, { root: true })

@@ -70,11 +70,11 @@ export default {
       }
     },
     ...mapState({
+      hosts: state => state.explorer.child.hosts,
       selectedHostId: state => state.explorer.child.selectedHostId,
       scrollTop: state => state.explorer.child.scrollTop
     }),
     ...mapGetters({
-      hosts: 'explorer/child/filteredHosts',
       selectedHostIndex: 'explorer/child/selectedHostIndex',
       canPasteHost: 'explorer/child/canPasteHost'
     })
