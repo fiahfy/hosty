@@ -18,7 +18,7 @@ export const Selector = {
 export default new Vuex.Store({
   state: {
     title: Package.productName,
-    message: '',
+    message: null,
     fullScreen: false,
     permission: false
   },
@@ -28,14 +28,17 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async initialize ({ commit, dispatch }) {
+    async initialize ({ commit, dispatch, state }, { again = false }) {
       try {
         await Hosts.initialize()
+        if (again) {
+          dispatch('showMessage', { color: 'success', text: 'OK' })
+        }
         commit('setPermission', { permission: true })
       } catch (e) {
         console.error(e)
-        dispatch('showMessage', { message: e.message })
         commit('setPermission', { permission: false })
+        dispatch('showMessage', { color: 'error', text: e.message })
       }
       dispatch('sync')
       dispatch('explorer/loadGroups')
@@ -48,7 +51,7 @@ export default new Vuex.Store({
         Hosts.sync(getters['group/validHosts'])
       } catch (e) {
         console.error(e)
-        dispatch('showMessage', { message: e.message })
+        dispatch('showMessage', { color: 'error', text: e.message })
         commit('setPermission', { permission: false })
       }
     },
@@ -57,20 +60,20 @@ export default new Vuex.Store({
         const groups = Hosts.read(filepath)
         commit('group/setGroups', { groups })
         dispatch('explorer/loadGroups')
-        dispatch('showMessage', { message: 'Imported' })
+        dispatch('showMessage', { color: 'success', text: 'Imported' })
       } catch (e) {
         console.error(e)
-        dispatch('showMessage', { message: 'Import failed' })
+        dispatch('showMessage', { color: 'error', text: 'Import failed' })
       }
     },
     export ({ dispatch, state }, { filepath }) {
       try {
         const groups = state.group.groups
         Hosts.write(filepath, groups)
-        dispatch('showMessage', { message: 'Exported' })
+        dispatch('showMessage', { color: 'success', text: 'Exported' })
       } catch (e) {
         console.error(e)
-        dispatch('showMessage', { message: 'Export failed' })
+        dispatch('showMessage', { color: 'error', text: 'Export failed' })
       }
     },
     focus (_, { selector }) {
@@ -89,7 +92,7 @@ export default new Vuex.Store({
       document.title = title
       commit('setTitle', { title })
     },
-    showMessage ({ commit, dispatch, state }, { message }) {
+    showMessage ({ commit, dispatch, state }, message) {
       commit('setMessage', { message })
     }
   },
