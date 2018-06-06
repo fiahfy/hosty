@@ -8,7 +8,13 @@
     <title-bar v-if="titleBar" />
     <activity-bar />
     <v-content class="fill-height">
-      <router-view />
+      <v-layout
+        column
+        fill-height
+      >
+        <alert-bar />
+        <router-view />
+      </v-layout>
     </v-content>
     <notification-bar />
   </v-app>
@@ -17,6 +23,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
 import ActivityBar from './components/ActivityBar'
+import AlertBar from './components/AlertBar'
 import NotificationBar from './components/NotificationBar'
 import TitleBar from './components/TitleBar'
 import * as ContextMenu from './utils/context-menu'
@@ -24,6 +31,7 @@ import * as ContextMenu from './utils/context-menu'
 export default {
   components: {
     ActivityBar,
+    AlertBar,
     NotificationBar,
     TitleBar
   },

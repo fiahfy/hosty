@@ -38,7 +38,7 @@ const sudo = async (command) => {
   })
 }
 
-const setupHosts = async () => {
+const grantHostsPermission = async () => {
   try {
     const stats = fs.lstatSync(hostsFilepath)
     if (!stats.isSymbolicLink()) {
@@ -63,7 +63,7 @@ const setupHosts = async () => {
   }
 }
 
-const setupUserHosts = async () => {
+const createUserHosts = async () => {
   try {
     const stats = fs.lstatSync(userHostsFilepath)
     if (stats.isSymbolicLink()) {
@@ -113,9 +113,9 @@ const migrate = (groups) => {
   })
 }
 
-export const setup = async () => {
-  await setupHosts()
-  await setupUserHosts()
+export const initialize = async () => {
+  await grantHostsPermission()
+  await createUserHosts()
 }
 
 export const sync = (hosts = []) => {
@@ -140,7 +140,7 @@ export const sync = (hosts = []) => {
   fs.writeFileSync(userHostsFilepath, newData, hostyFile.charset)
 }
 
-export const exit = () => {
+export const finalize = () => {
   sync()
 }
 

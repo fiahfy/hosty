@@ -19,7 +19,8 @@ export default new Vuex.Store({
   state: {
     title: Package.productName,
     message: '',
-    fullScreen: false
+    fullScreen: false,
+    permission: false
   },
   getters: {
     titleBar (state) {
@@ -27,18 +28,29 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async initialize ({ dispatch, getters }) {
+    async initialize ({ commit, dispatch }) {
       try {
-        await Hosts.setup()
+        await Hosts.initialize()
+        commit('setPermission', { permission: true })
+      } catch (e) {
+        console.error(e)
+        dispatch('showMessage', { message: e.message })
+        commit('setPermission', { permission: false })
+      }
+      dispatch('sync')
+      dispatch('explorer/loadGroups')
+    },
+    finalize () {
+      Hosts.finalize()
+    },
+    sync ({ commit, dispatch, getters }) {
+      try {
         Hosts.sync(getters['group/validHosts'])
       } catch (e) {
         console.error(e)
         dispatch('showMessage', { message: e.message })
+        commit('setPermission', { permission: false })
       }
-      dispatch('explorer/loadGroups')
-    },
-    finalize () {
-      Hosts.exit()
     },
     import ({ commit, dispatch }, { filepath }) {
       try {
@@ -90,6 +102,9 @@ export default new Vuex.Store({
     },
     setFullScreen (state, { fullScreen }) {
       state.fullScreen = fullScreen
+    },
+    setPermission (state, { permission }) {
+      state.permission = permission
     }
   },
   modules: {
@@ -106,8 +121,8 @@ export default new Vuex.Store({
     }),
     (store) => {
       store.subscribe((mutation) => {
-        if (mutation.type === 'group/setGroups') {
-          Hosts.sync(store.getters['group/validHosts'])
+        if (mutation.type === 'group/setGroups' && store.state.permission) {
+          store.dispatch('sync')
         }
       })
     }
