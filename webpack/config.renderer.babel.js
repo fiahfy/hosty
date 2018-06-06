@@ -1,6 +1,6 @@
-import config from './config.base.babel'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import { VueLoaderPlugin } from 'vue-loader'
+import config from './config.babel'
 
 export default {
   ...config,

@@ -1,4 +1,4 @@
-import config from './config.base.babel'
+import config from './config.babel'
 
 export default {
   ...config,

@@ -1,11 +1,13 @@
 import webpack from 'webpack'
 import config from './config.renderer.babel'
 
+const port = process.env.PORT || 3000
+
 export default {
   ...config,
   output: {
     ...config.output,
-    publicPath: 'http://localhost:3000/'
+    publicPath: `http://localhost:${port}/`
   },
   plugins: [
     ...config.plugins,
@@ -14,7 +16,7 @@ export default {
     new webpack.NoEmitOnErrorsPlugin()
   ],
   devServer: {
-    port: 3000,
+    port,
     inline: true,
     hot: true
   }

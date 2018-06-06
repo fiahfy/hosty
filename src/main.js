@@ -113,7 +113,8 @@ const createWindow = () => {
   let url = `file://${__dirname}/app/index.html`
 
   if (process.env.HMR) {
-    url = 'http://localhost:3000/index.html'
+    const port = process.env.PORT || 3000
+    url = `http://localhost:${port}/index.html`
     options.webPreferences = {
       ...options.webPreferences,
       webSecurity: false
