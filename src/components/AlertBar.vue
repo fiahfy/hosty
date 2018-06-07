@@ -1,6 +1,6 @@
 <template>
   <v-alert
-    :value="!permission"
+    :value="permission === false"
     type="error"
     class="ma-0"
   >

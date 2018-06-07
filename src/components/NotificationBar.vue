@@ -7,6 +7,7 @@
     {{ text }}
     <v-btn
       flat
+      class="ml-3"
       @click.native="onCloseClick"
     >Close</v-btn>
   </v-snackbar>

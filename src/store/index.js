@@ -20,7 +20,7 @@ export default new Vuex.Store({
     title: Package.productName,
     message: null,
     fullScreen: false,
-    permission: false
+    permission: undefined
   },
   getters: {
     titleBar (state) {
@@ -28,20 +28,18 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async initialize ({ commit, dispatch, state }, { again = false }) {
+    async initialize ({ commit, dispatch }) {
+      dispatch('explorer/loadGroups')
       try {
         await Hosts.initialize()
-        if (again) {
-          dispatch('showMessage', { color: 'success', text: 'OK' })
-        }
         commit('setPermission', { permission: true })
+        dispatch('showMessage', { color: 'success', text: `Started syncing with hosts (${Hosts.path})` })
       } catch (e) {
         console.error(e)
         commit('setPermission', { permission: false })
         dispatch('showMessage', { color: 'error', text: e.message })
       }
       dispatch('sync')
-      dispatch('explorer/loadGroups')
     },
     finalize () {
       Hosts.finalize()

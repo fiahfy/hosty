@@ -2,32 +2,29 @@ import fs from 'fs'
 import path from 'path'
 import { remote } from 'electron'
 import * as sudoPrompt from 'sudo-prompt'
+import Package from '~~/package.json'
 
 const isDev = process.env.NODE_ENV !== 'production'
 const isWin = process.platform === 'win32'
 
-const hostyFile = {
-  charset: 'utf8',
-  extension: '.hosty'
-}
-const hostySection = {
+const charset = 'utf8'
+
+const section = {
   begin: '## hosty begin ##',
   end: '## hosty end ##'
 }
 
-const hostsFilepath = (() => {
+const filepath = (() => {
   if (isDev) {
     return path.join(process.cwd(), 'dummyHosts')
   }
   return isWin ? 'C:\\Windows\\System32\\drivers\\etc\\hosts' : '/etc/hosts'
 })()
-const userHostsFilepath = path.join(remote.app.getPath('userData'), 'hosts')
-
-const promptOptions = { name: 'Hosty' }
+const userFilepath = path.join(remote.app.getPath('userData'), 'hosts')
 
 const sudo = async (command) => {
   return new Promise((resolve, reject) => {
-    sudoPrompt.exec(command, promptOptions, (error, stdout, stderr) => {
+    sudoPrompt.exec(command, { name: Package.productName }, (error, stdout, stderr) => {
       if (error) {
         console.error('Sudo prompt exec failed: %o', { command, error, stdout, stderr }) // eslint-disable-line no-console
         reject(error)
@@ -38,26 +35,26 @@ const sudo = async (command) => {
   })
 }
 
-const grantHostsPermission = async () => {
+const grantPermission = async () => {
   try {
-    const stats = fs.lstatSync(hostsFilepath)
+    const stats = fs.lstatSync(filepath)
     if (!stats.isSymbolicLink()) {
       return
     }
-    await sudo(`rm "${hostsFilepath}"`)
+    await sudo(`rm "${filepath}"`)
   } catch (e) {
     //
   }
   if (isWin) {
     const command = [
-      `touch "${hostsFilepath}"`,
-      `cacls "${hostsFilepath}" /e /g Users:w`
+      `touch "${filepath}"`,
+      `cacls "${filepath}" /e /g Users:w`
     ].join(' && ')
     await sudo(`cmd /c ${command}`)
   } else {
     const command = [
-      `touch \\"${hostsFilepath}\\"`,
-      `chmod 666 \\"${hostsFilepath}\\"`
+      `touch \\"${filepath}\\"`,
+      `chmod 666 \\"${filepath}\\"`
     ].join('; ')
     await sudo(`$SHELL -c "${command}"`)
   }
@@ -65,24 +62,24 @@ const grantHostsPermission = async () => {
 
 const createUserHosts = async () => {
   try {
-    const stats = fs.lstatSync(userHostsFilepath)
+    const stats = fs.lstatSync(userFilepath)
     if (stats.isSymbolicLink()) {
       return
     }
-    await sudo(`rm "${userHostsFilepath}"`)
+    await sudo(`rm "${userFilepath}"`)
   } catch (e) {
     //
   }
   if (isWin) {
     const command = [
-      `mklink "${userHostsFilepath}" "${hostsFilepath}"`,
-      `cacls "${hostsFilepath}" /e /g Users:w`
+      `mklink "${userFilepath}" "${filepath}"`,
+      `cacls "${filepath}" /e /g Users:w`
     ].join(' && ')
     await sudo(`cmd /c ${command}`)
   } else {
     const command = [
-      `ln -s \\"${hostsFilepath}\\" \\"${userHostsFilepath}\\"`,
-      `chmod 666 \\"${hostsFilepath}\\"`
+      `ln -s \\"${filepath}\\" \\"${userFilepath}\\"`,
+      `chmod 666 \\"${filepath}\\"`
     ].join('; ')
     await sudo(`$SHELL -c "${command}"`)
   }
@@ -113,21 +110,23 @@ const migrate = (groups) => {
   })
 }
 
+export { filepath as path }
+
 export const initialize = async () => {
-  await grantHostsPermission()
+  await grantPermission()
   await createUserHosts()
 }
 
 export const sync = (hosts = []) => {
-  const data = fs.readFileSync(userHostsFilepath, hostyFile.charset)
+  const data = fs.readFileSync(userFilepath, charset)
 
   let newData = hosts
     .map((host) => `${host.ip}\t${host.name}`)
     .join('\n')
-  newData = `${hostySection.begin}\n${newData}\n${hostySection.end}\n`
+  newData = `${section.begin}\n${newData}\n${section.end}\n`
 
   const reg = new RegExp(
-    String.raw`([\s\S]*\n?)${hostySection.begin}\n[\s\S]*\n${hostySection.end}\n?([\s\S]*)`,
+    String.raw`([\s\S]*\n?)${section.begin}\n[\s\S]*\n${section.end}\n?([\s\S]*)`,
     'im'
   )
   const matches = data.match(reg)
@@ -137,7 +136,7 @@ export const sync = (hosts = []) => {
     newData = `${data}\n${newData}`
   }
 
-  fs.writeFileSync(userHostsFilepath, newData, hostyFile.charset)
+  fs.writeFileSync(userFilepath, newData, charset)
 }
 
 export const finalize = () => {
@@ -145,7 +144,7 @@ export const finalize = () => {
 }
 
 export const read = (filepath) => {
-  const data = fs.readFileSync(filepath, hostyFile.charset)
+  const data = fs.readFileSync(filepath, charset)
   const obj = JSON.parse(data)
   // TODO: remove this
   if (isOldFormat(obj)) {
@@ -156,5 +155,5 @@ export const read = (filepath) => {
 
 export const write = (filepath, obj) => {
   const data = JSON.stringify(obj)
-  fs.writeFileSync(filepath, data, hostyFile.charset)
+  fs.writeFileSync(filepath, data, charset)
 }
