@@ -8,9 +8,9 @@
     <td class="px-2">
       <v-btn
         :color="color"
+        class="my-0"
         flat
         icon
-        class="my-0"
         @click="onButtonClick"
       >
         <v-icon>check_circle</v-icon>
@@ -37,8 +37,8 @@
               <v-text-field
                 ref="text"
                 v-model="name"
-                label="Group"
                 class="pt-0"
+                label="Group"
                 hide-details
                 single-line
                 @keydown.native="onTextKeyDown"

@@ -10,10 +10,10 @@
     >
       <div class="spacer ellipsis">Grant permission required.</div>
       <v-btn
-        flat
-        small
         class="ma-0"
         color="white"
+        flat
+        small
         @click="initialize"
       >Resolve</v-btn>
     </v-layout>

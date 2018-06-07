@@ -17,6 +17,29 @@
       </v-layout>
     </v-content>
     <notification-bar />
+    <v-dialog
+      v-model="dialog"
+      persistent
+      max-width="300"
+    >
+      <v-card>
+        <v-card-title class="headline">Import hosty file?</v-card-title>
+        <v-card-text>The current hosts settings will be deleted.</v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            color="primary"
+            flat
+            @click.native="onCancelClick"
+          >Cancel</v-btn>
+          <v-btn
+            color="secondary"
+            flat
+            @click.native="onOKClick"
+          >OK</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-app>
 </template>
 
@@ -34,6 +57,12 @@ export default {
     AlertBar,
     NotificationBar,
     TitleBar
+  },
+  data () {
+    return {
+      dialog: false,
+      filepath: ''
+    }
   },
   computed: {
     ...mapState({
@@ -55,8 +84,15 @@ export default {
       if (!files.length) {
         return
       }
-      const filepath = files[0].path
-      this.import({ filepath })
+      this.dialog = true
+      this.filepath = files[0].path
+    },
+    onCancelClick () {
+      this.dialog = false
+    },
+    onOKClick () {
+      this.dialog = false
+      this.import({ filepath: this.filepath })
     },
     ...mapActions({
       initialize: 'initialize',

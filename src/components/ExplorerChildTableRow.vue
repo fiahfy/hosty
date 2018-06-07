@@ -8,9 +8,9 @@
     <td class="px-2">
       <v-btn
         :color="color"
+        class="my-0"
         flat
         icon
-        class="my-0"
         @click="onButtonClick"
       >
         <v-icon>check_circle</v-icon>
@@ -36,8 +36,8 @@
             <v-text-field
               ref="ipText"
               v-model="ip"
-              label="192.0.2.0"
               class="pt-0"
+              label="192.0.2.0"
               hide-details
               single-line
               @keydown.native="(e) => onTextKeyDown(e, 'ip')"
@@ -68,8 +68,8 @@
             <v-text-field
               ref="nameText"
               v-model="name"
-              label="example.com"
               class="pt-0"
+              label="example.com"
               hide-details
               single-line
               @keydown.native="(e) => onTextKeyDown(e, 'name')"

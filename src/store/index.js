@@ -58,7 +58,7 @@ export default new Vuex.Store({
         const groups = Hosts.read(filepath)
         commit('group/setGroups', { groups })
         dispatch('explorer/loadGroups')
-        dispatch('showMessage', { color: 'success', text: 'Imported' })
+        dispatch('showMessage', { color: 'success', text: 'Imported hosty file' })
       } catch (e) {
         console.error(e)
         dispatch('showMessage', { color: 'error', text: 'Import failed' })
@@ -68,7 +68,7 @@ export default new Vuex.Store({
       try {
         const groups = state.group.groups
         Hosts.write(filepath, groups)
-        dispatch('showMessage', { color: 'success', text: 'Exported' })
+        dispatch('showMessage', { color: 'success', text: 'Exported hosty file' })
       } catch (e) {
         console.error(e)
         dispatch('showMessage', { color: 'error', text: 'Export failed' })
