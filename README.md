@@ -1,7 +1,7 @@
 # Hosty
 [![Build Status](https://travis-ci.org/fiahfy/hosty.svg?branch=master)](https://travis-ci.org/fiahfy/hosty)
 
-> Hosts file manager based on Electron.
+> Hosts File Manager based on Electron.
 
 
 ## Features
