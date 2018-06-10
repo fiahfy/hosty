@@ -1,17 +1,17 @@
 # Hosty
 [![Build Status](https://travis-ci.org/fiahfy/hosty.svg?branch=master)](https://travis-ci.org/fiahfy/hosty)
 
-> Hosts file manager based on Electron.
+> Hosts File Manager based on Electron.
 
 
 ## Features
 * Manage hosts with groups
-* Import/Export hosts settings
 * Cross platform support
+* Change theme (Light/Dark)
 
 
 ## Screenshot
-![screenshot](./build/screenshot.png?raw=true)
+![screenshot](./build/screenshots/screenshot.png?raw=true)
 
 
 ## Installation
