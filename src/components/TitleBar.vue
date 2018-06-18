@@ -1,5 +1,6 @@
 <template>
   <v-system-bar
+    v-if="titleBar"
     :app="app"
     class="title-bar"
     height="22"
@@ -12,7 +13,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default {
   props: {
@@ -24,13 +25,16 @@ export default {
   computed: {
     ...mapState({
       title: state => state.title
+    }),
+    ...mapGetters({
+      titleBar: 'titleBar'
     })
   }
 }
 </script>
 
 <style scoped lang="scss">
-.system-bar {
+.title-bar {
   -webkit-app-region: drag;
 }
 </style>
