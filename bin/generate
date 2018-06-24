@@ -6,7 +6,7 @@ UNSET=$'\e[m'
 usage() {
   echo "Usage: ./generate [options]"
   echo ""
-  echo "Generate images for original image."
+  echo "Generate icons, background images from original images."
   echo ""
   echo "Options:"
   echo "  --icon, -i       : Generate icons for dmg, nsis"
