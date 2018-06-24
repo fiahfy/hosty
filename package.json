@@ -69,7 +69,7 @@
     "build:main": "webpack --config webpack/config.main.babel.js",
     "build:renderer": "webpack --config webpack/config.renderer.babel.js",
     "dev": "cross-env HMR=1 run-p dev-server start:main",
-    "dev-server": "webpack-dev-server --config webpack/config.renderer.hmr.babel.js",
+    "dev-server": "webpack-dev-server --config webpack/config.renderer.dev.babel.js",
     "lint": "eslint src --ext .js,.vue",
     "package": "build",
     "release": "cross-env NODE_ENV=production run-s build \"package -mw -p onTagOrDraft\"",
