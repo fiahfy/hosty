@@ -1,9 +1,9 @@
 <template>
   <v-system-bar
     v-if="titleBar"
-    :app="app"
     class="title-bar"
     height="22"
+    app
     status
   >
     <v-spacer/>
@@ -16,12 +16,6 @@
 import { mapGetters, mapState } from 'vuex'
 
 export default {
-  props: {
-    app: {
-      type: Boolean,
-      default: true
-    }
-  },
   computed: {
     ...mapState({
       title: state => state.title
