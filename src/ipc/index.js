@@ -1,7 +1,7 @@
 import { ipcRenderer, remote } from 'electron'
 
 export const addIpcRendererListeners = (store) => {
-  ipcRenderer.on('willQuit', () => {
+  ipcRenderer.on('close', () => {
     store.dispatch('finalize')
   })
   ipcRenderer.on('enterFullScreen', () => {
