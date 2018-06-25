@@ -4,13 +4,17 @@ import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 
 let mainWindow
 
+const send = (...args) => {
+  mainWindow && mainWindow.webContents.send(...args)
+}
+
 const createTemplate = () => {
   const template = [
     {
       label: 'File',
       submenu: [
-        { label: 'Import...', accelerator: 'CmdOrCtrl+O', click: () => { mainWindow.webContents.send('import') } },
-        { label: 'Export...', accelerator: 'CmdOrCtrl+S', click: () => { mainWindow.webContents.send('export') } }
+        { label: 'Import...', accelerator: 'CmdOrCtrl+O', click: () => { send('import') } },
+        { label: 'Export...', accelerator: 'CmdOrCtrl+S', click: () => { send('export') } }
       ]
     },
     {
@@ -62,7 +66,7 @@ const createTemplate = () => {
       submenu: [
         { role: 'about' },
         { type: 'separator' },
-        { label: 'Preferences...', accelerator: 'CmdOrCtrl+,', click: () => { mainWindow.webContents.send('showSettings') } },
+        { label: 'Preferences...', accelerator: 'CmdOrCtrl+,', click: () => { send('showSettings') } },
         { type: 'separator' },
         { role: 'services', submenu: [] },
         { type: 'separator' },
@@ -138,16 +142,20 @@ const createWindow = () => {
     mainWindow.openDevTools()
   }
 
+  mainWindow.on('close', () => {
+    send('close')
+  })
+
   mainWindow.on('closed', () => {
     mainWindow = null
   })
 
   mainWindow.on('enter-full-screen', () => {
-    mainWindow.webContents.send('enterFullScreen')
+    send('enterFullScreen')
   })
 
   mainWindow.on('leave-full-screen', () => {
-    mainWindow.webContents.send('leaveFullScreen')
+    send('leaveFullScreen')
   })
 }
 
@@ -165,8 +173,4 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
-})
-
-app.on('will-quit', () => {
-  mainWindow.webContents.send('willQuit')
 })

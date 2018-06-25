@@ -1,7 +1,7 @@
 import { ipcRenderer, remote } from 'electron'
 
 export const addIpcRendererListeners = (store) => {
-  ipcRenderer.on('willQuit', () => {
+  ipcRenderer.on('close', () => {
     store.dispatch('finalize')
   })
   ipcRenderer.on('enterFullScreen', () => {
@@ -17,7 +17,7 @@ export const addIpcRendererListeners = (store) => {
     const filepathes = remote.dialog.showOpenDialog({
       filters: [{ name: 'Hosty File', extensions: ['hosty'] }]
     })
-    if (!filepathes) {
+    if (!filepathes || !filepathes.length) {
       return
     }
     const filepath = filepathes[0]
