@@ -1,7 +1,7 @@
 <template>
   <v-alert
     :value="permission === false"
-    class="alert-bar sma-0"
+    class="alert-bar ma-0"
     type="error"
   >
     <v-layout
