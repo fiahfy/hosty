@@ -105,7 +105,7 @@ export default {
     }
   },
   mounted () {
-    this.container = this.$el.querySelector('.table__overflow')
+    this.container = this.$el.querySelector('.v-table__overflow')
     this.container.addEventListener('scroll', this.onScroll)
     const scrollTop = this.scrollTop
     this.$nextTick(() => {
@@ -215,10 +215,10 @@ export default {
 <style scoped lang="scss">
 .explorer-child-table {
   outline: none;
-  & /deep/ .table__overflow {
+  & /deep/ .v-table__overflow {
     height: 100%;
     overflow-y: scroll;
-    .datatable {
+    .v-datatable {
       table-layout: fixed;
       &>thead {
         background: inherit;
@@ -230,7 +230,7 @@ export default {
             top: 0;
             z-index: 1;
           }
-          &.datatable__progress>th {
+          &.v-datatable__progress>th {
             top: 56px;
             z-index: 0;
             &:after {
@@ -246,9 +246,9 @@ export default {
       }
     }
   }
-  &.scrolling /deep/ .datatable>thead>tr {
+  &.scrolling /deep/ .v-datatable>thead>tr {
     border-bottom: none;
-    &.datatable__progress>th:after {
+    &.v-datatable__progress>th:after {
       height: 10px;
     }
   }

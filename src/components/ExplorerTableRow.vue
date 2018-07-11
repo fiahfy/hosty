@@ -37,7 +37,7 @@
               <v-text-field
                 ref="text"
                 v-model="name"
-                class="pt-0"
+                class="mt-0"
                 label="Group"
                 hide-details
                 single-line
@@ -166,8 +166,8 @@ export default {
       }
       this.updateGroup({ group: { name: this.name } })
     },
-    onTextContextMenu () {
-      ContextMenu.showTextMenu()
+    onTextContextMenu (e) {
+      ContextMenu.showTextMenu(e)
     },
     focus () {
       this.name = this.group.name
@@ -195,12 +195,6 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-.menu__content .input-group--text-field label {
-  top: 0;
-}
-</style>
 
 <style scoped lang="scss">
 .explorer-table-row {

@@ -36,7 +36,7 @@
             <v-text-field
               ref="ipText"
               v-model="ip"
-              class="pt-0"
+              class="mt-0"
               label="192.0.2.0"
               hide-details
               single-line
@@ -68,7 +68,7 @@
             <v-text-field
               ref="nameText"
               v-model="name"
-              class="pt-0"
+              class="mt-0"
               label="example.com"
               hide-details
               single-line
@@ -215,8 +215,8 @@ export default {
       }
       this.updateHost({ host: { [value]: this[value] } })
     },
-    onTextContextMenu () {
-      ContextMenu.showTextMenu()
+    onTextContextMenu (e) {
+      ContextMenu.showTextMenu(e)
     },
     focus (value = 'ip') {
       this[value] = this.host[value]
@@ -244,12 +244,6 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-.menu__content .input-host--text-field label {
-  top: 0;
-}
-</style>
 
 <style scoped lang="scss">
 .explorer-child-table-row {

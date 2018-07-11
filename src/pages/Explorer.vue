@@ -7,7 +7,10 @@
   >
     <v-layout row>
       <v-flex xs4>
-        <v-layout column>
+        <v-layout
+          column
+          fill-height
+        >
           <explorer-card />
           <v-container
             fluid
@@ -19,7 +22,10 @@
         </v-layout>
       </v-flex>
       <v-flex xs8>
-        <v-layout column>
+        <v-layout
+          column
+          fill-height
+        >
           <explorer-child-card />
           <v-container
             fluid

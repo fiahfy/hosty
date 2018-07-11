@@ -28,7 +28,7 @@
     "babel-preset-env": "^1.5.1",
     "babel-preset-stage-0": "^6.24.1",
     "cross-env": "^5.0.5",
-    "css-loader": "^0.28.4",
+    "css-loader": "^1.0.0",
     "electron": "^2.0.0",
     "electron-builder": "^20.0.4",
     "eslint": "^4.4.1",

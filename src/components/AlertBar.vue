@@ -38,7 +38,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.alert /deep/ div {
+.v-alert /deep/ div {
   overflow: hidden;
 }
 </style>
