@@ -5,6 +5,7 @@ import Package from '~~/package.json'
 import router from '~/router'
 import * as Hosts from '~/utils/hosts'
 import explorer from './explorer'
+import search from './search'
 import group from './group'
 import settings from './settings'
 
@@ -30,6 +31,7 @@ export default new Vuex.Store({
   actions: {
     async initialize ({ commit, dispatch }) {
       dispatch('explorer/loadGroups')
+      dispatch('search/loadItems')
       try {
         await Hosts.initialize()
         commit('setPermission', { permission: true })
@@ -110,6 +112,7 @@ export default new Vuex.Store({
   },
   modules: {
     explorer,
+    search,
     group,
     settings
   },
