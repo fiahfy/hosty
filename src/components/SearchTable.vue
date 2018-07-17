@@ -73,11 +73,11 @@ export default {
       }
     },
     ...mapState({
-      items: state => state.search.items,
       selectedItemId: state => state.search.selectedItemId,
       scrollTop: state => state.search.scrollTop
     }),
     ...mapGetters({
+      items: 'search/filteredItems',
       selectedItemIndex: 'search/selectedItemIndex'
     })
   },
@@ -107,6 +107,7 @@ export default {
     }
   },
   mounted () {
+    this.loadItems()
     this.container = this.$el.querySelector('.v-table__overflow')
     this.container.addEventListener('scroll', this.onScroll)
     const scrollTop = this.scrollTop
@@ -152,6 +153,7 @@ export default {
       setScrollTop: 'search/setScrollTop'
     }),
     ...mapActions({
+      loadItems: 'search/loadItems',
       unselectItem: 'search/unselectItem',
       selectFirstItem: 'search/selectFirstItem',
       selectLastItem: 'search/selectLastItem',

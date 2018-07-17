@@ -22,9 +22,9 @@ export default {
     filteredItems (state) {
       return state.items.concat().filter((item) => {
         return !state.query ||
-          item.group.toLowerCase().includes(state.query.toLowerCase()) ||
-          item.ip.toLowerCase().includes(state.query.toLowerCase()) ||
-          item.host.toLowerCase().includes(state.query.toLowerCase())
+          (item.group || '').toLowerCase().includes(state.query.toLowerCase()) ||
+          (item.ip || '').toLowerCase().includes(state.query.toLowerCase()) ||
+          (item.host || '').toLowerCase().includes(state.query.toLowerCase())
       })
     },
     selectedItemIndex (state, getters) {
@@ -55,7 +55,7 @@ export default {
           return !state.filtered || !item.disabled
         })
       commit('setItems', { items })
-      commit('setScrollTop', { scrollTop: 0 })
+      // commit('setScrollTop', { scrollTop: 0 })
       dispatch('sortItems')
       dispatch('unselectItem')
     },
@@ -146,6 +146,9 @@ export default {
     },
     setFiltered (state, { filtered }) {
       state.filtered = filtered
+    },
+    setQuery (state, { query }) {
+      state.query = query
     }
   }
 }
