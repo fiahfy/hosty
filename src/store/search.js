@@ -19,19 +19,11 @@ export default {
     query: ''
   },
   getters: {
-    filteredItems (state) {
-      return state.items.concat().filter((item) => {
-        return !state.query ||
-          (item.group || '').toLowerCase().includes(state.query.toLowerCase()) ||
-          (item.ip || '').toLowerCase().includes(state.query.toLowerCase()) ||
-          (item.host || '').toLowerCase().includes(state.query.toLowerCase())
-      })
-    },
     selectedItemIndex (state, getters) {
-      return getters.filteredItems.findIndex((item) => getters.isSelectedItem({ id: item.id }))
+      return state.items.findIndex((item) => getters.isSelectedItem({ id: item.id }))
     },
     selectedItem (state, getters) {
-      return getters.filteredItems[getters.selectedItemIndex]
+      return state.items[getters.selectedItemIndex]
     },
     isSelectedItem (state) {
       return ({ id }) => state.selectedItemId === id
@@ -88,35 +80,35 @@ export default {
     unselectItem ({ dispatch }) {
       dispatch('selectItem', { id: 0 })
     },
-    selectItemIndex ({ dispatch, getters }, { index }) {
-      const item = getters.filteredItems[index]
+    selectItemIndex ({ dispatch, state }, { index }) {
+      const item = state.items[index]
       if (item) {
         dispatch('selectItem', { id: item.id })
       } else {
         dispatch('unselectItem')
       }
     },
-    selectFirstItem ({ dispatch, getters }) {
+    selectFirstItem ({ dispatch, state }) {
       const index = 0
-      if (index > -1 && index < getters.filteredItems.length) {
+      if (index > -1 && index < state.items.length) {
         dispatch('selectItemIndex', { index })
       }
     },
-    selectLastItem ({ dispatch, getters }) {
-      const index = getters.filteredItems.length - 1
-      if (index > -1 && index < getters.filteredItems.length) {
+    selectLastItem ({ dispatch, state }) {
+      const index = state.items.length - 1
+      if (index > -1 && index < state.items.length) {
         dispatch('selectItemIndex', { index })
       }
     },
-    selectPreviousItem ({ dispatch, getters }) {
+    selectPreviousItem ({ dispatch, getters, state }) {
       const index = getters.selectedItemIndex - 1
-      if (index > -1 && index < getters.filteredItems.length) {
+      if (index > -1 && index < state.items.length) {
         dispatch('selectItemIndex', { index })
       }
     },
-    selectNextItem ({ dispatch, getters }) {
+    selectNextItem ({ dispatch, getters, state }) {
       const index = getters.selectedItemIndex + 1
-      if (index > -1 && index < getters.filteredItems.length) {
+      if (index > -1 && index < state.items.length) {
         dispatch('selectItemIndex', { index })
       }
     },

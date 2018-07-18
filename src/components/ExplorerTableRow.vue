@@ -25,12 +25,12 @@
         <span :class="numberClasses">{{ group.hosts.length }}</span>
         <v-menu
           v-model="menu.show"
-          :transition="false"
           :position-x="menu.x"
           :position-y="menu.y"
           :min-width="menu.width"
           :close-on-content-click="false"
           lazy
+          transition="slide-x-reverse-transition"
         >
           <v-card>
             <v-card-text>

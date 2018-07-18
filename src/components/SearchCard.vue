@@ -31,6 +31,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import * as ContextMenu from '~/utils/context-menu'
 
 export default {
   computed: {

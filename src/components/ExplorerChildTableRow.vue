@@ -24,12 +24,12 @@
       {{ host.ip || '192.0.2.0' }}
       <v-menu
         v-model="ipMenu.show"
-        :transition="false"
         :position-x="ipMenu.x"
         :position-y="ipMenu.y"
         :min-width="ipMenu.width"
         :close-on-content-click="false"
         lazy
+        transition="slide-x-reverse-transition"
       >
         <v-card>
           <v-card-text>
@@ -56,12 +56,12 @@
       {{ host.name || 'example.com' }}
       <v-menu
         v-model="nameMenu.show"
-        :transition="false"
         :position-x="nameMenu.x"
         :position-y="nameMenu.y"
         :min-width="nameMenu.width"
         :close-on-content-click="false"
         lazy
+        transition="slide-x-reverse-transition"
       >
         <v-card>
           <v-card-text>

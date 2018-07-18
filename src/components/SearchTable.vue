@@ -3,6 +3,7 @@
     ref="table"
     :headers="headers"
     :items="items"
+    :search="query"
     :disable-initial-sort="true"
     :class="classes"
     class="search-table"
@@ -73,11 +74,12 @@ export default {
       }
     },
     ...mapState({
+      items: state => state.search.items,
       selectedItemId: state => state.search.selectedItemId,
-      scrollTop: state => state.search.scrollTop
+      scrollTop: state => state.search.scrollTop,
+      query: state => state.search.query
     }),
     ...mapGetters({
-      items: 'search/filteredItems',
       selectedItemIndex: 'search/selectedItemIndex'
     })
   },
@@ -131,17 +133,17 @@ export default {
         case 38:
           e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectFirstGroup()
+            this.selectFirstItem()
           } else {
-            this.selectPreviousGroup()
+            this.selectPreviousItem()
           }
           break
         case 40:
           e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectLastGroup()
+            this.selectLastItem()
           } else {
-            this.selectNextGroup()
+            this.selectNextItem()
           }
           break
       }
