@@ -44,13 +44,13 @@ export default {
     color () {
       return this.filtered ? 'primary' : ''
     },
-    ...mapState({
-      filtered: state => state.explorer.child.filtered
-    }),
-    ...mapGetters({
-      canCreateHost: 'explorer/child/canCreateHost',
-      canDeleteHost: 'explorer/child/canDeleteHost'
-    })
+    ...mapState('local/explorer/child', [
+      'filtered'
+    ]),
+    ...mapGetters('local/explorer/child', [
+      'canCreateHost',
+      'canDeleteHost'
+    ])
   },
   methods: {
     onNewClick () {
@@ -62,11 +62,11 @@ export default {
     onFilterClick () {
       this.toggleFilter()
     },
-    ...mapActions({
-      createHost: 'explorer/child/createHost',
-      deleteHost: 'explorer/child/deleteHost',
-      toggleFilter: 'explorer/child/toggleFilter'
-    })
+    ...mapActions('local/explorer/child', [
+      'createHost',
+      'deleteHost',
+      'toggleFilter'
+    ])
   }
 }
 </script>

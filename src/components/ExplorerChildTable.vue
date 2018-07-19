@@ -69,15 +69,15 @@ export default {
         scrolling: this.scrolling
       }
     },
-    ...mapState({
-      hosts: state => state.explorer.child.hosts,
-      selectedHostId: state => state.explorer.child.selectedHostId,
-      scrollTop: state => state.explorer.child.scrollTop
-    }),
-    ...mapGetters({
-      selectedHostIndex: 'explorer/child/selectedHostIndex',
-      canPasteHost: 'explorer/child/canPasteHost'
-    })
+    ...mapState('local/explorer/child', [
+      'hosts',
+      'selectedHostId',
+      'scrollTop'
+    ]),
+    ...mapGetters('local/explorer/child', [
+      'selectedHostIndex',
+      'canPasteHost'
+    ])
   },
   watch: {
     selectedHostIndex (value) {
@@ -194,20 +194,20 @@ export default {
     focusSelectedRow () {
       this.$refs[`row-${this.selectedHostId}`].focus()
     },
-    ...mapMutations({
-      setScrollTop: 'explorer/child/setScrollTop'
-    }),
-    ...mapActions({
-      createHost: 'explorer/child/createHost',
-      deleteHost: 'explorer/child/deleteHost',
-      copyHost: 'explorer/child/copyHost',
-      pasteHost: 'explorer/child/pasteHost',
-      unselectHost: 'explorer/child/unselectHost',
-      selectFirstHost: 'explorer/child/selectFirstHost',
-      selectLastHost: 'explorer/child/selectLastHost',
-      selectPreviousHost: 'explorer/child/selectPreviousHost',
-      selectNextHost: 'explorer/child/selectNextHost'
-    })
+    ...mapMutations('local/explorer/child', [
+      'setScrollTop'
+    ]),
+    ...mapActions('local/explorer/child', [
+      'createHost',
+      'deleteHost',
+      'copyHost',
+      'pasteHost',
+      'unselectHost',
+      'selectFirstHost',
+      'selectLastHost',
+      'selectPreviousHost',
+      'selectNextHost'
+    ])
   }
 }
 </script>

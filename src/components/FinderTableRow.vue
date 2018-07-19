@@ -1,7 +1,7 @@
 <template>
   <tr
     :active="active"
-    class="search-table-row"
+    class="finder-table-row"
     @click.stop="onClick"
     @contextmenu.stop="onContextMenu"
   >
@@ -63,9 +63,9 @@ export default {
         this.item.host ? '' : 'grey--text'
       ]
     },
-    ...mapGetters({
-      isSelectedItem: 'search/isSelectedItem'
-    })
+    ...mapGetters('local/finder', [
+      'isSelectedItem'
+    ])
   },
   methods: {
     onClick () {
@@ -77,15 +77,15 @@ export default {
       ]
       ContextMenu.show(e, templates)
     },
-    ...mapActions({
-      selectItem: 'search/selectItem'
-    })
+    ...mapActions('local/finder', [
+      'selectItem'
+    ])
   }
 }
 </script>
 
 <style scoped lang="scss">
-.search-table-row {
+.finder-table-row {
   cursor: pointer;
 }
 </style>

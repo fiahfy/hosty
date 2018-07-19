@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="search-card"
+    class="finder-card"
     flat
   >
     <v-card-title class="py-2 px-0">
@@ -8,8 +8,8 @@
         v-model="query"
         name="query"
         class="mx-3 my-2 pt-0"
-        label="Search"
-        append-icon="search"
+        label="Finder"
+        append-icon="finder"
         single-line
         hide-details
         clearable
@@ -37,17 +37,17 @@ export default {
   computed: {
     query: {
       get () {
-        return this.$store.state.search.query
+        return this.$store.state.local.finder.query
       },
       set (value) {
-        this.$store.commit('search/setQuery', { query: value })
+        this.$store.commit('local/finder/setQuery', { query: value })
       }
     },
     color () {
       return this.filtered ? 'primary' : ''
     },
     ...mapState({
-      filtered: state => state.search.filtered
+      filtered: state => state.local.finder.filtered
     })
   },
   methods: {
@@ -58,7 +58,7 @@ export default {
       this.toggleFilter()
     },
     ...mapActions({
-      toggleFilter: 'search/toggleFilter'
+      toggleFilter: 'local/finder/toggleFilter'
     })
   }
 }

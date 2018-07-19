@@ -30,14 +30,14 @@ const createTemplate = () => {
         { role: 'delete' },
         { role: 'selectall' },
         { type: 'separator' },
-        { label: 'Find...', accelerator: 'CmdOrCtrl+F', click: () => { send('search') } }
+        { label: 'Find...', accelerator: 'CmdOrCtrl+F', click: () => { send('find') } }
       ]
     },
     {
       label: 'View',
       submenu: [
         { label: 'Explorer', accelerator: 'CmdOrCtrl+Shift+E', click: () => { send('showExplorer') } },
-        { label: 'Find', accelerator: 'CmdOrCtrl+Shift+F', click: () => { send('showSearch') } },
+        { label: 'Find', accelerator: 'CmdOrCtrl+Shift+F', click: () => { send('showFinder') } },
         { type: 'separator' },
         { role: 'reload' },
         { role: 'forcereload' },

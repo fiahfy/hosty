@@ -21,7 +21,7 @@ export default {
   },
   getters: {
     selectedGroupId (state, getters, rootState) {
-      return rootState.explorer.selectedGroupId
+      return rootState.local.explorer.selectedGroupId
     },
     selectedHostIndex (state, getters) {
       return state.hosts.findIndex((host) => getters.isSelectedHost({ id: host.id }))

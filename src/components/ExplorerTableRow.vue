@@ -95,10 +95,10 @@ export default {
         this.group.hosts.length ? '' : 'grey--text'
       ]
     },
-    ...mapGetters({
-      isSelectedGroup: 'explorer/isSelectedGroup',
-      canPasteGroup: 'explorer/canPasteGroup'
-    })
+    ...mapGetters('local/explorer', [
+      'isSelectedGroup',
+      'canPasteGroup'
+    ])
   },
   methods: {
     onClick () {
@@ -183,15 +183,15 @@ export default {
         }, 200)
       })
     },
-    ...mapActions({
-      createGroup: 'explorer/createGroup',
-      updateGroup: 'explorer/updateGroup',
-      deleteGroup: 'explorer/deleteGroup',
-      copyGroup: 'explorer/copyGroup',
-      pasteGroup: 'explorer/pasteGroup',
-      selectGroup: 'explorer/selectGroup',
-      focusTable: 'explorer/focusTable'
-    })
+    ...mapActions('local/explorer', [
+      'createGroup',
+      'updateGroup',
+      'deleteGroup',
+      'copyGroup',
+      'pasteGroup',
+      'selectGroup',
+      'focusTable'
+    ])
   }
 }
 </script>

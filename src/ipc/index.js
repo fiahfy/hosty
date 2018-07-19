@@ -18,8 +18,8 @@ export const addIpcRendererListeners = (store) => {
   ipcRenderer.on('showExplorer', () => {
     store.dispatch('changeRoute', { name: 'explorer' })
   })
-  ipcRenderer.on('showSearch', () => {
-    store.dispatch('changeRoute', { name: 'search' })
+  ipcRenderer.on('showFinder', () => {
+    store.dispatch('changeRoute', { name: 'finder' })
     store.dispatch('focus', { selector: Selector.queryInput })
     store.dispatch('select', { selector: Selector.queryInput })
   })

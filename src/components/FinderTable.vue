@@ -6,7 +6,7 @@
     :search="query"
     :disable-initial-sort="true"
     :class="classes"
-    class="search-table"
+    class="finder-table"
     item-key="id"
     no-data-text="No Results"
     hide-actions
@@ -18,13 +18,13 @@
       slot="headers"
       slot-scope="props"
     >
-      <search-table-header-row :headers="props.headers" />
+      <finder-table-header-row :headers="props.headers" />
     </template>
     <template
       slot="items"
       slot-scope="props"
     >
-      <search-table-row
+      <finder-table-row
         :ref="`row-${props.item.id}`"
         :item="props.item"
       />
@@ -34,13 +34,13 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
-import SearchTableHeaderRow from './SearchTableHeaderRow'
-import SearchTableRow from './SearchTableRow'
+import FinderTableHeaderRow from './FinderTableHeaderRow'
+import FinderTableRow from './FinderTableRow'
 
 export default {
   components: {
-    SearchTableHeaderRow,
-    SearchTableRow
+    FinderTableHeaderRow,
+    FinderTableRow
   },
   data () {
     return {
@@ -72,15 +72,15 @@ export default {
         scrolling: this.scrolling
       }
     },
-    ...mapState({
-      items: state => state.search.items,
-      selectedItemId: state => state.search.selectedItemId,
-      scrollTop: state => state.search.scrollTop,
-      query: state => state.search.query
-    }),
-    ...mapGetters({
-      selectedItemIndex: 'search/selectedItemIndex'
-    })
+    ...mapState('local/finder', [
+      'items',
+      'selectedItemId',
+      'scrollTop',
+      'query'
+    ]),
+    ...mapGetters('local/finder', [
+      'selectedItemIndex'
+    ])
   },
   watch: {
     selectedItemIndex (value) {
@@ -150,23 +150,23 @@ export default {
     onClick () {
       this.unselectItem()
     },
-    ...mapMutations({
-      setScrollTop: 'search/setScrollTop'
-    }),
-    ...mapActions({
-      loadItems: 'search/loadItems',
-      unselectItem: 'search/unselectItem',
-      selectFirstItem: 'search/selectFirstItem',
-      selectLastItem: 'search/selectLastItem',
-      selectPreviousItem: 'search/selectPreviousItem',
-      selectNextItem: 'search/selectNextItem'
-    })
+    ...mapMutations('local/finder/', [
+      'setScrollTop'
+    ]),
+    ...mapActions('local/finder/', [
+      'loadItems',
+      'unselectItem',
+      'selectFirstItem',
+      'selectLastItem',
+      'selectPreviousItem',
+      'selectNextItem'
+    ])
   }
 }
 </script>
 
 <style scoped lang="scss">
-.search-table {
+.finder-table {
   outline: none;
   & /deep/ .v-table__overflow {
     height: 100%;

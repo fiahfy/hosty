@@ -65,15 +65,15 @@ export default {
         scrolling: this.scrolling
       }
     },
-    ...mapState({
-      groups: state => state.explorer.groups,
-      selectedGroupId: state => state.explorer.selectedGroupId,
-      scrollTop: state => state.explorer.scrollTop
-    }),
-    ...mapGetters({
-      selectedGroupIndex: 'explorer/selectedGroupIndex',
-      canPasteGroup: 'explorer/canPasteGroup'
-    })
+    ...mapState('local/explorer', [
+      'groups',
+      'selectedGroupId',
+      'scrollTop'
+    ]),
+    ...mapGetters('local/explorer', [
+      'selectedGroupIndex',
+      'canPasteGroup'
+    ])
   },
   watch: {
     selectedGroupIndex (value) {
@@ -190,20 +190,20 @@ export default {
     focusSelectedRow () {
       this.$refs[`row-${this.selectedGroupId}`].focus()
     },
-    ...mapMutations({
-      setScrollTop: 'explorer/setScrollTop'
-    }),
-    ...mapActions({
-      createGroup: 'explorer/createGroup',
-      deleteGroup: 'explorer/deleteGroup',
-      copyGroup: 'explorer/copyGroup',
-      pasteGroup: 'explorer/pasteGroup',
-      unselectGroup: 'explorer/unselectGroup',
-      selectFirstGroup: 'explorer/selectFirstGroup',
-      selectLastGroup: 'explorer/selectLastGroup',
-      selectPreviousGroup: 'explorer/selectPreviousGroup',
-      selectNextGroup: 'explorer/selectNextGroup'
-    })
+    ...mapMutations('local/explorer', [
+      'setScrollTop'
+    ]),
+    ...mapActions('local/explorer', [
+      'createGroup',
+      'deleteGroup',
+      'copyGroup',
+      'pasteGroup',
+      'unselectGroup',
+      'selectFirstGroup',
+      'selectLastGroup',
+      'selectPreviousGroup',
+      'selectNextGroup'
+    ])
   }
 }
 </script>

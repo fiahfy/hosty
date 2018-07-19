@@ -132,10 +132,10 @@ export default {
         this.host.name ? '' : 'grey--text'
       ]
     },
-    ...mapGetters({
-      isSelectedHost: 'explorer/child/isSelectedHost',
-      canPasteHost: 'explorer/child/canPasteHost'
-    })
+    ...mapGetters('local/explorer/child', [
+      'isSelectedHost',
+      'canPasteHost'
+    ])
   },
   methods: {
     onClick () {
@@ -232,15 +232,15 @@ export default {
         }, 200)
       })
     },
-    ...mapActions({
-      createHost: 'explorer/child/createHost',
-      updateHost: 'explorer/child/updateHost',
-      deleteHost: 'explorer/child/deleteHost',
-      copyHost: 'explorer/child/copyHost',
-      pasteHost: 'explorer/child/pasteHost',
-      selectHost: 'explorer/child/selectHost',
-      focusTable: 'explorer/child/focusTable'
-    })
+    ...mapActions('local/explorer/child', [
+      'createHost',
+      'updateHost',
+      'deleteHost',
+      'copyHost',
+      'pasteHost',
+      'selectHost',
+      'focusTable'
+    ])
   }
 }
 </script>

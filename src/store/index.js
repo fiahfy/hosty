@@ -4,8 +4,7 @@ import createPersistedState from 'vuex-persistedstate'
 import Package from '~~/package.json'
 import router from '~/router'
 import * as Hosts from '~/utils/hosts'
-import explorer from './explorer'
-import search from './search'
+import local from './local'
 import group from './group'
 import settings from './settings'
 
@@ -31,8 +30,8 @@ export default new Vuex.Store({
   },
   actions: {
     async initialize ({ commit, dispatch }) {
-      dispatch('explorer/loadGroups')
-      dispatch('search/loadItems')
+      dispatch('local/explorer/loadGroups')
+      dispatch('local/finder/loadItems')
       try {
         await Hosts.initialize()
         commit('setPermission', { permission: true })
@@ -60,7 +59,8 @@ export default new Vuex.Store({
       try {
         const groups = Hosts.read(filepath)
         commit('group/setGroups', { groups })
-        dispatch('explorer/loadGroups')
+        dispatch('changeRoute', { name: 'explorer' })
+        dispatch('local/explorer/loadGroups')
         dispatch('showMessage', { color: 'success', text: 'Imported hosty file' })
       } catch (e) {
         console.error(e)
@@ -121,8 +121,7 @@ export default new Vuex.Store({
     }
   },
   modules: {
-    explorer,
-    search,
+    local,
     group,
     settings
   },

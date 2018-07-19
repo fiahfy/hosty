@@ -24,9 +24,9 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      order: state => state.explorer.order
-    })
+    ...mapState('local/explorer', [
+      'order'
+    ])
   },
   methods: {
     getClass (header) {
@@ -45,9 +45,9 @@ export default {
     onHeaderClick (e, header) {
       this.changeOrderBy({ orderBy: header.value })
     },
-    ...mapActions({
-      changeOrderBy: 'explorer/changeOrderBy'
-    })
+    ...mapActions('local/explorer', [
+      'changeOrderBy'
+    ])
   }
 }
 </script>
