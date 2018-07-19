@@ -1,4 +1,5 @@
 import { ipcRenderer, remote } from 'electron'
+import { Selector } from '~/store'
 
 export const addIpcRendererListeners = (store) => {
   ipcRenderer.on('close', () => {
@@ -9,6 +10,18 @@ export const addIpcRendererListeners = (store) => {
   })
   ipcRenderer.on('leaveFullScreen', () => {
     store.commit('setFullScreen', { fullScreen: false })
+  })
+  ipcRenderer.on('search', () => {
+    store.dispatch('focus', { selector: Selector.queryInput })
+    store.dispatch('select', { selector: Selector.queryInput })
+  })
+  ipcRenderer.on('showExplorer', () => {
+    store.dispatch('changeRoute', { name: 'explorer' })
+  })
+  ipcRenderer.on('showSearch', () => {
+    store.dispatch('changeRoute', { name: 'search' })
+    store.dispatch('focus', { selector: Selector.queryInput })
+    store.dispatch('select', { selector: Selector.queryInput })
   })
   ipcRenderer.on('showSettings', () => {
     store.dispatch('changeRoute', { name: 'settings' })

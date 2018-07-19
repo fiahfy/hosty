@@ -74,33 +74,6 @@ export default {
     onContextMenu (e) {
       this.selectItem({ id: this.item.id })
       const templates = [
-        {
-          label: 'New Group',
-          click: () => this.createGroup(),
-          accelerator: 'CmdOrCtrl+N'
-        },
-        {
-          label: 'Copy',
-          click: () => this.copyGroup(),
-          accelerator: 'CmdOrCtrl+C'
-        },
-        {
-          label: 'Paste',
-          click: () => this.pasteGroup(),
-          accelerator: 'CmdOrCtrl+V',
-          enabled: this.canPasteGroup
-        },
-        { type: 'separator' },
-        {
-          label: 'Edit',
-          click: () => this.focus(),
-          accelerator: 'Enter'
-        },
-        {
-          label: 'Delete',
-          click: () => this.deleteGroup(),
-          accelerator: 'CmdOrCtrl+Backspace'
-        }
       ]
       ContextMenu.show(e, templates)
     },

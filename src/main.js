@@ -28,12 +28,17 @@ const createTemplate = () => {
         { role: 'paste' },
         // { role: 'pasteandmatchstyle' },
         { role: 'delete' },
-        { role: 'selectall' }
+        { role: 'selectall' },
+        { type: 'separator' },
+        { label: 'Find...', accelerator: 'CmdOrCtrl+F', click: () => { send('search') } }
       ]
     },
     {
       label: 'View',
       submenu: [
+        { label: 'Explorer', accelerator: 'CmdOrCtrl+Shift+E', click: () => { send('showExplorer') } },
+        { label: 'Find', accelerator: 'CmdOrCtrl+Shift+F', click: () => { send('showSearch') } },
+        { type: 'separator' },
         { role: 'reload' },
         { role: 'forcereload' },
         { role: 'toggledevtools' },

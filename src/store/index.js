@@ -12,6 +12,7 @@ import settings from './settings'
 Vue.use(Vuex)
 
 export const Selector = {
+  queryInput: 'input[name=query]',
   explorerTable: '.explorer-table',
   explorerChildTable: '.explorer-child-table'
 }
@@ -82,6 +83,15 @@ export default new Vuex.Store({
         const el = document.querySelector(selector)
         if (el) {
           el.focus()
+        }
+      })
+    },
+    select (_, { selector }) {
+      // wait dom updated
+      setTimeout(() => {
+        const el = document.querySelector(selector)
+        if (el) {
+          el.select()
         }
       })
     },

@@ -36,7 +36,6 @@
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import SearchTableHeaderRow from './SearchTableHeaderRow'
 import SearchTableRow from './SearchTableRow'
-import * as ContextMenu from '~/utils/context-menu'
 
 export default {
   components: {
