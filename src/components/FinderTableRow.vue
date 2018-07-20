@@ -3,6 +3,7 @@
     :active="active"
     class="finder-table-row"
     @click.stop="onClick"
+    @dblclick="onDblClick"
     @contextmenu.stop="onContextMenu"
   >
     <td class="px-2">
@@ -71,6 +72,9 @@ export default {
     onClick () {
       this.selectItem({ id: this.item.id })
     },
+    onDblClick () {
+      this.viewItem({ id: this.item.id })
+    },
     onContextMenu (e) {
       this.selectItem({ id: this.item.id })
       const templates = [
@@ -78,7 +82,8 @@ export default {
       ContextMenu.show(e, templates)
     },
     ...mapActions('local/finder', [
-      'selectItem'
+      'selectItem',
+      'viewItem'
     ])
   }
 }

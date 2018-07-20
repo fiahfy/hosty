@@ -17,12 +17,12 @@ import { mapGetters, mapState } from 'vuex'
 
 export default {
   computed: {
-    ...mapState({
-      title: state => state.title
-    }),
-    ...mapGetters({
-      titleBar: 'titleBar'
-    })
+    ...mapState([
+      'title'
+    ]),
+    ...mapGetters([
+      'titleBar'
+    ])
   }
 }
 </script>

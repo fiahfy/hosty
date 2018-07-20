@@ -1,6 +1,6 @@
 <template>
   <v-app
-    :dark="darkTheme"
+    :dark="settings.darkTheme"
     @contextmenu.native="onContextMenu"
     @drop.native.prevent="onDrop"
     @dragover.native.prevent
@@ -65,9 +65,9 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      darkTheme: state => state.settings.darkTheme
-    })
+    ...mapState([
+      'settings'
+    ])
   },
   async created () {
     await this.initialize()
@@ -91,10 +91,10 @@ export default {
       this.dialog = false
       this.import({ filepath: this.filepath })
     },
-    ...mapActions({
-      initialize: 'initialize',
-      import: 'import'
-    })
+    ...mapActions([
+      'initialize',
+      'import'
+    ])
   }
 }
 </script>

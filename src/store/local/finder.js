@@ -136,6 +136,15 @@ export default {
     toggleRegExp ({ commit, dispatch, state }) {
       commit('setRegExp', { regExp: !state.regExp })
       dispatch('loadItems')
+    },
+    viewItem ({ dispatch }, { id }) {
+      const [groupId, hostId] = id.split('-').map(Number)
+      dispatch('changeRoute', { name: 'explorer' }, { root: true })
+      // wait dom updated
+      setTimeout(() => {
+        dispatch('local/explorer/selectGroup', { id: groupId }, { root: true })
+        dispatch('local/explorer/child/selectHost', { id: hostId }, { root: true })
+      })
     }
   },
   mutations: {
