@@ -7,7 +7,7 @@
     :class="classes"
     class="explorer-table"
     item-key="id"
-    no-data-text="No Groups"
+    no-data-text="No groups"
     hide-actions
     tabindex="0"
     @keydown.native="onKeyDown"

@@ -2,13 +2,12 @@
   <v-data-table
     ref="table"
     :headers="headers"
-    :items="items"
-    :search="query"
+    :items="filteredItems"
     :disable-initial-sort="true"
     :class="classes"
     class="finder-table"
     item-key="id"
-    no-data-text="No Results"
+    no-data-text="No results"
     hide-actions
     tabindex="0"
     @keydown.native="onKeyDown"
@@ -73,12 +72,11 @@ export default {
       }
     },
     ...mapState('local/finder', [
-      'items',
       'selectedItemId',
-      'scrollTop',
-      'query'
+      'scrollTop'
     ]),
     ...mapGetters('local/finder', [
+      'filteredItems',
       'selectedItemIndex'
     ])
   },

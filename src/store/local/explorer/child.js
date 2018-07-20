@@ -40,11 +40,14 @@ export default {
     },
     isSelectedHost (state) {
       return ({ id }) => state.selectedHostId === id
+    },
+    getHosts (state, getters, rootState, rootGetters) {
+      return () => JSON.parse(JSON.stringify(rootGetters['group/getHosts']({ groupId: getters.selectedGroupId })))
     }
   },
   actions: {
-    loadHosts ({ commit, dispatch, getters, rootGetters, state }) {
-      const hosts = JSON.parse(JSON.stringify(rootGetters['group/getHosts']({ groupId: getters.selectedGroupId }))).filter((host) => {
+    loadHosts ({ commit, dispatch, getters, state }) {
+      const hosts = getters.getHosts().filter((host) => {
         return !state.filtered || !host.disabled
       })
       commit('setHosts', { hosts })
@@ -55,6 +58,7 @@ export default {
     async createHost ({ commit, dispatch, getters, state }, { host } = {}) {
       const newHost = await dispatch('group/createHost', { groupId: getters.selectedGroupId, host }, { root: true })
       commit('addHost', { host: newHost })
+      dispatch('local/explorer/loadGroup', null, { root: true })
       const index = state.hosts.length - 1
       dispatch('selectHostIndex', { index })
       dispatch('focusTable')
@@ -63,6 +67,7 @@ export default {
       const oldIndex = getters.selectedHostIndex
       dispatch('group/deleteHost', { groupId: getters.selectedGroupId, id: state.selectedHostId }, { root: true })
       commit('removeHost', { id: state.selectedHostId })
+      dispatch('local/explorer/loadGroup', null, { root: true })
       const index = oldIndex < state.hosts.length ? oldIndex : state.hosts.length - 1
       dispatch('selectHostIndex', { index })
       dispatch('focusTable')

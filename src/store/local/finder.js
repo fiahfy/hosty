@@ -16,40 +16,51 @@ export default {
       descending: false
     },
     filtered: false,
+    regExp: false,
     query: ''
   },
   getters: {
+    filteredItems (state) {
+      const query = state.query || ''
+      const pattern = state.regExp ? query : RegExp.escape(query)
+      const regexp = new RegExp(pattern, 'i')
+      return state.items.filter((item) => {
+        return !state.filtered || !item.disabled
+      }).filter((item) => {
+        return !query ||
+          regexp.test(item.group || '') ||
+          regexp.test(item.ip || '') ||
+          regexp.test(item.host || '')
+      })
+    },
     selectedItemIndex (state, getters) {
-      return state.items.findIndex((item) => getters.isSelectedItem({ id: item.id }))
+      return getters.filteredItems.findIndex((item) => getters.isSelectedItem({ id: item.id }))
     },
     selectedItem (state, getters) {
-      return state.items[getters.selectedItemIndex]
+      return getters.filteredItems[getters.selectedItemIndex]
     },
     isSelectedItem (state) {
       return ({ id }) => state.selectedItemId === id
+    },
+    getGroups (state, getters, rootState) {
+      return () => JSON.parse(JSON.stringify(rootState.group.groups))
     }
   },
   actions: {
-    loadItems ({ commit, dispatch, rootState, state }) {
-      const items = JSON.parse(JSON.stringify(rootState.group.groups))
-        .reduce((carry, group) => {
-          return [...carry, ...(group.hosts || []).map((host) => {
-            return {
-              id: `${group.id}-${host.id}`,
-              disabled: group.disabled || host.disabled,
-              group: group.name,
-              ip: host.ip,
-              host: host.name
-            }
-          })]
-        }, [])
-        .filter((item) => {
-          return !state.filtered || !item.disabled
-        })
+    loadItems ({ commit, dispatch, getters }) {
+      const items = getters.getGroups().reduce((carry, group) => {
+        return [...carry, ...(group.hosts || []).map((host) => {
+          return {
+            id: `${group.id}-${host.id}`,
+            disabled: group.disabled || host.disabled,
+            group: group.name,
+            ip: host.ip,
+            host: host.name
+          }
+        })]
+      }, [])
       commit('setItems', { items })
-      // commit('setScrollTop', { scrollTop: 0 })
       dispatch('sortItems')
-      dispatch('unselectItem')
     },
     sortItems ({ commit, state }) {
       const { by, descending } = state.order
@@ -80,35 +91,35 @@ export default {
     unselectItem ({ dispatch }) {
       dispatch('selectItem', { id: 0 })
     },
-    selectItemIndex ({ dispatch, state }, { index }) {
-      const item = state.items[index]
+    selectItemIndex ({ dispatch, getters }, { index }) {
+      const item = getters.filteredItems[index]
       if (item) {
         dispatch('selectItem', { id: item.id })
       } else {
         dispatch('unselectItem')
       }
     },
-    selectFirstItem ({ dispatch, state }) {
+    selectFirstItem ({ dispatch, getters }) {
       const index = 0
-      if (index > -1 && index < state.items.length) {
+      if (index > -1 && index < getters.filteredItems.length) {
         dispatch('selectItemIndex', { index })
       }
     },
-    selectLastItem ({ dispatch, state }) {
-      const index = state.items.length - 1
-      if (index > -1 && index < state.items.length) {
+    selectLastItem ({ dispatch, getters }) {
+      const index = getters.filteredItems.length - 1
+      if (index > -1 && index < getters.filteredItems.length) {
         dispatch('selectItemIndex', { index })
       }
     },
-    selectPreviousItem ({ dispatch, getters, state }) {
+    selectPreviousItem ({ dispatch, getters }) {
       const index = getters.selectedItemIndex - 1
-      if (index > -1 && index < state.items.length) {
+      if (index > -1 && index < getters.filteredItems.length) {
         dispatch('selectItemIndex', { index })
       }
     },
-    selectNextItem ({ dispatch, getters, state }) {
+    selectNextItem ({ dispatch, getters }) {
       const index = getters.selectedItemIndex + 1
-      if (index > -1 && index < state.items.length) {
+      if (index > -1 && index < getters.filteredItems.length) {
         dispatch('selectItemIndex', { index })
       }
     },
@@ -120,6 +131,10 @@ export default {
     },
     toggleFilter ({ commit, dispatch, state }) {
       commit('setFiltered', { filtered: !state.filtered })
+      dispatch('loadItems')
+    },
+    toggleRegExp ({ commit, dispatch, state }) {
+      commit('setRegExp', { regExp: !state.regExp })
       dispatch('loadItems')
     }
   },
@@ -138,6 +153,9 @@ export default {
     },
     setFiltered (state, { filtered }) {
       state.filtered = filtered
+    },
+    setRegExp (state, { regExp }) {
+      state.regExp = regExp
     },
     setQuery (state, { query }) {
       state.query = query

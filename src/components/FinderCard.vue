@@ -7,17 +7,26 @@
       <v-text-field
         v-model="query"
         name="query"
-        class="mx-3 my-2 pt-0"
-        label="Finder"
-        append-icon="finder"
+        class="ml-3 mr-2 my-2 pt-0"
+        label="Search"
+        append-icon="search"
         single-line
         hide-details
         clearable
         @contextmenu.stop="onTextContextMenu"
       />
+      <v-btn
+        :color="regExpColor"
+        title="Use RegExp"
+        flat
+        icon
+        @click="onRegExpClick"
+      >
+        <v-icon>explicit</v-icon>
+      </v-btn>
       <v-spacer />
       <v-btn
-        :color="color"
+        :color="filterColor"
         title="Filter Active"
         flat
         icon
@@ -43,12 +52,16 @@ export default {
         this.$store.commit('local/finder/setQuery', { query: value })
       }
     },
-    color () {
+    filterColor () {
       return this.filtered ? 'primary' : ''
     },
-    ...mapState({
-      filtered: state => state.local.finder.filtered
-    })
+    regExpColor () {
+      return this.regExp ? 'primary' : ''
+    },
+    ...mapState('local/finder/', [
+      'filtered',
+      'regExp'
+    ])
   },
   methods: {
     onTextContextMenu (e) {
@@ -57,9 +70,13 @@ export default {
     onFilterClick () {
       this.toggleFilter()
     },
-    ...mapActions({
-      toggleFilter: 'local/finder/toggleFilter'
-    })
+    onRegExpClick () {
+      this.toggleRegExp()
+    },
+    ...mapActions('local/finder/', [
+      'toggleFilter',
+      'toggleRegExp'
+    ])
   }
 }
 </script>

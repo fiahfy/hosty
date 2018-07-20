@@ -7,7 +7,7 @@
     :class="classes"
     class="explorer-child-table"
     item-key="id"
-    no-data-text="No Hosts"
+    no-data-text="No hosts"
     hide-actions
     tabindex="0"
     @keydown.native="onKeyDown"

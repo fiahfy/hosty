@@ -11,7 +11,7 @@ export const addIpcRendererListeners = (store) => {
   ipcRenderer.on('leaveFullScreen', () => {
     store.commit('setFullScreen', { fullScreen: false })
   })
-  ipcRenderer.on('search', () => {
+  ipcRenderer.on('find', () => {
     store.dispatch('focus', { selector: Selector.queryInput })
     store.dispatch('select', { selector: Selector.queryInput })
   })
