@@ -64,8 +64,7 @@ export default {
           text: 'Host',
           value: 'host'
         }
-      ],
-      scrolling: false
+      ]
     }
   },
   computed: {
