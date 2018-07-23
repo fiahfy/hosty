@@ -1,17 +1,16 @@
 <template>
-  <v-data-table
+  <sticky-data-table
     ref="table"
     :headers="headers"
     :items="hosts"
-    :disable-initial-sort="true"
-    :class="classes"
     class="explorer-child-table"
     item-key="id"
-    no-data-text="No Hosts"
+    no-data-text="No hosts"
     hide-actions
     tabindex="0"
-    @keydown.native="onKeyDown"
+    @scroll="onScroll"
     @click.native="onClick"
+    @keydown.native="onKeyDown"
     @contextmenu.native.stop="onContextMenu"
   >
     <template
@@ -29,19 +28,21 @@
         :host="props.item"
       />
     </template>
-  </v-data-table>
+  </sticky-data-table>
 </template>
 
 <script>
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import ExplorerChildTableHeaderRow from './ExplorerChildTableHeaderRow'
 import ExplorerChildTableRow from './ExplorerChildTableRow'
+import StickyDataTable from './StickyDataTable'
 import * as ContextMenu from '~/utils/context-menu'
 
 export default {
   components: {
     ExplorerChildTableHeaderRow,
-    ExplorerChildTableRow
+    ExplorerChildTableRow,
+    StickyDataTable
   },
   data () {
     return {
@@ -59,25 +60,19 @@ export default {
           text: 'Host',
           value: 'name'
         }
-      ],
-      scrolling: false
+      ]
     }
   },
   computed: {
-    classes () {
-      return {
-        scrolling: this.scrolling
-      }
-    },
-    ...mapState({
-      hosts: state => state.explorer.child.hosts,
-      selectedHostId: state => state.explorer.child.selectedHostId,
-      scrollTop: state => state.explorer.child.scrollTop
-    }),
-    ...mapGetters({
-      selectedHostIndex: 'explorer/child/selectedHostIndex',
-      canPasteHost: 'explorer/child/canPasteHost'
-    })
+    ...mapState('local/explorer/child', [
+      'hosts',
+      'selectedHostId',
+      'scrollTop'
+    ]),
+    ...mapGetters('local/explorer/child', [
+      'selectedHostIndex',
+      'canPasteHost'
+    ])
   },
   watch: {
     selectedHostIndex (value) {
@@ -93,32 +88,29 @@ export default {
           offsetHeight: rowHeight
         }
         const table = {
-          scrollTop: this.container.scrollTop,
-          offsetHeight: this.container.offsetHeight
+          scrollTop: this.$refs.table.getScrollTop(),
+          offsetHeight: this.$refs.table.getOffsetHeight()
         }
         if (el.offsetTop - el.offsetHeight < table.scrollTop) {
-          this.container.scrollTop = el.offsetTop - el.offsetHeight
+          this.$refs.table.setScrollTop(el.offsetTop - el.offsetHeight)
         } else if (el.offsetTop + headerHeight > table.scrollTop + table.offsetHeight) {
-          this.container.scrollTop = el.offsetTop + headerHeight - table.offsetHeight
+          this.$refs.table.setScrollTop(el.offsetTop + headerHeight - table.offsetHeight)
         }
       })
     }
   },
   mounted () {
-    this.container = this.$el.querySelector('.v-table__overflow')
-    this.container.addEventListener('scroll', this.onScroll)
     const scrollTop = this.scrollTop
     this.$nextTick(() => {
-      this.container.scrollTop = scrollTop
+      this.$refs.table.setScrollTop(scrollTop)
     })
-  },
-  beforeDestroy () {
-    this.container.removeEventListener('scroll', this.onScroll)
   },
   methods: {
     onScroll (e) {
-      this.scrolling = e.target.scrollTop > 0
       this.setScrollTop({ scrollTop: e.target.scrollTop })
+    },
+    onClick () {
+      this.unselectHost()
     },
     onKeyDown (e) {
       switch (e.keyCode) {
@@ -171,9 +163,6 @@ export default {
           break
       }
     },
-    onClick () {
-      this.unselectHost()
-    },
     onContextMenu (e) {
       this.unselectHost()
       const templates = [
@@ -194,20 +183,20 @@ export default {
     focusSelectedRow () {
       this.$refs[`row-${this.selectedHostId}`].focus()
     },
-    ...mapMutations({
-      setScrollTop: 'explorer/child/setScrollTop'
-    }),
-    ...mapActions({
-      createHost: 'explorer/child/createHost',
-      deleteHost: 'explorer/child/deleteHost',
-      copyHost: 'explorer/child/copyHost',
-      pasteHost: 'explorer/child/pasteHost',
-      unselectHost: 'explorer/child/unselectHost',
-      selectFirstHost: 'explorer/child/selectFirstHost',
-      selectLastHost: 'explorer/child/selectLastHost',
-      selectPreviousHost: 'explorer/child/selectPreviousHost',
-      selectNextHost: 'explorer/child/selectNextHost'
-    })
+    ...mapMutations('local/explorer/child', [
+      'setScrollTop'
+    ]),
+    ...mapActions('local/explorer/child', [
+      'createHost',
+      'deleteHost',
+      'copyHost',
+      'pasteHost',
+      'unselectHost',
+      'selectFirstHost',
+      'selectLastHost',
+      'selectPreviousHost',
+      'selectNextHost'
+    ])
   }
 }
 </script>
@@ -215,42 +204,8 @@ export default {
 <style scoped lang="scss">
 .explorer-child-table {
   outline: none;
-  & /deep/ .v-table__overflow {
-    height: 100%;
-    overflow-y: scroll;
-    .v-datatable {
-      table-layout: fixed;
-      &>thead {
-        background: inherit;
-        &>tr {
-          background: inherit;
-          &>th {
-            background: inherit;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-          }
-          &.v-datatable__progress>th {
-            top: 56px;
-            z-index: 0;
-            &:after {
-              bottom: 0;
-              box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
-              content: '';
-              left: 0;
-              position: absolute;
-              width: 100%;
-            }
-          }
-        }
-      }
-    }
-  }
-  &.scrolling /deep/ .v-datatable>thead>tr {
-    border-bottom: none;
-    &.v-datatable__progress>th:after {
-      height: 10px;
-    }
+  & /deep/ .v-datatable {
+    table-layout: fixed;
   }
 }
 </style>

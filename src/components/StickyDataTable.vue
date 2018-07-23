@@ -1,0 +1,161 @@
+<template>
+  <v-data-table
+    ref="table"
+    v-bind="$attrs"
+    v-model="model"
+    :pagination.sync="paginationModel"
+    :items="items"
+    :class="classes"
+    :disable-initial-sort="true"
+    class="sticky-data-table"
+  >
+    <template
+      slot="headers"
+      slot-scope="props"
+    >
+      <slot
+        v-bind="props"
+        name="headers"
+      />
+    </template>
+    <template
+      slot="items"
+      slot-scope="props"
+    >
+      <slot
+        v-bind="props"
+        name="items"
+      />
+    </template>
+    <template slot="no-data">
+      <slot name="no-data" />
+    </template>
+  </v-data-table>
+</template>
+
+<script>
+export default {
+  props: {
+    value: {
+      type: Array,
+      default: () => []
+    },
+    pagination: {
+      type: Object,
+      default: () => ({})
+    },
+    items: {
+      type: Array,
+      default: () => []
+    }
+  },
+  data () {
+    return {
+      scrolling: false
+    }
+  },
+  computed: {
+    paginationModel: {
+      get () {
+        return this.pagination
+      },
+      set (value) {
+        this.$emit('update:pagination', value)
+      }
+    },
+    model: {
+      get () {
+        return this.value
+      },
+      set (value) {
+        this.$emit('input', value)
+      }
+    },
+    classes () {
+      return {
+        scrolling: this.scrolling
+      }
+    }
+  },
+  watch: {
+    items () {
+      this.adjustItems()
+    }
+  },
+  mounted () {
+    window.addEventListener('resize', this.onResize)
+    this.container = this.$el.querySelector('.v-table__overflow')
+    this.container.addEventListener('scroll', this.onScroll)
+    this.$nextTick(() => {
+      this.adjustItems()
+    })
+  },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.onResize)
+    this.container.removeEventListener('scroll', this.onScroll)
+  },
+  methods: {
+    getScrollTop () {
+      return this.container.scrollTop
+    },
+    setScrollTop (value) {
+      this.$nextTick(() => {
+        this.container.scrollTop = value
+      })
+    },
+    getOffsetHeight () {
+      return this.container.offsetHeight
+    },
+    adjustItems () {
+      const { scrollTop } = this.container
+      this.scrolling = scrollTop > 0
+    },
+    onResize () {
+      this.adjustItems()
+    },
+    onScroll (e) {
+      this.adjustItems()
+      this.$emit('scroll', e)
+    }
+  }
+}
+</script>
+
+<style scoped lang="scss">
+.sticky-data-table {
+  & /deep/ .v-table__overflow {
+    height: 100%;
+    overflow-y: scroll;
+    .v-datatable>thead {
+      background: inherit;
+      &>tr {
+        background: inherit;
+        &>th {
+          background: inherit;
+          position: sticky;
+          top: 0;
+          z-index: 1;
+        }
+        &.v-datatable__progress>th {
+          top: 56px;
+          z-index: 0;
+          &:after {
+            bottom: 0;
+            box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+            content: '';
+            left: 0;
+            position: absolute;
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+  &.scrolling /deep/ .v-datatable>thead>tr {
+    border-bottom: none;
+    &.v-datatable__progress>th:after {
+      height: 10px;
+    }
+  }
+}
+</style>
