@@ -1,7 +1,7 @@
 {
   "name": "hosty",
   "description": "Hosts file manager based on Electron",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "author": {
     "name": "fiahfy",
     "email": "d.fiahfy@gmail.com",
