@@ -37,17 +37,26 @@ export default {
     },
     isSelectedGroup (state) {
       return ({ id }) => state.selectedGroupId === id
+    },
+    getGroups (state, getters, rootState) {
+      return () => JSON.parse(JSON.stringify(rootState.group.groups))
     }
   },
   actions: {
-    loadGroups ({ commit, dispatch, rootState, state }) {
-      const groups = JSON.parse(JSON.stringify(rootState.group.groups)).filter((group) => {
+    loadGroups ({ commit, dispatch, getters, state }) {
+      const groups = getters.getGroups().filter((group) => {
         return !state.filtered || !group.disabled
       })
       commit('setGroups', { groups })
       commit('setScrollTop', { scrollTop: 0 })
       dispatch('sortGroups')
       dispatch('unselectGroup')
+    },
+    loadGroup ({ commit, rootState, state }) {
+      const group = JSON.parse(JSON.stringify(rootState.group.groups)).find((group) => {
+        return group.id === state.selectedGroupId
+      })
+      commit('setGroup', { id: state.selectedGroupId, group })
     },
     async createGroup ({ commit, dispatch, state }, { group } = {}) {
       const newGroup = await dispatch('group/createGroup', { group }, { root: true })

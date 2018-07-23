@@ -44,13 +44,13 @@ export default {
     color () {
       return this.filtered ? 'primary' : ''
     },
-    ...mapState({
-      filtered: state => state.explorer.filtered
-    }),
-    ...mapGetters({
-      canCreateGroup: 'explorer/canCreateGroup',
-      canDeleteGroup: 'explorer/canDeleteGroup'
-    })
+    ...mapState('local/explorer', [
+      'filtered'
+    ]),
+    ...mapGetters('local/explorer', [
+      'canCreateGroup',
+      'canDeleteGroup'
+    ])
   },
   methods: {
     onNewClick () {
@@ -62,11 +62,11 @@ export default {
     onFilterClick () {
       this.toggleFilter()
     },
-    ...mapActions({
-      createGroup: 'explorer/createGroup',
-      deleteGroup: 'explorer/deleteGroup',
-      toggleFilter: 'explorer/toggleFilter'
-    })
+    ...mapActions('local/explorer', [
+      'createGroup',
+      'deleteGroup',
+      'toggleFilter'
+    ])
   }
 }
 </script>

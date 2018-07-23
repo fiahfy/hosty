@@ -24,19 +24,19 @@
       {{ host.ip || '192.0.2.0' }}
       <v-menu
         v-model="ipMenu.show"
-        :transition="false"
         :position-x="ipMenu.x"
         :position-y="ipMenu.y"
         :min-width="ipMenu.width"
         :close-on-content-click="false"
         lazy
+        transition="slide-x-reverse-transition"
       >
         <v-card>
           <v-card-text>
             <v-text-field
               ref="ipText"
               v-model="ip"
-              class="pt-0"
+              class="mt-0"
               label="192.0.2.0"
               hide-details
               single-line
@@ -56,19 +56,19 @@
       {{ host.name || 'example.com' }}
       <v-menu
         v-model="nameMenu.show"
-        :transition="false"
         :position-x="nameMenu.x"
         :position-y="nameMenu.y"
         :min-width="nameMenu.width"
         :close-on-content-click="false"
         lazy
+        transition="slide-x-reverse-transition"
       >
         <v-card>
           <v-card-text>
             <v-text-field
               ref="nameText"
               v-model="name"
-              class="pt-0"
+              class="mt-0"
               label="example.com"
               hide-details
               single-line
@@ -132,10 +132,10 @@ export default {
         this.host.name ? '' : 'grey--text'
       ]
     },
-    ...mapGetters({
-      isSelectedHost: 'explorer/child/isSelectedHost',
-      canPasteHost: 'explorer/child/canPasteHost'
-    })
+    ...mapGetters('local/explorer/child', [
+      'isSelectedHost',
+      'canPasteHost'
+    ])
   },
   methods: {
     onClick () {
@@ -215,8 +215,8 @@ export default {
       }
       this.updateHost({ host: { [value]: this[value] } })
     },
-    onTextContextMenu () {
-      ContextMenu.showTextMenu()
+    onTextContextMenu (e) {
+      ContextMenu.showTextMenu(e)
     },
     focus (value = 'ip') {
       this[value] = this.host[value]
@@ -232,24 +232,18 @@ export default {
         }, 200)
       })
     },
-    ...mapActions({
-      createHost: 'explorer/child/createHost',
-      updateHost: 'explorer/child/updateHost',
-      deleteHost: 'explorer/child/deleteHost',
-      copyHost: 'explorer/child/copyHost',
-      pasteHost: 'explorer/child/pasteHost',
-      selectHost: 'explorer/child/selectHost',
-      focusTable: 'explorer/child/focusTable'
-    })
+    ...mapActions('local/explorer/child', [
+      'createHost',
+      'updateHost',
+      'deleteHost',
+      'copyHost',
+      'pasteHost',
+      'selectHost',
+      'focusTable'
+    ])
   }
 }
 </script>
-
-<style lang="scss">
-.menu__content .input-host--text-field label {
-  top: 0;
-}
-</style>
 
 <style scoped lang="scss">
 .explorer-child-table-row {

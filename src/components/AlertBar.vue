@@ -25,20 +25,20 @@ import { mapActions, mapState } from 'vuex'
 
 export default {
   computed: {
-    ...mapState({
-      permission: state => state.permission
-    })
+    ...mapState([
+      'permission'
+    ])
   },
   methods: {
-    ...mapActions({
-      initialize: 'initialize'
-    })
+    ...mapActions([
+      'initialize'
+    ])
   }
 }
 </script>
 
 <style scoped lang="scss">
-.alert /deep/ div {
+.v-alert /deep/ div {
   overflow: hidden;
 }
 </style>

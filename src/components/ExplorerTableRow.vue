@@ -25,19 +25,19 @@
         <span :class="numberClasses">{{ group.hosts.length }}</span>
         <v-menu
           v-model="menu.show"
-          :transition="false"
           :position-x="menu.x"
           :position-y="menu.y"
           :min-width="menu.width"
           :close-on-content-click="false"
           lazy
+          transition="slide-x-reverse-transition"
         >
           <v-card>
             <v-card-text>
               <v-text-field
                 ref="text"
                 v-model="name"
-                class="pt-0"
+                class="mt-0"
                 label="Group"
                 hide-details
                 single-line
@@ -95,10 +95,10 @@ export default {
         this.group.hosts.length ? '' : 'grey--text'
       ]
     },
-    ...mapGetters({
-      isSelectedGroup: 'explorer/isSelectedGroup',
-      canPasteGroup: 'explorer/canPasteGroup'
-    })
+    ...mapGetters('local/explorer', [
+      'isSelectedGroup',
+      'canPasteGroup'
+    ])
   },
   methods: {
     onClick () {
@@ -166,8 +166,8 @@ export default {
       }
       this.updateGroup({ group: { name: this.name } })
     },
-    onTextContextMenu () {
-      ContextMenu.showTextMenu()
+    onTextContextMenu (e) {
+      ContextMenu.showTextMenu(e)
     },
     focus () {
       this.name = this.group.name
@@ -183,24 +183,18 @@ export default {
         }, 200)
       })
     },
-    ...mapActions({
-      createGroup: 'explorer/createGroup',
-      updateGroup: 'explorer/updateGroup',
-      deleteGroup: 'explorer/deleteGroup',
-      copyGroup: 'explorer/copyGroup',
-      pasteGroup: 'explorer/pasteGroup',
-      selectGroup: 'explorer/selectGroup',
-      focusTable: 'explorer/focusTable'
-    })
+    ...mapActions('local/explorer', [
+      'createGroup',
+      'updateGroup',
+      'deleteGroup',
+      'copyGroup',
+      'pasteGroup',
+      'selectGroup',
+      'focusTable'
+    ])
   }
 }
 </script>
-
-<style lang="scss">
-.menu__content .input-group--text-field label {
-  top: 0;
-}
-</style>
 
 <style scoped lang="scss">
 .explorer-table-row {

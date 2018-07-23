@@ -1,5 +1,5 @@
 <template>
-  <tr class="explorer-table-header-row">
+  <tr class="finder-table-header-row">
     <th
       v-for="header in headers"
       :key="header.text"
@@ -24,7 +24,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('local/explorer', [
+    ...mapState('local/finder', [
       'order'
     ])
   },
@@ -45,7 +45,7 @@ export default {
     onHeaderClick (e, header) {
       this.changeOrderBy({ orderBy: header.value })
     },
-    ...mapActions('local/explorer', [
+    ...mapActions('local/finder', [
       'changeOrderBy'
     ])
   }
