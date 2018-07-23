@@ -24,6 +24,7 @@
       slot-scope="props"
     >
       <finder-table-row
+        :ref="`row-${props.item.id}`"
         :key="props.item.id"
         :item="props.item"
       />
@@ -120,6 +121,7 @@ export default {
       switch (e.keyCode) {
         case 13:
           e.preventDefault()
+          this.viewSelectedRow()
           break
         case 38:
           e.preventDefault()
@@ -138,6 +140,9 @@ export default {
           }
           break
       }
+    },
+    viewSelectedRow () {
+      this.$refs[`row-${this.selectedItemId}`].view()
     },
     ...mapMutations('local/finder/', [
       'setScrollTop'

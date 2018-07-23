@@ -6,15 +6,11 @@
     @dblclick="onDblClick"
     @contextmenu.stop="onContextMenu"
   >
-    <td class="px-2">
-      <v-btn
+    <td>
+      <v-icon
         :color="color"
-        class="my-0"
-        flat
-        icon
-      >
-        <v-icon>check_circle</v-icon>
-      </v-btn>
+        class="d-flex"
+      >check_circle</v-icon>
     </td>
     <td :class="groupClasses">
       {{ item.group || 'Group' }}
@@ -73,13 +69,21 @@ export default {
       this.selectItem({ id: this.item.id })
     },
     onDblClick () {
-      this.viewItem({ id: this.item.id })
+      this.viewItem()
     },
     onContextMenu (e) {
       this.selectItem({ id: this.item.id })
       const templates = [
+        {
+          label: 'View',
+          click: () => this.viewItem(),
+          accelerator: 'Enter'
+        }
       ]
       ContextMenu.show(e, templates)
+    },
+    view () {
+      this.viewItem()
     },
     ...mapActions('local/finder', [
       'selectItem',

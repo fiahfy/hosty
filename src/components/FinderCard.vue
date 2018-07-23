@@ -14,10 +14,11 @@
         hide-details
         clearable
         @contextmenu.stop="onTextContextMenu"
+        @keydown="onTextKeyDown"
       />
       <v-btn
         :color="regExpColor"
-        title="Use RegExp"
+        :title="'Use RegExp'|accelerator('Alt+CmdOrCtrl+R')"
         flat
         icon
         @click="onRegExpClick"
@@ -66,6 +67,11 @@ export default {
   methods: {
     onTextContextMenu (e) {
       ContextMenu.showTextMenu(e)
+    },
+    onTextKeyDown (e) {
+      if (e.altKey && ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) && e.keyCode === 82) {
+        this.toggleRegExp()
+      }
     },
     onFilterClick () {
       this.toggleFilter()

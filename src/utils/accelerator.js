@@ -1,4 +1,5 @@
 const orders = [
+  'Alt',
   'Shift',
   'CommandOrControl',
   'CmdOrCtrl'
@@ -25,16 +26,17 @@ export const buildText = (accelerator) => {
   const seperator = darwin ? '' : '+'
   return keys.sort(sortKey).map(key => {
     switch (key) {
+      case 'Alt': return darwin ? '⌥' : key
+      case 'Shift': return darwin ? '⇧' : key
       case 'CommandOrControl':
       case 'CmdOrCtrl':
         return darwin ? '⌘' : 'Ctrl'
-      case 'Shift': return darwin ? '⇧' : key
       case 'Plus': return '+'
       case 'Backspace': return darwin ? '⌫' : key
       case 'Delete': return darwin ? '⌦' : key
       case 'Return':
       case 'Enter':
-        return darwin ? '↩' : key
+        return darwin ? '↩' : 'Enter'
       case 'Up': return darwin ? '↑' : key
       case 'Down': return darwin ? '↓' : key
       case 'Left': return darwin ? '←' : key

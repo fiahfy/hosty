@@ -137,8 +137,8 @@ export default {
       commit('setRegExp', { regExp: !state.regExp })
       dispatch('loadItems')
     },
-    viewItem ({ dispatch }, { id }) {
-      const [groupId, hostId] = id.split('-').map(Number)
+    viewItem ({ dispatch, state }) {
+      const [groupId, hostId] = state.selectedItemId.split('-').map(Number)
       dispatch('changeRoute', { name: 'explorer' }, { root: true })
       // wait dom updated
       setTimeout(() => {
