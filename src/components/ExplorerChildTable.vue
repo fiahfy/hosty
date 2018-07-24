@@ -13,21 +13,17 @@
     @keydown.native="onKeyDown"
     @contextmenu.native.stop="onContextMenu"
   >
-    <template
+    <explorer-child-table-header-row
       slot="headers"
       slot-scope="props"
-    >
-      <explorer-child-table-header-row :headers="props.headers" />
-    </template>
-    <template
+      :headers="props.headers"
+    />
+    <explorer-child-table-row
       slot="items"
       slot-scope="props"
-    >
-      <explorer-child-table-row
-        :ref="`row-${props.item.id}`"
-        :host="props.item"
-      />
-    </template>
+      :ref="`row-${props.item.id}`"
+      :host="props.item"
+    />
   </sticky-data-table>
 </template>
 

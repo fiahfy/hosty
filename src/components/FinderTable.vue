@@ -13,22 +13,18 @@
     @click.native="onClick"
     @keydown.native="onKeyDown"
   >
-    <template
+    <finder-table-header-row
       slot="headers"
       slot-scope="props"
-    >
-      <finder-table-header-row :headers="props.headers" />
-    </template>
-    <template
+      :headers="props.headers"
+    />
+    <finder-table-row
       slot="items"
       slot-scope="props"
-    >
-      <finder-table-row
-        :ref="`row-${props.item.id}`"
-        :key="props.item.id"
-        :item="props.item"
-      />
-    </template>
+      :ref="`row-${props.item.id}`"
+      :key="props.item.id"
+      :item="props.item"
+    />
   </virtual-data-table>
 </template>
 
