@@ -1,5 +1,6 @@
 <template>
   <v-data-table
+    v-resize="onResize"
     ref="table"
     v-bind="$attrs"
     v-model="model"
@@ -43,6 +44,10 @@
       slot="no-data"
       name="no-data"
     />
+    <slot
+      slot="no-results"
+      name="no-results"
+    />
   </v-data-table>
 </template>
 
@@ -61,6 +66,14 @@ export default {
       type: Array,
       default: () => []
     },
+    estimatedHeight: {
+      type: Number,
+      default: 48
+    },
+    threshold: {
+      type: Number,
+      default: 0
+    },
     stickyHeaders: {
       type: Boolean,
       default: false
@@ -68,8 +81,6 @@ export default {
   },
   data () {
     return {
-      estimatedHeight: 48,
-      threshold: 1024,
       scrolling: false,
       padding: {
         top: 0,
@@ -108,7 +119,6 @@ export default {
     }
   },
   mounted () {
-    window.addEventListener('resize', this.onResize)
     this.container = this.$el.querySelector('.v-table__overflow')
     this.container.addEventListener('scroll', this.onScroll)
     this.$nextTick(() => {
@@ -116,7 +126,6 @@ export default {
     })
   },
   beforeDestroy () {
-    window.removeEventListener('resize', this.onResize)
     this.container.removeEventListener('scroll', this.onScroll)
   },
   methods: {
@@ -132,12 +141,19 @@ export default {
       return this.container.offsetHeight
     },
     adjustItems () {
+      if (!this.container) {
+        return
+      }
       const { scrollTop, offsetHeight } = this.container
-      const offset = Math.ceil(offsetHeight / this.estimatedHeight)
-      const thresholdOffset = Math.ceil(this.threshold / this.estimatedHeight)
+      const index = Math.floor(scrollTop / this.estimatedHeight)
+      const offset = Math.ceil(offsetHeight / this.estimatedHeight) + 1
 
-      const firstIndex = Math.max(0, Math.floor(scrollTop / this.estimatedHeight) - thresholdOffset)
-      const lastIndex = Math.min(firstIndex + offset + thresholdOffset * 2, this.items.length)
+      let firstIndex = Math.max(0, index - this.threshold)
+      let lastIndex = firstIndex + offset + this.threshold
+      if (lastIndex > this.items.length) {
+        lastIndex = this.items.length
+        firstIndex = Math.max(0, lastIndex - offset - this.threshold * 2)
+      }
 
       this.scrolling = scrollTop > 0
       this.padding = {
@@ -157,18 +173,6 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.theme--dark .virtual-data-table.sticky-headers .v-table__overflow::-webkit-scrollbar-thumb {
-  background-color: #424242!important;
-  &:hover {
-    background-color: #505050!important;
-  }
-  &:active {
-    background-color: #616161!important;
-  }
-}
-</style>
-
 <style scoped lang="scss">
 .virtual-data-table.sticky-headers {
   & /deep/ .v-table__overflow {
@@ -186,26 +190,29 @@ export default {
         background-color: #ccc;
       }
     }
-    .v-datatable>thead {
-      background: inherit;
-      &>tr {
+    .v-datatable {
+      table-layout: fixed;
+      &>thead {
         background: inherit;
-        &>th {
+        &>tr {
           background: inherit;
-          position: sticky;
-          top: 0;
-          z-index: 1;
-        }
-        &.v-datatable__progress>th {
-          top: 56px;
-          z-index: 0;
-          &:after {
-            bottom: 0;
-            box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
-            content: '';
-            left: 0;
-            position: absolute;
-            width: 100%;
+          &>th {
+            background: inherit;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+          }
+          &.v-datatable__progress>th {
+            top: 56px;
+            z-index: 0;
+            &:after {
+              bottom: 0;
+              box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+              content: '';
+              left: 0;
+              position: absolute;
+              width: 100%;
+            }
           }
         }
       }
@@ -216,6 +223,15 @@ export default {
     &.v-datatable__progress>th:after {
       height: 10px;
     }
+  }
+}
+.theme--dark .virtual-data-table.sticky-headers /deep/ .v-table__overflow::-webkit-scrollbar-thumb {
+  background-color: #424242!important;
+  &:hover {
+    background-color: #505050!important;
+  }
+  &:active {
+    background-color: #616161!important;
   }
 }
 </style>

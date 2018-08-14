@@ -196,8 +196,5 @@ export default {
 <style scoped lang="scss">
 .explorer-table {
   outline: none;
-  & /deep/ .v-datatable {
-    table-layout: fixed;
-  }
 }
 </style>

@@ -2,8 +2,12 @@
   <v-card
     class="explorer-child-card"
     flat
+    tile
   >
-    <v-card-title class="py-2 px-0">
+    <v-toolbar
+      color="transparent"
+      flat
+    >
       <v-btn
         :title="'New Host'|accelerator('CmdOrCtrl+N')"
         :disabled="!canCreateHost"
@@ -25,14 +29,14 @@
       <v-spacer />
       <v-btn
         :color="color"
-        title="Filter Active"
+        title="Filter Enabled"
         flat
         icon
         @click="onFilterClick"
       >
         <v-icon>filter_list</v-icon>
       </v-btn>
-    </v-card-title>
+    </v-toolbar>
   </v-card>
 </template>
 
