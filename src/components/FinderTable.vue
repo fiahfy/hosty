@@ -115,11 +115,9 @@ export default {
     onKeyDown (e) {
       switch (e.keyCode) {
         case 13:
-          e.preventDefault()
           this.viewSelectedRow()
           break
         case 38:
-          e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             this.selectFirstItem()
           } else {
@@ -127,7 +125,6 @@ export default {
           }
           break
         case 40:
-          e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             this.selectLastItem()
           } else {

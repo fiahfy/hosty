@@ -13,8 +13,8 @@ const createTemplate = () => {
     {
       label: 'File',
       submenu: [
-        { label: 'Import...', accelerator: 'CmdOrCtrl+O', click: () => { send('import') } },
-        { label: 'Export...', accelerator: 'CmdOrCtrl+S', click: () => { send('export') } }
+        { label: 'Import...', accelerator: 'CmdOrCtrl+O', click: () => send('import') },
+        { label: 'Export...', accelerator: 'CmdOrCtrl+S', click: () => send('export') }
       ]
     },
     {
@@ -30,14 +30,14 @@ const createTemplate = () => {
         { role: 'delete' },
         { role: 'selectall' },
         { type: 'separator' },
-        { label: 'Find...', accelerator: 'CmdOrCtrl+F', click: () => { send('find') } }
+        { label: 'Find...', accelerator: 'CmdOrCtrl+F', click: () => send('find') }
       ]
     },
     {
       label: 'View',
       submenu: [
-        { label: 'Explorer', accelerator: 'CmdOrCtrl+Shift+E', click: () => { send('showExplorer') } },
-        { label: 'Find', accelerator: 'CmdOrCtrl+Shift+F', click: () => { send('showFinder') } },
+        { label: 'Explorer', accelerator: 'CmdOrCtrl+Shift+E', click: () => send('showExplorer') },
+        { label: 'Find', accelerator: 'CmdOrCtrl+Shift+F', click: () => send('showFinder') },
         { type: 'separator' },
         { role: 'reload' },
         { role: 'forcereload' },
@@ -60,7 +60,7 @@ const createTemplate = () => {
     {
       role: 'help',
       submenu: [
-        { label: 'Learn More', click: () => { shell.openExternal('https://github.com/fiahfy/hosty') } }
+        { label: 'Learn More', click: () => shell.openExternal('https://github.com/fiahfy/hosty') }
       ]
     }
   ]
@@ -71,7 +71,7 @@ const createTemplate = () => {
       submenu: [
         { role: 'about' },
         { type: 'separator' },
-        { label: 'Preferences...', accelerator: 'CmdOrCtrl+,', click: () => { send('showSettings') } },
+        { label: 'Preferences...', accelerator: 'CmdOrCtrl+,', click: () => send('showSettings') },
         { type: 'separator' },
         { role: 'services', submenu: [] },
         { type: 'separator' },

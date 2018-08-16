@@ -108,16 +108,13 @@ export default {
       switch (e.keyCode) {
         case 8:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            e.preventDefault()
             this.deleteGroup()
           }
           break
         case 13:
-          e.preventDefault()
           this.focusSelectedRow()
           break
         case 38:
-          e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             this.selectFirstGroup()
           } else {
@@ -125,7 +122,6 @@ export default {
           }
           break
         case 40:
-          e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             this.selectLastGroup()
           } else {
@@ -137,19 +133,16 @@ export default {
             break
           }
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            e.preventDefault()
             this.copyGroup()
           }
           break
         case 78:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            e.preventDefault()
             this.createGroup()
           }
           break
         case 86:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            e.preventDefault()
             this.pasteGroup()
           }
           break

@@ -112,16 +112,13 @@ export default {
       switch (e.keyCode) {
         case 8:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            e.preventDefault()
             this.deleteHost()
           }
           break
         case 13:
-          e.preventDefault()
           this.focusSelectedRow()
           break
         case 38:
-          e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             this.selectFirstHost()
           } else {
@@ -129,7 +126,6 @@ export default {
           }
           break
         case 40:
-          e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             this.selectLastHost()
           } else {
@@ -141,19 +137,16 @@ export default {
             break
           }
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            e.preventDefault()
             this.copyHost()
           }
           break
         case 78:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            e.preventDefault()
             this.createHost()
           }
           break
         case 86:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            e.preventDefault()
             this.pasteHost()
           }
           break
