@@ -76,17 +76,17 @@ export default {
         const rowHeight = 48
         const headerHeight = 58
         const el = {
-          offsetTop: rowHeight * (index + 1),
+          offsetTop: rowHeight * index,
           offsetHeight: rowHeight
         }
         const table = {
           scrollTop: this.$refs.table.getScrollTop(),
-          offsetHeight: this.$refs.table.getOffsetHeight()
+          offsetHeight: this.$refs.table.getOffsetHeight() - headerHeight
         }
-        if (el.offsetTop - el.offsetHeight < table.scrollTop) {
-          this.$refs.table.setScrollTop(el.offsetTop - el.offsetHeight)
-        } else if (el.offsetTop + headerHeight > table.scrollTop + table.offsetHeight) {
-          this.$refs.table.setScrollTop(el.offsetTop + headerHeight - table.offsetHeight)
+        if (table.scrollTop > el.offsetTop) {
+          this.$refs.table.setScrollTop(el.offsetTop)
+        } else if (table.scrollTop < el.offsetTop + el.offsetHeight - table.offsetHeight) {
+          this.$refs.table.setScrollTop(el.offsetTop + el.offsetHeight - table.offsetHeight)
         }
       })
     }
