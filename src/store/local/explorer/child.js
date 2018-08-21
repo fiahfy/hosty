@@ -152,8 +152,11 @@ export default {
       commit('setOrder', { order })
       dispatch('sortHosts')
     },
-    toggleFilter ({ commit, dispatch, state }) {
-      commit('setFiltered', { filtered: !state.filtered })
+    toggleFiltered ({ dispatch, state }) {
+      dispatch('setFiltered', { filtered: !state.filtered })
+    },
+    setFiltered ({ commit, dispatch }, { filtered }) {
+      commit('setFiltered', { filtered })
       dispatch('loadHosts')
     },
     focusTable ({ dispatch }) {

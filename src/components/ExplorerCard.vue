@@ -64,12 +64,12 @@ export default {
       this.deleteGroup()
     },
     onFilterClick () {
-      this.toggleFilter()
+      this.toggleFiltered()
     },
     ...mapActions('local/explorer', [
       'createGroup',
       'deleteGroup',
-      'toggleFilter'
+      'toggleFiltered'
     ])
   }
 }

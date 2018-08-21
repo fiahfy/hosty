@@ -61,6 +61,7 @@ export default {
       }, [])
       commit('setItems', { items })
       dispatch('sortItems')
+      dispatch('unselectItem')
     },
     sortItems ({ commit, state }) {
       const { by, descending } = state.order
@@ -85,8 +86,6 @@ export default {
     },
     selectItem ({ commit, dispatch, getters }, { id }) {
       commit('setSelectedItemId', { selectedItemId: id })
-      const title = getters.selectedItem ? getters.selectedItem.name || '(Untitled)' : undefined
-      dispatch('changeTitle', { title }, { root: true })
     },
     unselectItem ({ dispatch }) {
       dispatch('selectItem', { id: 0 })
@@ -129,7 +128,7 @@ export default {
       commit('setOrder', { order })
       dispatch('sortItems')
     },
-    toggleFilter ({ commit, dispatch, state }) {
+    toggleFiltered ({ commit, dispatch, state }) {
       commit('setFiltered', { filtered: !state.filtered })
       dispatch('loadItems')
     },
@@ -142,7 +141,9 @@ export default {
       dispatch('changeRoute', { name: 'explorer' }, { root: true })
       // wait dom updated
       setTimeout(() => {
+        dispatch('local/explorer/setFiltered', { filtered: false }, { root: true })
         dispatch('local/explorer/selectGroup', { id: groupId }, { root: true })
+        dispatch('local/explorer/child/setFiltered', { filtered: false }, { root: true })
         dispatch('local/explorer/child/selectHost', { id: hostId }, { root: true })
       })
     }

@@ -64,12 +64,12 @@ export default {
       this.deleteHost()
     },
     onFilterClick () {
-      this.toggleFilter()
+      this.toggleFiltered()
     },
     ...mapActions('local/explorer/child', [
       'createHost',
       'deleteHost',
-      'toggleFilter'
+      'toggleFiltered'
     ])
   }
 }

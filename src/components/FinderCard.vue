@@ -77,13 +77,13 @@ export default {
       }
     },
     onFilterClick () {
-      this.toggleFilter()
+      this.toggleFiltered()
     },
     onRegExpClick () {
       this.toggleRegExp()
     },
     ...mapActions('local/finder/', [
-      'toggleFilter',
+      'toggleFiltered',
       'toggleRegExp'
     ])
   }
