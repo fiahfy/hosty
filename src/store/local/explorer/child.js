@@ -72,9 +72,9 @@ export default {
       dispatch('selectHostIndex', { index })
       dispatch('focusTable')
     },
-    updateHost ({ commit, dispatch, getters, state }, { host }) {
-      dispatch('group/updateHost', { groupId: getters.selectedGroupId, id: state.selectedHostId, host }, { root: true })
-      commit('setHost', { id: state.selectedHostId, host })
+    updateHost ({ commit, dispatch, getters }, { id, host }) {
+      dispatch('group/updateHost', { groupId: getters.selectedGroupId, id, host }, { root: true })
+      commit('setHost', { id, host })
     },
     sortHosts ({ commit, state }) {
       const { by, descending } = state.order

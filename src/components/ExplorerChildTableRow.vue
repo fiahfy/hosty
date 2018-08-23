@@ -11,7 +11,7 @@
         class="my-0"
         flat
         icon
-        @click="onButtonClick"
+        @click.stop="onButtonClick"
       >
         <v-icon>check_circle</v-icon>
       </v-btn>
@@ -118,7 +118,7 @@ export default {
       return this.isSelectedHost({ id: this.host.id })
     },
     color () {
-      return this.host.disabled ? 'grey' : 'success'
+      return this.host.disabled ? 'grey lighten-2' : 'success'
     },
     ipClasses () {
       return [
@@ -175,8 +175,7 @@ export default {
       ContextMenu.show(e, templates)
     },
     onButtonClick () {
-      this.selectHost({ id: this.host.id })
-      this.updateHost({ host: { disabled: !this.host.disabled } })
+      this.updateHost({ id: this.host.id, host: { disabled: !this.host.disabled } })
     },
     onColumnDblClick (e, value) {
       this.focus(value)
@@ -213,7 +212,7 @@ export default {
       if (this.cancel) {
         return
       }
-      this.updateHost({ host: { [value]: this[value] } })
+      this.updateHost({ id: this.host.id, host: { [value]: this[value] } })
     },
     onTextContextMenu (e) {
       ContextMenu.showTextMenu(e)

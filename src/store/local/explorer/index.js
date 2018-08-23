@@ -73,9 +73,9 @@ export default {
       dispatch('selectGroupIndex', { index })
       dispatch('focusTable')
     },
-    updateGroup ({ commit, dispatch, state }, { group }) {
-      dispatch('group/updateGroup', { id: state.selectedGroupId, group }, { root: true })
-      commit('setGroup', { id: state.selectedGroupId, group })
+    updateGroup ({ commit, dispatch }, { id, group }) {
+      dispatch('group/updateGroup', { id, group }, { root: true })
+      commit('setGroup', { id, group })
     },
     sortGroups ({ commit, state }) {
       const { by, descending } = state.order
