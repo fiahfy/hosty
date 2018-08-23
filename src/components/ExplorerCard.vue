@@ -49,6 +49,7 @@ export default {
       return this.filtered ? 'primary' : ''
     },
     ...mapState('local/explorer', [
+      'selectedGroupId',
       'filtered'
     ]),
     ...mapGetters('local/explorer', [
@@ -61,7 +62,7 @@ export default {
       this.createGroup()
     },
     onDeleteClick () {
-      this.deleteGroup()
+      this.deleteGroup({ id: this.selectedGroupId })
     },
     onFilterClick () {
       this.toggleFiltered()

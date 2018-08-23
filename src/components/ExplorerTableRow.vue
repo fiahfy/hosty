@@ -114,7 +114,7 @@ export default {
         },
         {
           label: 'Copy',
-          click: () => this.copyGroup(),
+          click: () => this.copyGroup({ id: this.group.id }),
           accelerator: 'CmdOrCtrl+C'
         },
         {
@@ -131,7 +131,7 @@ export default {
         },
         {
           label: 'Delete',
-          click: () => this.deleteGroup(),
+          click: () => this.deleteGroup({ id: this.group.id }),
           accelerator: 'CmdOrCtrl+Backspace'
         }
       ]

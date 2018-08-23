@@ -151,7 +151,7 @@ export default {
         },
         {
           label: 'Copy',
-          click: () => this.copyHost(),
+          click: () => this.copyHost({ id: this.host.id }),
           accelerator: 'CmdOrCtrl+C'
         },
         {
@@ -168,7 +168,7 @@ export default {
         },
         {
           label: 'Delete',
-          click: () => this.deleteHost(),
+          click: () => this.deleteHost({ id: this.host.id }),
           accelerator: 'CmdOrCtrl+Backspace'
         }
       ]

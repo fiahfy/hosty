@@ -63,10 +63,10 @@ export default {
       dispatch('selectHostIndex', { index })
       dispatch('focusTable')
     },
-    deleteHost ({ commit, dispatch, getters, state }) {
-      const oldIndex = getters.selectedHostIndex
-      dispatch('group/deleteHost', { groupId: getters.selectedGroupId, id: state.selectedHostId }, { root: true })
-      commit('removeHost', { id: state.selectedHostId })
+    deleteHost ({ commit, dispatch, getters, state }, { id }) {
+      const oldIndex = state.hosts.findIndex((host) => host.id === id)
+      dispatch('group/deleteHost', { groupId: getters.selectedGroupId, id }, { root: true })
+      commit('removeHost', { id })
       dispatch('local/explorer/loadGroup', null, { root: true })
       const index = oldIndex < state.hosts.length ? oldIndex : state.hosts.length - 1
       dispatch('selectHostIndex', { index })
@@ -74,7 +74,7 @@ export default {
     },
     updateHost ({ commit, dispatch, getters }, { id, host }) {
       dispatch('group/updateHost', { groupId: getters.selectedGroupId, id, host }, { root: true })
-      commit('setHost', { id, host })
+      commit('updateHost', { id, host })
     },
     sortHosts ({ commit, state }) {
       const { by, descending } = state.order
@@ -97,8 +97,8 @@ export default {
       })
       commit('setHosts', { hosts })
     },
-    copyHost ({ commit, getters }) {
-      const clippedHost = getters.selectedHost
+    copyHost ({ commit, state }, { id }) {
+      const clippedHost = state.hosts.find((host) => host.id === id)
       commit('setClippedHost', { clippedHost })
     },
     pasteHost ({ dispatch, state }) {
@@ -167,11 +167,11 @@ export default {
     setHosts (state, { hosts }) {
       state.hosts = hosts
     },
-    setHost (state, { id, host }) {
-      state.hosts = state.hosts.map((current) => current.id !== id ? current : { ...current, ...host })
-    },
     addHost (state, { host }) {
       state.hosts = [...state.hosts, host]
+    },
+    updateHost (state, { id, host }) {
+      state.hosts = state.hosts.map((current) => current.id !== id ? current : { ...current, ...host })
     },
     removeHost (state, { id }) {
       state.hosts = state.hosts.filter((host) => host.id !== id)

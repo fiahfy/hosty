@@ -52,11 +52,11 @@ export default {
       dispatch('sortGroups')
       dispatch('unselectGroup')
     },
-    loadGroup ({ commit, rootState, state }) {
-      const group = JSON.parse(JSON.stringify(rootState.group.groups)).find((group) => {
+    loadGroup ({ commit, getters, state }) {
+      const group = getters.getGroups().find((group) => {
         return group.id === state.selectedGroupId
       })
-      commit('setGroup', { id: state.selectedGroupId, group })
+      commit('updateGroup', { id: state.selectedGroupId, group })
     },
     async createGroup ({ commit, dispatch, state }, { group } = {}) {
       const newGroup = await dispatch('group/createGroup', { group }, { root: true })
@@ -65,17 +65,17 @@ export default {
       dispatch('selectGroupIndex', { index })
       dispatch('focusTable')
     },
-    deleteGroup ({ commit, dispatch, getters, state }) {
-      const oldIndex = getters.selectedGroupIndex
-      dispatch('group/deleteGroup', { id: state.selectedGroupId }, { root: true })
-      commit('removeGroup', { id: state.selectedGroupId })
+    deleteGroup ({ commit, dispatch, state }, { id }) {
+      const oldIndex = state.groups.findIndex((group) => group.id === id)
+      dispatch('group/deleteGroup', { id }, { root: true })
+      commit('removeGroup', { id })
       const index = oldIndex < state.groups.length ? oldIndex : state.groups.length - 1
       dispatch('selectGroupIndex', { index })
       dispatch('focusTable')
     },
     updateGroup ({ commit, dispatch }, { id, group }) {
       dispatch('group/updateGroup', { id, group }, { root: true })
-      commit('setGroup', { id, group })
+      commit('updateGroup', { id, group })
     },
     sortGroups ({ commit, state }) {
       const { by, descending } = state.order
@@ -98,8 +98,8 @@ export default {
       })
       commit('setGroups', { groups })
     },
-    copyGroup ({ commit, getters }) {
-      const clippedGroup = getters.selectedGroup
+    copyGroup ({ commit, state }, { id }) {
+      const clippedGroup = state.groups.find((group) => group.id === id)
       commit('setClippedGroup', { clippedGroup })
     },
     pasteGroup ({ dispatch, state }) {
@@ -172,11 +172,11 @@ export default {
     setGroups (state, { groups }) {
       state.groups = groups
     },
-    setGroup (state, { id, group }) {
-      state.groups = state.groups.map((current) => current.id !== id ? current : { ...current, ...group })
-    },
     addGroup (state, { group }) {
       state.groups = [...state.groups, group]
+    },
+    updateGroup (state, { id, group }) {
+      state.groups = state.groups.map((current) => current.id !== id ? current : { ...current, ...group })
     },
     removeGroup (state, { id }) {
       state.groups = state.groups.filter((group) => group.id !== id)

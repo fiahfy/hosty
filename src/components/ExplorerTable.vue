@@ -108,7 +108,7 @@ export default {
       switch (e.keyCode) {
         case 8:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.deleteGroup()
+            this.deleteGroup({ id: this.selectedGroupId })
           }
           break
         case 13:
@@ -133,7 +133,7 @@ export default {
             break
           }
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.copyGroup()
+            this.copyGroup({ id: this.selectedGroupId })
           }
           break
         case 78:

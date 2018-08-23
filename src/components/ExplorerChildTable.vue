@@ -112,7 +112,7 @@ export default {
       switch (e.keyCode) {
         case 8:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.deleteHost()
+            this.deleteHost({ id: this.selectedHostId })
           }
           break
         case 13:
@@ -137,7 +137,7 @@ export default {
             break
           }
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.copyHost()
+            this.copyHost({ id: this.selectedHostId })
           }
           break
         case 78:

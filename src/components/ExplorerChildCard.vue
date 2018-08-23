@@ -49,6 +49,7 @@ export default {
       return this.filtered ? 'primary' : ''
     },
     ...mapState('local/explorer/child', [
+      'selectedHostId',
       'filtered'
     ]),
     ...mapGetters('local/explorer/child', [
@@ -61,7 +62,7 @@ export default {
       this.createHost()
     },
     onDeleteClick () {
-      this.deleteHost()
+      this.deleteHost({ id: this.selectedHostId })
     },
     onFilterClick () {
       this.toggleFiltered()
