@@ -5,7 +5,7 @@
     :items="hosts"
     class="explorer-child-table"
     item-key="id"
-    no-data-text="No hosts"
+    :no-data-text="noDataText"
     hide-actions
     tabindex="0"
     @scroll="onScroll"
@@ -60,12 +60,16 @@ export default {
     }
   },
   computed: {
+    noDataText () {
+      return this.selectedGroupId ? 'No hosts' : 'No groups selected'
+    },
     ...mapState('local/explorer/child', [
       'hosts',
       'selectedHostId',
       'scrollTop'
     ]),
     ...mapGetters('local/explorer/child', [
+      'selectedGroupId',
       'selectedHostIndex',
       'canPasteHost'
     ])

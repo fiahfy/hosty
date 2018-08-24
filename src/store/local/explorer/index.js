@@ -21,10 +21,10 @@ export default {
   },
   getters: {
     selectedGroupIndex (state, getters) {
-      return state.groups.findIndex((group) => getters.isSelectedGroup({ id: group.id }))
+      return getters.getGroupIndex({ id: state.selectedGroupId })
     },
     selectedGroup (state, getters) {
-      return state.groups[getters.selectedGroupIndex]
+      return getters.getGroup({ id: state.selectedGroupId })
     },
     canCreateGroup () {
       return true
@@ -35,16 +35,22 @@ export default {
     canPasteGroup (state) {
       return !!state.clippedGroup
     },
+    getGroupIndex (state) {
+      return ({ id }) => state.groups.findIndex((group) => group.id === id)
+    },
+    getGroup (state, getters) {
+      return ({ id }) => state.groups[getters.getGroupIndex({ id })]
+    },
     isSelectedGroup (state) {
       return ({ id }) => state.selectedGroupId === id
     },
-    getGroups (state, getters, rootState) {
+    cloneGroups (state, getters, rootState) {
       return () => JSON.parse(JSON.stringify(rootState.group.groups))
     }
   },
   actions: {
     loadGroups ({ commit, dispatch, getters, state }) {
-      const groups = getters.getGroups().filter((group) => {
+      const groups = getters.cloneGroups().filter((group) => {
         return !state.filtered || !group.disabled
       })
       commit('setGroups', { groups })
@@ -53,7 +59,7 @@ export default {
       dispatch('unselectGroup')
     },
     loadGroup ({ commit, getters, state }) {
-      const group = getters.getGroups().find((group) => {
+      const group = getters.cloneGroups().find((group) => {
         return group.id === state.selectedGroupId
       })
       commit('updateGroup', { id: state.selectedGroupId, group })
@@ -65,8 +71,8 @@ export default {
       dispatch('selectGroupIndex', { index })
       dispatch('focusTable')
     },
-    deleteGroup ({ commit, dispatch, state }, { id }) {
-      const oldIndex = state.groups.findIndex((group) => group.id === id)
+    deleteGroup ({ commit, dispatch, getters, state }, { id }) {
+      const oldIndex = getters.getGroupIndex({ id })
       dispatch('group/deleteGroup', { id }, { root: true })
       commit('removeGroup', { id })
       const index = oldIndex < state.groups.length ? oldIndex : state.groups.length - 1
@@ -98,8 +104,8 @@ export default {
       })
       commit('setGroups', { groups })
     },
-    copyGroup ({ commit, state }, { id }) {
-      const clippedGroup = state.groups.find((group) => group.id === id)
+    copyGroup ({ commit, getters }, { id }) {
+      const clippedGroup = getters.getGroup({ id })
       commit('setClippedGroup', { clippedGroup })
     },
     pasteGroup ({ dispatch, state }) {

@@ -24,10 +24,10 @@ export default {
       return rootState.local.explorer.selectedGroupId
     },
     selectedHostIndex (state, getters) {
-      return state.hosts.findIndex((host) => getters.isSelectedHost({ id: host.id }))
+      return getters.getHostIndex({ id: state.selectedHostId })
     },
     selectedHost (state, getters) {
-      return state.hosts[getters.selectedHostIndex]
+      return getters.getHost({ id: state.selectedHostId })
     },
     canCreateHost (state, getters) {
       return !!getters.selectedGroupId
@@ -38,16 +38,22 @@ export default {
     canPasteHost (state) {
       return !!state.clippedHost
     },
+    getHostIndex (state) {
+      return ({ id }) => state.hosts.findIndex((host) => host.id === id)
+    },
+    getHost (state, getters) {
+      return ({ id }) => state.hosts[getters.getHostIndex({ id })]
+    },
     isSelectedHost (state) {
       return ({ id }) => state.selectedHostId === id
     },
-    getHosts (state, getters, rootState, rootGetters) {
+    cloneHosts (state, getters, rootState, rootGetters) {
       return () => JSON.parse(JSON.stringify(rootGetters['group/getHosts']({ groupId: getters.selectedGroupId })))
     }
   },
   actions: {
     loadHosts ({ commit, dispatch, getters, state }) {
-      const hosts = getters.getHosts().filter((host) => {
+      const hosts = getters.cloneHosts().filter((host) => {
         return !state.filtered || !host.disabled
       })
       commit('setHosts', { hosts })
@@ -64,7 +70,7 @@ export default {
       dispatch('focusTable')
     },
     deleteHost ({ commit, dispatch, getters, state }, { id }) {
-      const oldIndex = state.hosts.findIndex((host) => host.id === id)
+      const oldIndex = getters.getHostIndex({ id })
       dispatch('group/deleteHost', { groupId: getters.selectedGroupId, id }, { root: true })
       commit('removeHost', { id })
       dispatch('local/explorer/loadGroup', null, { root: true })
@@ -97,8 +103,8 @@ export default {
       })
       commit('setHosts', { hosts })
     },
-    copyHost ({ commit, state }, { id }) {
-      const clippedHost = state.hosts.find((host) => host.id === id)
+    copyHost ({ commit, getters }, { id }) {
+      const clippedHost = getters.getHost({ id })
       commit('setClippedHost', { clippedHost })
     },
     pasteHost ({ dispatch, state }) {
