@@ -11,9 +11,7 @@ const appendInspectElementMenu = (e, template) => {
 
   return template.concat([{
     label: 'Inspect Element',
-    click: () => {
-      remote.getCurrentWindow().inspectElement(x, y)
-    }
+    click: () => remote.getCurrentWindow().inspectElement(x, y)
   }])
 }
 

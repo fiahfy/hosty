@@ -40,7 +40,7 @@ export default {
       return this.isSelectedItem({ id: this.item.id })
     },
     color () {
-      return this.item.disabled ? 'grey' : 'success'
+      return this.item.disabled ? 'grey lighten-2' : 'success'
     },
     groupClasses () {
       return [

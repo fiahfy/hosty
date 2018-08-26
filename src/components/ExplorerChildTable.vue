@@ -5,7 +5,7 @@
     :items="hosts"
     class="explorer-child-table"
     item-key="id"
-    no-data-text="No hosts"
+    :no-data-text="noDataText"
     hide-actions
     tabindex="0"
     @scroll="onScroll"
@@ -13,21 +13,17 @@
     @keydown.native="onKeyDown"
     @contextmenu.native.stop="onContextMenu"
   >
-    <template
+    <explorer-child-table-header-row
       slot="headers"
       slot-scope="props"
-    >
-      <explorer-child-table-header-row :headers="props.headers" />
-    </template>
-    <template
+      :headers="props.headers"
+    />
+    <explorer-child-table-row
       slot="items"
       slot-scope="props"
-    >
-      <explorer-child-table-row
-        :ref="`row-${props.item.id}`"
-        :host="props.item"
-      />
-    </template>
+      :ref="`row-${props.item.id}`"
+      :host="props.item"
+    />
   </sticky-data-table>
 </template>
 
@@ -64,12 +60,16 @@ export default {
     }
   },
   computed: {
+    noDataText () {
+      return this.selectedGroupId ? 'No hosts' : 'No groups selected'
+    },
     ...mapState('local/explorer/child', [
       'hosts',
       'selectedHostId',
       'scrollTop'
     ]),
     ...mapGetters('local/explorer/child', [
+      'selectedGroupId',
       'selectedHostIndex',
       'canPasteHost'
     ])
@@ -84,17 +84,17 @@ export default {
         const rowHeight = 48
         const headerHeight = 58
         const el = {
-          offsetTop: rowHeight * (index + 1),
+          offsetTop: rowHeight * index,
           offsetHeight: rowHeight
         }
         const table = {
           scrollTop: this.$refs.table.getScrollTop(),
-          offsetHeight: this.$refs.table.getOffsetHeight()
+          offsetHeight: this.$refs.table.getOffsetHeight() - headerHeight
         }
-        if (el.offsetTop - el.offsetHeight < table.scrollTop) {
-          this.$refs.table.setScrollTop(el.offsetTop - el.offsetHeight)
-        } else if (el.offsetTop + headerHeight > table.scrollTop + table.offsetHeight) {
-          this.$refs.table.setScrollTop(el.offsetTop + headerHeight - table.offsetHeight)
+        if (table.scrollTop > el.offsetTop) {
+          this.$refs.table.setScrollTop(el.offsetTop)
+        } else if (table.scrollTop < el.offsetTop + el.offsetHeight - table.offsetHeight) {
+          this.$refs.table.setScrollTop(el.offsetTop + el.offsetHeight - table.offsetHeight)
         }
       })
     }
@@ -116,16 +116,13 @@ export default {
       switch (e.keyCode) {
         case 8:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            e.preventDefault()
-            this.deleteHost()
+            this.deleteHost({ id: this.selectedHostId })
           }
           break
         case 13:
-          e.preventDefault()
           this.focusSelectedRow()
           break
         case 38:
-          e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             this.selectFirstHost()
           } else {
@@ -133,7 +130,6 @@ export default {
           }
           break
         case 40:
-          e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             this.selectLastHost()
           } else {
@@ -145,19 +141,16 @@ export default {
             break
           }
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            e.preventDefault()
-            this.copyHost()
+            this.copyHost({ id: this.selectedHostId })
           }
           break
         case 78:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            e.preventDefault()
             this.createHost()
           }
           break
         case 86:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            e.preventDefault()
             this.pasteHost()
           }
           break
@@ -204,8 +197,5 @@ export default {
 <style scoped lang="scss">
 .explorer-child-table {
   outline: none;
-  & /deep/ .v-datatable {
-    table-layout: fixed;
-  }
 }
 </style>

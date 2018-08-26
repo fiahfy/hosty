@@ -13,21 +13,17 @@
     @keydown.native="onKeyDown"
     @contextmenu.native.stop="onContextMenu"
   >
-    <template
+    <explorer-table-header-row
       slot="headers"
       slot-scope="props"
-    >
-      <explorer-table-header-row :headers="props.headers" />
-    </template>
-    <template
+      :headers="props.headers"
+    />
+    <explorer-table-row
       slot="items"
       slot-scope="props"
-    >
-      <explorer-table-row
-        :ref="`row-${props.item.id}`"
-        :group="props.item"
-      />
-    </template>
+      :ref="`row-${props.item.id}`"
+      :group="props.item"
+    />
   </sticky-data-table>
 </template>
 
@@ -80,17 +76,17 @@ export default {
         const rowHeight = 48
         const headerHeight = 58
         const el = {
-          offsetTop: rowHeight * (index + 1),
+          offsetTop: rowHeight * index,
           offsetHeight: rowHeight
         }
         const table = {
           scrollTop: this.$refs.table.getScrollTop(),
-          offsetHeight: this.$refs.table.getOffsetHeight()
+          offsetHeight: this.$refs.table.getOffsetHeight() - headerHeight
         }
-        if (el.offsetTop - el.offsetHeight < table.scrollTop) {
-          this.$refs.table.setScrollTop(el.offsetTop - el.offsetHeight)
-        } else if (el.offsetTop + headerHeight > table.scrollTop + table.offsetHeight) {
-          this.$refs.table.setScrollTop(el.offsetTop + headerHeight - table.offsetHeight)
+        if (table.scrollTop > el.offsetTop) {
+          this.$refs.table.setScrollTop(el.offsetTop)
+        } else if (table.scrollTop < el.offsetTop + el.offsetHeight - table.offsetHeight) {
+          this.$refs.table.setScrollTop(el.offsetTop + el.offsetHeight - table.offsetHeight)
         }
       })
     }
@@ -112,16 +108,13 @@ export default {
       switch (e.keyCode) {
         case 8:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            e.preventDefault()
-            this.deleteGroup()
+            this.deleteGroup({ id: this.selectedGroupId })
           }
           break
         case 13:
-          e.preventDefault()
           this.focusSelectedRow()
           break
         case 38:
-          e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             this.selectFirstGroup()
           } else {
@@ -129,7 +122,6 @@ export default {
           }
           break
         case 40:
-          e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             this.selectLastGroup()
           } else {
@@ -141,19 +133,16 @@ export default {
             break
           }
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            e.preventDefault()
-            this.copyGroup()
+            this.copyGroup({ id: this.selectedGroupId })
           }
           break
         case 78:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            e.preventDefault()
             this.createGroup()
           }
           break
         case 86:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            e.preventDefault()
             this.pasteGroup()
           }
           break
@@ -200,8 +189,5 @@ export default {
 <style scoped lang="scss">
 .explorer-table {
   outline: none;
-  & /deep/ .v-datatable {
-    table-layout: fixed;
-  }
 }
 </style>

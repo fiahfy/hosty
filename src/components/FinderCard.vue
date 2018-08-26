@@ -2,12 +2,15 @@
   <v-card
     class="finder-card"
     flat
+    tile
   >
-    <v-card-title class="py-2 px-0">
+    <v-toolbar
+      color="transparent"
+      flat
+    >
       <v-text-field
         v-model="query"
         name="query"
-        class="ml-3 mr-2 my-2 pt-0"
         label="Search"
         append-icon="search"
         single-line
@@ -28,14 +31,14 @@
       <v-spacer />
       <v-btn
         :color="filterColor"
-        title="Filter Active"
+        title="Filter Enabled"
         flat
         icon
         @click="onFilterClick"
       >
         <v-icon>filter_list</v-icon>
       </v-btn>
-    </v-card-title>
+    </v-toolbar>
   </v-card>
 </template>
 
@@ -74,13 +77,13 @@ export default {
       }
     },
     onFilterClick () {
-      this.toggleFilter()
+      this.toggleFiltered()
     },
     onRegExpClick () {
       this.toggleRegExp()
     },
     ...mapActions('local/finder/', [
-      'toggleFilter',
+      'toggleFiltered',
       'toggleRegExp'
     ])
   }

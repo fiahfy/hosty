@@ -11,7 +11,7 @@
         class="my-0"
         flat
         icon
-        @click="onButtonClick"
+        @click.stop="onButtonClick"
       >
         <v-icon>check_circle</v-icon>
       </v-btn>
@@ -81,7 +81,7 @@ export default {
       return this.isSelectedGroup({ id: this.group.id })
     },
     color () {
-      return this.group.disabled ? 'grey' : 'success'
+      return this.group.disabled ? 'grey lighten-2' : 'success'
     },
     nameClasses () {
       return [
@@ -91,7 +91,7 @@ export default {
     },
     numberClasses () {
       return [
-        'ml-3 text-xs-right',
+        'ml-3 caption text-xs-right',
         this.group.hosts.length ? '' : 'grey--text'
       ]
     },
@@ -114,7 +114,7 @@ export default {
         },
         {
           label: 'Copy',
-          click: () => this.copyGroup(),
+          click: () => this.copyGroup({ id: this.group.id }),
           accelerator: 'CmdOrCtrl+C'
         },
         {
@@ -131,15 +131,14 @@ export default {
         },
         {
           label: 'Delete',
-          click: () => this.deleteGroup(),
+          click: () => this.deleteGroup({ id: this.group.id }),
           accelerator: 'CmdOrCtrl+Backspace'
         }
       ]
       ContextMenu.show(e, templates)
     },
     onButtonClick () {
-      this.selectGroup({ id: this.group.id })
-      this.updateGroup({ group: { disabled: !this.group.disabled } })
+      this.updateGroup({ id: this.group.id, group: { disabled: !this.group.disabled } })
     },
     onColumnDblClick () {
       this.focus()
@@ -164,7 +163,7 @@ export default {
       if (this.cancel) {
         return
       }
-      this.updateGroup({ group: { name: this.name } })
+      this.updateGroup({ id: this.group.id, group: { name: this.name } })
     },
     onTextContextMenu (e) {
       ContextMenu.showTextMenu(e)

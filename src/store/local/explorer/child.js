@@ -24,10 +24,10 @@ export default {
       return rootState.local.explorer.selectedGroupId
     },
     selectedHostIndex (state, getters) {
-      return state.hosts.findIndex((host) => getters.isSelectedHost({ id: host.id }))
+      return getters.getHostIndex({ id: state.selectedHostId })
     },
     selectedHost (state, getters) {
-      return state.hosts[getters.selectedHostIndex]
+      return getters.getHost({ id: state.selectedHostId })
     },
     canCreateHost (state, getters) {
       return !!getters.selectedGroupId
@@ -38,16 +38,22 @@ export default {
     canPasteHost (state) {
       return !!state.clippedHost
     },
+    getHostIndex (state) {
+      return ({ id }) => state.hosts.findIndex((host) => host.id === id)
+    },
+    getHost (state, getters) {
+      return ({ id }) => state.hosts[getters.getHostIndex({ id })]
+    },
     isSelectedHost (state) {
       return ({ id }) => state.selectedHostId === id
     },
-    getHosts (state, getters, rootState, rootGetters) {
+    cloneHosts (state, getters, rootState, rootGetters) {
       return () => JSON.parse(JSON.stringify(rootGetters['group/getHosts']({ groupId: getters.selectedGroupId })))
     }
   },
   actions: {
     loadHosts ({ commit, dispatch, getters, state }) {
-      const hosts = getters.getHosts().filter((host) => {
+      const hosts = getters.cloneHosts().filter((host) => {
         return !state.filtered || !host.disabled
       })
       commit('setHosts', { hosts })
@@ -63,18 +69,18 @@ export default {
       dispatch('selectHostIndex', { index })
       dispatch('focusTable')
     },
-    deleteHost ({ commit, dispatch, getters, state }) {
-      const oldIndex = getters.selectedHostIndex
-      dispatch('group/deleteHost', { groupId: getters.selectedGroupId, id: state.selectedHostId }, { root: true })
-      commit('removeHost', { id: state.selectedHostId })
+    deleteHost ({ commit, dispatch, getters, state }, { id }) {
+      const oldIndex = getters.getHostIndex({ id })
+      dispatch('group/deleteHost', { groupId: getters.selectedGroupId, id }, { root: true })
+      commit('removeHost', { id })
       dispatch('local/explorer/loadGroup', null, { root: true })
       const index = oldIndex < state.hosts.length ? oldIndex : state.hosts.length - 1
       dispatch('selectHostIndex', { index })
       dispatch('focusTable')
     },
-    updateHost ({ commit, dispatch, getters, state }, { host }) {
-      dispatch('group/updateHost', { groupId: getters.selectedGroupId, id: state.selectedHostId, host }, { root: true })
-      commit('setHost', { id: state.selectedHostId, host })
+    updateHost ({ commit, dispatch, getters }, { id, host }) {
+      dispatch('group/updateHost', { groupId: getters.selectedGroupId, id, host }, { root: true })
+      commit('updateHost', { id, host })
     },
     sortHosts ({ commit, state }) {
       const { by, descending } = state.order
@@ -97,8 +103,8 @@ export default {
       })
       commit('setHosts', { hosts })
     },
-    copyHost ({ commit, getters }) {
-      const clippedHost = getters.selectedHost
+    copyHost ({ commit, getters }, { id }) {
+      const clippedHost = getters.getHost({ id })
       commit('setClippedHost', { clippedHost })
     },
     pasteHost ({ dispatch, state }) {
@@ -152,8 +158,11 @@ export default {
       commit('setOrder', { order })
       dispatch('sortHosts')
     },
-    toggleFilter ({ commit, dispatch, state }) {
-      commit('setFiltered', { filtered: !state.filtered })
+    toggleFiltered ({ dispatch, state }) {
+      dispatch('setFiltered', { filtered: !state.filtered })
+    },
+    setFiltered ({ commit, dispatch }, { filtered }) {
+      commit('setFiltered', { filtered })
       dispatch('loadHosts')
     },
     focusTable ({ dispatch }) {
@@ -164,11 +173,11 @@ export default {
     setHosts (state, { hosts }) {
       state.hosts = hosts
     },
-    setHost (state, { id, host }) {
-      state.hosts = state.hosts.map((current) => current.id !== id ? current : { ...current, ...host })
-    },
     addHost (state, { host }) {
       state.hosts = [...state.hosts, host]
+    },
+    updateHost (state, { id, host }) {
+      state.hosts = state.hosts.map((current) => current.id !== id ? current : { ...current, ...host })
     },
     removeHost (state, { id }) {
       state.hosts = state.hosts.filter((host) => host.id !== id)

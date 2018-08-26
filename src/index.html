@@ -4,38 +4,14 @@
     <meta charset="utf-8">
     <title>Hosty</title>
     <style>
-      html {
-        height: 100%;
-      }
-      body {
+      html, body, #app {
         height: 100%;
         margin: 0;
-      }
-      #app {
-        height: 100%;
-      }
-      #loader {
-        align-items: center;
-        color: grey;
-        display: flex;
-        font-family: 'Avenir', Helvetica, Arial, sans-serif;
-        font-size: small;
-        height: 100%;
-        justify-content: center;
-        user-select: none;
-        width: 100%;
-      }
-      /* see: https://github.com/electron/electron/issues/4420 */
-      ::selection {
-        background: #accef7;
+        padding: 0;
       }
     </style>
   </head>
   <body>
-    <div id="app">
-      <div id="loader">
-        <div>Loading...</div>
-      </div>
-    </div>
+    <div id="app"></div>
   </body>
 </html>
