@@ -3,9 +3,9 @@
     ref="table"
     :headers="headers"
     :items="hosts"
+    :no-data-text="noDataText"
     class="explorer-child-table"
     item-key="id"
-    :no-data-text="noDataText"
     hide-actions
     tabindex="0"
     @scroll="onScroll"
