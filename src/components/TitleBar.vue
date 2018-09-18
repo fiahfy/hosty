@@ -6,9 +6,9 @@
     app
     status
   >
-    <v-spacer/>
+    <v-spacer />
     <span>{{ title }}</span>
-    <v-spacer/>
+    <v-spacer />
   </v-system-bar>
 </template>
 

@@ -20,9 +20,9 @@
     />
     <finder-table-row
       slot="items"
-      slot-scope="props"
       :ref="`row-${props.item.id}`"
       :key="props.item.id"
+      slot-scope="props"
       :item="props.item"
     />
   </virtual-data-table>

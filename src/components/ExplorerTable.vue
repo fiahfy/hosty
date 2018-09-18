@@ -20,8 +20,8 @@
     />
     <explorer-table-row
       slot="items"
-      slot-scope="props"
       :ref="`row-${props.item.id}`"
+      slot-scope="props"
       :group="props.item"
     />
   </sticky-data-table>

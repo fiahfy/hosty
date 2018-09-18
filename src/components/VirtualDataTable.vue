@@ -1,9 +1,9 @@
 <template>
   <v-data-table
-    v-resize="onResize"
     ref="table"
-    v-bind="$attrs"
     v-model="model"
+    v-resize="onResize"
+    v-bind="$attrs"
     :pagination.sync="paginationModel"
     :items="renderItems"
     :class="classes"
