@@ -22,29 +22,45 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       items: [
-        { name: 'explorer', icon: 'view_list', title: 'Explorer', accelerator: 'CmdOrCtrl+Shift+E' },
-        { name: 'finder', icon: 'search', title: 'Find', accelerator: 'CmdOrCtrl+Shift+F' },
-        { name: 'settings', icon: 'settings', title: 'Settings', accelerator: 'CmdOrCtrl+,' }
+        {
+          name: 'explorer',
+          icon: 'view_list',
+          title: 'Explorer',
+          accelerator: 'CmdOrCtrl+Shift+E'
+        },
+        {
+          name: 'finder',
+          icon: 'search',
+          title: 'Find',
+          accelerator: 'CmdOrCtrl+Shift+F'
+        },
+        {
+          name: 'settings',
+          icon: 'settings',
+          title: 'Settings',
+          accelerator: 'CmdOrCtrl+,'
+        }
       ]
     }
   },
   watch: {
-    '$route' (to) { // eslint-disable-line object-shorthand
+    $route(to) {
+      // eslint-disable-line object-shorthand
       this.updateItems(to.name)
     }
   },
-  mounted () {
+  mounted() {
     this.updateItems(this.$route.name)
   },
   methods: {
-    onItemClick (e, item) {
+    onItemClick(e, item) {
       this.$router.push({ name: item.name })
     },
-    updateItems (name) {
-      this.items = this.items.map(item => ({
+    updateItems(name) {
+      this.items = this.items.map((item) => ({
         ...item,
         color: item.name === name ? 'primary' : null
       }))

@@ -4,7 +4,7 @@ export default {
     darkTheme: false
   },
   mutations: {
-    setDarkTheme (state, { darkTheme }) {
+    setDarkTheme(state, { darkTheme }) {
       state.darkTheme = darkTheme
     }
   }

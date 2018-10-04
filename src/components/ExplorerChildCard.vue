@@ -45,26 +45,20 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default {
   computed: {
-    color () {
+    color() {
       return this.filtered ? 'primary' : ''
     },
-    ...mapState('local/explorer/child', [
-      'selectedHostId',
-      'filtered'
-    ]),
-    ...mapGetters('local/explorer/child', [
-      'canCreateHost',
-      'canDeleteHost'
-    ])
+    ...mapState('local/explorer/child', ['selectedHostId', 'filtered']),
+    ...mapGetters('local/explorer/child', ['canCreateHost', 'canDeleteHost'])
   },
   methods: {
-    onNewClick () {
+    onNewClick() {
       this.createHost()
     },
-    onDeleteClick () {
+    onDeleteClick() {
       this.deleteHost({ id: this.selectedHostId })
     },
-    onFilterClick () {
+    onFilterClick() {
       this.toggleFiltered()
     },
     ...mapActions('local/explorer/child', [

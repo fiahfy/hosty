@@ -40,7 +40,7 @@ export default {
     ExplorerTableRow,
     StickyDataTable
   },
-  data () {
+  data() {
     return {
       headers: [
         {
@@ -56,18 +56,11 @@ export default {
     }
   },
   computed: {
-    ...mapState('local/explorer', [
-      'groups',
-      'selectedGroupId',
-      'scrollTop'
-    ]),
-    ...mapGetters('local/explorer', [
-      'selectedGroupIndex',
-      'canPasteGroup'
-    ])
+    ...mapState('local/explorer', ['groups', 'selectedGroupId', 'scrollTop']),
+    ...mapGetters('local/explorer', ['selectedGroupIndex', 'canPasteGroup'])
   },
   watch: {
-    selectedGroupIndex (value) {
+    selectedGroupIndex(value) {
       this.$nextTick(() => {
         const index = value
         if (index === -1) {
@@ -85,26 +78,31 @@ export default {
         }
         if (table.scrollTop > el.offsetTop) {
           this.$refs.table.setScrollTop(el.offsetTop)
-        } else if (table.scrollTop < el.offsetTop + el.offsetHeight - table.offsetHeight) {
-          this.$refs.table.setScrollTop(el.offsetTop + el.offsetHeight - table.offsetHeight)
+        } else if (
+          table.scrollTop <
+          el.offsetTop + el.offsetHeight - table.offsetHeight
+        ) {
+          this.$refs.table.setScrollTop(
+            el.offsetTop + el.offsetHeight - table.offsetHeight
+          )
         }
       })
     }
   },
-  mounted () {
+  mounted() {
     const scrollTop = this.scrollTop
     this.$nextTick(() => {
       this.$refs.table.setScrollTop(scrollTop)
     })
   },
   methods: {
-    onScroll (e) {
+    onScroll(e) {
       this.setScrollTop({ scrollTop: e.target.scrollTop })
     },
-    onClick () {
+    onClick() {
       this.unselectGroup()
     },
-    onKeyDown (e) {
+    onKeyDown(e) {
       switch (e.keyCode) {
         case 8:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
@@ -148,7 +146,7 @@ export default {
           break
       }
     },
-    onContextMenu (e) {
+    onContextMenu(e) {
       this.unselectGroup()
       const templates = [
         {
@@ -165,12 +163,10 @@ export default {
       ]
       ContextMenu.show(e, templates)
     },
-    focusSelectedRow () {
+    focusSelectedRow() {
       this.$refs[`row-${this.selectedGroupId}`].focus()
     },
-    ...mapMutations('local/explorer', [
-      'setScrollTop'
-    ]),
+    ...mapMutations('local/explorer', ['setScrollTop']),
     ...mapActions('local/explorer', [
       'createGroup',
       'deleteGroup',

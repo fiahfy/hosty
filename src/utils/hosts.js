@@ -24,14 +24,24 @@ const userFilepath = path.join(remote.app.getPath('userData'), 'hosts')
 
 const sudo = async (command) => {
   return new Promise((resolve, reject) => {
-    sudoPrompt.exec(command, { name: Package.productName }, (error, stdout, stderr) => {
-      if (error) {
-        console.error('Sudo prompt exec failed: %o', { command, error, stdout, stderr }) // eslint-disable-line no-console
-        reject(error)
-        return
+    sudoPrompt.exec(
+      command,
+      { name: Package.productName },
+      (error, stdout, stderr) => {
+        if (error) {
+          // eslint-disable-next-line no-console
+          console.error('Sudo prompt exec failed: %o', {
+            command,
+            error,
+            stdout,
+            stderr
+          })
+          reject(error)
+          return
+        }
+        resolve()
       }
-      resolve()
-    })
+    )
   })
 }
 
@@ -120,13 +130,13 @@ export const initialize = async () => {
 export const sync = (hosts = []) => {
   const data = fs.readFileSync(userFilepath, charset)
 
-  let newData = hosts
-    .map((host) => `${host.ip}\t${host.name}`)
-    .join('\n')
+  let newData = hosts.map((host) => `${host.ip}\t${host.name}`).join('\n')
   newData = `${section.begin}\n${newData}\n${section.end}\n`
 
   const reg = new RegExp(
-    String.raw`([\s\S]*\n?)${section.begin}\n[\s\S]*\n${section.end}\n?([\s\S]*)`,
+    String.raw`([\s\S]*\n?)${section.begin}\n[\s\S]*\n${
+      section.end
+    }\n?([\s\S]*)`,
     'im'
   )
   const matches = data.match(reg)

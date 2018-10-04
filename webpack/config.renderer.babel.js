@@ -20,11 +20,7 @@ export default {
       },
       {
         test: /\.s?css$/,
-        use: [
-          'vue-style-loader',
-          'css-loader',
-          'sass-loader'
-        ]
+        use: ['vue-style-loader', 'css-loader', 'sass-loader']
       },
       {
         test: /\.(jpg|gif|png|svg)$/,

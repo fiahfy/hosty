@@ -17,7 +17,7 @@
 import { mapMutations, mapState } from 'vuex'
 
 export default {
-  data () {
+  data() {
     return {
       snackbar: false,
       color: '',
@@ -26,12 +26,10 @@ export default {
     }
   },
   computed: {
-    ...mapState([
-      'message'
-    ])
+    ...mapState(['message'])
   },
   watch: {
-    snackbar (value) {
+    snackbar(value) {
       if (value) {
         return
       }
@@ -39,7 +37,7 @@ export default {
         this.showSnackbar()
       })
     },
-    message (value) {
+    message(value) {
       if (!value) {
         return
       }
@@ -52,10 +50,10 @@ export default {
     }
   },
   methods: {
-    onCloseClick () {
+    onCloseClick() {
       this.snackbar = false
     },
-    showSnackbar () {
+    showSnackbar() {
       const message = this.messages.shift()
       if (!message) {
         return
@@ -64,9 +62,7 @@ export default {
       this.color = message.color
       this.text = message.text
     },
-    ...mapMutations([
-      'setMessage'
-    ])
+    ...mapMutations(['setMessage'])
   }
 }
 </script>

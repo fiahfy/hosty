@@ -20,50 +20,59 @@ export default {
     query: ''
   },
   getters: {
-    filteredItems (state) {
+    filteredItems(state) {
       const query = state.query || ''
       const pattern = state.regExp ? query : RegExp.escape(query)
       const regexp = new RegExp(pattern, 'i')
-      return state.items.filter((item) => {
-        return !state.filtered || !item.disabled
-      }).filter((item) => {
-        return !query ||
-          regexp.test(item.group || '') ||
-          regexp.test(item.ip || '') ||
-          regexp.test(item.host || '')
-      })
+      return state.items
+        .filter((item) => {
+          return !state.filtered || !item.disabled
+        })
+        .filter((item) => {
+          return (
+            !query ||
+            regexp.test(item.group || '') ||
+            regexp.test(item.ip || '') ||
+            regexp.test(item.host || '')
+          )
+        })
     },
-    selectedItemIndex (state, getters) {
-      return getters.filteredItems.findIndex((item) => getters.isSelectedItem({ id: item.id }))
+    selectedItemIndex(state, getters) {
+      return getters.filteredItems.findIndex((item) =>
+        getters.isSelectedItem({ id: item.id })
+      )
     },
-    selectedItem (state, getters) {
+    selectedItem(state, getters) {
       return getters.filteredItems[getters.selectedItemIndex]
     },
-    isSelectedItem (state) {
+    isSelectedItem(state) {
       return ({ id }) => state.selectedItemId === id
     },
-    getGroups (state, getters, rootState) {
+    getGroups(state, getters, rootState) {
       return () => JSON.parse(JSON.stringify(rootState.group.groups))
     }
   },
   actions: {
-    loadItems ({ commit, dispatch, getters }) {
+    loadItems({ commit, dispatch, getters }) {
       const items = getters.getGroups().reduce((carry, group) => {
-        return [...carry, ...(group.hosts || []).map((host) => {
-          return {
-            id: `${group.id}-${host.id}`,
-            disabled: group.disabled || host.disabled,
-            group: group.name,
-            ip: host.ip,
-            host: host.name
-          }
-        })]
+        return [
+          ...carry,
+          ...(group.hosts || []).map((host) => {
+            return {
+              id: `${group.id}-${host.id}`,
+              disabled: group.disabled || host.disabled,
+              group: group.name,
+              ip: host.ip,
+              host: host.name
+            }
+          })
+        ]
       }, [])
       commit('setItems', { items })
       dispatch('sortItems')
       dispatch('unselectItem')
     },
-    sortItems ({ commit, state }) {
+    sortItems({ commit, state }) {
       const { by, descending } = state.order
       const items = state.items.sort((a, b) => {
         let result = 0
@@ -84,13 +93,13 @@ export default {
       })
       commit('setItems', { items })
     },
-    selectItem ({ commit, dispatch, getters }, { id }) {
+    selectItem({ commit }, { id }) {
       commit('setSelectedItemId', { selectedItemId: id })
     },
-    unselectItem ({ dispatch }) {
+    unselectItem({ dispatch }) {
       dispatch('selectItem', { id: 0 })
     },
-    selectItemIndex ({ dispatch, getters }, { index }) {
+    selectItemIndex({ dispatch, getters }, { index }) {
       const item = getters.filteredItems[index]
       if (item) {
         dispatch('selectItem', { id: item.id })
@@ -98,76 +107,89 @@ export default {
         dispatch('unselectItem')
       }
     },
-    selectFirstItem ({ dispatch, getters }) {
+    selectFirstItem({ dispatch, getters }) {
       const index = 0
       if (index > -1 && index < getters.filteredItems.length) {
         dispatch('selectItemIndex', { index })
       }
     },
-    selectLastItem ({ dispatch, getters }) {
+    selectLastItem({ dispatch, getters }) {
       const index = getters.filteredItems.length - 1
       if (index > -1 && index < getters.filteredItems.length) {
         dispatch('selectItemIndex', { index })
       }
     },
-    selectPreviousItem ({ dispatch, getters }) {
+    selectPreviousItem({ dispatch, getters }) {
       const index = getters.selectedItemIndex - 1
       if (index > -1 && index < getters.filteredItems.length) {
         dispatch('selectItemIndex', { index })
       }
     },
-    selectNextItem ({ dispatch, getters }) {
+    selectNextItem({ dispatch, getters }) {
       const index = getters.selectedItemIndex + 1
       if (index > -1 && index < getters.filteredItems.length) {
         dispatch('selectItemIndex', { index })
       }
     },
-    changeOrderBy ({ commit, dispatch, state }, { orderBy }) {
-      const descending = state.order.by === orderBy ? !state.order.descending : false
+    changeOrderBy({ commit, dispatch, state }, { orderBy }) {
+      const descending =
+        state.order.by === orderBy ? !state.order.descending : false
       const order = { by: orderBy, descending }
       commit('setOrder', { order })
       dispatch('sortItems')
     },
-    toggleFiltered ({ commit, dispatch, state }) {
+    toggleFiltered({ commit, dispatch, state }) {
       commit('setFiltered', { filtered: !state.filtered })
       dispatch('loadItems')
     },
-    toggleRegExp ({ commit, dispatch, state }) {
+    toggleRegExp({ commit, dispatch, state }) {
       commit('setRegExp', { regExp: !state.regExp })
       dispatch('loadItems')
     },
-    viewItem ({ dispatch, state }) {
+    viewItem({ dispatch, state }) {
       const [groupId, hostId] = state.selectedItemId.split('-').map(Number)
       dispatch('changeRoute', { name: 'explorer' }, { root: true })
       // wait dom updated
       setTimeout(() => {
-        dispatch('local/explorer/setFiltered', { filtered: false }, { root: true })
+        dispatch(
+          'local/explorer/setFiltered',
+          { filtered: false },
+          { root: true }
+        )
         dispatch('local/explorer/selectGroup', { id: groupId }, { root: true })
-        dispatch('local/explorer/child/setFiltered', { filtered: false }, { root: true })
-        dispatch('local/explorer/child/selectHost', { id: hostId }, { root: true })
+        dispatch(
+          'local/explorer/child/setFiltered',
+          { filtered: false },
+          { root: true }
+        )
+        dispatch(
+          'local/explorer/child/selectHost',
+          { id: hostId },
+          { root: true }
+        )
       })
     }
   },
   mutations: {
-    setItems (state, { items }) {
+    setItems(state, { items }) {
       state.items = items
     },
-    setSelectedItemId (state, { selectedItemId }) {
+    setSelectedItemId(state, { selectedItemId }) {
       state.selectedItemId = selectedItemId
     },
-    setScrollTop (state, { scrollTop }) {
+    setScrollTop(state, { scrollTop }) {
       state.scrollTop = scrollTop
     },
-    setOrder (state, { order }) {
+    setOrder(state, { order }) {
       state.order = order
     },
-    setFiltered (state, { filtered }) {
+    setFiltered(state, { filtered }) {
       state.filtered = filtered
     },
-    setRegExp (state, { regExp }) {
+    setRegExp(state, { regExp }) {
       state.regExp = regExp
     },
-    setQuery (state, { query }) {
+    setQuery(state, { query }) {
       state.query = query
     }
   }

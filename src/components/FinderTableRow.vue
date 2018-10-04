@@ -36,42 +36,31 @@ export default {
     }
   },
   computed: {
-    active () {
+    active() {
       return this.isSelectedItem({ id: this.item.id })
     },
-    color () {
+    color() {
       return this.item.disabled ? 'grey lighten-2' : 'success'
     },
-    groupClasses () {
-      return [
-        'spacer ellipsis',
-        this.item.group ? '' : 'grey--text'
-      ]
+    groupClasses() {
+      return ['spacer ellipsis', this.item.group ? '' : 'grey--text']
     },
-    ipClasses () {
-      return [
-        'ellipsis',
-        this.item.ip ? '' : 'grey--text'
-      ]
+    ipClasses() {
+      return ['ellipsis', this.item.ip ? '' : 'grey--text']
     },
-    hostClasses () {
-      return [
-        'ellipsis',
-        this.item.host ? '' : 'grey--text'
-      ]
+    hostClasses() {
+      return ['ellipsis', this.item.host ? '' : 'grey--text']
     },
-    ...mapGetters('local/finder', [
-      'isSelectedItem'
-    ])
+    ...mapGetters('local/finder', ['isSelectedItem'])
   },
   methods: {
-    onClick () {
+    onClick() {
       this.selectItem({ id: this.item.id })
     },
-    onDblClick () {
+    onDblClick() {
       this.viewItem()
     },
-    onContextMenu (e) {
+    onContextMenu(e) {
       this.selectItem({ id: this.item.id })
       const templates = [
         {
@@ -82,13 +71,10 @@ export default {
       ]
       ContextMenu.show(e, templates)
     },
-    view () {
+    view() {
       this.viewItem()
     },
-    ...mapActions('local/finder', [
-      'selectItem',
-      'viewItem'
-    ])
+    ...mapActions('local/finder', ['selectItem', 'viewItem'])
   }
 }
 </script>

@@ -58,25 +58,23 @@ export default {
     NotificationBar,
     TitleBar
   },
-  data () {
+  data() {
     return {
       dialog: false,
       filepath: ''
     }
   },
   computed: {
-    ...mapState([
-      'settings'
-    ])
+    ...mapState(['settings'])
   },
-  async created () {
+  async created() {
     await this.initialize()
   },
   methods: {
-    onContextMenu (e) {
+    onContextMenu(e) {
       ContextMenu.show(e)
     },
-    onDrop (e) {
+    onDrop(e) {
       const files = Array.from(e.dataTransfer.files)
       if (!files.length) {
         return
@@ -84,17 +82,14 @@ export default {
       this.dialog = true
       this.filepath = files[0].path
     },
-    onCancelClick () {
+    onCancelClick() {
       this.dialog = false
     },
-    onOKClick () {
+    onOKClick() {
       this.dialog = false
       this.import({ filepath: this.filepath })
     },
-    ...mapActions([
-      'initialize',
-      'import'
-    ])
+    ...mapActions(['initialize', 'import'])
   }
 }
 </script>

@@ -13,8 +13,16 @@ const createTemplate = () => {
     {
       label: 'File',
       submenu: [
-        { label: 'Import...', accelerator: 'CmdOrCtrl+O', click: () => send('import') },
-        { label: 'Export...', accelerator: 'CmdOrCtrl+S', click: () => send('export') }
+        {
+          label: 'Import...',
+          accelerator: 'CmdOrCtrl+O',
+          click: () => send('import')
+        },
+        {
+          label: 'Export...',
+          accelerator: 'CmdOrCtrl+S',
+          click: () => send('export')
+        }
       ]
     },
     {
@@ -30,14 +38,26 @@ const createTemplate = () => {
         { role: 'delete' },
         { role: 'selectall' },
         { type: 'separator' },
-        { label: 'Find...', accelerator: 'CmdOrCtrl+F', click: () => send('find') }
+        {
+          label: 'Find...',
+          accelerator: 'CmdOrCtrl+F',
+          click: () => send('find')
+        }
       ]
     },
     {
       label: 'View',
       submenu: [
-        { label: 'Explorer', accelerator: 'CmdOrCtrl+Shift+E', click: () => send('showExplorer') },
-        { label: 'Find', accelerator: 'CmdOrCtrl+Shift+F', click: () => send('showFinder') },
+        {
+          label: 'Explorer',
+          accelerator: 'CmdOrCtrl+Shift+E',
+          click: () => send('showExplorer')
+        },
+        {
+          label: 'Find',
+          accelerator: 'CmdOrCtrl+Shift+F',
+          click: () => send('showFinder')
+        },
         { type: 'separator' },
         { role: 'reload' },
         { role: 'forcereload' },
@@ -52,15 +72,15 @@ const createTemplate = () => {
     },
     {
       role: 'window',
-      submenu: [
-        { role: 'close' },
-        { role: 'minimize' }
-      ]
+      submenu: [{ role: 'close' }, { role: 'minimize' }]
     },
     {
       role: 'help',
       submenu: [
-        { label: 'Learn More', click: () => shell.openExternal('https://github.com/fiahfy/hosty') }
+        {
+          label: 'Learn More',
+          click: () => shell.openExternal('https://github.com/fiahfy/hosty')
+        }
       ]
     }
   ]
@@ -71,7 +91,11 @@ const createTemplate = () => {
       submenu: [
         { role: 'about' },
         { type: 'separator' },
-        { label: 'Preferences...', accelerator: 'CmdOrCtrl+,', click: () => send('showSettings') },
+        {
+          label: 'Preferences...',
+          accelerator: 'CmdOrCtrl+,',
+          click: () => send('showSettings')
+        },
         { type: 'separator' },
         { role: 'services', submenu: [] },
         { type: 'separator' },
@@ -89,10 +113,7 @@ const createTemplate = () => {
           { type: 'separator' },
           {
             label: 'Speech',
-            submenu: [
-              { role: 'startspeaking' },
-              { role: 'stopspeaking' }
-            ]
+            submenu: [{ role: 'startspeaking' }, { role: 'stopspeaking' }]
           }
         )
       } else if (menu.role === 'window') {
@@ -140,10 +161,9 @@ const createWindow = () => {
   Menu.setApplicationMenu(menu)
 
   if (process.env.NODE_ENV !== 'production') {
-    installExtension(VUEJS_DEVTOOLS.id)
-      .catch((err) => {
-        console.log('Unable to install `vue-devtools`: \n', err) // eslint-disable-line no-console
-      })
+    installExtension(VUEJS_DEVTOOLS.id).catch((err) => {
+      console.log('Unable to install `vue-devtools`: \n', err) // eslint-disable-line no-console
+    })
     mainWindow.openDevTools()
   }
 

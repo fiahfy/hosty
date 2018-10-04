@@ -1,9 +1,11 @@
 import webpack from 'webpack'
 
 const mode = process.env.NODE_ENV || 'development'
+const devtool = mode === 'production' ? false : 'eval-source-map'
 
 export default {
   mode,
+  devtool,
   context: `${__dirname}/../src/`,
   module: {
     rules: [

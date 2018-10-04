@@ -64,7 +64,7 @@ export default {
       default: () => ({})
     }
   },
-  data () {
+  data() {
     return {
       menu: {
         show: false,
@@ -77,34 +77,28 @@ export default {
     }
   },
   computed: {
-    active () {
+    active() {
       return this.isSelectedGroup({ id: this.group.id })
     },
-    color () {
+    color() {
       return this.group.disabled ? 'grey lighten-2' : 'success'
     },
-    nameClasses () {
-      return [
-        'spacer ellipsis',
-        this.group.name ? '' : 'grey--text'
-      ]
+    nameClasses() {
+      return ['spacer ellipsis', this.group.name ? '' : 'grey--text']
     },
-    numberClasses () {
+    numberClasses() {
       return [
         'ml-3 caption text-xs-right',
         this.group.hosts.length ? '' : 'grey--text'
       ]
     },
-    ...mapGetters('local/explorer', [
-      'isSelectedGroup',
-      'canPasteGroup'
-    ])
+    ...mapGetters('local/explorer', ['isSelectedGroup', 'canPasteGroup'])
   },
   methods: {
-    onClick () {
+    onClick() {
       this.selectGroup({ id: this.group.id })
     },
-    onContextMenu (e) {
+    onContextMenu(e) {
       this.selectGroup({ id: this.group.id })
       const templates = [
         {
@@ -137,13 +131,16 @@ export default {
       ]
       ContextMenu.show(e, templates)
     },
-    onButtonClick () {
-      this.updateGroup({ id: this.group.id, group: { disabled: !this.group.disabled } })
+    onButtonClick() {
+      this.updateGroup({
+        id: this.group.id,
+        group: { disabled: !this.group.disabled }
+      })
     },
-    onColumnDblClick () {
+    onColumnDblClick() {
       this.focus()
     },
-    onTextKeyDown (e) {
+    onTextKeyDown(e) {
       switch (e.keyCode) {
         case 13:
           e.preventDefault()
@@ -158,17 +155,17 @@ export default {
           break
       }
     },
-    onTextBlur () {
+    onTextBlur() {
       this.menu.show = false
       if (this.cancel) {
         return
       }
       this.updateGroup({ id: this.group.id, group: { name: this.name } })
     },
-    onTextContextMenu (e) {
+    onTextContextMenu(e) {
       ContextMenu.showTextMenu(e)
     },
-    focus () {
+    focus() {
       this.name = this.group.name
       this.cancel = false
       this.$nextTick(() => {

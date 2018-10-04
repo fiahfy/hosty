@@ -17,12 +17,8 @@ import { mapGetters, mapState } from 'vuex'
 
 export default {
   computed: {
-    ...mapState([
-      'title'
-    ]),
-    ...mapGetters([
-      'titleBar'
-    ])
+    ...mapState(['title']),
+    ...mapGetters(['titleBar'])
   }
 }
 </script>

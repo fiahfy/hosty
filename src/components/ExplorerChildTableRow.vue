@@ -94,7 +94,7 @@ export default {
       default: () => ({})
     }
   },
-  data () {
+  data() {
     return {
       ipMenu: {
         show: false,
@@ -114,34 +114,25 @@ export default {
     }
   },
   computed: {
-    active () {
+    active() {
       return this.isSelectedHost({ id: this.host.id })
     },
-    color () {
+    color() {
       return this.host.disabled ? 'grey lighten-2' : 'success'
     },
-    ipClasses () {
-      return [
-        'ellipsis',
-        this.host.ip ? '' : 'grey--text'
-      ]
+    ipClasses() {
+      return ['ellipsis', this.host.ip ? '' : 'grey--text']
     },
-    nameClasses () {
-      return [
-        'ellipsis',
-        this.host.name ? '' : 'grey--text'
-      ]
+    nameClasses() {
+      return ['ellipsis', this.host.name ? '' : 'grey--text']
     },
-    ...mapGetters('local/explorer/child', [
-      'isSelectedHost',
-      'canPasteHost'
-    ])
+    ...mapGetters('local/explorer/child', ['isSelectedHost', 'canPasteHost'])
   },
   methods: {
-    onClick () {
+    onClick() {
       this.selectHost({ id: this.host.id })
     },
-    onContextMenu (e) {
+    onContextMenu(e) {
       this.selectHost({ id: this.host.id })
       const templates = [
         {
@@ -174,13 +165,16 @@ export default {
       ]
       ContextMenu.show(e, templates)
     },
-    onButtonClick () {
-      this.updateHost({ id: this.host.id, host: { disabled: !this.host.disabled } })
+    onButtonClick() {
+      this.updateHost({
+        id: this.host.id,
+        host: { disabled: !this.host.disabled }
+      })
     },
-    onColumnDblClick (e, value) {
+    onColumnDblClick(e, value) {
       this.focus(value)
     },
-    onTextKeyDown (e, value) {
+    onTextKeyDown(e, value) {
       switch (e.keyCode) {
         case 13:
           e.preventDefault()
@@ -207,17 +201,17 @@ export default {
           break
       }
     },
-    onTextBlur (e, value) {
+    onTextBlur(e, value) {
       this[`${value}Menu`].show = false
       if (this.cancel) {
         return
       }
       this.updateHost({ id: this.host.id, host: { [value]: this[value] } })
     },
-    onTextContextMenu (e) {
+    onTextContextMenu(e) {
       ContextMenu.showTextMenu(e)
     },
-    focus (value = 'ip') {
+    focus(value = 'ip') {
       this[value] = this.host[value]
       this.cancel = false
       this.$nextTick(() => {

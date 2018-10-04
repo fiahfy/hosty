@@ -24,60 +24,65 @@ export default new Vuex.Store({
     permission: undefined
   },
   getters: {
-    titleBar (state) {
+    titleBar(state) {
       return process.platform === 'darwin' && !state.fullScreen
     }
   },
   actions: {
-    async initialize ({ commit, dispatch }) {
+    async initialize({ commit, dispatch }) {
       dispatch('local/explorer/loadGroups')
       dispatch('local/finder/loadItems')
       try {
         await Hosts.initialize()
         commit('setPermission', { permission: true })
-        dispatch('showMessage', { color: 'success', text: `Started syncing with hosts (${Hosts.path})` })
+        dispatch('showMessage', {
+          color: 'success',
+          text: `Started syncing with hosts (${Hosts.path})`
+        })
       } catch (e) {
-        console.error(e)
         commit('setPermission', { permission: false })
         dispatch('showMessage', { color: 'error', text: e.message })
       }
       dispatch('sync')
     },
-    finalize () {
+    finalize() {
       Hosts.finalize()
     },
-    sync ({ commit, dispatch, getters }) {
+    sync({ commit, dispatch, getters }) {
       try {
         Hosts.sync(getters['group/validHosts'])
       } catch (e) {
-        console.error(e)
         dispatch('showMessage', { color: 'error', text: e.message })
         commit('setPermission', { permission: false })
       }
     },
-    import ({ commit, dispatch }, { filepath }) {
+    import({ commit, dispatch }, { filepath }) {
       try {
         const groups = Hosts.read(filepath)
         commit('group/setGroups', { groups })
         dispatch('changeRoute', { name: 'explorer' })
         dispatch('local/explorer/loadGroups')
-        dispatch('showMessage', { color: 'success', text: 'Imported hosty file' })
+        dispatch('showMessage', {
+          color: 'success',
+          text: 'Imported hosty file'
+        })
       } catch (e) {
-        console.error(e)
         dispatch('showMessage', { color: 'error', text: 'Import failed' })
       }
     },
-    export ({ dispatch, state }, { filepath }) {
+    export({ dispatch, state }, { filepath }) {
       try {
         const groups = state.group.groups
         Hosts.write(filepath, groups)
-        dispatch('showMessage', { color: 'success', text: 'Exported hosty file' })
+        dispatch('showMessage', {
+          color: 'success',
+          text: 'Exported hosty file'
+        })
       } catch (e) {
-        console.error(e)
         dispatch('showMessage', { color: 'error', text: 'Export failed' })
       }
     },
-    focus (_, { selector }) {
+    focus(_, { selector }) {
       // wait dom updated
       setTimeout(() => {
         const el = document.querySelector(selector)
@@ -86,7 +91,7 @@ export default new Vuex.Store({
         }
       })
     },
-    select (_, { selector }) {
+    select(_, { selector }) {
       // wait dom updated
       setTimeout(() => {
         const el = document.querySelector(selector)
@@ -95,28 +100,28 @@ export default new Vuex.Store({
         }
       })
     },
-    changeRoute (_, payload) {
+    changeRoute(_, payload) {
       router.push(payload)
     },
-    changeTitle ({ commit }, { title = Package.productName }) {
+    changeTitle({ commit }, { title = Package.productName }) {
       document.title = title
       commit('setTitle', { title })
     },
-    showMessage ({ commit }, message) {
+    showMessage({ commit }, message) {
       commit('setMessage', { message })
     }
   },
   mutations: {
-    setTitle (state, { title }) {
+    setTitle(state, { title }) {
       state.title = title
     },
-    setMessage (state, { message }) {
+    setMessage(state, { message }) {
       state.message = message
     },
-    setFullScreen (state, { fullScreen }) {
+    setFullScreen(state, { fullScreen }) {
       state.fullScreen = fullScreen
     },
-    setPermission (state, { permission }) {
+    setPermission(state, { permission }) {
       state.permission = permission
     }
   },
@@ -127,10 +132,7 @@ export default new Vuex.Store({
   },
   plugins: [
     createPersistedState({
-      paths: [
-        'group',
-        'settings'
-      ]
+      paths: ['group', 'settings']
     }),
     (store) => {
       store.subscribe((mutation) => {
