@@ -10,6 +10,7 @@
     >
       <v-text-field
         v-model="query"
+        class="pt-0"
         name="query"
         label="Search"
         append-icon="search"

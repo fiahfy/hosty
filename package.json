@@ -11,7 +11,7 @@
     "@fiahfy/electron-accelerator-formatter": "^0.0.2",
     "electron-devtools-installer": "^2.2.0",
     "electron-window-state": "^5.0.1",
-    "material-design-icons": "^3.0.1",
+    "material-design-icons-iconfont": "^3.0.3",
     "sudo-prompt": "^8.1.0",
     "typeface-roboto": "^0.0.54",
     "vue": "^2.4.2",

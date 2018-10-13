@@ -22,20 +22,26 @@ export default {
   getters: {
     filteredItems(state) {
       const query = state.query || ''
-      const pattern = state.regExp ? query : RegExp.escape(query)
-      const regexp = new RegExp(pattern, 'i')
-      return state.items
-        .filter((item) => {
-          return !state.filtered || !item.disabled
-        })
-        .filter((item) => {
-          return (
-            !query ||
-            regexp.test(item.group || '') ||
-            regexp.test(item.ip || '') ||
-            regexp.test(item.host || '')
-          )
-        })
+      const pattern = state.regExp
+        ? query
+        : query.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
+      try {
+        const regexp = new RegExp(pattern, 'i')
+        return state.items
+          .filter((item) => {
+            return !state.filtered || !item.disabled
+          })
+          .filter((item) => {
+            return (
+              !query ||
+              regexp.test(item.group || '') ||
+              regexp.test(item.ip || '') ||
+              regexp.test(item.host || '')
+            )
+          })
+      } catch (e) {
+        return []
+      }
     },
     selectedItemIndex(state, getters) {
       return getters.filteredItems.findIndex((item) =>

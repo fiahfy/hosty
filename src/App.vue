@@ -96,7 +96,7 @@ export default {
 
 <style lang="scss">
 @import '~typeface-roboto/index.css';
-@import '~material-design-icons/iconfont/material-icons.css';
+@import '~material-design-icons-iconfont/dist/material-design-icons.css';
 @import '~vuetify/dist/vuetify.min.css';
 
 html {
