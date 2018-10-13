@@ -4,13 +4,13 @@ export default {
     groups: []
   },
   getters: {
-    getHosts (state) {
+    getHosts(state) {
       return ({ groupId }) => {
         const group = state.groups.find((group) => group.id === groupId)
         return group ? group.hosts : []
       }
     },
-    validHosts (state) {
+    validHosts(state) {
       return state.groups
         .filter((group) => !group.disabled)
         .map((group) => group.hosts || [])
@@ -35,8 +35,9 @@ export default {
     }
   },
   actions: {
-    createGroup ({ commit, state }, { group }) {
-      const id = Math.max.apply(null, [0, ...state.groups.map((group) => group.id)]) + 1
+    createGroup({ commit, state }, { group }) {
+      const id =
+        Math.max.apply(null, [0, ...state.groups.map((group) => group.id)]) + 1
       const newGroup = {
         disabled: false,
         name: '',
@@ -48,7 +49,7 @@ export default {
       commit('setGroups', { groups })
       return newGroup
     },
-    updateGroup ({ commit, state }, { id, group }) {
+    updateGroup({ commit, state }, { id, group }) {
       const groups = state.groups.map((currentGroup) => {
         if (currentGroup.id !== id) {
           return currentGroup
@@ -60,13 +61,14 @@ export default {
       })
       commit('setGroups', { groups })
     },
-    deleteGroup ({ commit, state }, { id }) {
+    deleteGroup({ commit, state }, { id }) {
       const groups = state.groups.filter((group) => group.id !== id)
       commit('setGroups', { groups })
     },
-    createHost ({ dispatch, getters }, { groupId, host }) {
+    createHost({ dispatch, getters }, { groupId, host }) {
       const currentHosts = getters.getHosts({ groupId })
-      const id = Math.max.apply(null, [0, ...currentHosts.map((host) => host.id)]) + 1
+      const id =
+        Math.max.apply(null, [0, ...currentHosts.map((host) => host.id)]) + 1
       const newHost = {
         disabled: false,
         name: '',
@@ -78,7 +80,7 @@ export default {
       dispatch('setHosts', { groupId, hosts })
       return newHost
     },
-    updateHost ({ dispatch, getters }, { groupId, id, host }) {
+    updateHost({ dispatch, getters }, { groupId, id, host }) {
       const hosts = getters.getHosts({ groupId }).map((currentHost) => {
         if (currentHost.id !== id) {
           return currentHost
@@ -90,11 +92,13 @@ export default {
       })
       dispatch('setHosts', { groupId, hosts })
     },
-    deleteHost ({ dispatch, getters }, { groupId, id }) {
-      const hosts = getters.getHosts({ groupId }).filter((host) => host.id !== id)
+    deleteHost({ dispatch, getters }, { groupId, id }) {
+      const hosts = getters
+        .getHosts({ groupId })
+        .filter((host) => host.id !== id)
       dispatch('setHosts', { groupId, hosts })
     },
-    setHosts ({ commit, state }, { groupId, hosts }) {
+    setHosts({ commit, state }, { groupId, hosts }) {
       const groups = state.groups.map((group) => {
         if (group.id !== groupId) {
           return group
@@ -108,7 +112,7 @@ export default {
     }
   },
   mutations: {
-    setGroups (state, { groups }) {
+    setGroups(state, { groups }) {
       state.groups = groups
     }
   }

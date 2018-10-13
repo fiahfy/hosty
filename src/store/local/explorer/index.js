@@ -20,36 +20,36 @@ export default {
     clippedGroup: null
   },
   getters: {
-    selectedGroupIndex (state, getters) {
+    selectedGroupIndex(state, getters) {
       return getters.getGroupIndex({ id: state.selectedGroupId })
     },
-    selectedGroup (state, getters) {
+    selectedGroup(state, getters) {
       return getters.getGroup({ id: state.selectedGroupId })
     },
-    canCreateGroup () {
+    canCreateGroup() {
       return true
     },
-    canDeleteGroup (state) {
+    canDeleteGroup(state) {
       return !!state.selectedGroupId
     },
-    canPasteGroup (state) {
+    canPasteGroup(state) {
       return !!state.clippedGroup
     },
-    getGroupIndex (state) {
+    getGroupIndex(state) {
       return ({ id }) => state.groups.findIndex((group) => group.id === id)
     },
-    getGroup (state, getters) {
+    getGroup(state, getters) {
       return ({ id }) => state.groups[getters.getGroupIndex({ id })]
     },
-    isSelectedGroup (state) {
+    isSelectedGroup(state) {
       return ({ id }) => state.selectedGroupId === id
     },
-    cloneGroups (state, getters, rootState) {
+    cloneGroups(state, getters, rootState) {
       return () => JSON.parse(JSON.stringify(rootState.group.groups))
     }
   },
   actions: {
-    loadGroups ({ commit, dispatch, getters, state }) {
+    loadGroups({ commit, dispatch, getters, state }) {
       const groups = getters.cloneGroups().filter((group) => {
         return !state.filtered || !group.disabled
       })
@@ -58,32 +58,37 @@ export default {
       dispatch('sortGroups')
       dispatch('unselectGroup')
     },
-    loadGroup ({ commit, getters, state }) {
+    loadGroup({ commit, getters, state }) {
       const group = getters.cloneGroups().find((group) => {
         return group.id === state.selectedGroupId
       })
       commit('updateGroup', { id: state.selectedGroupId, group })
     },
-    async createGroup ({ commit, dispatch, state }, { group } = {}) {
-      const newGroup = await dispatch('group/createGroup', { group }, { root: true })
+    async createGroup({ commit, dispatch, state }, { group } = {}) {
+      const newGroup = await dispatch(
+        'group/createGroup',
+        { group },
+        { root: true }
+      )
       commit('addGroup', { group: newGroup })
       const index = state.groups.length - 1
       dispatch('selectGroupIndex', { index })
       dispatch('focusTable')
     },
-    deleteGroup ({ commit, dispatch, getters, state }, { id }) {
+    deleteGroup({ commit, dispatch, getters, state }, { id }) {
       const oldIndex = getters.getGroupIndex({ id })
       dispatch('group/deleteGroup', { id }, { root: true })
       commit('removeGroup', { id })
-      const index = oldIndex < state.groups.length ? oldIndex : state.groups.length - 1
+      const index =
+        oldIndex < state.groups.length ? oldIndex : state.groups.length - 1
       dispatch('selectGroupIndex', { index })
       dispatch('focusTable')
     },
-    updateGroup ({ commit, dispatch }, { id, group }) {
+    updateGroup({ commit, dispatch }, { id, group }) {
       dispatch('group/updateGroup', { id, group }, { root: true })
       commit('updateGroup', { id, group })
     },
-    sortGroups ({ commit, state }) {
+    sortGroups({ commit, state }) {
       const { by, descending } = state.order
       const groups = state.groups.sort((a, b) => {
         let result = 0
@@ -104,28 +109,30 @@ export default {
       })
       commit('setGroups', { groups })
     },
-    copyGroup ({ commit, getters }, { id }) {
+    copyGroup({ commit, getters }, { id }) {
       const clippedGroup = getters.getGroup({ id })
       commit('setClippedGroup', { clippedGroup })
     },
-    pasteGroup ({ dispatch, state }) {
+    pasteGroup({ dispatch, state }) {
       const group = state.clippedGroup
       if (!group) {
         return
       }
       dispatch('createGroup', { group })
     },
-    selectGroup ({ commit, dispatch, getters }, { id }) {
+    selectGroup({ commit, dispatch, getters }, { id }) {
       commit('setSelectedGroupId', { selectedGroupId: id })
-      const title = getters.selectedGroup ? getters.selectedGroup.name || '(Untitled)' : undefined
+      const title = getters.selectedGroup
+        ? getters.selectedGroup.name || '(Untitled)'
+        : undefined
       dispatch('changeTitle', { title }, { root: true })
       dispatch('child/loadHosts')
       dispatch('child/unselectHost')
     },
-    unselectGroup ({ dispatch }) {
+    unselectGroup({ dispatch }) {
       dispatch('selectGroup', { id: 0 })
     },
-    selectGroupIndex ({ dispatch, state }, { index }) {
+    selectGroupIndex({ dispatch, state }, { index }) {
       const group = state.groups[index]
       if (group) {
         dispatch('selectGroup', { id: group.id })
@@ -133,73 +140,76 @@ export default {
         dispatch('unselectGroup')
       }
     },
-    selectFirstGroup ({ dispatch, state }) {
+    selectFirstGroup({ dispatch, state }) {
       const index = 0
       if (index > -1 && index < state.groups.length) {
         dispatch('selectGroupIndex', { index })
       }
     },
-    selectLastGroup ({ dispatch, state }) {
+    selectLastGroup({ dispatch, state }) {
       const index = state.groups.length - 1
       if (index > -1 && index < state.groups.length) {
         dispatch('selectGroupIndex', { index })
       }
     },
-    selectPreviousGroup ({ dispatch, getters, state }) {
+    selectPreviousGroup({ dispatch, getters, state }) {
       const index = getters.selectedGroupIndex - 1
       if (index > -1 && index < state.groups.length) {
         dispatch('selectGroupIndex', { index })
       }
     },
-    selectNextGroup ({ dispatch, getters, state }) {
+    selectNextGroup({ dispatch, getters, state }) {
       const index = getters.selectedGroupIndex + 1
       if (index > -1 && index < state.groups.length) {
         dispatch('selectGroupIndex', { index })
       }
     },
-    changeOrderBy ({ commit, dispatch, state }, { orderBy }) {
-      const descending = state.order.by === orderBy ? !state.order.descending : false
+    changeOrderBy({ commit, dispatch, state }, { orderBy }) {
+      const descending =
+        state.order.by === orderBy ? !state.order.descending : false
       const order = { by: orderBy, descending }
       commit('setOrder', { order })
       dispatch('sortGroups')
     },
-    toggleFiltered ({ dispatch, state }) {
+    toggleFiltered({ dispatch, state }) {
       dispatch('setFiltered', { filtered: !state.filtered })
     },
-    setFiltered ({ commit, dispatch }, { filtered }) {
+    setFiltered({ commit, dispatch }, { filtered }) {
       commit('setFiltered', { filtered })
       dispatch('loadGroups')
     },
-    focusTable ({ dispatch }) {
+    focusTable({ dispatch }) {
       dispatch('focus', { selector: Selector.explorerTable }, { root: true })
     }
   },
   mutations: {
-    setGroups (state, { groups }) {
+    setGroups(state, { groups }) {
       state.groups = groups
     },
-    addGroup (state, { group }) {
+    addGroup(state, { group }) {
       state.groups = [...state.groups, group]
     },
-    updateGroup (state, { id, group }) {
-      state.groups = state.groups.map((current) => current.id !== id ? current : { ...current, ...group })
+    updateGroup(state, { id, group }) {
+      state.groups = state.groups.map(
+        (current) => (current.id !== id ? current : { ...current, ...group })
+      )
     },
-    removeGroup (state, { id }) {
+    removeGroup(state, { id }) {
       state.groups = state.groups.filter((group) => group.id !== id)
     },
-    setSelectedGroupId (state, { selectedGroupId }) {
+    setSelectedGroupId(state, { selectedGroupId }) {
       state.selectedGroupId = selectedGroupId
     },
-    setScrollTop (state, { scrollTop }) {
+    setScrollTop(state, { scrollTop }) {
       state.scrollTop = scrollTop
     },
-    setOrder (state, { order }) {
+    setOrder(state, { order }) {
       state.order = order
     },
-    setFiltered (state, { filtered }) {
+    setFiltered(state, { filtered }) {
       state.filtered = filtered
     },
-    setClippedGroup (state, { clippedGroup }) {
+    setClippedGroup(state, { clippedGroup }) {
       state.clippedGroup = clippedGroup
     }
   },

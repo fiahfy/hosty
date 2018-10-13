@@ -9,10 +9,12 @@ const appendInspectElementMenu = (e, template) => {
     template = template.concat([{ type: 'separator' }])
   }
 
-  return template.concat([{
-    label: 'Inspect Element',
-    click: () => remote.getCurrentWindow().inspectElement(x, y)
-  }])
+  return template.concat([
+    {
+      label: 'Inspect Element',
+      click: () => remote.getCurrentWindow().inspectElement(x, y)
+    }
+  ])
 }
 
 export const Role = {
@@ -55,15 +57,11 @@ export const show = (e, template = []) => {
     return
   }
 
-  Menu
-    .buildFromTemplate(template)
-    .popup(remote.getCurrentWindow(), { async: true })
+  Menu.buildFromTemplate(template).popup(remote.getCurrentWindow(), {
+    async: true
+  })
 }
 
 export const showTextMenu = (e) => {
-  show(e, [
-    { role: Role.cut },
-    { role: Role.copy },
-    { role: Role.paste }
-  ])
+  show(e, [{ role: Role.cut }, { role: Role.copy }, { role: Role.paste }])
 }

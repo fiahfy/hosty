@@ -10,6 +10,7 @@
     >
       <v-text-field
         v-model="query"
+        class="pt-0"
         name="query"
         label="Search"
         append-icon="search"
@@ -49,43 +50,41 @@ import * as ContextMenu from '~/utils/context-menu'
 export default {
   computed: {
     query: {
-      get () {
+      get() {
         return this.$store.state.local.finder.query
       },
-      set (value) {
+      set(value) {
         this.$store.commit('local/finder/setQuery', { query: value })
       }
     },
-    filterColor () {
+    filterColor() {
       return this.filtered ? 'primary' : ''
     },
-    regExpColor () {
+    regExpColor() {
       return this.regExp ? 'primary' : ''
     },
-    ...mapState('local/finder/', [
-      'filtered',
-      'regExp'
-    ])
+    ...mapState('local/finder/', ['filtered', 'regExp'])
   },
   methods: {
-    onTextContextMenu (e) {
+    onTextContextMenu(e) {
       ContextMenu.showTextMenu(e)
     },
-    onTextKeyDown (e) {
-      if (e.altKey && ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) && e.keyCode === 82) {
+    onTextKeyDown(e) {
+      if (
+        e.altKey &&
+        ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) &&
+        e.keyCode === 82
+      ) {
         this.toggleRegExp()
       }
     },
-    onFilterClick () {
+    onFilterClick() {
       this.toggleFiltered()
     },
-    onRegExpClick () {
+    onRegExpClick() {
       this.toggleRegExp()
     },
-    ...mapActions('local/finder/', [
-      'toggleFiltered',
-      'toggleRegExp'
-    ])
+    ...mapActions('local/finder/', ['toggleFiltered', 'toggleRegExp'])
   }
 }
 </script>

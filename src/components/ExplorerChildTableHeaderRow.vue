@@ -24,30 +24,26 @@ export default {
     }
   },
   computed: {
-    ...mapState('local/explorer/child', [
-      'order'
-    ])
+    ...mapState('local/explorer/child', ['order'])
   },
   methods: {
-    getClass (header) {
+    getClass(header) {
       return [
         'column sortable px-0',
         this.order.descending ? 'desc' : 'asc',
         header.value === this.order.by ? 'active' : ''
       ]
     },
-    getStyle (header) {
+    getStyle(header) {
       return {
         'box-sizing': 'content-box',
         width: header.width ? `${header.width}px` : null
       }
     },
-    onHeaderClick (e, header) {
+    onHeaderClick(e, header) {
       this.changeOrderBy({ orderBy: header.value })
     },
-    ...mapActions('local/explorer/child', [
-      'changeOrderBy'
-    ])
+    ...mapActions('local/explorer/child', ['changeOrderBy'])
   }
 }
 </script>

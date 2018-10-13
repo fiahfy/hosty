@@ -20,9 +20,9 @@
     />
     <finder-table-row
       slot="items"
-      slot-scope="props"
       :ref="`row-${props.item.id}`"
       :key="props.item.id"
+      slot-scope="props"
       :item="props.item"
     />
   </virtual-data-table>
@@ -40,7 +40,7 @@ export default {
     FinderTableRow,
     VirtualDataTable
   },
-  data () {
+  data() {
     return {
       headers: [
         {
@@ -64,17 +64,11 @@ export default {
     }
   },
   computed: {
-    ...mapState('local/finder', [
-      'selectedItemId',
-      'scrollTop'
-    ]),
-    ...mapGetters('local/finder', [
-      'filteredItems',
-      'selectedItemIndex'
-    ])
+    ...mapState('local/finder', ['selectedItemId', 'scrollTop']),
+    ...mapGetters('local/finder', ['filteredItems', 'selectedItemIndex'])
   },
   watch: {
-    selectedItemIndex (value) {
+    selectedItemIndex(value) {
       this.$nextTick(() => {
         const index = value
         if (index === -1) {
@@ -92,13 +86,18 @@ export default {
         }
         if (el.offsetTop - el.offsetHeight < table.scrollTop) {
           this.$refs.table.setScrollTop(el.offsetTop - el.offsetHeight)
-        } else if (el.offsetTop + headerHeight > table.scrollTop + table.offsetHeight) {
-          this.$refs.table.setScrollTop(el.offsetTop + headerHeight - table.offsetHeight)
+        } else if (
+          el.offsetTop + headerHeight >
+          table.scrollTop + table.offsetHeight
+        ) {
+          this.$refs.table.setScrollTop(
+            el.offsetTop + headerHeight - table.offsetHeight
+          )
         }
       })
     }
   },
-  mounted () {
+  mounted() {
     this.loadItems()
     const scrollTop = this.scrollTop
     this.$nextTick(() => {
@@ -106,13 +105,13 @@ export default {
     })
   },
   methods: {
-    onScroll (e) {
+    onScroll(e) {
       this.setScrollTop({ scrollTop: e.target.scrollTop })
     },
-    onClick () {
+    onClick() {
       this.unselectItem()
     },
-    onKeyDown (e) {
+    onKeyDown(e) {
       switch (e.keyCode) {
         case 13:
           this.viewSelectedRow()
@@ -133,12 +132,10 @@ export default {
           break
       }
     },
-    viewSelectedRow () {
+    viewSelectedRow() {
       this.$refs[`row-${this.selectedItemId}`].view()
     },
-    ...mapMutations('local/finder/', [
-      'setScrollTop'
-    ]),
+    ...mapMutations('local/finder/', ['setScrollTop']),
     ...mapActions('local/finder/', [
       'loadItems',
       'unselectItem',

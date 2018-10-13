@@ -3,9 +3,9 @@
     ref="table"
     :headers="headers"
     :items="hosts"
+    :no-data-text="noDataText"
     class="explorer-child-table"
     item-key="id"
-    :no-data-text="noDataText"
     hide-actions
     tabindex="0"
     @scroll="onScroll"
@@ -20,8 +20,8 @@
     />
     <explorer-child-table-row
       slot="items"
-      slot-scope="props"
       :ref="`row-${props.item.id}`"
+      slot-scope="props"
       :host="props.item"
     />
   </sticky-data-table>
@@ -40,7 +40,7 @@ export default {
     ExplorerChildTableRow,
     StickyDataTable
   },
-  data () {
+  data() {
     return {
       headers: [
         {
@@ -60,7 +60,7 @@ export default {
     }
   },
   computed: {
-    noDataText () {
+    noDataText() {
       return this.selectedGroupId ? 'No hosts' : 'No groups selected'
     },
     ...mapState('local/explorer/child', [
@@ -75,7 +75,7 @@ export default {
     ])
   },
   watch: {
-    selectedHostIndex (value) {
+    selectedHostIndex(value) {
       this.$nextTick(() => {
         const index = value
         if (index === -1) {
@@ -93,26 +93,31 @@ export default {
         }
         if (table.scrollTop > el.offsetTop) {
           this.$refs.table.setScrollTop(el.offsetTop)
-        } else if (table.scrollTop < el.offsetTop + el.offsetHeight - table.offsetHeight) {
-          this.$refs.table.setScrollTop(el.offsetTop + el.offsetHeight - table.offsetHeight)
+        } else if (
+          table.scrollTop <
+          el.offsetTop + el.offsetHeight - table.offsetHeight
+        ) {
+          this.$refs.table.setScrollTop(
+            el.offsetTop + el.offsetHeight - table.offsetHeight
+          )
         }
       })
     }
   },
-  mounted () {
+  mounted() {
     const scrollTop = this.scrollTop
     this.$nextTick(() => {
       this.$refs.table.setScrollTop(scrollTop)
     })
   },
   methods: {
-    onScroll (e) {
+    onScroll(e) {
       this.setScrollTop({ scrollTop: e.target.scrollTop })
     },
-    onClick () {
+    onClick() {
       this.unselectHost()
     },
-    onKeyDown (e) {
+    onKeyDown(e) {
       switch (e.keyCode) {
         case 8:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
@@ -156,7 +161,7 @@ export default {
           break
       }
     },
-    onContextMenu (e) {
+    onContextMenu(e) {
       this.unselectHost()
       const templates = [
         {
@@ -173,12 +178,10 @@ export default {
       ]
       ContextMenu.show(e, templates)
     },
-    focusSelectedRow () {
+    focusSelectedRow() {
       this.$refs[`row-${this.selectedHostId}`].focus()
     },
-    ...mapMutations('local/explorer/child', [
-      'setScrollTop'
-    ]),
+    ...mapMutations('local/explorer/child', ['setScrollTop']),
     ...mapActions('local/explorer/child', [
       'createHost',
       'deleteHost',

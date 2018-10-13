@@ -1,9 +1,9 @@
 <template>
   <v-data-table
-    v-resize="onResize"
     ref="table"
-    v-bind="$attrs"
     v-model="model"
+    v-resize="onResize"
+    v-bind="$attrs"
     :pagination.sync="paginationModel"
     :items="renderItems"
     :class="classes"
@@ -79,7 +79,7 @@ export default {
       default: false
     }
   },
-  data () {
+  data() {
     return {
       scrolling: false,
       padding: {
@@ -91,22 +91,22 @@ export default {
   },
   computed: {
     paginationModel: {
-      get () {
+      get() {
         return this.pagination
       },
-      set (value) {
+      set(value) {
         this.$emit('update:pagination', value)
       }
     },
     model: {
-      get () {
+      get() {
         return this.value
       },
-      set (value) {
+      set(value) {
         this.$emit('input', value)
       }
     },
-    classes () {
+    classes() {
       return {
         'sticky-headers': this.stickyHeaders,
         scrolling: this.scrolling
@@ -114,33 +114,33 @@ export default {
     }
   },
   watch: {
-    items () {
+    items() {
       this.adjustItems()
     }
   },
-  mounted () {
+  mounted() {
     this.container = this.$el.querySelector('.v-table__overflow')
     this.container.addEventListener('scroll', this.onScroll)
     this.$nextTick(() => {
       this.adjustItems()
     })
   },
-  beforeDestroy () {
+  beforeDestroy() {
     this.container.removeEventListener('scroll', this.onScroll)
   },
   methods: {
-    getScrollTop () {
+    getScrollTop() {
       return this.container.scrollTop
     },
-    setScrollTop (value) {
+    setScrollTop(value) {
       this.$nextTick(() => {
         this.container.scrollTop = value
       })
     },
-    getOffsetHeight () {
+    getOffsetHeight() {
       return this.container.offsetHeight
     },
-    adjustItems () {
+    adjustItems() {
       if (!this.container) {
         return
       }
@@ -162,10 +162,10 @@ export default {
       }
       this.renderItems = this.items.slice(firstIndex, lastIndex)
     },
-    onResize () {
+    onResize() {
       this.adjustItems()
     },
-    onScroll (e) {
+    onScroll(e) {
       this.adjustItems()
       this.$emit('scroll', e)
     }
@@ -192,22 +192,24 @@ export default {
     }
     .v-datatable {
       table-layout: fixed;
-      &>thead {
+      & > thead {
         background: inherit;
-        &>tr {
+        & > tr {
           background: inherit;
-          &>th {
+          & > th {
             background: inherit;
             position: sticky;
             top: 0;
             z-index: 1;
           }
-          &.v-datatable__progress>th {
+          &.v-datatable__progress > th {
             top: 56px;
             z-index: 0;
             &:after {
               bottom: 0;
-              box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+              box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2),
+                0 4px 5px 0 rgba(0, 0, 0, 0.14),
+                0 1px 10px 0 rgba(0, 0, 0, 0.12);
               content: '';
               left: 0;
               position: absolute;
@@ -218,20 +220,23 @@ export default {
       }
     }
   }
-  &.scrolling /deep/ .v-datatable>thead>tr {
+  &.scrolling /deep/ .v-datatable > thead > tr {
     border-bottom: none;
-    &.v-datatable__progress>th:after {
+    &.v-datatable__progress > th:after {
       height: 10px;
     }
   }
 }
-.theme--dark .virtual-data-table.sticky-headers /deep/ .v-table__overflow::-webkit-scrollbar-thumb {
-  background-color: #424242!important;
+.theme--dark
+  .virtual-data-table.sticky-headers
+  /deep/
+  .v-table__overflow::-webkit-scrollbar-thumb {
+  background-color: #424242 !important;
   &:hover {
-    background-color: #505050!important;
+    background-color: #505050 !important;
   }
   &:active {
-    background-color: #616161!important;
+    background-color: #616161 !important;
   }
 }
 </style>

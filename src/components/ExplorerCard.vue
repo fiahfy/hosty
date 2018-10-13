@@ -45,26 +45,20 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default {
   computed: {
-    color () {
+    color() {
       return this.filtered ? 'primary' : ''
     },
-    ...mapState('local/explorer', [
-      'selectedGroupId',
-      'filtered'
-    ]),
-    ...mapGetters('local/explorer', [
-      'canCreateGroup',
-      'canDeleteGroup'
-    ])
+    ...mapState('local/explorer', ['selectedGroupId', 'filtered']),
+    ...mapGetters('local/explorer', ['canCreateGroup', 'canDeleteGroup'])
   },
   methods: {
-    onNewClick () {
+    onNewClick() {
       this.createGroup()
     },
-    onDeleteClick () {
+    onDeleteClick() {
       this.deleteGroup({ id: this.selectedGroupId })
     },
-    onFilterClick () {
+    onFilterClick() {
       this.toggleFiltered()
     },
     ...mapActions('local/explorer', [

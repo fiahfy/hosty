@@ -12,10 +12,10 @@
 export default {
   computed: {
     darkTheme: {
-      get () {
+      get() {
         return this.$store.state.settings.darkTheme
       },
-      set (value) {
+      set(value) {
         this.$store.commit('settings/setDarkTheme', { darkTheme: value })
       }
     }
