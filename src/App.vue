@@ -28,12 +28,12 @@
         <v-card-actions>
           <v-spacer />
           <v-btn
-            color="primary"
+            color="info"
             flat
             @click.native="onCancelClick"
           >Cancel</v-btn>
           <v-btn
-            color="secondary"
+            color="error"
             flat
             @click.native="onOKClick"
           >OK</v-btn>
