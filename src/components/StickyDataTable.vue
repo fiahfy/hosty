@@ -134,16 +134,16 @@ export default {
 
 <style scoped lang="scss">
 .sticky-data-table {
-  & /deep/ .v-table__overflow {
+  /deep/ .v-table__overflow {
     height: 100%;
     overflow-y: scroll;
     .v-datatable {
       table-layout: fixed;
-      & > thead {
+      > thead {
         background: inherit;
-        & > tr {
+        > tr {
           background: inherit;
-          & > th {
+          > th {
             background: inherit;
             position: sticky;
             top: 0;

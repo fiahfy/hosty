@@ -175,7 +175,7 @@ export default {
 
 <style scoped lang="scss">
 .virtual-data-table.sticky-headers {
-  & /deep/ .v-table__overflow {
+  /deep/ .v-table__overflow {
     height: 100%;
     overflow-y: scroll;
     &::-webkit-scrollbar {
@@ -192,11 +192,11 @@ export default {
     }
     .v-datatable {
       table-layout: fixed;
-      & > thead {
+      > thead {
         background: inherit;
-        & > tr {
+        > tr {
           background: inherit;
-          & > th {
+          > th {
             background: inherit;
             position: sticky;
             top: 0;
