@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
 
 export default {
@@ -81,7 +81,10 @@ export default {
       return this.isSelectedGroup({ id: this.group.id })
     },
     color() {
-      return this.group.disabled ? 'grey lighten-2' : 'success'
+      if (this.group.disabled) {
+        return this.darkTheme ? 'grey darken-1' : 'grey lighten-2'
+      }
+      return 'success'
     },
     nameClasses() {
       return ['spacer ellipsis', this.group.name ? '' : 'grey--text']
@@ -92,6 +95,7 @@ export default {
         this.group.hosts.length ? '' : 'grey--text'
       ]
     },
+    ...mapState('settings', ['darkTheme']),
     ...mapGetters('local/explorer', ['isSelectedGroup', 'canPasteGroup'])
   },
   methods: {

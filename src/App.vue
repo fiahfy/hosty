@@ -1,6 +1,6 @@
 <template>
   <v-app
-    :dark="settings.darkTheme"
+    :dark="darkTheme"
     @contextmenu.native="onContextMenu"
     @drop.native.prevent="onDrop"
     @dragover.native.prevent
@@ -65,7 +65,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['settings'])
+    ...mapState('settings', ['darkTheme'])
   },
   async created() {
     await this.initialize()

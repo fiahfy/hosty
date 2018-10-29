@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
 
 export default {
@@ -118,7 +118,10 @@ export default {
       return this.isSelectedHost({ id: this.host.id })
     },
     color() {
-      return this.host.disabled ? 'grey lighten-2' : 'success'
+      if (this.host.disabled) {
+        return this.darkTheme ? 'grey darken-1' : 'grey lighten-2'
+      }
+      return 'success'
     },
     ipClasses() {
       return ['ellipsis', this.host.ip ? '' : 'grey--text']
@@ -126,6 +129,7 @@ export default {
     nameClasses() {
       return ['ellipsis', this.host.name ? '' : 'grey--text']
     },
+    ...mapState('settings', ['darkTheme']),
     ...mapGetters('local/explorer/child', ['isSelectedHost', 'canPasteHost'])
   },
   methods: {
