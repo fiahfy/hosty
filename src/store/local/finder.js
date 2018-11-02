@@ -28,17 +28,31 @@ export default {
       try {
         const regexp = new RegExp(pattern, 'i')
         return state.items
-          .filter((item) => {
-            return !state.filtered || !item.disabled
+          .filter((group) => {
+            return !state.filtered || !group.disabled
           })
-          .filter((item) => {
-            return (
-              !query ||
-              regexp.test(item.group || '') ||
-              regexp.test(item.ip || '') ||
-              regexp.test(item.host || '')
-            )
+          .map((group) => {
+            return {
+              ...group,
+              text: group.name,
+              hosts: group.hosts
+                .filter((host) => {
+                  return (
+                    query && (regexp.test(host.ip) || regexp.test(host.name))
+                  )
+                })
+                .filter((host) => {
+                  return !state.filtered || !host.disabled
+                })
+                .map((host) => {
+                  return {
+                    ...host,
+                    text: `${host.ip} ${host.name}`
+                  }
+                })
+            }
           })
+          .filter((group) => !!group.hosts.length)
       } catch (e) {
         return []
       }
@@ -60,20 +74,7 @@ export default {
   },
   actions: {
     loadItems({ commit, dispatch, getters }) {
-      const items = getters.getGroups().reduce((carry, group) => {
-        return [
-          ...carry,
-          ...(group.hosts || []).map((host) => {
-            return {
-              id: `${group.id}-${host.id}`,
-              disabled: group.disabled || host.disabled,
-              group: group.name,
-              ip: host.ip,
-              host: host.name
-            }
-          })
-        ]
-      }, [])
+      const items = getters.getGroups()
       commit('setItems', { items })
       dispatch('sortItems')
       dispatch('unselectItem')

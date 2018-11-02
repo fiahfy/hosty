@@ -13,7 +13,7 @@
         class="pt-0"
         name="query"
         label="Search"
-        append-icon="search"
+        prepend-icon="search"
         single-line
         hide-details
         clearable

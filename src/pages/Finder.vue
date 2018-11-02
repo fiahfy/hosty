@@ -12,7 +12,7 @@
         pa-0
         overflow-hidden
       >
-        <finder-table class="fill-height" />
+        <finder-treeview class="fill-height" />
       </v-container>
     </v-layout>
   </v-container>
@@ -21,11 +21,13 @@
 <script>
 import FinderCard from '~/components/FinderCard'
 import FinderTable from '~/components/FinderTable'
+import FinderTreeview from '~/components/FinderTreeview'
 
 export default {
   components: {
     FinderCard,
-    FinderTable
+    FinderTable,
+    FinderTreeview
   }
 }
 </script>
