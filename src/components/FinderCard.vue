@@ -22,12 +22,13 @@
       />
       <v-btn
         :color="regExpColor"
-        :title="'Use RegExp'|accelerator('Alt+CmdOrCtrl+R')"
+        :title="'Use Regular Expression'|accelerator('Alt+CmdOrCtrl+R')"
+        class="regexp"
         flat
         icon
         @click="onRegExpClick"
       >
-        <v-icon>explicit</v-icon>
+        RE
       </v-btn>
       <v-spacer />
       <v-btn

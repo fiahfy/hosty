@@ -32,9 +32,9 @@ export default {
           accelerator: 'CmdOrCtrl+Shift+E'
         },
         {
-          name: 'finder',
+          name: 'search',
           icon: 'search',
-          title: 'Find',
+          title: 'Search',
           accelerator: 'CmdOrCtrl+Shift+F'
         },
         {

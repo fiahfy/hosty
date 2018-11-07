@@ -5,14 +5,17 @@
     class="finder-treeview scroll-y pa-0"
     fluid
   >
-    <v-layout v-if="filteredItems.length">
+    <v-layout v-if="results.length">
       <v-treeview
         v-scroll:#scroll-target="onScroll"
         item-children="hosts"
+        item-key="key"
         item-text="text"
         open-all
         open-on-click
-        :items="filteredItems"
+        activatable
+        :items="results"
+        :active.sync="active"
       >
         <template
           slot="prepend"
@@ -40,12 +43,25 @@
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 
 export default {
+  data() {
+    return {
+      active: []
+    }
+  },
   computed: {
-    ...mapState('local/finder', ['selectedItemId', 'scrollTop']),
-    ...mapGetters('local/finder', ['filteredItems', 'selectedItemIndex'])
+    ...mapState('local/finder', ['scrollTop']),
+    ...mapGetters('local/finder', ['results'])
+  },
+  watch: {
+    active(value) {
+      if (!value.length) {
+        return null
+      }
+      const key = value[0]
+      this.viewResult({ key })
+    }
   },
   mounted() {
-    this.loadItems()
     const scrollTop = this.scrollTop
     // open-all を待つために $nextTick でなく setTimeout を使用する
     setTimeout(() => {
@@ -57,7 +73,7 @@ export default {
       this.setScrollTop({ scrollTop: e.target.scrollTop })
     },
     ...mapMutations('local/finder/', ['setScrollTop']),
-    ...mapActions('local/finder/', ['loadItems'])
+    ...mapActions('local/finder/', ['viewResult'])
   }
 }
 </script>
