@@ -58,12 +58,6 @@ export default {
     }
   },
   actions: {
-    toggleFiltered({ commit, state }) {
-      commit('setFiltered', { filtered: !state.filtered })
-    },
-    toggleRegExp({ commit, state }) {
-      commit('setRegExp', { regExp: !state.regExp })
-    },
     viewResult({ dispatch }, { key }) {
       const [groupId, hostId] = key.split('-').map(Number)
       dispatch('changeRoute', { name: 'explorer' }, { root: true })
@@ -92,14 +86,14 @@ export default {
     setScrollTop(state, { scrollTop }) {
       state.scrollTop = scrollTop
     },
-    setFiltered(state, { filtered }) {
-      state.filtered = filtered
-    },
-    setRegExp(state, { regExp }) {
-      state.regExp = regExp
-    },
     setQuery(state, { query }) {
       state.query = query
+    },
+    toggleFiltered(state) {
+      state.filtered = !state.filtered
+    },
+    toggleRegExp(state) {
+      state.regExp = !state.regExp
     }
   }
 }

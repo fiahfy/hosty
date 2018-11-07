@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
 
 export default {
@@ -85,7 +85,7 @@ export default {
     onRegExpClick() {
       this.toggleRegExp()
     },
-    ...mapActions('local/search/', ['toggleFiltered', 'toggleRegExp'])
+    ...mapMutations('local/search/', ['toggleFiltered', 'toggleRegExp'])
   }
 }
 </script>
