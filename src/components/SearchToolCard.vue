@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="finder-card"
+    class="search-tool-card"
     flat
     tile
   >
@@ -52,10 +52,10 @@ export default {
   computed: {
     query: {
       get() {
-        return this.$store.state.local.finder.query
+        return this.$store.state.local.search.query
       },
       set(value) {
-        this.$store.commit('local/finder/setQuery', { query: value })
+        this.$store.commit('local/search/setQuery', { query: value })
       }
     },
     filterColor() {
@@ -64,7 +64,7 @@ export default {
     regExpColor() {
       return this.regExp ? 'primary' : ''
     },
-    ...mapState('local/finder/', ['filtered', 'regExp'])
+    ...mapState('local/search/', ['filtered', 'regExp'])
   },
   methods: {
     onTextContextMenu(e) {
@@ -85,7 +85,7 @@ export default {
     onRegExpClick() {
       this.toggleRegExp()
     },
-    ...mapActions('local/finder/', ['toggleFiltered', 'toggleRegExp'])
+    ...mapActions('local/search/', ['toggleFiltered', 'toggleRegExp'])
   }
 }
 </script>

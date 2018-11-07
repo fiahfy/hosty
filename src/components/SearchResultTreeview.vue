@@ -2,7 +2,7 @@
   <v-container
     id="scroll-target"
     ref="treeview"
-    class="finder-treeview scroll-y pa-0"
+    class="search-result-treeview scroll-y pa-0"
     fluid
   >
     <v-layout v-if="results.length">
@@ -34,7 +34,7 @@
       align-center
       justify-center
     >
-      <v-flex class="text-xs-center caption">No results</v-flex>
+      <v-flex class="text-xs-center caption">No results found</v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -49,8 +49,8 @@ export default {
     }
   },
   computed: {
-    ...mapState('local/finder', ['scrollTop']),
-    ...mapGetters('local/finder', ['results'])
+    ...mapState('local/search', ['scrollTop']),
+    ...mapGetters('local/search', ['results'])
   },
   watch: {
     active(value) {
@@ -72,14 +72,14 @@ export default {
     onScroll(e) {
       this.setScrollTop({ scrollTop: e.target.scrollTop })
     },
-    ...mapMutations('local/finder/', ['setScrollTop']),
-    ...mapActions('local/finder/', ['viewResult'])
+    ...mapMutations('local/search/', ['setScrollTop']),
+    ...mapActions('local/search/', ['viewResult'])
   }
 }
 </script>
 
 <style scoped lang="scss">
-.finder-treeview {
+.search-result-treeview {
   .dummy-icon {
     width: 24px;
   }
