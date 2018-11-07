@@ -33,13 +33,11 @@
           transition="slide-x-reverse-transition"
         >
           <v-card>
-            <v-card-text>
+            <v-card-text class="py-0 overflow-hidden">
               <v-text-field
                 ref="text"
                 v-model="name"
-                class="mt-0"
                 label="Group"
-                hide-details
                 single-line
                 @keydown.native="onTextKeyDown"
                 @blur="onTextBlur"
