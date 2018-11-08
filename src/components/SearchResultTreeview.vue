@@ -8,12 +8,14 @@
     <v-layout v-if="results.length">
       <v-treeview
         v-scroll:#scroll-target="onScroll"
+        class="spacer"
         item-children="hosts"
         item-key="key"
         item-text="text"
         open-all
         open-on-click
         activatable
+        hoverable
         :items="results"
         :active.sync="active"
       >

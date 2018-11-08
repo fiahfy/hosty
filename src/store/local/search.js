@@ -2,18 +2,23 @@ export default {
   namespaced: true,
   state: {
     scrollTop: 0,
-    filtered: false,
+    query: '',
     regExp: false,
-    query: ''
+    filtered: false
   },
   getters: {
     results(state, getters) {
-      const query = state.query || ''
-      const pattern = state.regExp
-        ? query
-        : query.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
+      const query = state.query
+      if (!query) {
+        return []
+      }
+
       try {
+        const pattern = state.regExp
+          ? query
+          : query.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
         const regexp = new RegExp(pattern, 'i')
+
         return getters
           .getGroups()
           .filter((group) => {
@@ -26,11 +31,9 @@ export default {
               text: group.name,
               hosts: group.hosts
                 .filter((host) => {
-                  return !state.filtered || !host.disabled
-                })
-                .filter((host) => {
                   return (
-                    query && (regexp.test(host.ip) || regexp.test(host.name))
+                    (!state.filtered || !host.disabled) &&
+                    (regexp.test(host.ip) || regexp.test(host.name))
                   )
                 })
                 .map((host) => {
@@ -89,11 +92,11 @@ export default {
     setQuery(state, { query }) {
       state.query = query
     },
-    toggleFiltered(state) {
-      state.filtered = !state.filtered
-    },
     toggleRegExp(state) {
       state.regExp = !state.regExp
+    },
+    toggleFiltered(state) {
+      state.filtered = !state.filtered
     }
   }
 }

@@ -4,7 +4,7 @@
     :color="color"
     class="notification-bar"
   >
-    {{ text }}
+    <div class="spacer ellipsis">{{ text }}</div>
     <v-btn
       class="ml-3"
       flat
