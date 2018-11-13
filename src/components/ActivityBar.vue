@@ -27,7 +27,7 @@ export default {
       items: [
         {
           name: 'explorer',
-          icon: 'view_list',
+          icon: 'explore',
           title: 'Explorer',
           accelerator: 'CmdOrCtrl+Shift+E'
         },
