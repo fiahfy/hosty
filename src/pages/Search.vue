@@ -1,31 +1,31 @@
 <template>
   <v-container
-    class="finder"
+    class="search"
     fill-height
     fluid
     pa-0
   >
     <v-layout column>
-      <finder-card />
+      <search-tool-card />
       <v-container
         fluid
         pa-0
         overflow-hidden
       >
-        <finder-table class="fill-height" />
+        <search-result-treeview class="fill-height" />
       </v-container>
     </v-layout>
   </v-container>
 </template>
 
 <script>
-import FinderCard from '~/components/FinderCard'
-import FinderTable from '~/components/FinderTable'
+import SearchToolCard from '~/components/SearchToolCard'
+import SearchResultTreeview from '~/components/SearchResultTreeview'
 
 export default {
   components: {
-    FinderCard,
-    FinderTable
+    SearchToolCard,
+    SearchResultTreeview
   }
 }
 </script>

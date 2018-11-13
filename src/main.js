@@ -56,7 +56,7 @@ const createTemplate = () => {
         {
           label: 'Find',
           accelerator: 'CmdOrCtrl+Shift+F',
-          click: () => send('showFinder')
+          click: () => send('showSearch')
         },
         { type: 'separator' },
         { role: 'reload' },

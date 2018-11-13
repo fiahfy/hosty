@@ -31,7 +31,6 @@ export default new Vuex.Store({
   actions: {
     async initialize({ commit, dispatch }) {
       dispatch('local/explorer/loadGroups')
-      dispatch('local/finder/loadItems')
       try {
         await Hosts.initialize()
         commit('setPermission', { permission: true })

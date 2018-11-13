@@ -32,13 +32,11 @@
         transition="slide-x-reverse-transition"
       >
         <v-card>
-          <v-card-text>
+          <v-card-text class="py-0 overflow-hidden">
             <v-text-field
               ref="ipText"
               v-model="ip"
-              class="mt-0"
               label="192.0.2.0"
-              hide-details
               single-line
               @keydown.native="(e) => onTextKeyDown(e, 'ip')"
               @blur="(e) => onTextBlur(e, 'ip')"
@@ -64,13 +62,11 @@
         transition="slide-x-reverse-transition"
       >
         <v-card>
-          <v-card-text>
+          <v-card-text class="py-0 overflow-hidden">
             <v-text-field
               ref="nameText"
               v-model="name"
-              class="mt-0"
               label="example.com"
-              hide-details
               single-line
               @keydown.native="(e) => onTextKeyDown(e, 'name')"
               @blur="(e) => onTextBlur(e, 'name')"

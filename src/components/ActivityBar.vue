@@ -27,14 +27,14 @@ export default {
       items: [
         {
           name: 'explorer',
-          icon: 'view_list',
+          icon: 'explore',
           title: 'Explorer',
           accelerator: 'CmdOrCtrl+Shift+E'
         },
         {
-          name: 'finder',
+          name: 'search',
           icon: 'search',
-          title: 'Find',
+          title: 'Search',
           accelerator: 'CmdOrCtrl+Shift+F'
         },
         {
