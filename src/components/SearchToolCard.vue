@@ -1,13 +1,6 @@
 <template>
-  <v-card
-    class="search-tool-card"
-    flat
-    tile
-  >
-    <v-toolbar
-      color="transparent"
-      flat
-    >
+  <v-card class="search-tool-card" flat tile>
+    <v-toolbar color="transparent" flat>
       <v-text-field
         v-model="query"
         class="pt-0"
@@ -22,7 +15,7 @@
       />
       <v-btn
         :color="regExpColor"
-        :title="'Use Regular Expression'|accelerator('Alt+CmdOrCtrl+R')"
+        :title="'Use Regular Expression' | accelerator('Alt+CmdOrCtrl+R')"
         class="regexp"
         flat
         icon

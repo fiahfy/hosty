@@ -8,35 +8,20 @@
     <title-bar />
     <activity-bar />
     <v-content class="fill-height">
-      <v-layout
-        column
-        fill-height
-      >
+      <v-layout column fill-height>
         <alert-bar />
         <router-view />
       </v-layout>
     </v-content>
     <notification-bar />
-    <v-dialog
-      v-model="dialog"
-      persistent
-      max-width="300"
-    >
+    <v-dialog v-model="dialog" persistent max-width="300">
       <v-card>
         <v-card-title class="headline">Import hosty file?</v-card-title>
         <v-card-text>The current hosts settings will be deleted.</v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn
-            color="info"
-            flat
-            @click.native="onCancelClick"
-          >Cancel</v-btn>
-          <v-btn
-            color="error"
-            flat
-            @click.native="onOKClick"
-          >OK</v-btn>
+          <v-btn color="info" flat @click.native="onCancelClick">Cancel</v-btn>
+          <v-btn color="error" flat @click.native="onOKClick">OK</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

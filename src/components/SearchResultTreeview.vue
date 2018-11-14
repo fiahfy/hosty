@@ -1,8 +1,5 @@
 <template>
-  <v-container
-    class="search-result-treeview pa-0"
-    fluid
-  >
+  <v-container class="search-result-treeview pa-0" fluid>
     <v-container
       id="scroll-target"
       ref="treeview"
@@ -12,10 +9,7 @@
       scroll-y
     >
       <v-layout v-if="results.length">
-        <div
-          v-if="scrolling"
-          class="shadow"
-        />
+        <div v-if="scrolling" class="shadow" />
         <v-treeview
           v-scroll:#scroll-target="onScroll"
           class="spacer"
@@ -29,23 +23,13 @@
           :items="results"
           :active.sync="active"
         >
-          <template
-            slot="prepend"
-            slot-scope="{ item }"
-          >
-            <span
-              v-if="item.disabled"
-              class="dummy-icon"
-            />
+          <template slot="prepend" slot-scope="{ item }">
+            <span v-if="item.disabled" class="dummy-icon" />
             <v-icon v-else>check_circle</v-icon>
           </template>
         </v-treeview>
       </v-layout>
-      <v-layout
-        v-else
-        align-center
-        justify-center
-      >
+      <v-layout v-else align-center justify-center>
         <v-flex class="text-xs-center body-1">No results found</v-flex>
       </v-layout>
     </v-container>

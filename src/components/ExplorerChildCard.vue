@@ -1,15 +1,8 @@
 <template>
-  <v-card
-    class="explorer-child-card"
-    flat
-    tile
-  >
-    <v-toolbar
-      color="transparent"
-      flat
-    >
+  <v-card class="explorer-child-card" flat tile>
+    <v-toolbar color="transparent" flat>
       <v-btn
-        :title="'New Host'|accelerator('CmdOrCtrl+N')"
+        :title="'New Host' | accelerator('CmdOrCtrl+N')"
         :disabled="!canCreateHost"
         flat
         icon
@@ -18,7 +11,7 @@
         <v-icon>add</v-icon>
       </v-btn>
       <v-btn
-        :title="'Delete'|accelerator('CmdOrCtrl+Backspace')"
+        :title="'Delete' | accelerator('CmdOrCtrl+Backspace')"
         :disabled="!canDeleteHost"
         flat
         icon

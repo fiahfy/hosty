@@ -6,13 +6,7 @@
     @contextmenu.stop="onContextMenu"
   >
     <td class="px-2">
-      <v-btn
-        :color="color"
-        class="my-0"
-        flat
-        icon
-        @click.stop="onButtonClick"
-      >
+      <v-btn :color="color" class="my-0" flat icon @click.stop="onButtonClick">
         <v-icon>check_circle</v-icon>
       </v-btn>
     </td>

@@ -1,15 +1,8 @@
 <template>
-  <v-card
-    class="explorer-card"
-    flat
-    tile
-  >
-    <v-toolbar
-      color="transparent"
-      flat
-    >
+  <v-card class="explorer-card" flat tile>
+    <v-toolbar color="transparent" flat>
       <v-btn
-        :title="'New Group'|accelerator('CmdOrCtrl+N')"
+        :title="'New Group' | accelerator('CmdOrCtrl+N')"
         :disabled="!canCreateGroup"
         flat
         icon
@@ -18,7 +11,7 @@
         <v-icon>add</v-icon>
       </v-btn>
       <v-btn
-        :title="'Delete'|accelerator('CmdOrCtrl+Backspace')"
+        :title="'Delete' | accelerator('CmdOrCtrl+Backspace')"
         :disabled="!canDeleteGroup"
         flat
         icon

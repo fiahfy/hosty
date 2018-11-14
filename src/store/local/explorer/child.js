@@ -200,8 +200,8 @@ export default {
       state.hosts = [...state.hosts, host]
     },
     updateHost(state, { id, host }) {
-      state.hosts = state.hosts.map(
-        (current) => (current.id !== id ? current : { ...current, ...host })
+      state.hosts = state.hosts.map((current) =>
+        current.id !== id ? current : { ...current, ...host }
       )
     },
     removeHost(state, { id }) {

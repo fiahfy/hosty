@@ -6,20 +6,11 @@
     @contextmenu.stop="onContextMenu"
   >
     <td class="px-2">
-      <v-btn
-        :color="color"
-        class="my-0"
-        flat
-        icon
-        @click.stop="onButtonClick"
-      >
+      <v-btn :color="color" class="my-0" flat icon @click.stop="onButtonClick">
         <v-icon>check_circle</v-icon>
       </v-btn>
     </td>
-    <td
-      ref="column"
-      @dblclick="onColumnDblClick"
-    >
+    <td ref="column" @dblclick="onColumnDblClick">
       <v-layout class="align-center">
         <span :class="nameClasses">{{ group.name || 'Group' }}</span>
         <span :class="numberClasses">{{ group.hosts.length }}</span>

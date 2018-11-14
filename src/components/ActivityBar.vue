@@ -1,15 +1,10 @@
 <template>
-  <v-navigation-drawer
-    class="activity-bar"
-    mini-variant
-    permanent
-    app
-  >
+  <v-navigation-drawer class="activity-bar" mini-variant permanent app>
     <v-list class="pt-0">
       <v-list-tile
         v-for="item in items"
         :key="item.name"
-        :title="item.title|accelerator(item.accelerator)"
+        :title="item.title | accelerator(item.accelerator)"
         @click="(e) => onItemClick(e, item)"
       >
         <v-list-tile-action>
