@@ -16,6 +16,7 @@
       @dblclick="(e) => onColumnDblClick(e, 'ip')"
     >
       {{ host.ip || '192.0.2.0' }}
+      <small v-if="ipError" class="px-4 error--text">{{ ipError }}</small>
       <v-menu
         v-model="ipMenu.show"
         :position-x="ipMenu.x"
@@ -30,6 +31,8 @@
             <v-text-field
               ref="ipText"
               v-model="ip"
+              :error-messages="ipErrors"
+              class="mb-1"
               label="192.0.2.0"
               single-line
               @keydown.native="(e) => onTextKeyDown(e, 'ip')"
@@ -46,6 +49,7 @@
       @dblclick="(e) => onColumnDblClick(e, 'name')"
     >
       {{ host.name || 'example.com' }}
+      <small v-if="nameError" class="px-4 error--text">{{ nameError }}</small>
       <v-menu
         v-model="nameMenu.show"
         :position-x="nameMenu.x"
@@ -60,6 +64,8 @@
             <v-text-field
               ref="nameText"
               v-model="name"
+              :error-messages="nameErrors"
+              class="mb-1"
               label="example.com"
               single-line
               @keydown.native="(e) => onTextKeyDown(e, 'name')"
@@ -119,8 +125,39 @@ export default {
     nameClasses() {
       return ['ellipsis', this.host.name ? '' : 'grey--text']
     },
+    ipErrors() {
+      return this.findHostIPErrors({
+        groupId: this.selectedGroupId,
+        host: { ...this.host, ip: this.ip }
+      })
+    },
+    nameErrors() {
+      return this.findHostNameErrors({
+        groupId: this.selectedGroupId,
+        host: { ...this.host, name: this.name }
+      })
+    },
+    ipError() {
+      const result = this.findHostIPErrors({
+        groupId: this.selectedGroupId,
+        host: this.host
+      })
+      return result.length ? result[0] : ''
+    },
+    nameError() {
+      const result = this.findHostNameErrors({
+        groupId: this.selectedGroupId,
+        host: this.host
+      })
+      return result.length ? result[0] : ''
+    },
     ...mapState('settings', ['darkTheme']),
-    ...mapGetters('local/explorer/child', ['isSelectedHost', 'canPasteHost'])
+    ...mapGetters('group', ['findHostIPErrors', 'findHostNameErrors']),
+    ...mapGetters('local/explorer/child', [
+      'selectedGroupId',
+      'isSelectedHost',
+      'canPasteHost'
+    ])
   },
   methods: {
     onClick() {
@@ -235,5 +272,13 @@ export default {
 <style scoped lang="scss">
 .explorer-child-table-row {
   cursor: pointer;
+  > td {
+    position: relative;
+    > small {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+  }
 }
 </style>

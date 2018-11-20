@@ -10,7 +10,7 @@ export default {
         return group ? group.hosts : []
       }
     },
-    validHosts(state) {
+    actualHosts(state) {
       return state.groups
         .filter((group) => !group.disabled)
         .map((group) => group.hosts || [])
@@ -32,6 +32,46 @@ export default {
           }
           return result
         })
+    },
+    findHostIPErrors() {
+      return ({ host }) => {
+        const errors = []
+        if (!host.ip) {
+          errors.push('Missing IP Address.')
+        }
+        return errors
+      }
+    },
+    findHostNameErrors(state) {
+      return ({ groupId, host }) => {
+        const errors = []
+        if (!host.name) {
+          errors.push('Missing Hostname.')
+        }
+        if (host.disabled) {
+          return errors
+        }
+        if (
+          state.groups
+            .filter((group) => !group.disabled)
+            .map((group) =>
+              (group.hosts || []).map((host) => ({
+                groupId: group.id,
+                ...host
+              }))
+            )
+            .reduce((carry, hosts) => carry.concat(hosts), [])
+            .filter(
+              (currentHost) =>
+                !currentHost.disabled &&
+                (currentHost.groupId !== groupId || currentHost.id !== host.id)
+            )
+            .some((currentHost) => currentHost.name === host.name)
+        ) {
+          errors.push('Duplicated Hostname.')
+        }
+        return errors
+      }
     }
   },
   actions: {
