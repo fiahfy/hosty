@@ -59,9 +59,9 @@ const createTemplate = () => {
           click: () => send('showSearch')
         },
         {
-          label: 'Inspector',
+          label: 'Problems',
           accelerator: 'CmdOrCtrl+Shift+M',
-          click: () => send('showInspector')
+          click: () => send('showProblems')
         },
         { type: 'separator' },
         { role: 'reload' },

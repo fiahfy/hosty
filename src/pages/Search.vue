@@ -3,7 +3,7 @@
     <v-layout column>
       <search-tool-card />
       <v-container fluid pa-0 overflow-hidden>
-        <search-result-treeview class="fill-height" />
+        <search-treeview class="fill-height" />
       </v-container>
     </v-layout>
   </v-container>
@@ -11,12 +11,12 @@
 
 <script>
 import SearchToolCard from '~/components/SearchToolCard'
-import SearchResultTreeview from '~/components/SearchResultTreeview'
+import SearchTreeview from '~/components/SearchTreeview'
 
 export default {
   components: {
     SearchToolCard,
-    SearchResultTreeview
+    SearchTreeview
   }
 }
 </script>

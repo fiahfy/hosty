@@ -40,9 +40,9 @@ export default {
           accelerator: 'CmdOrCtrl+Shift+F'
         },
         {
-          name: 'inspector',
+          name: 'problems',
           icon: 'error',
-          title: 'Inspector',
+          title: 'Problems',
           badge: true,
           accelerator: 'CmdOrCtrl+Shift+M'
         },
