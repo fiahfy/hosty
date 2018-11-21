@@ -23,7 +23,7 @@
           :active.sync="active"
         >
           <template slot="prepend" slot-scope="{ item }">
-            <v-icon>{{ item.icon }}</v-icon>
+            <v-icon :color="getColor(item)">{{ item.icon }}</v-icon>
           </template>
         </v-treeview>
       </v-layout>
@@ -79,10 +79,7 @@ export default {
       this.scrolling = scrollTop > 0
     },
     getColor(item) {
-      if (item.disabled) {
-        return this.darkTheme ? 'grey darken-1' : 'grey lighten-2'
-      }
-      return 'success'
+      return item.icon === 'error' ? 'error' : null
     },
     ...mapMutations('local/inspector/', ['setScrollTop']),
     ...mapActions('local/inspector/', ['viewResult'])
