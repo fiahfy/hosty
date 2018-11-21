@@ -1,10 +1,12 @@
 import explorer from './explorer'
-import finder from './finder'
+import search from './search'
+import problems from './problems'
 
 export default {
   namespaced: true,
   modules: {
     explorer,
-    finder
+    search,
+    problems
   }
 }

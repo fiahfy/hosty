@@ -1,19 +1,17 @@
 <template>
-  <v-navigation-drawer
-    class="activity-bar"
-    mini-variant
-    permanent
-    app
-  >
+  <v-navigation-drawer class="activity-bar" mini-variant permanent app>
     <v-list class="pt-0">
       <v-list-tile
         v-for="item in items"
         :key="item.name"
-        :title="item.title|accelerator(item.accelerator)"
+        :title="item.title | accelerator(item.accelerator)"
         @click="(e) => onItemClick(e, item)"
       >
         <v-list-tile-action>
-          <v-icon :color="item.color">{{ item.icon }}</v-icon>
+          <v-badge color="error" :value="item.badge && badgeCount">
+            <span slot="badge">{{ badgeCount }}</span>
+            <v-icon :color="item.color">{{ item.icon }}</v-icon>
+          </v-badge>
         </v-list-tile-action>
       </v-list-tile>
     </v-list>
@@ -21,34 +19,48 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   data() {
     return {
       items: [
         {
           name: 'explorer',
-          icon: 'view_list',
+          icon: 'explore',
           title: 'Explorer',
+          badge: false,
           accelerator: 'CmdOrCtrl+Shift+E'
         },
         {
-          name: 'finder',
+          name: 'search',
           icon: 'search',
-          title: 'Find',
+          title: 'Search',
+          badge: false,
           accelerator: 'CmdOrCtrl+Shift+F'
+        },
+        {
+          name: 'problems',
+          icon: 'error',
+          title: 'Problems',
+          badge: true,
+          accelerator: 'CmdOrCtrl+Shift+M'
         },
         {
           name: 'settings',
           icon: 'settings',
           title: 'Settings',
+          badge: false,
           accelerator: 'CmdOrCtrl+,'
         }
       ]
     }
   },
+  computed: {
+    ...mapGetters(['badgeCount'])
+  },
   watch: {
     $route(to) {
-      // eslint-disable-line object-shorthand
       this.updateItems(to.name)
     }
   },
@@ -68,3 +80,16 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+.activity-bar {
+  /deep/ .v-badge__badge {
+    font-size: 9px;
+    height: 16px;
+    line-height: 16px;
+    right: -16px;
+    top: -8px;
+    width: 16px;
+  }
+}
+</style>

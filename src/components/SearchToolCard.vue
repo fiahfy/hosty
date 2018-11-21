@@ -1,19 +1,12 @@
 <template>
-  <v-card
-    class="finder-card"
-    flat
-    tile
-  >
-    <v-toolbar
-      color="transparent"
-      flat
-    >
+  <v-card class="search-tool-card" flat tile>
+    <v-toolbar color="transparent" flat>
       <v-text-field
         v-model="query"
         class="pt-0"
         name="query"
         label="Search"
-        append-icon="search"
+        prepend-icon="search"
         single-line
         hide-details
         clearable
@@ -22,12 +15,13 @@
       />
       <v-btn
         :color="regExpColor"
-        :title="'Use RegExp'|accelerator('Alt+CmdOrCtrl+R')"
+        :title="'Use Regular Expression' | accelerator('Alt+CmdOrCtrl+R')"
+        class="regexp"
         flat
         icon
         @click="onRegExpClick"
       >
-        <v-icon>explicit</v-icon>
+        RE
       </v-btn>
       <v-spacer />
       <v-btn
@@ -44,17 +38,17 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
 
 export default {
   computed: {
     query: {
       get() {
-        return this.$store.state.local.finder.query
+        return this.$store.state.local.search.query
       },
       set(value) {
-        this.$store.commit('local/finder/setQuery', { query: value })
+        this.$store.commit('local/search/setQuery', { query: value })
       }
     },
     filterColor() {
@@ -63,7 +57,7 @@ export default {
     regExpColor() {
       return this.regExp ? 'primary' : ''
     },
-    ...mapState('local/finder/', ['filtered', 'regExp'])
+    ...mapState('local/search/', ['filtered', 'regExp'])
   },
   methods: {
     onTextContextMenu(e) {
@@ -84,7 +78,7 @@ export default {
     onRegExpClick() {
       this.toggleRegExp()
     },
-    ...mapActions('local/finder/', ['toggleFiltered', 'toggleRegExp'])
+    ...mapMutations('local/search/', ['toggleFiltered', 'toggleRegExp'])
   }
 }
 </script>

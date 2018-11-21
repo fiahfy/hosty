@@ -1,10 +1,7 @@
 <template>
   <v-container class="settings">
     <v-subheader class="pa-0">General</v-subheader>
-    <v-checkbox
-      v-model="darkTheme"
-      label="Use dark theme"
-    />
+    <v-checkbox v-model="darkTheme" label="Use dark theme" />
   </v-container>
 </template>
 

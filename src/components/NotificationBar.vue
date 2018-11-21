@@ -1,15 +1,7 @@
 <template>
-  <v-snackbar
-    v-model="snackbar"
-    :color="color"
-    class="notification-bar"
-  >
-    {{ text }}
-    <v-btn
-      class="ml-3"
-      flat
-      @click.native="onCloseClick"
-    >Close</v-btn>
+  <v-snackbar v-model="snackbar" :color="color" class="notification-bar">
+    <div class="spacer ellipsis">{{ text }}</div>
+    <v-btn class="ml-3" flat @click.native="onCloseClick">Close</v-btn>
   </v-snackbar>
 </template>
 

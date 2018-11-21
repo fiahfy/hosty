@@ -23,6 +23,9 @@ export default {
     selectedGroupId(state, getters, rootState) {
       return rootState.local.explorer.selectedGroupId
     },
+    selectedGroup(state, getters, rootState, rootGetters) {
+      return rootGetters['local/explorer/selectedGroup']
+    },
     selectedHostIndex(state, getters) {
       return getters.getHostIndex({ id: state.selectedHostId })
     },
@@ -200,8 +203,8 @@ export default {
       state.hosts = [...state.hosts, host]
     },
     updateHost(state, { id, host }) {
-      state.hosts = state.hosts.map(
-        (current) => (current.id !== id ? current : { ...current, ...host })
+      state.hosts = state.hosts.map((current) =>
+        current.id !== id ? current : { ...current, ...host }
       )
     },
     removeHost(state, { id }) {

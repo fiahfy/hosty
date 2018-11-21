@@ -1,21 +1,10 @@
 <template>
-  <v-alert
-    :value="permission === false"
-    class="alert-bar ma-0"
-    type="error"
-  >
-    <v-layout
-      row
-      align-center
-    >
+  <v-alert :value="permission === false" class="alert-bar ma-0" type="error">
+    <v-layout row align-center>
       <div class="spacer ellipsis">Grant permission required.</div>
-      <v-btn
-        class="ma-0"
-        color="white"
-        flat
-        small
-        @click="initialize"
-      >Resolve</v-btn>
+      <v-btn class="ma-0" color="white" flat small @click="initialize">
+        Resolve
+      </v-btn>
     </v-layout>
   </v-alert>
 </template>

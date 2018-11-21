@@ -6,22 +6,13 @@
     @contextmenu.stop="onContextMenu"
   >
     <td class="px-2">
-      <v-btn
-        :color="color"
-        class="my-0"
-        flat
-        icon
-        @click.stop="onButtonClick"
-      >
+      <v-btn :color="color" class="my-0" flat icon @click.stop="onButtonClick">
         <v-icon>check_circle</v-icon>
       </v-btn>
     </td>
-    <td
-      ref="column"
-      @dblclick="onColumnDblClick"
-    >
+    <td ref="column" @dblclick="onColumnDblClick">
       <v-layout class="align-center">
-        <span :class="nameClasses">{{ group.name || 'Group' }}</span>
+        <span :class="nameClasses">{{ group.name || 'Untitled' }}</span>
         <span :class="numberClasses">{{ group.hosts.length }}</span>
         <v-menu
           v-model="menu.show"
@@ -33,13 +24,11 @@
           transition="slide-x-reverse-transition"
         >
           <v-card>
-            <v-card-text>
+            <v-card-text class="py-0 overflow-hidden">
               <v-text-field
                 ref="text"
                 v-model="name"
-                class="mt-0"
-                label="Group"
-                hide-details
+                label="Untitled"
                 single-line
                 @keydown.native="onTextKeyDown"
                 @blur="onTextBlur"
@@ -54,7 +43,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
 
 export default {
@@ -81,7 +70,10 @@ export default {
       return this.isSelectedGroup({ id: this.group.id })
     },
     color() {
-      return this.group.disabled ? 'grey lighten-2' : 'success'
+      if (this.group.disabled) {
+        return this.darkTheme ? 'grey darken-1' : 'grey lighten-2'
+      }
+      return 'success'
     },
     nameClasses() {
       return ['spacer ellipsis', this.group.name ? '' : 'grey--text']
@@ -92,6 +84,7 @@ export default {
         this.group.hosts.length ? '' : 'grey--text'
       ]
     },
+    ...mapState('settings', ['darkTheme']),
     ...mapGetters('local/explorer', ['isSelectedGroup', 'canPasteGroup'])
   },
   methods: {

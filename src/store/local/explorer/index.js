@@ -190,8 +190,8 @@ export default {
       state.groups = [...state.groups, group]
     },
     updateGroup(state, { id, group }) {
-      state.groups = state.groups.map(
-        (current) => (current.id !== id ? current : { ...current, ...group })
+      state.groups = state.groups.map((current) =>
+        current.id !== id ? current : { ...current, ...group }
       )
     },
     removeGroup(state, { id }) {

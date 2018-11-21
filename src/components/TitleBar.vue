@@ -1,11 +1,5 @@
 <template>
-  <v-system-bar
-    v-if="titleBar"
-    class="title-bar"
-    height="22"
-    app
-    status
-  >
+  <v-system-bar v-if="titleBar" class="title-bar" height="22" app status>
     <v-spacer />
     <span>{{ title }}</span>
     <v-spacer />

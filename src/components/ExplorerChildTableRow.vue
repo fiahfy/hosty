@@ -6,13 +6,7 @@
     @contextmenu.stop="onContextMenu"
   >
     <td class="px-2">
-      <v-btn
-        :color="color"
-        class="my-0"
-        flat
-        icon
-        @click.stop="onButtonClick"
-      >
+      <v-btn :color="color" class="my-0" flat icon @click.stop="onButtonClick">
         <v-icon>check_circle</v-icon>
       </v-btn>
     </td>
@@ -22,6 +16,9 @@
       @dblclick="(e) => onColumnDblClick(e, 'ip')"
     >
       {{ host.ip || '192.0.2.0' }}
+      <small v-if="ipError" class="px-4 error--text ellipsis">
+        {{ ipError }}
+      </small>
       <v-menu
         v-model="ipMenu.show"
         :position-x="ipMenu.x"
@@ -32,13 +29,13 @@
         transition="slide-x-reverse-transition"
       >
         <v-card>
-          <v-card-text>
+          <v-card-text class="py-0 overflow-hidden">
             <v-text-field
               ref="ipText"
               v-model="ip"
-              class="mt-0"
+              :error-messages="ipErrors"
+              class="mb-1"
               label="192.0.2.0"
-              hide-details
               single-line
               @keydown.native="(e) => onTextKeyDown(e, 'ip')"
               @blur="(e) => onTextBlur(e, 'ip')"
@@ -54,6 +51,9 @@
       @dblclick="(e) => onColumnDblClick(e, 'name')"
     >
       {{ host.name || 'example.com' }}
+      <small v-if="nameError" class="px-4 error--text ellipsis">
+        {{ nameError }}
+      </small>
       <v-menu
         v-model="nameMenu.show"
         :position-x="nameMenu.x"
@@ -64,13 +64,13 @@
         transition="slide-x-reverse-transition"
       >
         <v-card>
-          <v-card-text>
+          <v-card-text class="py-0 overflow-hidden">
             <v-text-field
               ref="nameText"
               v-model="name"
-              class="mt-0"
+              :error-messages="nameErrors"
+              class="mb-1"
               label="example.com"
-              hide-details
               single-line
               @keydown.native="(e) => onTextKeyDown(e, 'name')"
               @blur="(e) => onTextBlur(e, 'name')"
@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
 
 export default {
@@ -118,7 +118,10 @@ export default {
       return this.isSelectedHost({ id: this.host.id })
     },
     color() {
-      return this.host.disabled ? 'grey lighten-2' : 'success'
+      if (this.host.disabled) {
+        return this.darkTheme ? 'grey darken-1' : 'grey lighten-2'
+      }
+      return 'success'
     },
     ipClasses() {
       return ['ellipsis', this.host.ip ? '' : 'grey--text']
@@ -126,7 +129,39 @@ export default {
     nameClasses() {
       return ['ellipsis', this.host.name ? '' : 'grey--text']
     },
-    ...mapGetters('local/explorer/child', ['isSelectedHost', 'canPasteHost'])
+    ipErrors() {
+      return this.findHostIPErrors({
+        group: this.selectedGroup,
+        host: { ...this.host, ip: this.ip }
+      })
+    },
+    nameErrors() {
+      return this.findHostNameErrors({
+        group: this.selectedGroup,
+        host: { ...this.host, name: this.name }
+      })
+    },
+    ipError() {
+      const result = this.findHostIPErrors({
+        group: this.selectedGroup,
+        host: this.host
+      })
+      return result.length ? result[0] : ''
+    },
+    nameError() {
+      const result = this.findHostNameErrors({
+        group: this.selectedGroup,
+        host: this.host
+      })
+      return result.length ? result[0] : ''
+    },
+    ...mapState('settings', ['darkTheme']),
+    ...mapGetters('group', ['findHostIPErrors', 'findHostNameErrors']),
+    ...mapGetters('local/explorer/child', [
+      'selectedGroup',
+      'isSelectedHost',
+      'canPasteHost'
+    ])
   },
   methods: {
     onClick() {
@@ -241,5 +276,14 @@ export default {
 <style scoped lang="scss">
 .explorer-child-table-row {
   cursor: pointer;
+  > td {
+    position: relative;
+    > small {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+  }
 }
 </style>

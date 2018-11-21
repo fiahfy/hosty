@@ -1,37 +1,18 @@
 <template>
-  <v-container
-    class="explorer"
-    fill-height
-    fluid
-    pa-0
-  >
+  <v-container class="explorer" fill-height fluid pa-0>
     <v-layout row>
       <v-flex xs4>
-        <v-layout
-          column
-          fill-height
-        >
+        <v-layout column fill-height>
           <explorer-card />
-          <v-container
-            fluid
-            pa-0
-            overflow-hidden
-          >
+          <v-container fluid pa-0 overflow-hidden>
             <explorer-table class="fill-height" />
           </v-container>
         </v-layout>
       </v-flex>
       <v-flex xs8>
-        <v-layout
-          column
-          fill-height
-        >
+        <v-layout column fill-height>
           <explorer-child-card />
-          <v-container
-            fluid
-            pa-0
-            overflow-hidden
-          >
+          <v-container fluid pa-0 overflow-hidden>
             <explorer-child-table class="fill-height" />
           </v-container>
         </v-layout>

@@ -26,12 +26,20 @@ export default new Vuex.Store({
   getters: {
     titleBar(state) {
       return process.platform === 'darwin' && !state.fullScreen
+    },
+    badgeCount(state, getters) {
+      const count = getters['local/problems/results'].reduce(
+        (carry, result) => {
+          return carry + result.children.length
+        },
+        0
+      )
+      return count > 9 ? '9+' : count
     }
   },
   actions: {
     async initialize({ commit, dispatch }) {
       dispatch('local/explorer/loadGroups')
-      dispatch('local/finder/loadItems')
       try {
         await Hosts.initialize()
         commit('setPermission', { permission: true })
@@ -50,7 +58,7 @@ export default new Vuex.Store({
     },
     sync({ commit, dispatch, getters }) {
       try {
-        Hosts.sync(getters['group/validHosts'])
+        Hosts.sync(getters['group/actualHosts'])
       } catch (e) {
         dispatch('showMessage', { color: 'error', text: e.message })
         commit('setPermission', { permission: false })
