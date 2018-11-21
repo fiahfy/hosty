@@ -1,5 +1,5 @@
 <template>
-  <v-container class="search-result-treeview pa-0" fluid>
+  <v-container class="inspector-result-treeview pa-0" fluid>
     <v-container
       id="scroll-target"
       ref="treeview"
@@ -23,12 +23,14 @@
           :active.sync="active"
         >
           <template slot="prepend" slot-scope="{ item }">
-            <v-icon :color="getColor(item)">check_circle</v-icon>
+            <v-icon>{{ item.icon }}</v-icon>
           </template>
         </v-treeview>
       </v-layout>
       <v-layout v-else align-center justify-center>
-        <v-flex class="text-xs-center body-1">No results found</v-flex>
+        <v-flex class="text-xs-center body-1">
+          No problems have been detected.
+        </v-flex>
       </v-layout>
     </v-container>
   </v-container>
@@ -46,8 +48,8 @@ export default {
   },
   computed: {
     ...mapState('settings', ['darkTheme']),
-    ...mapState('local/search', ['scrollTop']),
-    ...mapGetters('local/search', ['results'])
+    ...mapState('local/inspector', ['scrollTop']),
+    ...mapGetters('local/inspector', ['results'])
   },
   watch: {
     active(value) {
@@ -82,14 +84,14 @@ export default {
       }
       return 'success'
     },
-    ...mapMutations('local/search/', ['setScrollTop']),
-    ...mapActions('local/search/', ['viewResult'])
+    ...mapMutations('local/inspector/', ['setScrollTop']),
+    ...mapActions('local/inspector/', ['viewResult'])
   }
 }
 </script>
 
 <style scoped lang="scss">
-.search-result-treeview {
+.inspector-result-treeview {
   position: relative;
   .shadow {
     box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2),

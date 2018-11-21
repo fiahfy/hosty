@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Explorer from '~/pages/Explorer'
 import Search from '~/pages/Search'
+import Inspector from '~/pages/Inspector'
 import Settings from '~/pages/Settings'
 
 Vue.use(Router)
@@ -17,6 +18,11 @@ export default new Router({
       path: '/search',
       name: 'search',
       component: Search
+    },
+    {
+      path: '/inspector',
+      name: 'inspector',
+      component: Inspector
     },
     {
       path: '/settings',

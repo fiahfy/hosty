@@ -8,7 +8,10 @@
         @click="(e) => onItemClick(e, item)"
       >
         <v-list-tile-action>
-          <v-icon :color="item.color">{{ item.icon }}</v-icon>
+          <v-badge :value="item.badge && badgeCount">
+            <span slot="badge">{{ badgeCount }}</span>
+            <v-icon :color="item.color">{{ item.icon }}</v-icon>
+          </v-badge>
         </v-list-tile-action>
       </v-list-tile>
     </v-list>
@@ -16,6 +19,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   data() {
     return {
@@ -24,26 +29,38 @@ export default {
           name: 'explorer',
           icon: 'explore',
           title: 'Explorer',
+          badge: false,
           accelerator: 'CmdOrCtrl+Shift+E'
         },
         {
           name: 'search',
           icon: 'search',
           title: 'Search',
+          badge: false,
+          accelerator: 'CmdOrCtrl+Shift+F'
+        },
+        {
+          name: 'inspector',
+          icon: 'error',
+          title: 'Inspector',
+          badge: true,
           accelerator: 'CmdOrCtrl+Shift+F'
         },
         {
           name: 'settings',
           icon: 'settings',
           title: 'Settings',
+          badge: false,
           accelerator: 'CmdOrCtrl+,'
         }
       ]
     }
   },
+  computed: {
+    ...mapGetters(['badgeCount'])
+  },
   watch: {
     $route(to) {
-      // eslint-disable-line object-shorthand
       this.updateItems(to.name)
     }
   },
@@ -63,3 +80,15 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+.activity-bar {
+  /deep/ .v-badge__badge {
+    font-size: 11px;
+    height: 18px;
+    right: -18px;
+    top: -9px;
+    width: 18px;
+  }
+}
+</style>

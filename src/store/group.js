@@ -33,22 +33,31 @@ export default {
           return result
         })
     },
+    findHostErrors(state, getters) {
+      return ({ group, host }) => {
+        return [
+          ...getters.findHostIPErrors({ group, host }),
+          ...getters.findHostNameErrors({ group, host })
+        ]
+      }
+    },
     findHostIPErrors() {
       return ({ host }) => {
         const errors = []
         if (!host.ip) {
-          errors.push('Missing IP Address.')
+          errors.push('Missing ip address.')
         }
         return errors
       }
     },
     findHostNameErrors(state) {
-      return ({ groupId, host }) => {
+      return ({ group, host }) => {
         const errors = []
         if (!host.name) {
-          errors.push('Missing Hostname.')
+          errors.push('Missing hostname.')
+          return errors
         }
-        if (host.disabled) {
+        if (group.disabled || host.disabled) {
           return errors
         }
         if (
@@ -64,11 +73,11 @@ export default {
             .filter(
               (currentHost) =>
                 !currentHost.disabled &&
-                (currentHost.groupId !== groupId || currentHost.id !== host.id)
+                (currentHost.groupId !== group.id || currentHost.id !== host.id)
             )
             .some((currentHost) => currentHost.name === host.name)
         ) {
-          errors.push('Duplicated Hostname.')
+          errors.push(`'${host.name}' is duplicate entry.`)
         }
         return errors
       }

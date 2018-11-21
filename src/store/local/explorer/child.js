@@ -23,6 +23,9 @@ export default {
     selectedGroupId(state, getters, rootState) {
       return rootState.local.explorer.selectedGroupId
     },
+    selectedGroup(state, getters, rootState, rootGetters) {
+      return rootGetters['local/explorer/selectedGroup']
+    },
     selectedHostIndex(state, getters) {
       return getters.getHostIndex({ id: state.selectedHostId })
     },

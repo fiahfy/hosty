@@ -26,6 +26,15 @@ export default new Vuex.Store({
   getters: {
     titleBar(state) {
       return process.platform === 'darwin' && !state.fullScreen
+    },
+    badgeCount(state, getters) {
+      const count = getters['local/inspector/results'].reduce(
+        (carry, result) => {
+          return carry + result.children.length
+        },
+        0
+      )
+      return count > 9 ? '9+' : count
     }
   },
   actions: {

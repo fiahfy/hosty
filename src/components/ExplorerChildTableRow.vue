@@ -127,26 +127,26 @@ export default {
     },
     ipErrors() {
       return this.findHostIPErrors({
-        groupId: this.selectedGroupId,
+        group: this.selectedGroup,
         host: { ...this.host, ip: this.ip }
       })
     },
     nameErrors() {
       return this.findHostNameErrors({
-        groupId: this.selectedGroupId,
+        group: this.selectedGroup,
         host: { ...this.host, name: this.name }
       })
     },
     ipError() {
       const result = this.findHostIPErrors({
-        groupId: this.selectedGroupId,
+        group: this.selectedGroup,
         host: this.host
       })
       return result.length ? result[0] : ''
     },
     nameError() {
       const result = this.findHostNameErrors({
-        groupId: this.selectedGroupId,
+        group: this.selectedGroup,
         host: this.host
       })
       return result.length ? result[0] : ''
@@ -154,7 +154,7 @@ export default {
     ...mapState('settings', ['darkTheme']),
     ...mapGetters('group', ['findHostIPErrors', 'findHostNameErrors']),
     ...mapGetters('local/explorer/child', [
-      'selectedGroupId',
+      'selectedGroup',
       'isSelectedHost',
       'canPasteHost'
     ])

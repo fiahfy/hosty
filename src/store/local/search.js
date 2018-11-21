@@ -26,10 +26,10 @@ export default {
           })
           .map((group) => {
             return {
-              ...group,
               key: group.id,
               text: group.name,
-              hosts: group.hosts
+              disabled: group.disabled,
+              children: group.hosts
                 .filter((host) => {
                   return (
                     (!state.filtered || !host.disabled) &&
@@ -38,19 +38,19 @@ export default {
                 })
                 .map((host) => {
                   return {
-                    ...host,
                     key: `${group.id}-${host.id}`,
-                    text: `${host.ip} ${host.name}`
+                    text: `${host.ip} ${host.name}`,
+                    disabled: host.disabled
                   }
                 })
                 .sort((a, b) => {
-                  return a.ip > b.ip ? 1 : -1
+                  return a.text > b.text ? 1 : -1
                 })
             }
           })
-          .filter((group) => !!group.hosts.length)
+          .filter((group) => !!group.children.length)
           .sort((a, b) => {
-            return a.name > b.name ? 1 : -1
+            return a.text > b.text ? 1 : -1
           })
       } catch (e) {
         return []
