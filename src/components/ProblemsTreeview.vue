@@ -1,5 +1,5 @@
 <template>
-  <v-container class="search-result-treeview pa-0" fluid>
+  <v-container class="problems-treeview pa-0" fluid>
     <v-container
       id="scroll-target"
       ref="treeview"
@@ -13,7 +13,6 @@
         <v-treeview
           v-scroll:#scroll-target="onScroll"
           class="spacer"
-          item-children="hosts"
           item-key="key"
           item-text="text"
           open-all
@@ -24,13 +23,14 @@
           :active.sync="active"
         >
           <template slot="prepend" slot-scope="{ item }">
-            <span v-if="item.disabled" class="dummy-icon" />
-            <v-icon v-else>check_circle</v-icon>
+            <v-icon :color="getColor(item)">{{ getIcon(item) }}</v-icon>
           </template>
         </v-treeview>
       </v-layout>
       <v-layout v-else align-center justify-center>
-        <v-flex class="text-xs-center body-1">No results found</v-flex>
+        <v-flex class="text-xs-center caption">
+          No problems have been detected.
+        </v-flex>
       </v-layout>
     </v-container>
   </v-container>
@@ -47,8 +47,9 @@ export default {
     }
   },
   computed: {
-    ...mapState('local/search', ['scrollTop']),
-    ...mapGetters('local/search', ['results'])
+    ...mapState('settings', ['darkTheme']),
+    ...mapState('local/problems', ['scrollTop']),
+    ...mapGetters('local/problems', ['results'])
   },
   watch: {
     active(value) {
@@ -77,14 +78,20 @@ export default {
       this.setScrollTop({ scrollTop })
       this.scrolling = scrollTop > 0
     },
-    ...mapMutations('local/search/', ['setScrollTop']),
-    ...mapActions('local/search/', ['viewResult'])
+    getColor(item) {
+      return item.type === 'group' ? null : 'error'
+    },
+    getIcon(item) {
+      return item.type === 'group' ? 'list' : 'error'
+    },
+    ...mapMutations('local/problems/', ['setScrollTop']),
+    ...mapActions('local/problems/', ['viewResult'])
   }
 }
 </script>
 
 <style scoped lang="scss">
-.search-result-treeview {
+.problems-treeview {
   position: relative;
   .shadow {
     box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2),
@@ -95,8 +102,8 @@ export default {
     top: -10px;
     width: 100%;
   }
-  .dummy-icon {
-    width: 24px;
+  /deep/ .v-treeview-node__label {
+    font-size: 13px;
   }
 }
 </style>

@@ -12,7 +12,7 @@
     </td>
     <td ref="column" @dblclick="onColumnDblClick">
       <v-layout class="align-center">
-        <span :class="nameClasses">{{ group.name || 'Group' }}</span>
+        <span :class="nameClasses">{{ group.name || 'Untitled' }}</span>
         <span :class="numberClasses">{{ group.hosts.length }}</span>
         <v-menu
           v-model="menu.show"
@@ -28,7 +28,7 @@
               <v-text-field
                 ref="text"
                 v-model="name"
-                label="Group"
+                label="Untitled"
                 single-line
                 @keydown.native="onTextKeyDown"
                 @blur="onTextBlur"

@@ -23,6 +23,9 @@ export const addIpcRendererListeners = (store) => {
     store.dispatch('focus', { selector: Selector.queryInput })
     store.dispatch('select', { selector: Selector.queryInput })
   })
+  ipcRenderer.on('showProblems', () => {
+    store.dispatch('changeRoute', { name: 'problems' })
+  })
   ipcRenderer.on('showSettings', () => {
     store.dispatch('changeRoute', { name: 'settings' })
   })
