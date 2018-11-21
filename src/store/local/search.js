@@ -27,8 +27,8 @@ export default {
           .map((group) => {
             return {
               key: group.id,
-              text: group.name,
-              disabled: group.disabled,
+              text: group.name || '(Untitled)',
+              type: 'group',
               children: group.hosts
                 .filter((host) => {
                   return (
@@ -40,6 +40,7 @@ export default {
                   return {
                     key: `${group.id}-${host.id}`,
                     text: `${host.ip} ${host.name}`,
+                    type: 'host',
                     disabled: host.disabled
                   }
                 })

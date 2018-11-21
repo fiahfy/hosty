@@ -16,7 +16,9 @@
       @dblclick="(e) => onColumnDblClick(e, 'ip')"
     >
       {{ host.ip || '192.0.2.0' }}
-      <small v-if="ipError" class="px-4 error--text">{{ ipError }}</small>
+      <small v-if="ipError" class="px-4 error--text ellipsis">
+        {{ ipError }}
+      </small>
       <v-menu
         v-model="ipMenu.show"
         :position-x="ipMenu.x"
@@ -49,7 +51,9 @@
       @dblclick="(e) => onColumnDblClick(e, 'name')"
     >
       {{ host.name || 'example.com' }}
-      <small v-if="nameError" class="px-4 error--text">{{ nameError }}</small>
+      <small v-if="nameError" class="px-4 error--text ellipsis">
+        {{ nameError }}
+      </small>
       <v-menu
         v-model="nameMenu.show"
         :position-x="nameMenu.x"
@@ -278,6 +282,7 @@ export default {
       position: absolute;
       bottom: 0;
       left: 0;
+      right: 0;
     }
   }
 }

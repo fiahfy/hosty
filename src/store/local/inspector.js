@@ -10,8 +10,8 @@ export default {
         .map((group) => {
           return {
             key: group.id,
-            text: group.name,
-            icon: 'list',
+            text: group.name || '(Untitled)',
+            type: 'group',
             children: group.hosts
               .reduce((carry, host) => {
                 return [
@@ -23,7 +23,7 @@ export default {
                     return {
                       key: `${group.id}-${host.id}-${i}`,
                       text: problem,
-                      icon: 'error'
+                      type: 'problem'
                     }
                   })
                 ]

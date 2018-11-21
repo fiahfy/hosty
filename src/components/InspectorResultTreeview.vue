@@ -23,7 +23,7 @@
           :active.sync="active"
         >
           <template slot="prepend" slot-scope="{ item }">
-            <v-icon :color="getColor(item)">{{ item.icon }}</v-icon>
+            <v-icon :color="getColor(item)">{{ getIcon(item) }}</v-icon>
           </template>
         </v-treeview>
       </v-layout>
@@ -79,7 +79,10 @@ export default {
       this.scrolling = scrollTop > 0
     },
     getColor(item) {
-      return item.icon === 'error' ? 'error' : null
+      return item.type === 'group' ? null : 'error'
+    },
+    getIcon(item) {
+      return item.type === 'group' ? 'list' : 'error'
     },
     ...mapMutations('local/inspector/', ['setScrollTop']),
     ...mapActions('local/inspector/', ['viewResult'])
@@ -98,6 +101,9 @@ export default {
     position: absolute;
     top: -10px;
     width: 100%;
+  }
+  /deep/ .v-treeview-node__label {
+    font-size: 13px;
   }
 }
 </style>

@@ -44,7 +44,7 @@ export default {
           icon: 'error',
           title: 'Inspector',
           badge: true,
-          accelerator: 'CmdOrCtrl+Shift+F'
+          accelerator: 'CmdOrCtrl+Shift+M'
         },
         {
           name: 'settings',
@@ -84,11 +84,12 @@ export default {
 <style scoped lang="scss">
 .activity-bar {
   /deep/ .v-badge__badge {
-    font-size: 11px;
-    height: 18px;
-    right: -18px;
-    top: -9px;
-    width: 18px;
+    font-size: 9px;
+    height: 16px;
+    line-height: 16px;
+    right: -16px;
+    top: -8px;
+    width: 16px;
   }
 }
 </style>
