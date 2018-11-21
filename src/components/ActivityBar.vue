@@ -8,7 +8,7 @@
         @click="(e) => onItemClick(e, item)"
       >
         <v-list-tile-action>
-          <v-badge :value="item.badge && badgeCount">
+          <v-badge color="error" :value="item.badge && badgeCount">
             <span slot="badge">{{ badgeCount }}</span>
             <v-icon :color="item.color">{{ item.icon }}</v-icon>
           </v-badge>
