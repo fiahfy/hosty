@@ -1,3 +1,8 @@
+const reversed = {
+  disabled: false,
+  name: false
+}
+
 export default {
   namespaced: true,
   state: {
@@ -84,36 +89,6 @@ export default {
     }
   },
   actions: {
-    createGroup({ commit, state }, { group }) {
-      const id =
-        Math.max.apply(null, [0, ...state.groups.map((group) => group.id)]) + 1
-      const newGroup = {
-        disabled: false,
-        name: '',
-        hosts: [],
-        ...group,
-        id
-      }
-      const groups = [...state.groups, newGroup]
-      commit('setGroups', { groups })
-      return newGroup
-    },
-    updateGroup({ commit, state }, { id, group }) {
-      const groups = state.groups.map((currentGroup) => {
-        if (currentGroup.id !== id) {
-          return currentGroup
-        }
-        return {
-          ...currentGroup,
-          ...group
-        }
-      })
-      commit('setGroups', { groups })
-    },
-    deleteGroup({ commit, state }, { id }) {
-      const groups = state.groups.filter((group) => group.id !== id)
-      commit('setGroups', { groups })
-    },
     createHost({ dispatch, getters }, { groupId, host }) {
       const currentHosts = getters.getHosts({ groupId })
       const id =
@@ -163,6 +138,54 @@ export default {
   mutations: {
     setGroups(state, { groups }) {
       state.groups = groups
+    },
+    addGroup(state, { group } = {}) {
+      const id =
+        Math.max.apply(null, [0, ...state.groups.map((group) => group.id)]) + 1
+
+      state.groups = [
+        ...state.groups,
+        {
+          disabled: false,
+          name: '',
+          hosts: [],
+          ...group,
+          id
+        }
+      ]
+    },
+    removeGroup(state, { id }) {
+      state.groups = state.groups.filter((group) => group.id !== id)
+    },
+    updateGroup(state, { id, group }) {
+      state.groups = state.groups.map((currentGroup) => {
+        if (currentGroup.id !== id) {
+          return currentGroup
+        }
+        return {
+          ...currentGroup,
+          ...group
+        }
+      })
+    },
+    sortGroups(state, { by, descending }) {
+      state.groups = state.groups.sort((a, b) => {
+        let result = 0
+        if (a[by] > b[by]) {
+          result = 1
+        } else if (a[by] < b[by]) {
+          result = -1
+        }
+        if (result === 0) {
+          if (a.name > b.name) {
+            result = 1
+          } else if (a.name < b.name) {
+            result = -1
+          }
+        }
+        result = reversed[by] ? -1 * result : result
+        return descending ? -1 * result : result
+      })
     }
   }
 }
