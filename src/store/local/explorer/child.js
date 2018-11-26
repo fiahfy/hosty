@@ -55,15 +55,11 @@ export default {
     }
   },
   actions: {
-    // loadHosts({ commit, dispatch, getters, state }) {
-    //   const hosts = getters.cloneHosts().filter((host) => {
-    //     return !state.filtered || !host.disabled
-    //   })
-    //   commit('setHosts', { hosts })
-    //   commit('setScrollTop', { scrollTop: 0 })
-    //   dispatch('sortHosts')
-    //   dispatch('unselectHost')
-    // },
+    loadHosts({ commit, dispatch }) {
+      commit('setScrollTop', { scrollTop: 0 })
+      dispatch('unselectHost')
+      dispatch('sortHosts')
+    },
     createHost({ commit, dispatch, getters }, { host } = {}) {
       commit(
         'group/addHost',
@@ -156,11 +152,9 @@ export default {
       commit('setOrder', { order })
       dispatch('sortHosts')
     },
-    toggleFiltered({ dispatch, state }) {
-      dispatch('setFiltered', { filtered: !state.filtered })
-    },
-    setFiltered({ commit }, { filtered }) {
-      commit('setFiltered', { filtered })
+    toggleFiltered({ commit, dispatch, state }) {
+      dispatch('unselectHost')
+      commit('setFiltered', { filtered: !state.filtered })
     },
     focusTable({ dispatch }) {
       dispatch(
@@ -182,6 +176,9 @@ export default {
     },
     setFiltered(state, { filtered }) {
       state.filtered = filtered
+    },
+    toggleFiltered(state) {
+      state.filtered = !state.filtered
     },
     setClippedHost(state, { clippedHost }) {
       state.clippedHost = clippedHost

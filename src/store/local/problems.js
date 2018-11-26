@@ -5,8 +5,7 @@ export default {
   },
   getters: {
     results(state, getters, rootState, rootGetters) {
-      return getters
-        .getGroups()
+      return rootState.group.groups
         .map((group) => {
           return {
             key: group.id,
@@ -37,9 +36,6 @@ export default {
         .sort((a, b) => {
           return a.text > b.text ? 1 : -1
         })
-    },
-    getGroups(state, getters, rootState) {
-      return () => JSON.parse(JSON.stringify(rootState.group.groups))
     }
   },
   actions: {

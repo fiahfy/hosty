@@ -72,6 +72,9 @@ export default {
     ])
   },
   watch: {
+    selectedGroupId() {
+      this.restore()
+    },
     selectedHostIndex(value) {
       this.$nextTick(() => {
         const index = value
@@ -102,12 +105,15 @@ export default {
     }
   },
   mounted() {
-    const scrollTop = this.scrollTop
-    this.$nextTick(() => {
-      this.$refs.table.setScrollTop(scrollTop)
-    })
+    this.restore()
   },
   methods: {
+    restore() {
+      const scrollTop = this.scrollTop
+      this.$nextTick(() => {
+        this.$refs.table.setScrollTop(scrollTop)
+      })
+    },
     onScroll(e) {
       this.setScrollTop({ scrollTop: e.target.scrollTop })
     },

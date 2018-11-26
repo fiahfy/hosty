@@ -45,21 +45,11 @@ export default {
     }
   },
   actions: {
-    // loadGroups({ commit, dispatch, getters, state }) {
-    //   const groups = getters.cloneGroups().filter((group) => {
-    //     return !state.filtered || !group.disabled
-    //   })
-    //   commit('setGroups', { groups })
-    //   commit('setScrollTop', { scrollTop: 0 })
-    //   dispatch('sortGroups')
-    //   dispatch('unselectGroup')
-    // },
-    // loadGroup({ commit, getters, state }) {
-    //   const group = getters.cloneGroups().find((group) => {
-    //     return group.id === state.selectedGroupId
-    //   })
-    //   commit('updateGroup', { id: state.selectedGroupId, group })
-    // },
+    loadGroups({ commit, dispatch }) {
+      commit('setScrollTop', { scrollTop: 0 })
+      dispatch('unselectGroup')
+      dispatch('sortGroups')
+    },
     createGroup({ commit, dispatch, getters }, { group } = {}) {
       commit('group/addGroup', { group }, { root: true })
       const index = getters.groups.length - 1
@@ -97,8 +87,7 @@ export default {
         ? getters.selectedGroup.name || '(Untitled)'
         : undefined
       dispatch('changeTitle', { title }, { root: true })
-      dispatch('child/sortHosts')
-      dispatch('child/unselectHost')
+      dispatch('child/loadHosts')
     },
     unselectGroup({ dispatch }) {
       dispatch('selectGroup', { id: 0 })
@@ -142,11 +131,9 @@ export default {
       commit('setOrder', { order })
       dispatch('sortGroups')
     },
-    toggleFiltered({ dispatch, state }) {
-      dispatch('setFiltered', { filtered: !state.filtered })
-    },
-    setFiltered({ commit }, { filtered }) {
-      commit('setFiltered', { filtered })
+    toggleFiltered({ commit, dispatch, state }) {
+      dispatch('unselectGroup')
+      commit('setFiltered', { filtered: !state.filtered })
     },
     focusTable({ dispatch }) {
       dispatch('focus', { selector: Selector.explorerTable }, { root: true })
@@ -164,6 +151,9 @@ export default {
     },
     setFiltered(state, { filtered }) {
       state.filtered = filtered
+    },
+    toggleFiltered(state) {
+      state.filtered = !state.filtered
     },
     setClippedGroup(state, { clippedGroup }) {
       state.clippedGroup = clippedGroup
