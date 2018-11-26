@@ -14,6 +14,11 @@ export default {
     clippedGroup: null
   },
   getters: {
+    groups(state, getters, rootState) {
+      return rootState.group.groups.filter((group) => {
+        return !state.filtered || !group.disabled
+      })
+    },
     selectedGroupIndex(state, getters) {
       return getters.getGroupIndex({ id: state.selectedGroupId })
     },
@@ -37,14 +42,6 @@ export default {
     },
     isSelectedGroup(state) {
       return ({ id }) => state.selectedGroupId === id
-    },
-    cloneGroups(state, getters, rootState) {
-      return () => JSON.parse(JSON.stringify(rootState.group.groups))
-    },
-    groups(state, getters) {
-      return getters.cloneGroups().filter((group) => {
-        return !state.filtered || !group.disabled
-      })
     }
   },
   actions: {
@@ -100,7 +97,7 @@ export default {
         ? getters.selectedGroup.name || '(Untitled)'
         : undefined
       dispatch('changeTitle', { title }, { root: true })
-      dispatch('child/loadHosts')
+      dispatch('child/sortHosts')
       dispatch('child/unselectHost')
     },
     unselectGroup({ dispatch }) {
@@ -148,9 +145,8 @@ export default {
     toggleFiltered({ dispatch, state }) {
       dispatch('setFiltered', { filtered: !state.filtered })
     },
-    setFiltered({ commit, dispatch }, { filtered }) {
+    setFiltered({ commit }, { filtered }) {
       commit('setFiltered', { filtered })
-      dispatch('loadGroups')
     },
     focusTable({ dispatch }) {
       dispatch('focus', { selector: Selector.explorerTable }, { root: true })

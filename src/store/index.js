@@ -144,7 +144,7 @@ export default new Vuex.Store({
     }),
     (store) => {
       store.subscribe((mutation) => {
-        if (mutation.type === 'group/setGroups' && store.state.permission) {
+        if (mutation.type.indexOf('group/') === 0 && store.state.permission) {
           store.dispatch('sync')
         }
       })

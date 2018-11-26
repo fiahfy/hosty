@@ -1,6 +1,7 @@
 const reversed = {
   disabled: false,
-  name: false
+  name: false,
+  ip: false
 }
 
 export default {
@@ -9,12 +10,6 @@ export default {
     groups: []
   },
   getters: {
-    getHosts(state) {
-      return ({ groupId }) => {
-        const group = state.groups.find((group) => group.id === groupId)
-        return group ? group.hosts : []
-      }
-    },
     actualHosts(state) {
       return state.groups
         .filter((group) => !group.disabled)
@@ -88,53 +83,7 @@ export default {
       }
     }
   },
-  actions: {
-    createHost({ dispatch, getters }, { groupId, host }) {
-      const currentHosts = getters.getHosts({ groupId })
-      const id =
-        Math.max.apply(null, [0, ...currentHosts.map((host) => host.id)]) + 1
-      const newHost = {
-        disabled: false,
-        name: '',
-        ip: '',
-        ...host,
-        id
-      }
-      const hosts = [...currentHosts, newHost]
-      dispatch('setHosts', { groupId, hosts })
-      return newHost
-    },
-    updateHost({ dispatch, getters }, { groupId, id, host }) {
-      const hosts = getters.getHosts({ groupId }).map((currentHost) => {
-        if (currentHost.id !== id) {
-          return currentHost
-        }
-        return {
-          ...currentHost,
-          ...host
-        }
-      })
-      dispatch('setHosts', { groupId, hosts })
-    },
-    deleteHost({ dispatch, getters }, { groupId, id }) {
-      const hosts = getters
-        .getHosts({ groupId })
-        .filter((host) => host.id !== id)
-      dispatch('setHosts', { groupId, hosts })
-    },
-    setHosts({ commit, state }, { groupId, hosts }) {
-      const groups = state.groups.map((group) => {
-        if (group.id !== groupId) {
-          return group
-        }
-        return {
-          ...group,
-          hosts
-        }
-      })
-      commit('setGroups', { groups })
-    }
-  },
+  actions: {},
   mutations: {
     setGroups(state, { groups }) {
       state.groups = groups
@@ -185,6 +134,90 @@ export default {
         }
         result = reversed[by] ? -1 * result : result
         return descending ? -1 * result : result
+      })
+    },
+    addHost(state, { groupId, host } = {}) {
+      state.groups = state.groups.map((group) => {
+        if (group.id !== groupId) {
+          return group
+        }
+
+        const id =
+          Math.max.apply(null, [0, ...group.hosts.map((host) => host.id)]) + 1
+
+        return {
+          ...group,
+          hosts: [
+            ...group.hosts,
+            {
+              disabled: false,
+              name: '',
+              ip: '',
+              ...host,
+              id
+            }
+          ]
+        }
+      })
+    },
+    removeHost(state, { groupId, id }) {
+      state.groups = state.groups.map((group) => {
+        if (group.id !== groupId) {
+          return group
+        }
+
+        return {
+          ...group,
+          hosts: group.hosts.filter((host) => host.id !== id)
+        }
+      })
+    },
+    updateHost(state, { groupId, id, host }) {
+      state.groups = state.groups.map((group) => {
+        if (group.id !== groupId) {
+          return group
+        }
+
+        return {
+          ...group,
+          hosts: group.hosts.map((currentHost) => {
+            if (currentHost.id !== id) {
+              return currentHost
+            }
+            return {
+              ...currentHost,
+              ...host
+            }
+          })
+        }
+      })
+    },
+    sortHosts(state, { groupId, by, descending }) {
+      state.groups = state.groups.map((group) => {
+        if (group.id !== groupId) {
+          return group
+        }
+
+        return {
+          ...group,
+          hosts: group.hosts.sort((a, b) => {
+            let result = 0
+            if (a[by] > b[by]) {
+              result = 1
+            } else if (a[by] < b[by]) {
+              result = -1
+            }
+            if (result === 0) {
+              if (a.name > b.name) {
+                result = 1
+              } else if (a.name < b.name) {
+                result = -1
+              }
+            }
+            result = reversed[by] ? -1 * result : result
+            return descending ? -1 * result : result
+          })
+        }
       })
     }
   }

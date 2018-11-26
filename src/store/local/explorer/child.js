@@ -1,15 +1,8 @@
 import { Selector } from '~/store'
 
-const reversed = {
-  disabled: false,
-  name: false,
-  ip: false
-}
-
 export default {
   namespaced: true,
   state: {
-    hosts: [],
     selectedHostId: 0,
     scrollTop: 0,
     order: {
@@ -20,6 +13,16 @@ export default {
     clippedHost: null
   },
   getters: {
+    hosts(state, getters, rootState) {
+      if (!getters.selectedGroupId) {
+        return []
+      }
+      return rootState.group.groups
+        .find((group) => group.id === getters.selectedGroupId)
+        .hosts.filter((host) => {
+          return !state.filtered || !host.disabled
+        })
+    },
     selectedGroupId(state, getters, rootState) {
       return rootState.local.explorer.selectedGroupId
     },
@@ -41,88 +44,61 @@ export default {
     canPasteHost(state) {
       return !!state.clippedHost
     },
-    getHostIndex(state) {
-      return ({ id }) => state.hosts.findIndex((host) => host.id === id)
+    getHostIndex(state, getters) {
+      return ({ id }) => getters.hosts.findIndex((host) => host.id === id)
     },
     getHost(state, getters) {
-      return ({ id }) => state.hosts[getters.getHostIndex({ id })]
+      return ({ id }) => getters.hosts[getters.getHostIndex({ id })]
     },
     isSelectedHost(state) {
       return ({ id }) => state.selectedHostId === id
-    },
-    cloneHosts(state, getters, rootState, rootGetters) {
-      return () =>
-        JSON.parse(
-          JSON.stringify(
-            rootGetters['group/getHosts']({ groupId: getters.selectedGroupId })
-          )
-        )
     }
   },
   actions: {
-    loadHosts({ commit, dispatch, getters, state }) {
-      const hosts = getters.cloneHosts().filter((host) => {
-        return !state.filtered || !host.disabled
-      })
-      commit('setHosts', { hosts })
-      commit('setScrollTop', { scrollTop: 0 })
-      dispatch('sortHosts')
-      dispatch('unselectHost')
-    },
-    async createHost({ commit, dispatch, getters, state }, { host } = {}) {
-      const newHost = await dispatch(
-        'group/createHost',
+    // loadHosts({ commit, dispatch, getters, state }) {
+    //   const hosts = getters.cloneHosts().filter((host) => {
+    //     return !state.filtered || !host.disabled
+    //   })
+    //   commit('setHosts', { hosts })
+    //   commit('setScrollTop', { scrollTop: 0 })
+    //   dispatch('sortHosts')
+    //   dispatch('unselectHost')
+    // },
+    createHost({ commit, dispatch, getters }, { host } = {}) {
+      commit(
+        'group/addHost',
         { groupId: getters.selectedGroupId, host },
         { root: true }
       )
-      commit('addHost', { host: newHost })
-      dispatch('local/explorer/loadGroup', null, { root: true })
-      const index = state.hosts.length - 1
+      const index = getters.hosts.length - 1
       dispatch('selectHostIndex', { index })
       dispatch('focusTable')
     },
-    deleteHost({ commit, dispatch, getters, state }, { id }) {
+    deleteHost({ commit, dispatch, getters }, { id }) {
       const oldIndex = getters.getHostIndex({ id })
-      dispatch(
-        'group/deleteHost',
+      commit(
+        'group/removeHost',
         { groupId: getters.selectedGroupId, id },
         { root: true }
       )
-      commit('removeHost', { id })
-      dispatch('local/explorer/loadGroup', null, { root: true })
       const index =
-        oldIndex < state.hosts.length ? oldIndex : state.hosts.length - 1
+        oldIndex < getters.hosts.length ? oldIndex : getters.hosts.length - 1
       dispatch('selectHostIndex', { index })
       dispatch('focusTable')
     },
-    updateHost({ commit, dispatch, getters }, { id, host }) {
-      dispatch(
+    updateHost({ commit, getters }, { id, host }) {
+      commit(
         'group/updateHost',
         { groupId: getters.selectedGroupId, id, host },
         { root: true }
       )
-      commit('updateHost', { id, host })
     },
-    sortHosts({ commit, state }) {
-      const { by, descending } = state.order
-      const hosts = state.hosts.sort((a, b) => {
-        let result = 0
-        if (a[by] > b[by]) {
-          result = 1
-        } else if (a[by] < b[by]) {
-          result = -1
-        }
-        if (result === 0) {
-          if (a.name > b.name) {
-            result = 1
-          } else if (a.name < b.name) {
-            result = -1
-          }
-        }
-        result = reversed[by] ? -1 * result : result
-        return descending ? -1 * result : result
-      })
-      commit('setHosts', { hosts })
+    sortHosts({ commit, getters, state }) {
+      commit(
+        'group/sortHosts',
+        { groupId: getters.selectedGroupId, ...state.order },
+        { root: true }
+      )
     },
     copyHost({ commit, getters }, { id }) {
       const clippedHost = getters.getHost({ id })
@@ -141,35 +117,35 @@ export default {
     unselectHost({ dispatch }) {
       dispatch('selectHost', { id: 0 })
     },
-    selectHostIndex({ dispatch, state }, { index }) {
-      const host = state.hosts[index]
+    selectHostIndex({ dispatch, getters }, { index }) {
+      const host = getters.hosts[index]
       if (host) {
         dispatch('selectHost', { id: host.id })
       } else {
         dispatch('unselectHost')
       }
     },
-    selectFirstHost({ dispatch, state }) {
+    selectFirstHost({ dispatch, getters }) {
       const index = 0
-      if (index > -1 && index < state.hosts.length) {
+      if (index > -1 && index < getters.hosts.length) {
         dispatch('selectHostIndex', { index })
       }
     },
-    selectLastHost({ dispatch, state }) {
-      const index = state.hosts.length - 1
-      if (index > -1 && index < state.hosts.length) {
+    selectLastHost({ dispatch, getters }) {
+      const index = getters.hosts.length - 1
+      if (index > -1 && index < getters.hosts.length) {
         dispatch('selectHostIndex', { index })
       }
     },
-    selectPreviousHost({ dispatch, getters, state }) {
+    selectPreviousHost({ dispatch, getters }) {
       const index = getters.selectedHostIndex - 1
-      if (index > -1 && index < state.hosts.length) {
+      if (index > -1 && index < getters.hosts.length) {
         dispatch('selectHostIndex', { index })
       }
     },
-    selectNextHost({ dispatch, getters, state }) {
+    selectNextHost({ dispatch, getters }) {
       const index = getters.selectedHostIndex + 1
-      if (index > -1 && index < state.hosts.length) {
+      if (index > -1 && index < getters.hosts.length) {
         dispatch('selectHostIndex', { index })
       }
     },
@@ -183,9 +159,8 @@ export default {
     toggleFiltered({ dispatch, state }) {
       dispatch('setFiltered', { filtered: !state.filtered })
     },
-    setFiltered({ commit, dispatch }, { filtered }) {
+    setFiltered({ commit }, { filtered }) {
       commit('setFiltered', { filtered })
-      dispatch('loadHosts')
     },
     focusTable({ dispatch }) {
       dispatch(
@@ -196,20 +171,6 @@ export default {
     }
   },
   mutations: {
-    setHosts(state, { hosts }) {
-      state.hosts = hosts
-    },
-    addHost(state, { host }) {
-      state.hosts = [...state.hosts, host]
-    },
-    updateHost(state, { id, host }) {
-      state.hosts = state.hosts.map((current) =>
-        current.id !== id ? current : { ...current, ...host }
-      )
-    },
-    removeHost(state, { id }) {
-      state.hosts = state.hosts.filter((host) => host.id !== id)
-    },
     setSelectedHostId(state, { selectedHostId }) {
       state.selectedHostId = selectedHostId
     },

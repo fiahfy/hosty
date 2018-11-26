@@ -63,12 +63,9 @@ export default {
     noDataText() {
       return this.selectedGroupId ? 'No hosts' : 'No groups selected'
     },
-    ...mapState('local/explorer/child', [
-      'hosts',
-      'selectedHostId',
-      'scrollTop'
-    ]),
+    ...mapState('local/explorer/child', ['selectedHostId', 'scrollTop']),
     ...mapGetters('local/explorer/child', [
+      'hosts',
       'selectedGroupId',
       'selectedHostIndex',
       'canPasteHost'
