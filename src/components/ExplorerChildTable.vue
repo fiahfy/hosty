@@ -63,18 +63,18 @@ export default {
     noDataText() {
       return this.selectedGroupId ? 'No hosts' : 'No groups selected'
     },
-    ...mapState('local/explorer/child', [
-      'hosts',
-      'selectedHostId',
-      'scrollTop'
-    ]),
+    ...mapState('local/explorer/child', ['selectedHostId', 'scrollTop']),
     ...mapGetters('local/explorer/child', [
+      'hosts',
       'selectedGroupId',
       'selectedHostIndex',
       'canPasteHost'
     ])
   },
   watch: {
+    selectedGroupId() {
+      this.restore()
+    },
     selectedHostIndex(value) {
       this.$nextTick(() => {
         const index = value
@@ -105,12 +105,15 @@ export default {
     }
   },
   mounted() {
-    const scrollTop = this.scrollTop
-    this.$nextTick(() => {
-      this.$refs.table.setScrollTop(scrollTop)
-    })
+    this.restore()
   },
   methods: {
+    restore() {
+      const scrollTop = this.scrollTop
+      this.$nextTick(() => {
+        this.$refs.table.setScrollTop(scrollTop)
+      })
+    },
     onScroll(e) {
       this.setScrollTop({ scrollTop: e.target.scrollTop })
     },

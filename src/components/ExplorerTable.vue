@@ -56,8 +56,12 @@ export default {
     }
   },
   computed: {
-    ...mapState('local/explorer', ['groups', 'selectedGroupId', 'scrollTop']),
-    ...mapGetters('local/explorer', ['selectedGroupIndex', 'canPasteGroup'])
+    ...mapState('local/explorer', ['selectedGroupId', 'scrollTop']),
+    ...mapGetters('local/explorer', [
+      'groups',
+      'selectedGroupIndex',
+      'canPasteGroup'
+    ])
   },
   watch: {
     selectedGroupIndex(value) {
@@ -90,12 +94,15 @@ export default {
     }
   },
   mounted() {
-    const scrollTop = this.scrollTop
-    this.$nextTick(() => {
-      this.$refs.table.setScrollTop(scrollTop)
-    })
+    this.restore()
   },
   methods: {
+    restore() {
+      const scrollTop = this.scrollTop
+      this.$nextTick(() => {
+        this.$refs.table.setScrollTop(scrollTop)
+      })
+    },
     onScroll(e) {
       this.setScrollTop({ scrollTop: e.target.scrollTop })
     },

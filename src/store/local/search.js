@@ -7,7 +7,7 @@ export default {
     filtered: false
   },
   getters: {
-    results(state, getters) {
+    results(state, getters, rootState) {
       const query = state.query
       if (!query) {
         return []
@@ -19,8 +19,7 @@ export default {
           : query.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
         const regexp = new RegExp(pattern, 'i')
 
-        return getters
-          .getGroups()
+        return rootState.group.groups
           .filter((group) => {
             return !state.filtered || !group.disabled
           })
@@ -56,24 +55,21 @@ export default {
       } catch (e) {
         return []
       }
-    },
-    getGroups(state, getters, rootState) {
-      return () => JSON.parse(JSON.stringify(rootState.group.groups))
     }
   },
   actions: {
-    viewResult({ dispatch }, { key }) {
+    viewResult({ commit, dispatch }, { key }) {
       const [groupId, hostId] = key.split('-').map(Number)
       dispatch('changeRoute', { name: 'explorer' }, { root: true })
       // wait dom updated
       setTimeout(() => {
-        dispatch(
+        commit(
           'local/explorer/setFiltered',
           { filtered: false },
           { root: true }
         )
         dispatch('local/explorer/selectGroup', { id: groupId }, { root: true })
-        dispatch(
+        commit(
           'local/explorer/child/setFiltered',
           { filtered: false },
           { root: true }
