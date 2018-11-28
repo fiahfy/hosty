@@ -20,6 +20,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { Name } from '~/router'
 
 export default {
   data() {
@@ -69,7 +70,7 @@ export default {
   },
   methods: {
     onItemClick(e, item) {
-      this.$router.push({ name: item.name })
+      this.$router.push({ name: Name.index, query: { sidebar: item.name } })
     },
     updateItems(name) {
       this.items = this.items.map((item) => ({

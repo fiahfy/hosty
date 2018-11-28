@@ -63,13 +63,13 @@ export default {
       }
     }
   },
-  mounted() {
-    const scrollTop = this.scrollTop
-    // open-all を待つために $nextTick でなく setTimeout を使用する
-    setTimeout(() => {
-      this.$refs.treeview.scrollTop = scrollTop
-    }, 0)
-  },
+  // mounted() {
+  //   const scrollTop = this.scrollTop
+  //   // open-all を待つために $nextTick でなく setTimeout を使用する
+  //   setTimeout(() => {
+  //     this.$refs.treeview.scrollTop = scrollTop
+  //   }, 0)
+  // },
   methods: {
     onScroll(e) {
       const scrollTop = e.target.scrollTop
