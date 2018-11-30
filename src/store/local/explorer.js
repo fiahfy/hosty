@@ -1,5 +1,4 @@
 import { Selector } from '~/store'
-import child from './child'
 
 export default {
   namespaced: true,
@@ -81,13 +80,9 @@ export default {
       }
       dispatch('createGroup', { group })
     },
-    selectGroup({ commit, dispatch, getters }, { id }) {
+    selectGroup({ commit, dispatch }, { id }) {
       commit('setSelectedGroupId', { selectedGroupId: id })
-      const title = getters.selectedGroup
-        ? getters.selectedGroup.name || '(Untitled)'
-        : undefined
-      dispatch('changeTitle', { title }, { root: true })
-      dispatch('child/loadHosts')
+      dispatch('local/loadHosts', null, { root: true })
     },
     unselectGroup({ dispatch }) {
       dispatch('selectGroup', { id: 0 })
@@ -158,8 +153,5 @@ export default {
     setClippedGroup(state, { clippedGroup }) {
       state.clippedGroup = clippedGroup
     }
-  },
-  modules: {
-    child
   }
 }

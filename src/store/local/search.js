@@ -69,16 +69,8 @@ export default {
           { root: true }
         )
         dispatch('local/explorer/selectGroup', { id: groupId }, { root: true })
-        commit(
-          'local/explorer/child/setFiltered',
-          { filtered: false },
-          { root: true }
-        )
-        dispatch(
-          'local/explorer/child/selectHost',
-          { id: hostId },
-          { root: true }
-        )
+        commit('local/setFiltered', { filtered: false }, { root: true })
+        dispatch('local/selectHost', { id: hostId }, { root: true })
       })
     }
   },

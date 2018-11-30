@@ -1,7 +1,7 @@
 <template>
   <tr
     :active="active"
-    class="explorer-child-table-row"
+    class="host-table-row"
     @click.stop="onClick"
     @contextmenu.stop="onContextMenu"
   >
@@ -157,11 +157,7 @@ export default {
     },
     ...mapState('settings', ['darkTheme']),
     ...mapGetters('group', ['findHostIPErrors', 'findHostNameErrors']),
-    ...mapGetters('local/explorer/child', [
-      'selectedGroup',
-      'isSelectedHost',
-      'canPasteHost'
-    ])
+    ...mapGetters('local', ['selectedGroup', 'isSelectedHost', 'canPasteHost'])
   },
   methods: {
     onClick() {
@@ -260,7 +256,7 @@ export default {
         }, 200)
       })
     },
-    ...mapActions('local/explorer/child', [
+    ...mapActions('local', [
       'createHost',
       'updateHost',
       'deleteHost',
@@ -274,7 +270,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.explorer-child-table-row {
+.host-table-row {
   cursor: pointer;
   > td {
     position: relative;

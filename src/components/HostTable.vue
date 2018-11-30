@@ -4,7 +4,7 @@
     :headers="headers"
     :items="hosts"
     :no-data-text="noDataText"
-    class="explorer-child-table"
+    class="host-table"
     item-key="id"
     hide-actions
     tabindex="0"
@@ -13,12 +13,12 @@
     @keydown.native="onKeyDown"
     @contextmenu.native.stop="onContextMenu"
   >
-    <explorer-child-table-header-row
+    <host-table-header-row
       slot="headers"
       slot-scope="props"
       :headers="props.headers"
     />
-    <explorer-child-table-row
+    <host-table-row
       slot="items"
       :ref="`row-${props.item.id}`"
       slot-scope="props"
@@ -29,15 +29,15 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
-import ExplorerChildTableHeaderRow from './ExplorerChildTableHeaderRow'
-import ExplorerChildTableRow from './ExplorerChildTableRow'
+import HostTableHeaderRow from './HostTableHeaderRow'
+import HostTableRow from './HostTableRow'
 import StickyDataTable from './StickyDataTable'
 import * as ContextMenu from '~/utils/context-menu'
 
 export default {
   components: {
-    ExplorerChildTableHeaderRow,
-    ExplorerChildTableRow,
+    HostTableHeaderRow,
+    HostTableRow,
     StickyDataTable
   },
   data() {
@@ -63,8 +63,8 @@ export default {
     noDataText() {
       return this.selectedGroupId ? 'No hosts' : 'No groups selected'
     },
-    ...mapState('local/explorer/child', ['selectedHostId', 'scrollTop']),
-    ...mapGetters('local/explorer/child', [
+    ...mapState('local', ['selectedHostId', 'scrollTop']),
+    ...mapGetters('local', [
       'hosts',
       'selectedGroupId',
       'selectedHostIndex',
@@ -184,8 +184,8 @@ export default {
     focusSelectedRow() {
       this.$refs[`row-${this.selectedHostId}`].focus()
     },
-    ...mapMutations('local/explorer/child', ['setScrollTop']),
-    ...mapActions('local/explorer/child', [
+    ...mapMutations('local', ['setScrollTop']),
+    ...mapActions('local', [
       'createHost',
       'deleteHost',
       'copyHost',
@@ -201,7 +201,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.explorer-child-table {
+.host-table {
   outline: none;
 }
 </style>

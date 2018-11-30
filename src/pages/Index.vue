@@ -2,13 +2,28 @@
   <v-container class="index" fill-height fluid pa-0>
     <v-layout row>
       <v-flex xs4>
-        <keep-alive><component :is="sidebarComponent" /></keep-alive>
+        <v-layout row fill-height>
+          <v-layout column fill-height>
+            <v-toolbar flat dense>
+              <v-subheader class="pl-0">{{ headline }}</v-subheader>
+            </v-toolbar>
+            <!-- eslint-disable-next-line vue/html-closing-bracket-spacing -->
+            <keep-alive><component :is="sidebarComponent"/></keep-alive>
+          </v-layout>
+          <v-divider vertical />
+        </v-layout>
       </v-flex>
       <v-flex xs8>
         <v-layout column fill-height>
-          <explorer-child-card />
+          <v-toolbar flat dense>
+            <v-btn color="red" flat icon @click.stop="">
+              <v-icon>check_circle</v-icon>
+            </v-btn>
+            <span class="spacer ellipsis">{{ 'Untitled' }}</span>
+          </v-toolbar>
+          <host-card />
           <v-container fluid pa-0 overflow-hidden>
-            <explorer-child-table class="fill-height" />
+            <host-table class="fill-height" />
           </v-container>
         </v-layout>
       </v-flex>
@@ -18,17 +33,20 @@
 
 <script>
 import ExplorerSidebar from '~/components/ExplorerSidebar'
+import HostCard from '~/components/HostCard'
+import HostTable from '~/components/HostTable'
 import ProblemsSidebar from '~/components/ProblemsSidebar'
 import SearchSidebar from '~/components/SearchSidebar'
-import ExplorerChildCard from '~/components/ExplorerChildCard'
-import ExplorerChildTable from '~/components/ExplorerChildTable'
 
 export default {
   components: {
-    ExplorerChildCard,
-    ExplorerChildTable
+    HostCard,
+    HostTable
   },
   computed: {
+    headline() {
+      return (this.$route.query.sidebar || 'explorer').toUpperCase()
+    },
     sidebarComponent() {
       switch (this.$route.query.sidebar) {
         case 'search':

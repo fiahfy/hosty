@@ -13,7 +13,7 @@ Vue.use(Vuex)
 export const Selector = {
   queryInput: 'input[name=query]',
   explorerTable: '.explorer-table',
-  explorerChildTable: '.explorer-child-table'
+  hostTable: '.host-table'
 }
 
 export default new Vuex.Store({
@@ -110,10 +110,6 @@ export default new Vuex.Store({
     },
     changeRoute(_, payload) {
       router.push(payload)
-    },
-    changeTitle({ commit }, { title = Package.productName }) {
-      document.title = title
-      commit('setTitle', { title })
     },
     showMessage({ commit }, message) {
       commit('setMessage', { message })
