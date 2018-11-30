@@ -15,12 +15,7 @@
       </v-flex>
       <v-flex xs8>
         <v-layout column fill-height>
-          <v-toolbar flat dense>
-            <v-btn color="red" flat icon @click.stop="">
-              <v-icon>check_circle</v-icon>
-            </v-btn>
-            <span class="spacer ellipsis">{{ 'Untitled' }}</span>
-          </v-toolbar>
+          <host-toolbar />
           <host-card />
           <v-container fluid pa-0 overflow-hidden>
             <host-table class="fill-height" />
@@ -35,13 +30,15 @@
 import ExplorerSidebar from '~/components/ExplorerSidebar'
 import HostCard from '~/components/HostCard'
 import HostTable from '~/components/HostTable'
+import HostToolbar from '~/components/HostToolbar'
 import ProblemsSidebar from '~/components/ProblemsSidebar'
 import SearchSidebar from '~/components/SearchSidebar'
 
 export default {
   components: {
     HostCard,
-    HostTable
+    HostTable,
+    HostToolbar
   },
   computed: {
     headline() {

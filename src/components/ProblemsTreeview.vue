@@ -65,13 +65,15 @@ export default {
       }
     }
   },
-  // mounted() {
-  //   const scrollTop = this.scrollTop
-  //   // open-all を待つために $nextTick でなく setTimeout を使用する
-  //   setTimeout(() => {
-  //     this.$refs.treeview.scrollTop = scrollTop
-  //   }, 0)
-  // },
+  mounted() {
+    // wait for treeview.open-all
+    this.$nextTick(() => {
+      this.$refs.treeview.scrollTop = this.scrollTop
+    })
+  },
+  activated() {
+    this.$refs.treeview.scrollTop = this.scrollTop
+  },
   methods: {
     onScroll(e) {
       const scrollTop = e.target.scrollTop
@@ -94,16 +96,20 @@ export default {
 .problems-treeview {
   position: relative;
   .shadow {
-    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2),
-      0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
     content: '';
     height: 10px;
     position: absolute;
     top: -10px;
     width: 100%;
   }
-  /deep/ .v-treeview-node__label {
-    font-size: 13px;
+  /deep/ .v-treeview-node__content {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    .v-treeview-node__label {
+      font-size: 13px;
+    }
   }
 }
 </style>

@@ -1,11 +1,11 @@
 <template>
   <sticky-data-table
     ref="table"
+    class="host-table"
     :headers="headers"
     :items="hosts"
-    :no-data-text="noDataText"
-    class="host-table"
     item-key="id"
+    :no-data-text="noDataText"
     hide-actions
     tabindex="0"
     @scroll="onScroll"
@@ -63,18 +63,10 @@ export default {
     noDataText() {
       return this.selectedGroupId ? 'No hosts' : 'No groups selected'
     },
-    ...mapState('local', ['selectedHostId', 'scrollTop']),
-    ...mapGetters('local', [
-      'hosts',
-      'selectedGroupId',
-      'selectedHostIndex',
-      'canPasteHost'
-    ])
+    ...mapState('local', ['selectedGroupId', 'selectedHostId', 'scrollTop']),
+    ...mapGetters('local', ['hosts', 'selectedHostIndex', 'canPasteHost'])
   },
   watch: {
-    selectedGroupId() {
-      this.restore()
-    },
     selectedHostIndex(value) {
       this.$nextTick(() => {
         const index = value
@@ -105,15 +97,9 @@ export default {
     }
   },
   mounted() {
-    this.restore()
+    this.$refs.table.setScrollTop(this.scrollTop)
   },
   methods: {
-    restore() {
-      const scrollTop = this.scrollTop
-      this.$nextTick(() => {
-        this.$refs.table.setScrollTop(scrollTop)
-      })
-    },
     onScroll(e) {
       this.setScrollTop({ scrollTop: e.target.scrollTop })
     },

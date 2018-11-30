@@ -6,6 +6,7 @@ import problems from './problems'
 export default {
   namespaced: true,
   state: {
+    selectedGroupId: 0,
     selectedHostId: 0,
     scrollTop: 0,
     order: {
@@ -16,42 +17,36 @@ export default {
     clippedHost: null
   },
   getters: {
-    hosts(state, getters, rootState) {
-      if (!getters.selectedGroupId) {
+    selectedGroup(state, getters, rootState) {
+      return rootState.group.groups.find(
+        (group) => group.id === state.selectedGroupId
+      )
+    },
+    hosts(state, getters) {
+      if (!getters.selectedGroup) {
         return []
       }
-      return rootState.group.groups
-        .find((group) => group.id === getters.selectedGroupId)
-        .hosts.filter((host) => {
-          return !state.filtered || !host.disabled
-        })
-    },
-    selectedGroupId(state, getters, rootState) {
-      return rootState.local.explorer.selectedGroupId
-    },
-    selectedGroup(state, getters, rootState, rootGetters) {
-      return rootGetters['local/explorer/selectedGroup']
-    },
-    selectedHostIndex(state, getters) {
-      return getters.getHostIndex({ id: state.selectedHostId })
+      return getters.selectedGroup.hosts.filter((host) => {
+        return !state.filtered || !host.disabled
+      })
     },
     selectedHost(state, getters) {
-      return getters.getHost({ id: state.selectedHostId })
+      return getters.hosts.find((host) => host.id === state.selectedHostId)
     },
-    canCreateHost(state, getters) {
-      return !!getters.selectedGroupId
+    selectedHostIndex(state, getters) {
+      return getters.hosts.findIndex((host) => host.id === state.selectedHostId)
     },
-    canDeleteHost(state, getters) {
-      return !!getters.selectedGroupId && !!state.selectedHostId
+    canCreateHost(state) {
+      return !!state.selectedGroupId
+    },
+    canDeleteHost(state) {
+      return !!state.selectedGroupId && !!state.selectedHostId
     },
     canPasteHost(state) {
       return !!state.clippedHost
     },
     getHostIndex(state, getters) {
       return ({ id }) => getters.hosts.findIndex((host) => host.id === id)
-    },
-    getHost(state, getters) {
-      return ({ id }) => getters.hosts[getters.getHostIndex({ id })]
     },
     isSelectedHost(state) {
       return ({ id }) => state.selectedHostId === id
@@ -63,21 +58,21 @@ export default {
       dispatch('unselectHost')
       dispatch('sortHosts')
     },
-    createHost({ commit, dispatch, getters }, { host } = {}) {
+    createHost({ commit, dispatch, getters, state }, { host } = {}) {
       commit(
         'group/addHost',
-        { groupId: getters.selectedGroupId, host },
+        { groupId: state.selectedGroupId, host },
         { root: true }
       )
       const index = getters.hosts.length - 1
       dispatch('selectHostIndex', { index })
       dispatch('focusTable')
     },
-    deleteHost({ commit, dispatch, getters }, { id }) {
+    deleteHost({ commit, dispatch, getters, state }, { id }) {
       const oldIndex = getters.getHostIndex({ id })
       commit(
         'group/removeHost',
-        { groupId: getters.selectedGroupId, id },
+        { groupId: state.selectedGroupId, id },
         { root: true }
       )
       const index =
@@ -85,17 +80,17 @@ export default {
       dispatch('selectHostIndex', { index })
       dispatch('focusTable')
     },
-    updateHost({ commit, getters }, { id, host }) {
+    updateHost({ commit, state }, { id, host }) {
       commit(
         'group/updateHost',
-        { groupId: getters.selectedGroupId, id, host },
+        { groupId: state.selectedGroupId, id, host },
         { root: true }
       )
     },
-    sortHosts({ commit, getters, state }) {
+    sortHosts({ commit, state }) {
       commit(
         'group/sortHosts',
-        { groupId: getters.selectedGroupId, ...state.order },
+        { groupId: state.selectedGroupId, ...state.order },
         { root: true }
       )
     },
@@ -164,6 +159,9 @@ export default {
     }
   },
   mutations: {
+    setSelectedGroupId(state, { selectedGroupId }) {
+      state.selectedGroupId = selectedGroupId
+    },
     setSelectedHostId(state, { selectedHostId }) {
       state.selectedHostId = selectedHostId
     },

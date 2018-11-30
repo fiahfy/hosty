@@ -1,5 +1,5 @@
 <template>
-  <v-layout column fill-height>
+  <v-layout class="search-sidebar" column fill-height>
     <search-tool-card />
     <v-container fluid pa-0 overflow-hidden>
       <search-treeview class="fill-height" />

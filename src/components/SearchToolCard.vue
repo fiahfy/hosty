@@ -23,7 +23,6 @@
       >
         RE
       </v-btn>
-      <v-spacer />
       <v-btn
         :color="filterColor"
         title="Filter Enabled"

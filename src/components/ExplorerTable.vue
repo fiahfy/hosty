@@ -1,9 +1,9 @@
 <template>
   <sticky-data-table
     ref="table"
+    class="explorer-table"
     :headers="headers"
     :items="groups"
-    class="explorer-table"
     item-key="id"
     no-data-text="No groups"
     hide-actions
@@ -56,7 +56,8 @@ export default {
     }
   },
   computed: {
-    ...mapState('local/explorer', ['selectedGroupId', 'scrollTop']),
+    ...mapState('local', ['selectedGroupId']),
+    ...mapState('local/explorer', ['scrollTop']),
     ...mapGetters('local/explorer', [
       'groups',
       'selectedGroupIndex',
@@ -94,17 +95,15 @@ export default {
     }
   },
   mounted() {
-    this.restore()
+    this.$refs.table.setScrollTop(this.scrollTop)
+  },
+  activated() {
+    this.$refs.table.setScrollTop(this.scrollTop)
   },
   methods: {
-    restore() {
-      const scrollTop = this.scrollTop
-      this.$nextTick(() => {
-        this.$refs.table.setScrollTop(scrollTop)
-      })
-    },
     onScroll(e) {
-      this.setScrollTop({ scrollTop: e.target.scrollTop })
+      const scrollTop = e.target.scrollTop
+      this.setScrollTop({ scrollTop })
     },
     onClick() {
       this.unselectGroup()

@@ -133,9 +133,7 @@ export default {
             z-index: 0;
             &:after {
               bottom: 0;
-              box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2),
-                0 4px 5px 0 rgba(0, 0, 0, 0.14),
-                0 1px 10px 0 rgba(0, 0, 0, 0.12);
+              box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
               content: '';
               left: 0;
               position: absolute;

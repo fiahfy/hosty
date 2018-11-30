@@ -41,7 +41,8 @@ export default {
     color() {
       return this.filtered ? 'primary' : ''
     },
-    ...mapState('local/explorer', ['selectedGroupId', 'filtered']),
+    ...mapState('local', ['selectedGroupId']),
+    ...mapState('local/explorer', ['filtered']),
     ...mapGetters('local/explorer', ['canCreateGroup', 'canDeleteGroup'])
   },
   methods: {
