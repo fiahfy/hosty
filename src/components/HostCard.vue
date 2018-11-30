@@ -1,6 +1,6 @@
 <template>
   <v-card class="host-card" flat tile>
-    <v-toolbar color="transparent" flat>
+    <v-toolbar color="transparent" flat dense>
       <v-btn
         :title="'New Host' | accelerator('CmdOrCtrl+N')"
         :disabled="!canCreateHost"

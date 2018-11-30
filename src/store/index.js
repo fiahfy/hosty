@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import Package from '~~/package.json'
-import router from '~/router'
+import router, { Name } from '~/router'
 import * as Hosts from '~/utils/hosts'
 import local from './local'
 import group from './group'
@@ -68,7 +68,7 @@ export default new Vuex.Store({
       try {
         const groups = Hosts.read(filepath)
         commit('group/setGroups', { groups })
-        dispatch('changeRoute', { name: 'explorer' })
+        dispatch('changeRoute', { name: Name.index })
         dispatch('local/explorer/loadGroups')
         dispatch('showMessage', {
           color: 'success',

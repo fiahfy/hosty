@@ -1,6 +1,6 @@
 <template>
   <v-card class="explorer-card" flat tile>
-    <v-toolbar color="transparent" flat>
+    <v-toolbar color="transparent" flat dense>
       <v-btn
         :title="'New Group' | accelerator('CmdOrCtrl+N')"
         :disabled="!canCreateGroup"

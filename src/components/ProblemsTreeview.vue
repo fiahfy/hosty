@@ -27,8 +27,8 @@
           </template>
         </v-treeview>
       </v-layout>
-      <v-layout v-else align-center justify-center>
-        <v-flex class="text-xs-center caption">
+      <v-layout v-else>
+        <v-flex class="ma-3 caption text-xs-center">
           No problems have been detected.
         </v-flex>
       </v-layout>

@@ -5,11 +5,10 @@
     :headers="headers"
     :items="hosts"
     item-key="id"
-    :no-data-text="noDataText"
+    no-data-text="No hosts."
     hide-actions
     tabindex="0"
     @scroll="onScroll"
-    @click.native="onClick"
     @keydown.native="onKeyDown"
     @contextmenu.native.stop="onContextMenu"
   >
@@ -60,9 +59,6 @@ export default {
     }
   },
   computed: {
-    noDataText() {
-      return this.selectedGroupId ? 'No hosts' : 'No groups selected'
-    },
     ...mapState('local', ['selectedGroupId', 'selectedHostId', 'scrollTop']),
     ...mapGetters('local', ['hosts', 'selectedHostIndex', 'canPasteHost'])
   },
@@ -102,9 +98,6 @@ export default {
   methods: {
     onScroll(e) {
       this.setScrollTop({ scrollTop: e.target.scrollTop })
-    },
-    onClick() {
-      this.unselectHost()
     },
     onKeyDown(e) {
       switch (e.keyCode) {
@@ -151,7 +144,6 @@ export default {
       }
     },
     onContextMenu(e) {
-      this.unselectHost()
       const templates = [
         {
           label: 'New Host',
@@ -176,7 +168,6 @@ export default {
       'deleteHost',
       'copyHost',
       'pasteHost',
-      'unselectHost',
       'selectFirstHost',
       'selectLastHost',
       'selectPreviousHost',

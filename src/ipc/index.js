@@ -1,4 +1,5 @@
 import { ipcRenderer, remote } from 'electron'
+import { Name } from '~/router'
 import { Selector } from '~/store'
 
 export const addIpcRendererListeners = (store) => {
@@ -16,18 +17,27 @@ export const addIpcRendererListeners = (store) => {
     store.dispatch('select', { selector: Selector.queryInput })
   })
   ipcRenderer.on('showExplorer', () => {
-    store.dispatch('changeRoute', { name: 'explorer' })
+    store.dispatch('changeRoute', {
+      name: Name.index,
+      query: { sidebar: 'explorer' }
+    })
   })
   ipcRenderer.on('showSearch', () => {
-    store.dispatch('changeRoute', { name: 'search' })
+    store.dispatch('changeRoute', {
+      name: Name.index,
+      query: { sidebar: 'search' }
+    })
     store.dispatch('focus', { selector: Selector.queryInput })
     store.dispatch('select', { selector: Selector.queryInput })
   })
   ipcRenderer.on('showProblems', () => {
-    store.dispatch('changeRoute', { name: 'problems' })
+    store.dispatch('changeRoute', {
+      name: Name.index,
+      query: { sidebar: 'problems' }
+    })
   })
   ipcRenderer.on('showSettings', () => {
-    store.dispatch('changeRoute', { name: 'settings' })
+    store.dispatch('changeRoute', { name: Name.settings })
   })
   ipcRenderer.on('import', () => {
     const filepathes = remote.dialog.showOpenDialog({

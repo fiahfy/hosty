@@ -5,11 +5,10 @@
     :headers="headers"
     :items="groups"
     item-key="id"
-    no-data-text="No groups"
+    no-data-text="No groups."
     hide-actions
     tabindex="0"
     @scroll="onScroll"
-    @click.native="onClick"
     @keydown.native="onKeyDown"
     @contextmenu.native.stop="onContextMenu"
   >
@@ -105,9 +104,6 @@ export default {
       const scrollTop = e.target.scrollTop
       this.setScrollTop({ scrollTop })
     },
-    onClick() {
-      this.unselectGroup()
-    },
     onKeyDown(e) {
       switch (e.keyCode) {
         case 8:
@@ -153,7 +149,6 @@ export default {
       }
     },
     onContextMenu(e) {
-      this.unselectGroup()
       const templates = [
         {
           label: 'New Group',
@@ -178,7 +173,6 @@ export default {
       'deleteGroup',
       'copyGroup',
       'pasteGroup',
-      'unselectGroup',
       'selectFirstGroup',
       'selectLastGroup',
       'selectPreviousGroup',
