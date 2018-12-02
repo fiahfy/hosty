@@ -90,8 +90,8 @@ export default {
     getIcon(item) {
       return item.type === 'group' ? 'list' : 'check_circle'
     },
-    ...mapMutations('local/search/', ['setScrollTop']),
-    ...mapActions('local/search/', ['viewResult'])
+    ...mapMutations('local/search', ['setScrollTop']),
+    ...mapActions('local/search', ['viewResult'])
   }
 }
 </script>

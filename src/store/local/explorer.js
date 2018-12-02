@@ -130,10 +130,6 @@ export default {
       commit('setOrder', { order })
       dispatch('sortGroups')
     },
-    toggleFiltered({ commit, dispatch, state }) {
-      dispatch('unselectGroup')
-      commit('setFiltered', { filtered: !state.filtered })
-    },
     focusTable({ dispatch }) {
       dispatch('focus', { selector: Selector.explorerTable }, { root: true })
     }

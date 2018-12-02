@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 
 export default {
   computed: {
@@ -54,7 +54,8 @@ export default {
     onFilterClick() {
       this.toggleFiltered()
     },
-    ...mapActions('local', ['createHost', 'deleteHost', 'toggleFiltered'])
+    ...mapMutations('local', ['toggleFiltered']),
+    ...mapActions('local', ['createHost', 'deleteHost'])
   }
 }
 </script>

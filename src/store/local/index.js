@@ -150,10 +150,6 @@ export default {
       commit('setOrder', { order })
       dispatch('sortHosts')
     },
-    toggleFiltered({ commit, dispatch, state }) {
-      dispatch('unselectHost')
-      commit('setFiltered', { filtered: !state.filtered })
-    },
     focusTable({ dispatch }) {
       dispatch('focus', { selector: Selector.hostTable }, { root: true })
     }

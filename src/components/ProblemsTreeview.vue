@@ -86,8 +86,8 @@ export default {
     getIcon(item) {
       return item.type === 'group' ? 'list' : 'error'
     },
-    ...mapMutations('local/problems/', ['setScrollTop']),
-    ...mapActions('local/problems/', ['viewResult'])
+    ...mapMutations('local/problems', ['setScrollTop']),
+    ...mapActions('local/problems', ['viewResult'])
   }
 }
 </script>

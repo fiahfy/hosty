@@ -56,7 +56,7 @@ export default {
     regExpColor() {
       return this.regExp ? 'primary' : ''
     },
-    ...mapState('local/search/', ['filtered', 'regExp'])
+    ...mapState('local/search', ['filtered', 'regExp'])
   },
   methods: {
     onTextContextMenu(e) {
@@ -77,7 +77,7 @@ export default {
     onRegExpClick() {
       this.toggleRegExp()
     },
-    ...mapMutations('local/search/', ['toggleFiltered', 'toggleRegExp'])
+    ...mapMutations('local/search', ['toggleFiltered', 'toggleRegExp'])
   }
 }
 </script>
