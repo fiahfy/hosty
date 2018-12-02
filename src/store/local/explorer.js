@@ -1,10 +1,8 @@
 import { Selector } from '~/store'
-import child from './child'
 
 export default {
   namespaced: true,
   state: {
-    selectedGroupId: 0,
     scrollTop: 0,
     order: {
       by: 'name',
@@ -19,17 +17,21 @@ export default {
         return !state.filtered || !group.disabled
       })
     },
-    selectedGroupIndex(state, getters) {
-      return getters.getGroupIndex({ id: state.selectedGroupId })
+    selectedGroup(state, getters, rootState) {
+      return getters.groups.find(
+        (group) => group.id === rootState.local.selectedGroupId
+      )
     },
-    selectedGroup(state, getters) {
-      return getters.getGroup({ id: state.selectedGroupId })
+    selectedGroupIndex(state, getters, rootState) {
+      return getters.groups.findIndex(
+        (group) => group.id === rootState.local.selectedGroupId
+      )
     },
     canCreateGroup() {
       return true
     },
-    canDeleteGroup(state) {
-      return !!state.selectedGroupId
+    canDeleteGroup(state, getters, rootState) {
+      return !!rootState.local.selectedGroupId
     },
     canPasteGroup(state) {
       return !!state.clippedGroup
@@ -37,11 +39,8 @@ export default {
     getGroupIndex(state, getters) {
       return ({ id }) => getters.groups.findIndex((group) => group.id === id)
     },
-    getGroup(state, getters) {
-      return ({ id }) => getters.groups[getters.getGroupIndex({ id })]
-    },
-    isSelectedGroup(state) {
-      return ({ id }) => state.selectedGroupId === id
+    isSelectedGroup(state, getters, rootState) {
+      return ({ id }) => rootState.local.selectedGroupId === id
     }
   },
   actions: {
@@ -81,13 +80,13 @@ export default {
       }
       dispatch('createGroup', { group })
     },
-    selectGroup({ commit, dispatch, getters }, { id }) {
-      commit('setSelectedGroupId', { selectedGroupId: id })
-      const title = getters.selectedGroup
-        ? getters.selectedGroup.name || '(Untitled)'
-        : undefined
-      dispatch('changeTitle', { title }, { root: true })
-      dispatch('child/loadHosts')
+    selectGroup({ commit, dispatch }, { id }) {
+      commit(
+        'local/setSelectedGroupId',
+        { selectedGroupId: id },
+        { root: true }
+      )
+      dispatch('local/loadHosts', null, { root: true })
     },
     unselectGroup({ dispatch }) {
       dispatch('selectGroup', { id: 0 })
@@ -131,18 +130,11 @@ export default {
       commit('setOrder', { order })
       dispatch('sortGroups')
     },
-    toggleFiltered({ commit, dispatch, state }) {
-      dispatch('unselectGroup')
-      commit('setFiltered', { filtered: !state.filtered })
-    },
     focusTable({ dispatch }) {
       dispatch('focus', { selector: Selector.explorerTable }, { root: true })
     }
   },
   mutations: {
-    setSelectedGroupId(state, { selectedGroupId }) {
-      state.selectedGroupId = selectedGroupId
-    },
     setScrollTop(state, { scrollTop }) {
       state.scrollTop = scrollTop
     },
@@ -158,8 +150,5 @@ export default {
     setClippedGroup(state, { clippedGroup }) {
       state.clippedGroup = clippedGroup
     }
-  },
-  modules: {
-    child
   }
 }

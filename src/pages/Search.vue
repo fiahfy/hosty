@@ -1,12 +1,10 @@
 <template>
-  <v-container class="search" fill-height fluid pa-0>
-    <v-layout column>
-      <search-tool-card />
-      <v-container fluid pa-0 overflow-hidden>
-        <search-treeview class="fill-height" />
-      </v-container>
-    </v-layout>
-  </v-container>
+  <v-layout class="search" column fill-height>
+    <search-tool-card />
+    <v-container fluid pa-0 overflow-hidden>
+      <search-treeview class="fill-height" />
+    </v-container>
+  </v-layout>
 </template>
 
 <script>

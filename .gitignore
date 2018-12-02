@@ -64,6 +64,5 @@ typings/
 /app
 /dist
 /main.js
-dummyHosts
 hosts
 *.hosty

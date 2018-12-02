@@ -1,5 +1,5 @@
 <template>
-  <tr class="explorer-child-table-header-row">
+  <tr class="host-table-header-row">
     <th
       v-for="header in headers"
       :key="header.text"
@@ -24,7 +24,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('local/explorer/child', ['order'])
+    ...mapState('local', ['order'])
   },
   methods: {
     getClass(header) {
@@ -43,7 +43,7 @@ export default {
     onHeaderClick(e, header) {
       this.changeOrderBy({ orderBy: header.value })
     },
-    ...mapActions('local/explorer/child', ['changeOrderBy'])
+    ...mapActions('local', ['changeOrderBy'])
   }
 }
 </script>

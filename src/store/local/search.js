@@ -40,7 +40,7 @@ export default {
                     key: `${group.id}-${host.id}`,
                     text: `${host.ip} ${host.name}`,
                     type: 'host',
-                    disabled: host.disabled
+                    disabled: group.disabled || host.disabled
                   }
                 })
                 .sort((a, b) => {
@@ -58,28 +58,11 @@ export default {
     }
   },
   actions: {
-    viewResult({ commit, dispatch }, { key }) {
-      const [groupId, hostId] = key.split('-').map(Number)
-      dispatch('changeRoute', { name: 'explorer' }, { root: true })
-      // wait dom updated
-      setTimeout(() => {
-        commit(
-          'local/explorer/setFiltered',
-          { filtered: false },
-          { root: true }
-        )
-        dispatch('local/explorer/selectGroup', { id: groupId }, { root: true })
-        commit(
-          'local/explorer/child/setFiltered',
-          { filtered: false },
-          { root: true }
-        )
-        dispatch(
-          'local/explorer/child/selectHost',
-          { id: hostId },
-          { root: true }
-        )
-      })
+    viewResult({ commit }, { key }) {
+      const [selectedGroupId, selectedHostId] = key.split('-').map(Number)
+      commit('local/setFiltered', { filtered: false }, { root: true })
+      commit('local/setSelectedGroupId', { selectedGroupId }, { root: true })
+      commit('local/setSelectedHostId', { selectedHostId }, { root: true })
     }
   },
   mutations: {

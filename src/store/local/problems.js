@@ -39,28 +39,11 @@ export default {
     }
   },
   actions: {
-    viewResult({ dispatch }, { key }) {
-      const [groupId, hostId] = key.split('-').map(Number)
-      dispatch('changeRoute', { name: 'explorer' }, { root: true })
-      // wait dom updated
-      setTimeout(() => {
-        dispatch(
-          'local/explorer/setFiltered',
-          { filtered: false },
-          { root: true }
-        )
-        dispatch('local/explorer/selectGroup', { id: groupId }, { root: true })
-        dispatch(
-          'local/explorer/child/setFiltered',
-          { filtered: false },
-          { root: true }
-        )
-        dispatch(
-          'local/explorer/child/selectHost',
-          { id: hostId },
-          { root: true }
-        )
-      })
+    viewResult({ commit }, { key }) {
+      const [selectedGroupId, selectedHostId] = key.split('-').map(Number)
+      commit('local/setFiltered', { filtered: false }, { root: true })
+      commit('local/setSelectedGroupId', { selectedGroupId }, { root: true })
+      commit('local/setSelectedHostId', { selectedHostId }, { root: true })
     }
   },
   mutations: {

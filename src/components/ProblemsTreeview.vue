@@ -27,8 +27,8 @@
           </template>
         </v-treeview>
       </v-layout>
-      <v-layout v-else align-center justify-center>
-        <v-flex class="text-xs-center caption">
+      <v-layout v-else>
+        <v-flex class="ma-3 caption text-xs-center">
           No problems have been detected.
         </v-flex>
       </v-layout>
@@ -66,11 +66,10 @@ export default {
     }
   },
   mounted() {
-    const scrollTop = this.scrollTop
-    // open-all を待つために $nextTick でなく setTimeout を使用する
-    setTimeout(() => {
-      this.$refs.treeview.scrollTop = scrollTop
-    }, 0)
+    // wait for treeview.open-all
+    this.$nextTick(() => {
+      this.$refs.treeview.scrollTop = this.scrollTop
+    })
   },
   methods: {
     onScroll(e) {
@@ -84,8 +83,8 @@ export default {
     getIcon(item) {
       return item.type === 'group' ? 'list' : 'error'
     },
-    ...mapMutations('local/problems/', ['setScrollTop']),
-    ...mapActions('local/problems/', ['viewResult'])
+    ...mapMutations('local/problems', ['setScrollTop']),
+    ...mapActions('local/problems', ['viewResult'])
   }
 }
 </script>
@@ -94,16 +93,20 @@ export default {
 .problems-treeview {
   position: relative;
   .shadow {
-    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2),
-      0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
     content: '';
     height: 10px;
     position: absolute;
     top: -10px;
     width: 100%;
   }
-  /deep/ .v-treeview-node__label {
-    font-size: 13px;
+  /deep/ .v-treeview-node__content {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    .v-treeview-node__label {
+      font-size: 13px;
+    }
   }
 }
 </style>

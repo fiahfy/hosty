@@ -16,7 +16,7 @@ const section = {
 
 const filepath = (() => {
   if (isDev) {
-    return path.join(process.cwd(), 'dummyHosts')
+    return path.join(process.cwd(), 'hosts')
   }
   return isWin ? 'C:\\Windows\\System32\\drivers\\etc\\hosts' : '/etc/hosts'
 })()

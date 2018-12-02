@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import Package from '~~/package.json'
-import router from '~/router'
+import router, { Name } from '~/router'
 import * as Hosts from '~/utils/hosts'
 import local from './local'
 import group from './group'
@@ -13,7 +13,7 @@ Vue.use(Vuex)
 export const Selector = {
   queryInput: 'input[name=query]',
   explorerTable: '.explorer-table',
-  explorerChildTable: '.explorer-child-table'
+  hostTable: '.host-table'
 }
 
 export default new Vuex.Store({
@@ -68,7 +68,7 @@ export default new Vuex.Store({
       try {
         const groups = Hosts.read(filepath)
         commit('group/setGroups', { groups })
-        dispatch('changeRoute', { name: 'explorer' })
+        dispatch('changeRoute', { name: Name.explorer })
         dispatch('local/explorer/loadGroups')
         dispatch('showMessage', {
           color: 'success',
@@ -110,10 +110,6 @@ export default new Vuex.Store({
     },
     changeRoute(_, payload) {
       router.push(payload)
-    },
-    changeTitle({ commit }, { title = Package.productName }) {
-      document.title = title
-      commit('setTitle', { title })
     },
     showMessage({ commit }, message) {
       commit('setMessage', { message })

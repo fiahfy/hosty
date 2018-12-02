@@ -1,11 +1,9 @@
 <template>
-  <v-container class="problems" fill-height fluid pa-0>
-    <v-layout column>
-      <v-container fluid pa-0 overflow-hidden>
-        <problems-treeview class="fill-height" />
-      </v-container>
-    </v-layout>
-  </v-container>
+  <v-layout class="problems" column fill-height>
+    <v-container fluid pa-0 overflow-hidden>
+      <problems-treeview class="fill-height" />
+    </v-container>
+  </v-layout>
 </template>
 
 <script>
