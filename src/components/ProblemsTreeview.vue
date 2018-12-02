@@ -71,9 +71,6 @@ export default {
       this.$refs.treeview.scrollTop = this.scrollTop
     })
   },
-  activated() {
-    this.$refs.treeview.scrollTop = this.scrollTop
-  },
   methods: {
     onScroll(e) {
       const scrollTop = e.target.scrollTop

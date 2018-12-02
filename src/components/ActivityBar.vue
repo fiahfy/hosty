@@ -34,8 +34,7 @@ export default {
           badge: false,
           accelerator: 'CmdOrCtrl+Shift+E',
           location: {
-            name: Name.index,
-            query: { sidebar: 'explorer' }
+            name: Name.explorer
           }
         },
         {
@@ -45,8 +44,7 @@ export default {
           badge: false,
           accelerator: 'CmdOrCtrl+Shift+F',
           location: {
-            name: Name.index,
-            query: { sidebar: 'search' }
+            name: Name.search
           }
         },
         {
@@ -56,8 +54,7 @@ export default {
           badge: true,
           accelerator: 'CmdOrCtrl+Shift+M',
           location: {
-            name: Name.index,
-            query: { sidebar: 'problems' }
+            name: Name.problems
           }
         },
         {
@@ -85,16 +82,7 @@ export default {
       return this.getActive(item) ? 'primary' : null
     },
     getActive(item) {
-      switch (item.location.name) {
-        case Name.index:
-          return (
-            item.location.name === this.$route.name &&
-            item.location.query.sidebar ===
-              (this.$route.query.sidebar || 'explorer')
-          )
-        default:
-          return item.location.name === this.$route.name
-      }
+      return item.location.name === this.$route.name
     }
   }
 }

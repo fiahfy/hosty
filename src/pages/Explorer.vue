@@ -1,5 +1,5 @@
 <template>
-  <v-layout class="explorer-sidebar" column fill-height>
+  <v-layout class="explorer" column fill-height>
     <explorer-card />
     <v-container fluid pa-0 overflow-hidden>
       <explorer-table class="fill-height" />

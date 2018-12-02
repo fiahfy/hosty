@@ -7,8 +7,7 @@
             <v-toolbar flat dense>
               <v-subheader class="pl-0">{{ headline }}</v-subheader>
             </v-toolbar>
-            <!-- eslint-disable-next-line vue/html-closing-bracket-spacing -->
-            <keep-alive><component :is="sidebarComponent"/></keep-alive>
+            <router-view />
           </v-layout>
           <v-divider vertical />
         </v-layout>
@@ -39,12 +38,9 @@
 
 <script>
 import { mapState } from 'vuex'
-import ExplorerSidebar from '~/components/ExplorerSidebar'
 import HostCard from '~/components/HostCard'
 import HostTable from '~/components/HostTable'
 import HostToolbar from '~/components/HostToolbar'
-import ProblemsSidebar from '~/components/ProblemsSidebar'
-import SearchSidebar from '~/components/SearchSidebar'
 
 export default {
   components: {
@@ -54,17 +50,7 @@ export default {
   },
   computed: {
     headline() {
-      return (this.$route.query.sidebar || 'explorer').toUpperCase()
-    },
-    sidebarComponent() {
-      switch (this.$route.query.sidebar) {
-        case 'search':
-          return SearchSidebar
-        case 'problems':
-          return ProblemsSidebar
-        default:
-          return ExplorerSidebar
-      }
+      return this.$route.name.toUpperCase()
     },
     ...mapState('local', ['selectedGroupId'])
   }

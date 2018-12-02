@@ -17,24 +17,15 @@ export const addIpcRendererListeners = (store) => {
     store.dispatch('select', { selector: Selector.queryInput })
   })
   ipcRenderer.on('showExplorer', () => {
-    store.dispatch('changeRoute', {
-      name: Name.index,
-      query: { sidebar: 'explorer' }
-    })
+    store.dispatch('changeRoute', { name: Name.explorer })
   })
   ipcRenderer.on('showSearch', () => {
-    store.dispatch('changeRoute', {
-      name: Name.index,
-      query: { sidebar: 'search' }
-    })
+    store.dispatch('changeRoute', { name: Name.search })
     store.dispatch('focus', { selector: Selector.queryInput })
     store.dispatch('select', { selector: Selector.queryInput })
   })
   ipcRenderer.on('showProblems', () => {
-    store.dispatch('changeRoute', {
-      name: Name.index,
-      query: { sidebar: 'problems' }
-    })
+    store.dispatch('changeRoute', { name: Name.problems })
   })
   ipcRenderer.on('showSettings', () => {
     store.dispatch('changeRoute', { name: Name.settings })

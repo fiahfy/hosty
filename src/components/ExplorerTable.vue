@@ -96,9 +96,6 @@ export default {
   mounted() {
     this.$refs.table.setScrollTop(this.scrollTop)
   },
-  activated() {
-    this.$refs.table.setScrollTop(this.scrollTop)
-  },
   methods: {
     onScroll(e) {
       const scrollTop = e.target.scrollTop

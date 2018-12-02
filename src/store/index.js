@@ -68,7 +68,7 @@ export default new Vuex.Store({
       try {
         const groups = Hosts.read(filepath)
         commit('group/setGroups', { groups })
-        dispatch('changeRoute', { name: Name.index })
+        dispatch('changeRoute', { name: Name.explorer })
         dispatch('local/explorer/loadGroups')
         dispatch('showMessage', {
           color: 'success',
