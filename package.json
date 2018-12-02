@@ -11,6 +11,7 @@
     "@fiahfy/electron-accelerator-formatter": "^0.0.2",
     "electron-devtools-installer": "^2.2.0",
     "electron-window-state": "^5.0.1",
+    "is-ip": "^2.0.0",
     "material-design-icons-iconfont": "^4.0.2",
     "sudo-prompt": "^8.1.0",
     "typeface-roboto": "^0.0.54",

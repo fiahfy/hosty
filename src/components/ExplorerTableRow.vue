@@ -153,7 +153,8 @@ export default {
       if (this.cancel) {
         return
       }
-      this.updateGroup({ id: this.group.id, group: { name: this.name } })
+      const name = this.name.trim()
+      this.updateGroup({ id: this.group.id, group: { name } })
     },
     onTextContextMenu(e) {
       ContextMenu.showTextMenu(e)

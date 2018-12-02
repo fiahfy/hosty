@@ -1,3 +1,5 @@
+import isIP from 'is-ip'
+
 const reversed = {
   disabled: false,
   name: false,
@@ -35,30 +37,37 @@ export default {
     },
     findHostErrors(state, getters) {
       return ({ group, host }) => {
-        return [
-          ...getters.findHostIPErrors({ group, host }),
-          ...getters.findHostNameErrors({ group, host })
-        ]
-      }
-    },
-    findHostIPErrors() {
-      return ({ host }) => {
         const errors = []
-        if (!host.ip) {
-          errors.push('Missing ip address.')
+        let error
+        error = getters.findHostIPError({ group, host })
+        if (error) {
+          errors.push(error)
+        }
+        error = getters.findHostNameError({ group, host })
+        if (error) {
+          errors.push(error)
         }
         return errors
       }
     },
-    findHostNameErrors(state) {
+    findHostIPError() {
+      return ({ host }) => {
+        if (!host.ip) {
+          return 'Missing ip address.'
+        }
+        if (!isIP(host.ip)) {
+          return `'${host.ip}' is invalid ip address.`
+        }
+        return ''
+      }
+    },
+    findHostNameError(state) {
       return ({ group, host }) => {
-        const errors = []
         if (!host.name) {
-          errors.push('Missing hostname.')
-          return errors
+          return 'Missing hostname.'
         }
         if (group.disabled || host.disabled) {
-          return errors
+          return ''
         }
         if (
           state.groups
@@ -77,9 +86,9 @@ export default {
             )
             .some((currentHost) => currentHost.name === host.name)
         ) {
-          errors.push(`'${host.name}' is duplicate entry.`)
+          return `'${host.name}' is duplicate entry.`
         }
-        return errors
+        return ''
       }
     }
   },
