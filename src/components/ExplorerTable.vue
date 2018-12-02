@@ -1,15 +1,14 @@
 <template>
   <sticky-data-table
     ref="table"
+    class="explorer-table"
     :headers="headers"
     :items="groups"
-    class="explorer-table"
     item-key="id"
-    no-data-text="No groups"
+    no-data-text="No groups."
     hide-actions
     tabindex="0"
     @scroll="onScroll"
-    @click.native="onClick"
     @keydown.native="onKeyDown"
     @contextmenu.native.stop="onContextMenu"
   >
@@ -56,8 +55,13 @@ export default {
     }
   },
   computed: {
-    ...mapState('local/explorer', ['groups', 'selectedGroupId', 'scrollTop']),
-    ...mapGetters('local/explorer', ['selectedGroupIndex', 'canPasteGroup'])
+    ...mapState('local', ['selectedGroupId']),
+    ...mapState('local/explorer', ['scrollTop']),
+    ...mapGetters('local/explorer', [
+      'groups',
+      'selectedGroupIndex',
+      'canPasteGroup'
+    ])
   },
   watch: {
     selectedGroupIndex(value) {
@@ -90,17 +94,12 @@ export default {
     }
   },
   mounted() {
-    const scrollTop = this.scrollTop
-    this.$nextTick(() => {
-      this.$refs.table.setScrollTop(scrollTop)
-    })
+    this.$refs.table.setScrollTop(this.scrollTop)
   },
   methods: {
     onScroll(e) {
-      this.setScrollTop({ scrollTop: e.target.scrollTop })
-    },
-    onClick() {
-      this.unselectGroup()
+      const scrollTop = e.target.scrollTop
+      this.setScrollTop({ scrollTop })
     },
     onKeyDown(e) {
       switch (e.keyCode) {
@@ -147,7 +146,6 @@ export default {
       }
     },
     onContextMenu(e) {
-      this.unselectGroup()
       const templates = [
         {
           label: 'New Group',
@@ -172,7 +170,6 @@ export default {
       'deleteGroup',
       'copyGroup',
       'pasteGroup',
-      'unselectGroup',
       'selectFirstGroup',
       'selectLastGroup',
       'selectPreviousGroup',

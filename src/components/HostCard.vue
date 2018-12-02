@@ -1,6 +1,6 @@
 <template>
-  <v-card class="explorer-child-card" flat tile>
-    <v-toolbar color="transparent" flat>
+  <v-card class="host-card" flat tile>
+    <v-toolbar color="transparent" flat dense>
       <v-btn
         :title="'New Host' | accelerator('CmdOrCtrl+N')"
         :disabled="!canCreateHost"
@@ -34,15 +34,15 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 
 export default {
   computed: {
     color() {
       return this.filtered ? 'primary' : ''
     },
-    ...mapState('local/explorer/child', ['selectedHostId', 'filtered']),
-    ...mapGetters('local/explorer/child', ['canCreateHost', 'canDeleteHost'])
+    ...mapState('local', ['selectedHostId', 'filtered']),
+    ...mapGetters('local', ['canCreateHost', 'canDeleteHost'])
   },
   methods: {
     onNewClick() {
@@ -54,11 +54,8 @@ export default {
     onFilterClick() {
       this.toggleFiltered()
     },
-    ...mapActions('local/explorer/child', [
-      'createHost',
-      'deleteHost',
-      'toggleFiltered'
-    ])
+    ...mapMutations('local', ['toggleFiltered']),
+    ...mapActions('local', ['createHost', 'deleteHost'])
   }
 }
 </script>

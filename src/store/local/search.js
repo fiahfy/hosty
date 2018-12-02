@@ -7,7 +7,7 @@ export default {
     filtered: false
   },
   getters: {
-    results(state, getters) {
+    results(state, getters, rootState) {
       const query = state.query
       if (!query) {
         return []
@@ -19,8 +19,7 @@ export default {
           : query.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
         const regexp = new RegExp(pattern, 'i')
 
-        return getters
-          .getGroups()
+        return rootState.group.groups
           .filter((group) => {
             return !state.filtered || !group.disabled
           })
@@ -41,7 +40,7 @@ export default {
                     key: `${group.id}-${host.id}`,
                     text: `${host.ip} ${host.name}`,
                     type: 'host',
-                    disabled: host.disabled
+                    disabled: group.disabled || host.disabled
                   }
                 })
                 .sort((a, b) => {
@@ -56,34 +55,14 @@ export default {
       } catch (e) {
         return []
       }
-    },
-    getGroups(state, getters, rootState) {
-      return () => JSON.parse(JSON.stringify(rootState.group.groups))
     }
   },
   actions: {
-    viewResult({ dispatch }, { key }) {
-      const [groupId, hostId] = key.split('-').map(Number)
-      dispatch('changeRoute', { name: 'explorer' }, { root: true })
-      // wait dom updated
-      setTimeout(() => {
-        dispatch(
-          'local/explorer/setFiltered',
-          { filtered: false },
-          { root: true }
-        )
-        dispatch('local/explorer/selectGroup', { id: groupId }, { root: true })
-        dispatch(
-          'local/explorer/child/setFiltered',
-          { filtered: false },
-          { root: true }
-        )
-        dispatch(
-          'local/explorer/child/selectHost',
-          { id: hostId },
-          { root: true }
-        )
-      })
+    viewResult({ commit }, { key }) {
+      const [selectedGroupId, selectedHostId] = key.split('-').map(Number)
+      commit('local/setFiltered', { filtered: false }, { root: true })
+      commit('local/setSelectedGroupId', { selectedGroupId }, { root: true })
+      commit('local/setSelectedHostId', { selectedHostId }, { root: true })
     }
   },
   mutations: {

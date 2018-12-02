@@ -16,7 +16,7 @@ const section = {
 
 const filepath = (() => {
   if (isDev) {
-    return path.join(process.cwd(), 'dummyHosts')
+    return path.join(process.cwd(), 'hosts')
   }
   return isWin ? 'C:\\Windows\\System32\\drivers\\etc\\hosts' : '/etc/hosts'
 })()
@@ -95,31 +95,6 @@ const createUserHosts = async () => {
   }
 }
 
-const isOldFormat = (groups) => {
-  if (!Array.isArray(groups) || !groups.length) {
-    return false
-  }
-  return groups[0].enable !== undefined
-}
-
-const migrate = (groups) => {
-  return groups.map((group) => {
-    return {
-      id: group.id,
-      disabled: !group.enable,
-      name: group.name,
-      hosts: group.hosts.map((host) => {
-        return {
-          id: host.id,
-          disabled: !host.enable,
-          ip: host.ip,
-          name: host.host
-        }
-      })
-    }
-  })
-}
-
 export { filepath as path }
 
 export const initialize = async () => {
@@ -155,12 +130,7 @@ export const finalize = () => {
 
 export const read = (filepath) => {
   const data = fs.readFileSync(filepath, charset)
-  const obj = JSON.parse(data)
-  // TODO: remove this
-  if (isOldFormat(obj)) {
-    return migrate(obj)
-  }
-  return obj
+  return JSON.parse(data)
 }
 
 export const write = (filepath, obj) => {

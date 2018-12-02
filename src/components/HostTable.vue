@@ -1,24 +1,23 @@
 <template>
   <sticky-data-table
     ref="table"
+    class="host-table"
     :headers="headers"
     :items="hosts"
-    :no-data-text="noDataText"
-    class="explorer-child-table"
     item-key="id"
+    no-data-text="No hosts."
     hide-actions
     tabindex="0"
     @scroll="onScroll"
-    @click.native="onClick"
     @keydown.native="onKeyDown"
     @contextmenu.native.stop="onContextMenu"
   >
-    <explorer-child-table-header-row
+    <host-table-header-row
       slot="headers"
       slot-scope="props"
       :headers="props.headers"
     />
-    <explorer-child-table-row
+    <host-table-row
       slot="items"
       :ref="`row-${props.item.id}`"
       slot-scope="props"
@@ -29,15 +28,15 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
-import ExplorerChildTableHeaderRow from './ExplorerChildTableHeaderRow'
-import ExplorerChildTableRow from './ExplorerChildTableRow'
+import HostTableHeaderRow from './HostTableHeaderRow'
+import HostTableRow from './HostTableRow'
 import StickyDataTable from './StickyDataTable'
 import * as ContextMenu from '~/utils/context-menu'
 
 export default {
   components: {
-    ExplorerChildTableHeaderRow,
-    ExplorerChildTableRow,
+    HostTableHeaderRow,
+    HostTableRow,
     StickyDataTable
   },
   data() {
@@ -60,19 +59,8 @@ export default {
     }
   },
   computed: {
-    noDataText() {
-      return this.selectedGroupId ? 'No hosts' : 'No groups selected'
-    },
-    ...mapState('local/explorer/child', [
-      'hosts',
-      'selectedHostId',
-      'scrollTop'
-    ]),
-    ...mapGetters('local/explorer/child', [
-      'selectedGroupId',
-      'selectedHostIndex',
-      'canPasteHost'
-    ])
+    ...mapState('local', ['selectedGroupId', 'selectedHostId', 'scrollTop']),
+    ...mapGetters('local', ['hosts', 'selectedHostIndex', 'canPasteHost'])
   },
   watch: {
     selectedHostIndex(value) {
@@ -105,17 +93,11 @@ export default {
     }
   },
   mounted() {
-    const scrollTop = this.scrollTop
-    this.$nextTick(() => {
-      this.$refs.table.setScrollTop(scrollTop)
-    })
+    this.$refs.table.setScrollTop(this.scrollTop)
   },
   methods: {
     onScroll(e) {
       this.setScrollTop({ scrollTop: e.target.scrollTop })
-    },
-    onClick() {
-      this.unselectHost()
     },
     onKeyDown(e) {
       switch (e.keyCode) {
@@ -162,7 +144,6 @@ export default {
       }
     },
     onContextMenu(e) {
-      this.unselectHost()
       const templates = [
         {
           label: 'New Host',
@@ -181,13 +162,12 @@ export default {
     focusSelectedRow() {
       this.$refs[`row-${this.selectedHostId}`].focus()
     },
-    ...mapMutations('local/explorer/child', ['setScrollTop']),
-    ...mapActions('local/explorer/child', [
+    ...mapMutations('local', ['setScrollTop']),
+    ...mapActions('local', [
       'createHost',
       'deleteHost',
       'copyHost',
       'pasteHost',
-      'unselectHost',
       'selectFirstHost',
       'selectLastHost',
       'selectPreviousHost',
@@ -198,7 +178,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.explorer-child-table {
+.host-table {
   outline: none;
 }
 </style>

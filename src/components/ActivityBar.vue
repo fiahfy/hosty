@@ -3,14 +3,15 @@
     <v-list class="pt-0">
       <v-list-tile
         v-for="item in items"
-        :key="item.name"
+        :key="item.id"
         :title="item.title | accelerator(item.accelerator)"
+        :style="item.style"
         @click="(e) => onItemClick(e, item)"
       >
         <v-list-tile-action>
           <v-badge color="error" :value="item.badge && badgeCount">
             <span slot="badge">{{ badgeCount }}</span>
-            <v-icon :color="item.color">{{ item.icon }}</v-icon>
+            <v-icon :color="getColor(item)">{{ item.icon }}</v-icon>
           </v-badge>
         </v-list-tile-action>
       </v-list-tile>
@@ -20,38 +21,52 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { Name } from '~/router'
 
 export default {
   data() {
     return {
       items: [
         {
-          name: 'explorer',
+          id: 1,
           icon: 'explore',
           title: 'Explorer',
           badge: false,
-          accelerator: 'CmdOrCtrl+Shift+E'
+          accelerator: 'CmdOrCtrl+Shift+E',
+          location: {
+            name: Name.explorer
+          }
         },
         {
-          name: 'search',
+          id: 2,
           icon: 'search',
           title: 'Search',
           badge: false,
-          accelerator: 'CmdOrCtrl+Shift+F'
+          accelerator: 'CmdOrCtrl+Shift+F',
+          location: {
+            name: Name.search
+          }
         },
         {
-          name: 'problems',
+          id: 3,
           icon: 'error',
           title: 'Problems',
           badge: true,
-          accelerator: 'CmdOrCtrl+Shift+M'
+          accelerator: 'CmdOrCtrl+Shift+M',
+          location: {
+            name: Name.problems
+          }
         },
         {
-          name: 'settings',
+          id: 4,
           icon: 'settings',
           title: 'Settings',
           badge: false,
-          accelerator: 'CmdOrCtrl+,'
+          accelerator: 'CmdOrCtrl+,',
+          location: {
+            name: Name.settings
+          },
+          style: { position: 'absolute', bottom: 0 }
         }
       ]
     }
@@ -59,23 +74,15 @@ export default {
   computed: {
     ...mapGetters(['badgeCount'])
   },
-  watch: {
-    $route(to) {
-      this.updateItems(to.name)
-    }
-  },
-  mounted() {
-    this.updateItems(this.$route.name)
-  },
   methods: {
     onItemClick(e, item) {
-      this.$router.push({ name: item.name })
+      this.$router.push(item.location)
     },
-    updateItems(name) {
-      this.items = this.items.map((item) => ({
-        ...item,
-        color: item.name === name ? 'primary' : null
-      }))
+    getColor(item) {
+      return this.getActive(item) ? 'primary' : null
+    },
+    getActive(item) {
+      return item.location.name === this.$route.name
     }
   }
 }

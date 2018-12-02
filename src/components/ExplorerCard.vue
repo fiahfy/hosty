@@ -1,6 +1,6 @@
 <template>
   <v-card class="explorer-card" flat tile>
-    <v-toolbar color="transparent" flat>
+    <v-toolbar color="transparent" flat dense>
       <v-btn
         :title="'New Group' | accelerator('CmdOrCtrl+N')"
         :disabled="!canCreateGroup"
@@ -34,14 +34,15 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 
 export default {
   computed: {
     color() {
       return this.filtered ? 'primary' : ''
     },
-    ...mapState('local/explorer', ['selectedGroupId', 'filtered']),
+    ...mapState('local', ['selectedGroupId']),
+    ...mapState('local/explorer', ['filtered']),
     ...mapGetters('local/explorer', ['canCreateGroup', 'canDeleteGroup'])
   },
   methods: {
@@ -54,11 +55,8 @@ export default {
     onFilterClick() {
       this.toggleFiltered()
     },
-    ...mapActions('local/explorer', [
-      'createGroup',
-      'deleteGroup',
-      'toggleFiltered'
-    ])
+    ...mapMutations('local/explorer', ['toggleFiltered']),
+    ...mapActions('local/explorer', ['createGroup', 'deleteGroup'])
   }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <v-card class="search-tool-card" flat tile>
-    <v-toolbar color="transparent" flat>
+    <v-toolbar color="transparent" flat dense>
       <v-text-field
         v-model="query"
         class="pt-0"
@@ -23,7 +23,6 @@
       >
         RE
       </v-btn>
-      <v-spacer />
       <v-btn
         :color="filterColor"
         title="Filter Enabled"
@@ -57,7 +56,7 @@ export default {
     regExpColor() {
       return this.regExp ? 'primary' : ''
     },
-    ...mapState('local/search/', ['filtered', 'regExp'])
+    ...mapState('local/search', ['filtered', 'regExp'])
   },
   methods: {
     onTextContextMenu(e) {
@@ -78,7 +77,7 @@ export default {
     onRegExpClick() {
       this.toggleRegExp()
     },
-    ...mapMutations('local/search/', ['toggleFiltered', 'toggleRegExp'])
+    ...mapMutations('local/search', ['toggleFiltered', 'toggleRegExp'])
   }
 }
 </script>

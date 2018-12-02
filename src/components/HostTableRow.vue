@@ -1,7 +1,7 @@
 <template>
   <tr
     :active="active"
-    class="explorer-child-table-row"
+    class="host-table-row"
     @click.stop="onClick"
     @contextmenu.stop="onContextMenu"
   >
@@ -130,38 +130,34 @@ export default {
       return ['ellipsis', this.host.name ? '' : 'grey--text']
     },
     ipErrors() {
-      return this.findHostIPErrors({
+      const error = this.findHostIPError({
         group: this.selectedGroup,
         host: { ...this.host, ip: this.ip }
       })
+      return error ? [error] : []
     },
     nameErrors() {
-      return this.findHostNameErrors({
+      const error = this.findHostNameError({
         group: this.selectedGroup,
         host: { ...this.host, name: this.name }
       })
+      return error ? [error] : []
     },
     ipError() {
-      const result = this.findHostIPErrors({
+      return this.findHostIPError({
         group: this.selectedGroup,
         host: this.host
       })
-      return result.length ? result[0] : ''
     },
     nameError() {
-      const result = this.findHostNameErrors({
+      return this.findHostNameError({
         group: this.selectedGroup,
         host: this.host
       })
-      return result.length ? result[0] : ''
     },
     ...mapState('settings', ['darkTheme']),
-    ...mapGetters('group', ['findHostIPErrors', 'findHostNameErrors']),
-    ...mapGetters('local/explorer/child', [
-      'selectedGroup',
-      'isSelectedHost',
-      'canPasteHost'
-    ])
+    ...mapGetters('group', ['findHostIPError', 'findHostNameError']),
+    ...mapGetters('local', ['selectedGroup', 'isSelectedHost', 'canPasteHost'])
   },
   methods: {
     onClick() {
@@ -206,10 +202,10 @@ export default {
         host: { disabled: !this.host.disabled }
       })
     },
-    onColumnDblClick(e, value) {
-      this.focus(value)
+    onColumnDblClick(e, key) {
+      this.focus(key)
     },
-    onTextKeyDown(e, value) {
+    onTextKeyDown(e, key) {
       switch (e.keyCode) {
         case 13:
           e.preventDefault()
@@ -225,10 +221,10 @@ export default {
         case 9:
           e.preventDefault()
           e.target.blur()
-          if (value === 'name' && e.shiftKey) {
+          if (key === 'name' && e.shiftKey) {
             this.focus('ip')
             break
-          } else if (value === 'ip' && !e.shiftKey) {
+          } else if (key === 'ip' && !e.shiftKey) {
             this.focus('name')
             break
           }
@@ -236,31 +232,32 @@ export default {
           break
       }
     },
-    onTextBlur(e, value) {
-      this[`${value}Menu`].show = false
+    onTextBlur(e, key) {
+      this[`${key}Menu`].show = false
       if (this.cancel) {
         return
       }
-      this.updateHost({ id: this.host.id, host: { [value]: this[value] } })
+      const value = this[key].trim()
+      this.updateHost({ id: this.host.id, host: { [key]: value } })
     },
     onTextContextMenu(e) {
       ContextMenu.showTextMenu(e)
     },
-    focus(value = 'ip') {
-      this[value] = this.host[value]
+    focus(key = 'ip') {
+      this[key] = this.host[key]
       this.cancel = false
       this.$nextTick(() => {
-        const rect = this.$refs[`${value}Column`].getBoundingClientRect()
-        this[`${value}Menu`].x = rect.left
-        this[`${value}Menu`].y = rect.top + 1
-        this[`${value}Menu`].width = rect.width
-        this[`${value}Menu`].show = true
+        const rect = this.$refs[`${key}Column`].getBoundingClientRect()
+        this[`${key}Menu`].x = rect.left
+        this[`${key}Menu`].y = rect.top + 1
+        this[`${key}Menu`].width = rect.width
+        this[`${key}Menu`].show = true
         setTimeout(() => {
-          this.$refs[`${value}Text`].focus()
+          this.$refs[`${key}Text`].focus()
         }, 200)
       })
     },
-    ...mapActions('local/explorer/child', [
+    ...mapActions('local', [
       'createHost',
       'updateHost',
       'deleteHost',
@@ -274,7 +271,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.explorer-child-table-row {
+.host-table-row {
   cursor: pointer;
   > td {
     position: relative;

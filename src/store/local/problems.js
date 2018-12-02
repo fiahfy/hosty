@@ -5,8 +5,7 @@ export default {
   },
   getters: {
     results(state, getters, rootState, rootGetters) {
-      return getters
-        .getGroups()
+      return rootState.group.groups
         .map((group) => {
           return {
             key: group.id,
@@ -37,34 +36,14 @@ export default {
         .sort((a, b) => {
           return a.text > b.text ? 1 : -1
         })
-    },
-    getGroups(state, getters, rootState) {
-      return () => JSON.parse(JSON.stringify(rootState.group.groups))
     }
   },
   actions: {
-    viewResult({ dispatch }, { key }) {
-      const [groupId, hostId] = key.split('-').map(Number)
-      dispatch('changeRoute', { name: 'explorer' }, { root: true })
-      // wait dom updated
-      setTimeout(() => {
-        dispatch(
-          'local/explorer/setFiltered',
-          { filtered: false },
-          { root: true }
-        )
-        dispatch('local/explorer/selectGroup', { id: groupId }, { root: true })
-        dispatch(
-          'local/explorer/child/setFiltered',
-          { filtered: false },
-          { root: true }
-        )
-        dispatch(
-          'local/explorer/child/selectHost',
-          { id: hostId },
-          { root: true }
-        )
-      })
+    viewResult({ commit }, { key }) {
+      const [selectedGroupId, selectedHostId] = key.split('-').map(Number)
+      commit('local/setFiltered', { filtered: false }, { root: true })
+      commit('local/setSelectedGroupId', { selectedGroupId }, { root: true })
+      commit('local/setSelectedHostId', { selectedHostId }, { root: true })
     }
   },
   mutations: {
