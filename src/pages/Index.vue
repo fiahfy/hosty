@@ -27,7 +27,7 @@
               <v-icon size="128" color="grey lighten-2">edit</v-icon>
               <p class="subheading">Edit group</p>
               <p class="caption">
-                Select a group you want to edit on the side menu.
+                Select a group you want to edit on the sidebar.
               </p>
             </div>
           </v-flex>
