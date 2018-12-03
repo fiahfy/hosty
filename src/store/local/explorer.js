@@ -1,3 +1,4 @@
+import { remote } from 'electron'
 import { Selector } from '~/store'
 
 export default {
@@ -55,7 +56,33 @@ export default {
       dispatch('selectGroupIndex', { index })
       dispatch('focusTable')
     },
-    deleteGroup({ commit, dispatch, getters }, { id }) {
+    deleteGroup({ commit, dispatch, getters, rootState }, { id }) {
+      if (!rootState.settings.deleteConfirmation) {
+        dispatch('execDeleteGroup', { id })
+        return
+      }
+      const groupName = getters.selectedGroup.name || 'Untitled'
+      remote.dialog.showMessageBox(
+        remote.getCurrentWindow(),
+        {
+          type: 'question',
+          message: `Are you sure you want to delete '${groupName}'?`,
+          buttons: ['OK', 'Cancel'],
+          checkboxLabel: 'Do not ask me again'
+        },
+        (response, checkboxChecked) => {
+          if (response === 0) {
+            dispatch('execDeleteGroup', { id })
+            commit(
+              'settings/setDeleteConfirmation',
+              { deleteConfirmation: !checkboxChecked },
+              { root: true }
+            )
+          }
+        }
+      )
+    },
+    execDeleteGroup({ commit, dispatch, getters }, { id }) {
       const oldIndex = getters.getGroupIndex({ id })
       commit('group/removeGroup', { id }, { root: true })
       const index =
