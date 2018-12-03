@@ -37,6 +37,9 @@ export default {
     canPasteGroup(state) {
       return !!state.clippedGroup
     },
+    getGroup(state, getters) {
+      return ({ id }) => getters.groups.find((group) => group.id === id)
+    },
     getGroupIndex(state, getters) {
       return ({ id }) => getters.groups.findIndex((group) => group.id === id)
     },
