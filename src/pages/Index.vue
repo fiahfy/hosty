@@ -1,18 +1,19 @@
 <template>
   <v-container class="index" fill-height fluid pa-0>
     <v-layout row>
-      <v-flex xs4>
+      <v-flex v-if="hasSidebar" xs12 sm4>
         <v-layout row fill-height>
           <v-layout column fill-height>
             <v-toolbar flat dense>
               <v-subheader class="pl-0">{{ headline }}</v-subheader>
             </v-toolbar>
             <router-view />
+            <v-divider class="hidden-sm-and-up" />
           </v-layout>
-          <v-divider vertical />
+          <v-divider vertical class="hidden-xs-only" />
         </v-layout>
       </v-flex>
-      <v-flex xs8>
+      <v-flex xs12 sm8>
         <v-layout v-if="selectedGroupId" column fill-height>
           <host-toolbar />
           <host-card />
@@ -38,6 +39,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { Name } from '~/router'
 import HostCard from '~/components/HostCard'
 import HostTable from '~/components/HostTable'
 import HostToolbar from '~/components/HostToolbar'
@@ -49,6 +51,9 @@ export default {
     HostToolbar
   },
   computed: {
+    hasSidebar() {
+      return this.$route.name !== Name.index
+    },
     headline() {
       return this.$route.name.toUpperCase()
     },
@@ -56,3 +61,27 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+.index > .layout > div:first-child:last-child {
+  flex-basis: 100%;
+  max-width: 100%;
+}
+@media only screen and (max-width: 599px) {
+  .index > .layout {
+    flex-direction: column;
+    > div {
+      flex: none;
+      &:first-child {
+        height: 33.3%;
+      }
+      &:last-child {
+        height: 66.6%;
+      }
+      &:first-child:last-child {
+        height: 100%;
+      }
+    }
+  }
+}
+</style>

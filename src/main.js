@@ -156,6 +156,8 @@ const createWindow = () => {
     }
   }
 
+  url += '#/explorer'
+
   mainWindow = new BrowserWindow(options)
   mainWindow.loadURL(url)
 

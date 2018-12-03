@@ -33,9 +33,7 @@ export default {
           title: 'Explorer',
           badge: false,
           accelerator: 'CmdOrCtrl+Shift+E',
-          location: {
-            name: Name.explorer
-          }
+          location: { name: Name.explorer }
         },
         {
           id: 2,
@@ -43,9 +41,7 @@ export default {
           title: 'Search',
           badge: false,
           accelerator: 'CmdOrCtrl+Shift+F',
-          location: {
-            name: Name.search
-          }
+          location: { name: Name.search }
         },
         {
           id: 3,
@@ -53,9 +49,7 @@ export default {
           title: 'Problems',
           badge: true,
           accelerator: 'CmdOrCtrl+Shift+M',
-          location: {
-            name: Name.problems
-          }
+          location: { name: Name.problems }
         },
         {
           id: 4,
@@ -76,7 +70,11 @@ export default {
   },
   methods: {
     onItemClick(e, item) {
-      this.$router.push(item.location)
+      const location =
+        this.getActive(item) && item.location.name !== Name.settings
+          ? { name: Name.index }
+          : item.location
+      this.$router.push(location)
     },
     getColor(item) {
       return this.getActive(item) ? 'primary' : null
