@@ -55,13 +55,13 @@ export default new Vuex.Store({
     async finalize() {
       await Hosts.finalize()
     },
-    async sync({ commit, dispatch, getters }) {
-      try {
-        await Hosts.lazySync(getters['group/actualHosts'])
-      } catch (e) {
-        commit('setPermission', { permission: false })
-        dispatch('showMessage', { color: 'error', text: e.message })
-      }
+    sync({ commit, dispatch, getters }) {
+      Hosts.lazySync(getters['group/actualHosts'], (e) => {
+        if (e) {
+          commit('setPermission', { permission: false })
+          dispatch('showMessage', { color: 'error', text: e.message })
+        }
+      })
     },
     import({ commit, dispatch }, { filepath }) {
       try {

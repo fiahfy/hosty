@@ -109,29 +109,34 @@ const createUserHosts = async () => {
   }
 }
 
-const sync = async (hosts = []) => {
-  const data = fs.readFileSync(userFilepath, charset)
+const sync = async (hosts = [], callback = () => {}) => {
+  try {
+    const data = fs.readFileSync(userFilepath, charset)
 
-  let newData = hosts.map((host) => `${host.ip}\t${host.name}`).join('\n')
-  newData = `${section.begin}\n${newData}\n${section.end}\n`
+    let newData = hosts.map((host) => `${host.ip}\t${host.name}`).join('\n')
+    newData = `${section.begin}\n${newData}\n${section.end}\n`
 
-  const reg = new RegExp(
-    String.raw`([\s\S]*\n?)${section.begin}\n[\s\S]*\n${
-      section.end
-    }\n?([\s\S]*)`,
-    'im'
-  )
-  const matches = data.match(reg)
-  if (matches) {
-    newData = matches[1] + newData + matches[2]
-  } else {
-    newData = `${data}\n${newData}`
+    const reg = new RegExp(
+      String.raw`([\s\S]*\n?)${section.begin}\n[\s\S]*\n${
+        section.end
+      }\n?([\s\S]*)`,
+      'im'
+    )
+    const matches = data.match(reg)
+    if (matches) {
+      newData = matches[1] + newData + matches[2]
+    } else {
+      newData = `${data}\n${newData}`
+    }
+
+    await worker.postMessage({
+      method: 'writeFileSync',
+      args: [userFilepath, newData, charset]
+    })
+    callback()
+  } catch (e) {
+    callback(e)
   }
-
-  await worker.postMessage({
-    method: 'writeFileSync',
-    args: [userFilepath, newData, charset]
-  })
 }
 
 export { filepath as path }
@@ -145,16 +150,8 @@ export const initialize = async (hosts) => {
 export const finalize = async () => {
   await sync()
 }
-const debounced = debounce(() => {
-  throw new Error('dummy')
-}, 100)
-export const lazySync = (hosts) => {
-  try {
-    debounced(hosts)
-} catch (e) {
-  console.warn(e)
-}
-}
+
+export const lazySync = debounce(sync, 100)
 
 export const read = (filepath) => {
   const data = fs.readFileSync(filepath, charset)
