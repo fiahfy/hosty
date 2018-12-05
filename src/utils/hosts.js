@@ -2,7 +2,9 @@ import fs from 'fs'
 import path from 'path'
 import { remote } from 'electron'
 import * as sudoPrompt from 'sudo-prompt'
+import workerPromisify from '@fiahfy/worker-promisify'
 import Package from '~~/package.json'
+import FSWorker from '~/workers/fs.worker.js'
 
 const isDev = process.env.NODE_ENV !== 'production'
 const isWin = process.platform === 'win32'
@@ -21,6 +23,18 @@ const filepath = (() => {
   return isWin ? 'C:\\Windows\\System32\\drivers\\etc\\hosts' : '/etc/hosts'
 })()
 const userFilepath = path.join(remote.app.getPath('userData'), 'hosts')
+
+const debounce = (callback, milli) => {
+  let timer
+  return (...args) => {
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+      callback(...args)
+    }, milli)
+  }
+}
+
+const worker = workerPromisify(new FSWorker())
 
 const sudo = async (command) => {
   return new Promise((resolve, reject) => {
@@ -95,14 +109,7 @@ const createUserHosts = async () => {
   }
 }
 
-export { filepath as path }
-
-export const initialize = async () => {
-  await grantPermission()
-  await createUserHosts()
-}
-
-export const sync = (hosts = []) => {
+const sync = async (hosts = []) => {
   const data = fs.readFileSync(userFilepath, charset)
 
   let newData = hosts.map((host) => `${host.ip}\t${host.name}`).join('\n')
@@ -121,11 +128,32 @@ export const sync = (hosts = []) => {
     newData = `${data}\n${newData}`
   }
 
-  fs.writeFileSync(userFilepath, newData, charset)
+  await worker.postMessage({
+    method: 'writeFileSync',
+    args: [userFilepath, newData, charset]
+  })
 }
 
-export const finalize = () => {
-  sync()
+export { filepath as path }
+
+export const initialize = async (hosts) => {
+  await grantPermission()
+  await createUserHosts()
+  await sync(hosts)
+}
+
+export const finalize = async () => {
+  await sync()
+}
+const debounced = debounce(() => {
+  throw new Error('dummy')
+}, 100)
+export const lazySync = (hosts) => {
+  try {
+    debounced(hosts)
+} catch (e) {
+  console.warn(e)
+}
 }
 
 export const read = (filepath) => {

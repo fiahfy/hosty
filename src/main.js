@@ -142,7 +142,10 @@ const createWindow = () => {
 
   const options = {
     ...windowState,
-    titleBarStyle: 'hidden'
+    titleBarStyle: 'hidden',
+    webPreferences: {
+      nodeIntegrationInWorker: true
+    }
   }
 
   let url = `file://${__dirname}/app/index.html`

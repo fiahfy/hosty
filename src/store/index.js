@@ -38,10 +38,10 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async initialize({ commit, dispatch }) {
+    async initialize({ commit, dispatch, getters }) {
       dispatch('local/explorer/loadGroups')
       try {
-        await Hosts.initialize()
+        await Hosts.initialize(getters['group/actualHosts'])
         commit('setPermission', { permission: true })
         dispatch('showMessage', {
           color: 'success',
@@ -51,17 +51,16 @@ export default new Vuex.Store({
         commit('setPermission', { permission: false })
         dispatch('showMessage', { color: 'error', text: e.message })
       }
-      dispatch('sync')
     },
-    finalize() {
-      Hosts.finalize()
+    async finalize() {
+      await Hosts.finalize()
     },
-    sync({ commit, dispatch, getters }) {
+    async sync({ commit, dispatch, getters }) {
       try {
-        Hosts.sync(getters['group/actualHosts'])
+        await Hosts.lazySync(getters['group/actualHosts'])
       } catch (e) {
-        dispatch('showMessage', { color: 'error', text: e.message })
         commit('setPermission', { permission: false })
+        dispatch('showMessage', { color: 'error', text: e.message })
       }
     },
     import({ commit, dispatch }, { filepath }) {

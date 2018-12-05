@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@fiahfy/electron-accelerator-formatter": "^0.0.2",
+    "@fiahfy/worker-promisify": "^0.0.3",
     "electron-devtools-installer": "^2.2.0",
     "electron-window-state": "^5.0.1",
     "is-ip": "^2.0.0",
@@ -20,7 +21,8 @@
     "vuetify": "^1.2.3",
     "vuex": "^3.0.0",
     "vuex-persistedstate": "^2.0.0",
-    "vuex-router-sync": "^5.0.0"
+    "vuex-router-sync": "^5.0.0",
+    "worker-loader": "^2.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

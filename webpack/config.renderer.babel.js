@@ -9,7 +9,8 @@ export default {
   output: {
     path: `${__dirname}/../app/`,
     publicPath: './',
-    filename: 'index.js'
+    filename: 'index.js',
+    globalObject: 'this'
   },
   module: {
     rules: [
@@ -37,6 +38,10 @@ export default {
           limit: '10000',
           name: 'font/[name].[ext]'
         }
+      },
+      {
+        test: /\.worker\.js$/,
+        loader: 'worker-loader'
       }
     ]
   },
