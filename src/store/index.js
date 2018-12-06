@@ -48,16 +48,23 @@ export default new Vuex.Store({
           text: `Started syncing with hosts (${Hosts.path})`
         })
       } catch (e) {
+        console.error(e) // eslint-disable-line no-console
         commit('setPermission', { permission: false })
         dispatch('showMessage', { color: 'error', text: e.message })
       }
     },
-    async finalize() {
-      await Hosts.finalize()
+    async finalize({ dispatch }) {
+      try {
+        await Hosts.finalize()
+      } catch (e) {
+        console.error(e) // eslint-disable-line no-console
+        dispatch('showMessage', { color: 'error', text: e.message })
+      }
     },
     sync({ commit, dispatch, getters }) {
       Hosts.lazySync(getters['group/actualHosts'], (e) => {
         if (e) {
+          console.error(e) // eslint-disable-line no-console
           commit('setPermission', { permission: false })
           dispatch('showMessage', { color: 'error', text: e.message })
         }
@@ -74,6 +81,7 @@ export default new Vuex.Store({
           text: 'Imported hosty file'
         })
       } catch (e) {
+        console.error(e) // eslint-disable-line no-console
         dispatch('showMessage', { color: 'error', text: 'Import failed' })
       }
     },
@@ -86,6 +94,7 @@ export default new Vuex.Store({
           text: 'Exported hosty file'
         })
       } catch (e) {
+        console.error(e) // eslint-disable-line no-console
         dispatch('showMessage', { color: 'error', text: 'Export failed' })
       }
     },

@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import util from 'util'
 import { remote } from 'electron'
 import * as sudoPrompt from 'sudo-prompt'
 import workerPromisify from '@fiahfy/worker-promisify'
@@ -22,6 +23,7 @@ const filepath = (() => {
   }
   return isWin ? 'C:\\Windows\\System32\\drivers\\etc\\hosts' : '/etc/hosts'
 })()
+
 const userFilepath = path.join(remote.app.getPath('userData'), 'hosts')
 
 const debounce = (callback, milli) => {
@@ -44,12 +46,7 @@ const sudo = async (command) => {
       (error, stdout, stderr) => {
         if (error) {
           // eslint-disable-next-line no-console
-          console.error('Sudo prompt exec failed: %o', {
-            command,
-            error,
-            stdout,
-            stderr
-          })
+          console.error('EXEC %s %s %s', command, stdout, stderr)
           reject(error)
           return
         }
@@ -67,8 +64,9 @@ const grantPermission = async () => {
     }
     await sudo(`rm "${filepath}"`)
   } catch (e) {
-    //
+    // not exists
   }
+
   if (isWin) {
     const command = [
       `touch "${filepath}"`,
@@ -92,8 +90,9 @@ const createUserHosts = async () => {
     }
     await sudo(`rm "${userFilepath}"`)
   } catch (e) {
-    //
+    // not exists
   }
+
   if (isWin) {
     const command = [
       `mklink "${userFilepath}" "${filepath}"`,
@@ -109,7 +108,7 @@ const createUserHosts = async () => {
   }
 }
 
-const sync = async (hosts = [], callback = () => {}) => {
+const sync = (hosts = [], callback = () => {}) => {
   try {
     const data = fs.readFileSync(userFilepath, charset)
 
@@ -129,29 +128,33 @@ const sync = async (hosts = [], callback = () => {}) => {
       newData = `${data}\n${newData}`
     }
 
-    await worker.postMessage({
-      method: 'writeFileSync',
-      args: [userFilepath, newData, charset]
-    })
-    callback()
+    worker
+      .postMessage({
+        method: 'writeFileSync',
+        args: [userFilepath, newData, charset]
+      })
+      .then(() => callback())
+      .catch((e) => callback(e))
   } catch (e) {
     callback(e)
   }
 }
+
+const syncAsync = util.promisify(sync)
 
 export { filepath as path }
 
 export const initialize = async (hosts) => {
   await grantPermission()
   await createUserHosts()
-  await sync(hosts)
+  await syncAsync(hosts)
 }
 
 export const finalize = async () => {
-  await sync()
+  await syncAsync()
 }
 
-export const lazySync = debounce(sync, 100)
+export const lazySync = debounce(sync, 1000)
 
 export const read = (filepath) => {
   const data = fs.readFileSync(filepath, charset)
