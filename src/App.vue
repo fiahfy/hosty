@@ -34,7 +34,7 @@ import ActivityBar from './components/ActivityBar'
 import AlertBar from './components/AlertBar'
 import NotificationBar from './components/NotificationBar'
 import TitleBar from './components/TitleBar'
-import * as ContextMenu from './utils/context-menu'
+import ContextMenu from './utils/context-menu'
 
 export default {
   components: {

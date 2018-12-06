@@ -31,7 +31,7 @@ import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import ExplorerTableHeaderRow from './ExplorerTableHeaderRow'
 import ExplorerTableRow from './ExplorerTableRow'
 import StickyDataTable from './StickyDataTable'
-import * as ContextMenu from '~/utils/context-menu'
+import ContextMenu from '~/utils/context-menu'
 
 export default {
   components: {

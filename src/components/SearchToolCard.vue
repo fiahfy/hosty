@@ -38,7 +38,7 @@
 
 <script>
 import { mapMutations, mapState } from 'vuex'
-import * as ContextMenu from '~/utils/context-menu'
+import ContextMenu from '~/utils/context-menu'
 
 export default {
   computed: {
@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     onTextContextMenu(e) {
-      ContextMenu.showTextMenu(e)
+      ContextMenu.showSimpleTextMenus(e)
     },
     onTextKeyDown(e) {
       if (

@@ -3,12 +3,14 @@ import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import Package from '~~/package.json'
 import router, { Name } from '~/router'
-import * as Hosts from '~/utils/hosts'
+import Hosty from '~/utils/hosty'
 import local from './local'
 import group from './group'
 import settings from './settings'
 
 Vue.use(Vuex)
+
+const hosty = new Hosty()
 
 export const Selector = {
   queryInput: 'input[name=query]',
@@ -38,14 +40,14 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async initialize({ commit, dispatch, getters }) {
+    async initialize({ commit, dispatch, state }) {
       dispatch('local/explorer/loadGroups')
       try {
-        await Hosts.initialize(getters['group/actualHosts'])
+        await hosty.initialize(state.group.groups)
         commit('setPermission', { permission: true })
         dispatch('showMessage', {
           color: 'success',
-          text: `Started syncing with hosts (${Hosts.path})`
+          text: `Started syncing with hosts (${Hosty.hostsPath})`
         })
       } catch (e) {
         console.error(e) // eslint-disable-line no-console
@@ -55,14 +57,15 @@ export default new Vuex.Store({
     },
     async finalize({ dispatch }) {
       try {
-        await Hosts.finalize()
+        await hosty.finalize()
       } catch (e) {
         console.error(e) // eslint-disable-line no-console
         dispatch('showMessage', { color: 'error', text: e.message })
       }
     },
-    sync({ commit, dispatch, getters }) {
-      Hosts.lazySync(getters['group/actualHosts'], (e) => {
+    sync({ commit, dispatch, state }) {
+      hosty.data = state.group.groups
+      hosty.lazySync((e) => {
         if (e) {
           console.error(e) // eslint-disable-line no-console
           commit('setPermission', { permission: false })
@@ -72,8 +75,8 @@ export default new Vuex.Store({
     },
     import({ commit, dispatch }, { filepath }) {
       try {
-        const groups = Hosts.read(filepath)
-        commit('group/setGroups', { groups })
+        hosty.load(filepath)
+        commit('group/setGroups', { groups: hosty.data })
         dispatch('changeRoute', { name: Name.explorer })
         dispatch('local/explorer/loadGroups')
         dispatch('showMessage', {
@@ -87,8 +90,8 @@ export default new Vuex.Store({
     },
     export({ dispatch, state }, { filepath }) {
       try {
-        const groups = state.group.groups
-        Hosts.write(filepath, groups)
+        hosty.data = state.group.groups
+        hosty.save(filepath)
         dispatch('showMessage', {
           color: 'success',
           text: 'Exported hosty file'
