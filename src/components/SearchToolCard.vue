@@ -38,7 +38,7 @@
 
 <script>
 import { mapMutations, mapState } from 'vuex'
-import * as ContextMenu from '~/utils/context-menu'
+import ContextMenu from '~/utils/context-menu'
 
 export default {
   computed: {
@@ -59,8 +59,8 @@ export default {
     ...mapState('local/search', ['filtered', 'regExp'])
   },
   methods: {
-    onTextContextMenu(e) {
-      ContextMenu.showTextMenu(e)
+    onTextContextMenu() {
+      ContextMenu.showSimpleTextMenus()
     },
     onTextKeyDown(e) {
       if (

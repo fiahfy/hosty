@@ -1,6 +1,7 @@
 import { ipcRenderer, remote } from 'electron'
 import { Name } from '~/router'
 import { Selector } from '~/store'
+import Hosty from '~/utils/hosty'
 
 export const addIpcRendererListeners = (store) => {
   ipcRenderer.on('close', () => {
@@ -32,7 +33,7 @@ export const addIpcRendererListeners = (store) => {
   })
   ipcRenderer.on('import', () => {
     const filepathes = remote.dialog.showOpenDialog({
-      filters: [{ name: 'Hosty File', extensions: ['hosty'] }]
+      filters: [{ name: 'Hosty File', extensions: [Hosty.extension] }]
     })
     if (!filepathes || !filepathes.length) {
       return
@@ -42,7 +43,7 @@ export const addIpcRendererListeners = (store) => {
   })
   ipcRenderer.on('export', () => {
     const filepath = remote.dialog.showSaveDialog({
-      filters: [{ name: 'Hosty File', extensions: ['hosty'] }]
+      filters: [{ name: 'Hosty File', extensions: [Hosty.extension] }]
     })
     if (!filepath) {
       return

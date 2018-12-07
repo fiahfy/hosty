@@ -45,6 +45,9 @@ export default {
     canPasteHost(state) {
       return !!state.clippedHost
     },
+    getHost(state, getters) {
+      return ({ id }) => getters.hosts.find((host) => host.id === id)
+    },
     getHostIndex(state, getters) {
       return ({ id }) => getters.hosts.findIndex((host) => host.id === id)
     },

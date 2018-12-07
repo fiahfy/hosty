@@ -12,29 +12,6 @@ export default {
     groups: []
   },
   getters: {
-    actualHosts(state) {
-      return state.groups
-        .filter((group) => !group.disabled)
-        .map((group) => group.hosts || [])
-        .reduce((carry, hosts) => carry.concat(hosts), [])
-        .filter((host) => !host.disabled && host.name && host.ip)
-        .sort((a, b) => {
-          let result = 0
-          if (a.ip > b.ip) {
-            result = 1
-          } else if (a.ip < b.ip) {
-            result = -1
-          }
-          if (result === 0) {
-            if (a.name > b.name) {
-              result = 1
-            } else if (a.name < b.name) {
-              result = -1
-            }
-          }
-          return result
-        })
-    },
     findHostErrors(state, getters) {
       return ({ group, host }) => {
         const errors = []

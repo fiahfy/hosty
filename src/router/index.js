@@ -9,6 +9,7 @@ import Settings from '~/pages/Settings'
 Vue.use(Router)
 
 export const Name = {
+  index: 'index',
   explorer: 'explorer',
   search: 'search',
   problems: 'problems',
@@ -23,6 +24,10 @@ export default new Router({
       children: [
         {
           path: '/',
+          name: Name.index
+        },
+        {
+          path: '/explorer',
           name: Name.explorer,
           component: Explorer
         },

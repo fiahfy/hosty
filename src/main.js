@@ -142,7 +142,10 @@ const createWindow = () => {
 
   const options = {
     ...windowState,
-    titleBarStyle: 'hidden'
+    titleBarStyle: 'hidden',
+    webPreferences: {
+      nodeIntegrationInWorker: true
+    }
   }
 
   let url = `file://${__dirname}/app/index.html`
@@ -155,6 +158,8 @@ const createWindow = () => {
       webSecurity: false
     }
   }
+
+  url += '#/explorer'
 
   mainWindow = new BrowserWindow(options)
   mainWindow.loadURL(url)
