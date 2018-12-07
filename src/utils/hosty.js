@@ -3,9 +3,7 @@ import path from 'path'
 import { remote } from 'electron'
 import { debounce } from 'debounce'
 import { exec } from 'sudo-prompt'
-import workerPromisify from '@fiahfy/worker-promisify'
 import Package from '~~/package.json'
-import FSWorker from '~/workers/fs.worker.js'
 
 const execAsync = async (command) => {
   return new Promise((resolve, reject) => {
@@ -23,7 +21,6 @@ const execAsync = async (command) => {
 
 export default class Hosty {
   constructor() {
-    this._worker = workerPromisify(new FSWorker())
     this.data = []
     this.lazySync = debounce((...args) => this._sync(...args), 1000)
   }
@@ -156,13 +153,8 @@ export default class Hosty {
         newContent = `${content}\n${newContent}`
       }
 
-      this._worker
-        .postMessage([
-          'writeFileSync',
-          [Hosty.userHostsPath, newContent, Hosty.charset]
-        ])
-        .then(() => callback())
-        .catch((e) => callback(e))
+      fs.writeFileSync(Hosty.userHostsPath, newContent, Hosty.charset)
+      callback()
     } catch (e) {
       callback(e)
     }
