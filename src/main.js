@@ -1,8 +1,9 @@
-import { app, shell, BrowserWindow, Menu } from 'electron'
+import { app, ipcMain, shell, BrowserWindow, Menu } from 'electron'
 import windowStateKeeper from 'electron-window-state'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 
 let mainWindow
+let quitting = false
 
 const send = (...args) => {
   mainWindow && mainWindow.webContents.send(...args)
@@ -167,6 +168,8 @@ const createWindow = () => {
   const menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
 
+  let closing = false
+
   if (process.env.NODE_ENV !== 'production') {
     installExtension(VUEJS_DEVTOOLS.id).catch((err) => {
       console.log('Unable to install `vue-devtools`: \n', err) // eslint-disable-line no-console
@@ -174,7 +177,15 @@ const createWindow = () => {
     mainWindow.openDevTools()
   }
 
-  mainWindow.on('close', () => {
+  mainWindow.on('close', (e) => {
+    if (closing) {
+      return
+    }
+    e.preventDefault()
+    ipcMain.once('close', () => {
+      closing = true
+      mainWindow.close()
+    })
     send('close')
   })
 
@@ -202,7 +213,11 @@ app.on('activate', () => {
 })
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+  if (process.platform !== 'darwin' || quitting) {
     app.quit()
   }
+})
+
+app.on('before-quit', () => {
+  quitting = true
 })

@@ -4,8 +4,9 @@ import { Selector } from '~/store'
 import Hosty from '~/utils/hosty'
 
 export const addIpcRendererListeners = (store) => {
-  ipcRenderer.on('close', () => {
-    store.dispatch('finalize')
+  ipcRenderer.on('close', async () => {
+    await store.dispatch('finalize')
+    ipcRenderer.send('close')
   })
   ipcRenderer.on('enterFullScreen', () => {
     store.commit('setFullScreen', { fullScreen: true })
