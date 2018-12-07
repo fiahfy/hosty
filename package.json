@@ -1,7 +1,7 @@
 {
   "name": "hosty",
   "description": "Hosts file manager based on Electron",
-  "version": "0.8.7",
+  "version": "0.8.8",
   "author": {
     "name": "fiahfy",
     "email": "d.fiahfy@gmail.com",
@@ -29,7 +29,7 @@
     "@babel/preset-env": "^7.0.0",
     "@babel/register": "^7.0.0",
     "@babel/runtime": "^7.0.0",
-    "@fiahfy/icns-convert": "^0.0.4",
+    "@fiahfy/icns-convert": "^0.0.5",
     "@fiahfy/ico-convert": "^0.0.4",
     "babel-loader": "^8.0.2",
     "cross-env": "^5.0.5",
