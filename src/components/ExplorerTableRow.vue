@@ -91,7 +91,7 @@ export default {
     onClick() {
       this.selectGroup({ id: this.group.id })
     },
-    onContextMenu(e) {
+    onContextMenu() {
       this.selectGroup({ id: this.group.id })
       const templates = [
         {
