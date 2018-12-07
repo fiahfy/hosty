@@ -73,10 +73,10 @@ export default {
     > div {
       flex: none;
       &:first-child {
-        height: 33.3%;
+        height: 50%;
       }
       &:last-child {
-        height: 66.6%;
+        height: 50%;
       }
       &:first-child:last-child {
         height: 100%;
