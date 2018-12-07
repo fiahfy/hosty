@@ -47,8 +47,8 @@ export default {
         group: { disabled: !this.selectedGroup.disabled }
       })
     },
-    onTextContextMenu(e) {
-      ContextMenu.showSimpleTextMenus(e)
+    onTextContextMenu() {
+      ContextMenu.showSimpleTextMenus()
     },
     ...mapActions('local/explorer', ['updateGroup'])
   }

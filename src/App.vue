@@ -56,8 +56,8 @@ export default {
     await this.initialize()
   },
   methods: {
-    onContextMenu(e) {
-      ContextMenu.show(e)
+    onContextMenu() {
+      ContextMenu.show()
     },
     onDrop(e) {
       const files = Array.from(e.dataTransfer.files)

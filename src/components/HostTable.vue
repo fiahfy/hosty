@@ -143,7 +143,7 @@ export default {
           break
       }
     },
-    onContextMenu(e) {
+    onContextMenu() {
       const templates = [
         {
           label: 'New Host',
@@ -157,7 +157,7 @@ export default {
           enabled: this.canPasteHost
         }
       ]
-      ContextMenu.show(e, templates)
+      ContextMenu.show(templates)
     },
     focusSelectedRow() {
       this.$refs[`row-${this.selectedHostId}`].focus()

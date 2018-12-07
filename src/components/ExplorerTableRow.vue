@@ -122,7 +122,7 @@ export default {
           accelerator: 'CmdOrCtrl+Backspace'
         }
       ]
-      ContextMenu.show(e, templates)
+      ContextMenu.show(templates)
     },
     onButtonClick() {
       this.updateGroup({
@@ -156,8 +156,8 @@ export default {
       const name = this.name.trim()
       this.updateGroup({ id: this.group.id, group: { name } })
     },
-    onTextContextMenu(e) {
-      ContextMenu.showSimpleTextMenus(e)
+    onTextContextMenu() {
+      ContextMenu.showSimpleTextMenus()
     },
     focus() {
       this.name = this.group.name

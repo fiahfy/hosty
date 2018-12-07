@@ -59,8 +59,8 @@ export default {
     ...mapState('local/search', ['filtered', 'regExp'])
   },
   methods: {
-    onTextContextMenu(e) {
-      ContextMenu.showSimpleTextMenus(e)
+    onTextContextMenu() {
+      ContextMenu.showSimpleTextMenus()
     },
     onTextKeyDown(e) {
       if (

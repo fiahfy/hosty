@@ -145,7 +145,7 @@ export default {
           break
       }
     },
-    onContextMenu(e) {
+    onContextMenu() {
       const templates = [
         {
           label: 'New Group',
@@ -159,7 +159,7 @@ export default {
           enabled: this.canPasteGroup
         }
       ]
-      ContextMenu.show(e, templates)
+      ContextMenu.show(templates)
     },
     focusSelectedRow() {
       this.$refs[`row-${this.selectedGroupId}`].focus()

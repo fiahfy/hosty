@@ -10,8 +10,8 @@ export default class ContextMenu {
       paste: 'Paste'
     }
   }
-  static _appendInspectElementMenu(e, template) {
-    const { clientX: x, clientY: y } = e
+  static _appendInspectElementMenu(template) {
+    const { clientX: x, clientY: y } = window.event
 
     if (template.length) {
       template = template.concat([{ type: 'separator' }])
@@ -24,9 +24,9 @@ export default class ContextMenu {
       }
     ])
   }
-  static show(e, template = []) {
+  static show(template = []) {
     if (process.env.NODE_ENV !== 'production') {
-      template = ContextMenu._appendInspectElementMenu(e, template)
+      template = ContextMenu._appendInspectElementMenu(template)
     }
 
     template = template.map((item) => {
@@ -62,8 +62,8 @@ export default class ContextMenu {
       async: true
     })
   }
-  static showSimpleTextMenus(e) {
-    ContextMenu.show(e, [
+  static showSimpleTextMenus() {
+    ContextMenu.show([
       { role: ContextMenu.Role.cut },
       { role: ContextMenu.Role.copy },
       { role: ContextMenu.Role.paste }
