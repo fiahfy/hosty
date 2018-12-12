@@ -7,7 +7,7 @@
             <v-toolbar flat dense>
               <v-subheader class="pl-0">{{ headline }}</v-subheader>
             </v-toolbar>
-            <router-view />
+            <nuxt-child />
             <v-divider class="hidden-sm-and-up" />
           </v-layout>
           <v-divider vertical class="hidden-xs-only" />
@@ -39,7 +39,6 @@
 
 <script>
 import { mapState } from 'vuex'
-import { Name } from '~/router'
 import HostCard from '~/components/HostCard'
 import HostTable from '~/components/HostTable'
 import HostToolbar from '~/components/HostToolbar'
@@ -52,7 +51,7 @@ export default {
   },
   computed: {
     hasSidebar() {
-      return this.$route.name !== Name.index
+      return this.$route.name !== '/'
     },
     headline() {
       return this.$route.name.toUpperCase()
