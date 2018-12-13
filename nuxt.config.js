@@ -6,7 +6,17 @@ module.exports = {
   /*
    ** Headers of the page
    */
-  head: { title: pkg.productName },
+  head: {
+    title: pkg.productName,
+    link: [
+      {
+        rel: 'stylesheet',
+        type: 'text/css',
+        href:
+          'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons'
+      }
+    ]
+  },
 
   /*
    ** Customize the progress-bar color
@@ -30,6 +40,7 @@ module.exports = {
     [
       '@nuxtjs/vuetify',
       {
+        materialIcons: false,
         theme: {
           primary: '#ff4081',
           accent: '#ff4081'
