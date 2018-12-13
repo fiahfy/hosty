@@ -1,22 +1,8 @@
-// import Vue from 'vue'
-// import Vuex from 'vuex'
-// import createPersistedState from 'vuex-persistedstate'
+import createPersistedState from 'vuex-persistedstate'
 import Package from '~~/package.json'
-// import router, { Name } from '~/router'
 import Hosty from '~/utils/hosty'
-// import local from './local'
-// import group from './group'
-// import settings from './settings'
-
-// Vue.use(Vuex)
 
 const hosty = new Hosty()
-
-export const Selector = {
-  queryInput: 'input[name=query]',
-  explorerTable: '.explorer-table',
-  hostTable: '.host-table'
-}
 
 export const state = () => ({
   title: Package.productName,
@@ -75,12 +61,12 @@ export const actions = {
     try {
       hosty.load(filepath)
       commit('group/setGroups', { groups: hosty.data })
-      dispatch('changeRoute', '/explorer')
       dispatch('local/explorer/loadGroups')
       dispatch('showMessage', {
         color: 'success',
         text: 'Imported hosty file'
       })
+      this.$router.push('/explorer')
     } catch (e) {
       console.error(e) // eslint-disable-line no-console
       dispatch('showMessage', { color: 'error', text: 'Import failed' })
@@ -100,25 +86,16 @@ export const actions = {
     }
   },
   focus(_, { selector }) {
-    // wait dom updated
-    setTimeout(() => {
-      const el = document.querySelector(selector)
-      if (el) {
-        el.focus()
-      }
-    })
+    const el = document.querySelector(selector)
+    if (el) {
+      el.focus()
+    }
   },
   select(_, { selector }) {
-    // wait dom updated
-    setTimeout(() => {
-      const el = document.querySelector(selector)
-      if (el) {
-        el.select()
-      }
-    })
-  },
-  changeRoute(_, payload) {
-    this.$router.push(payload)
+    const el = document.querySelector(selector)
+    if (el) {
+      el.select()
+    }
   },
   showMessage({ commit }, message) {
     commit('setMessage', { message })
@@ -140,21 +117,15 @@ export const mutations = {
   }
 }
 
-//   modules: {
-//     local,
-//     group,
-//     settings
-//   },
-//   plugins: [
-//     createPersistedState({
-//       paths: ['group', 'settings']
-//     }),
-//     (store) => {
-//       store.subscribe((mutation) => {
-//         if (mutation.type.indexOf('group/') === 0 && store.state.permission) {
-//           store.dispatch('sync')
-//         }
-//       })
-//     }
-//   ]
-// })
+export const plugins = [
+  createPersistedState({
+    paths: ['group', 'settings']
+  }),
+  (store) => {
+    store.subscribe((mutation) => {
+      if (mutation.type.indexOf('group/') === 0 && store.state.permission) {
+        store.dispatch('sync')
+      }
+    })
+  }
+]

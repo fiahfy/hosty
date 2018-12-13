@@ -1,5 +1,5 @@
 import { ipcRenderer, remote } from 'electron'
-import { Selector } from '~/store'
+import Selector from '~/consts/selector'
 import Hosty from '~/utils/hosty'
 
 export default ({ store }) => {
@@ -18,18 +18,21 @@ export default ({ store }) => {
     store.dispatch('select', { selector: Selector.queryInput })
   })
   ipcRenderer.on('showExplorer', () => {
-    store.dispatch('changeRoute', '/explorer')
+    store.$router.push('/explorer')
   })
   ipcRenderer.on('showSearch', () => {
-    store.dispatch('changeRoute', '/search')
-    store.dispatch('focus', { selector: Selector.queryInput })
-    store.dispatch('select', { selector: Selector.queryInput })
+    store.$router.push('/search')
+    // wait dom updated
+    setTimeout(() => {
+      store.dispatch('focus', { selector: Selector.queryInput })
+      store.dispatch('select', { selector: Selector.queryInput })
+    }, 100)
   })
   ipcRenderer.on('showProblems', () => {
-    store.dispatch('changeRoute', '/problems')
+    store.$router.push('/problems')
   })
   ipcRenderer.on('showSettings', () => {
-    store.dispatch('changeRoute', '/settings')
+    store.$router.push('/settings')
   })
   ipcRenderer.on('import', () => {
     const filepathes = remote.dialog.showOpenDialog({

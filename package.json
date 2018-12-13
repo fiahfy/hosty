@@ -45,7 +45,7 @@
     "url": "https://github.com/fiahfy/hosty"
   },
   "scripts": {
-    "dev": "nuxt & cross-env NODE_ENV=development electron .",
+    "dev": "nuxt & cross-env NODE_ENV=development npm run start",
     "generate": "nuxt generate",
     "lint": "eslint -f codeframe --ext .js,.vue --ignore-path .gitignore .",
     "package": "electron-builder",
@@ -53,7 +53,7 @@
     "resources": "npm run resources:icns; npm run resources:ico",
     "resources:icns": "icns-convert build/icon.png",
     "resources:ico": "ico-convert build/icon.png",
-    "start": "electron .",
+    "start": "electron main.js",
     "test": "npm run lint"
   }
 }
