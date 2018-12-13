@@ -1,5 +1,5 @@
 import { remote } from 'electron'
-import { Selector } from '~/store'
+import Selector from '~/consts/selector'
 
 export const state = () => ({
   scrollTop: 0,

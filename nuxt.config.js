@@ -26,7 +26,17 @@ module.exports = {
   /*
    ** Nuxt.js modules
    */
-  modules: ['@nuxtjs/vuetify'],
+  modules: [
+    [
+      '@nuxtjs/vuetify',
+      {
+        theme: {
+          primary: '#ff4081',
+          accent: '#ff4081'
+        }
+      }
+    ]
+  ],
 
   /*
    ** Build configuration

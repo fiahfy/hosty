@@ -1,4 +1,4 @@
-import { Selector } from '~/store'
+import Selector from '~/consts/selector'
 
 export const state = () => ({
   selectedGroupId: 0,

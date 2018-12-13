@@ -51,10 +51,10 @@ export default {
   },
   computed: {
     hasSidebar() {
-      return this.$route.name !== '/'
+      return this.$route.path !== '/'
     },
     headline() {
-      return this.$route.name.toUpperCase()
+      return this.$route.name.toUpperCase().split('-')[1]
     },
     ...mapState('local', ['selectedGroupId'])
   }
