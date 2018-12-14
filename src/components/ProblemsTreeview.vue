@@ -1,7 +1,7 @@
 <template>
   <v-container class="problems-treeview pa-0" fluid>
     <v-container
-      id="scroll-target"
+      id="problems-treeview-scroll-target"
       ref="treeview"
       class="pa-0"
       fluid
@@ -11,8 +11,7 @@
       <v-layout v-if="results.length">
         <div v-if="scrolling" class="shadow" />
         <v-treeview
-          v-scroll:#scroll-target="onScroll"
-          class="spacer"
+          v-scroll:#problems-treeview-scroll-target="onScroll"
           item-key="key"
           item-text="text"
           open-all
@@ -61,7 +60,7 @@ export default {
     },
     results(value) {
       if (!value.length) {
-        this.scrolling = 0
+        this.scrolling = false
       }
     }
   },
@@ -98,6 +97,9 @@ export default {
     height: 10px;
     position: absolute;
     top: -10px;
+    width: 100%;
+  }
+  .v-treeview {
     width: 100%;
   }
   /deep/ .v-treeview-node__content {
