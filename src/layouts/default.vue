@@ -10,7 +10,7 @@
     <v-content class="fill-height">
       <v-layout column fill-height>
         <alert-bar />
-        <nuxt />
+        <transition><nuxt /></transition>
       </v-layout>
     </v-content>
     <notification-bar />
