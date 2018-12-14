@@ -1,54 +1,6 @@
 const pkg = require('./package')
 
 module.exports = {
-  mode: 'spa',
-
-  /*
-   ** Headers of the page
-   */
-  head: {
-    title: pkg.productName,
-    link: [
-      {
-        rel: 'stylesheet',
-        type: 'text/css',
-        href:
-          'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons'
-      }
-    ]
-  },
-
-  /*
-   ** Customize the progress-bar color
-   */
-  loading: false,
-
-  /*
-   ** Global CSS
-   */
-  css: ['~/assets/css/app.css'],
-
-  /*
-   ** Plugins to load before mounting the App
-   */
-  plugins: ['~/plugins/filter', '~/plugins/ipc-listener'],
-
-  /*
-   ** Nuxt.js modules
-   */
-  modules: [
-    [
-      '@nuxtjs/vuetify',
-      {
-        materialIcons: false,
-        theme: {
-          primary: '#ff4081',
-          accent: '#ff4081'
-        }
-      }
-    ]
-  ],
-
   /*
    ** Build configuration
    */
@@ -73,6 +25,58 @@ module.exports = {
   },
 
   /*
+   ** Global CSS
+   */
+  css: [
+    'material-design-icons-iconfont/dist/material-design-icons.css',
+    'typeface-roboto/index.css',
+    '~/assets/css/app.css'
+  ],
+
+  /*
+   ** Generate configuration
+   */
+  generate: {
+    dir: 'app'
+  },
+
+  /*
+   ** Customize the progress-bar color
+   */
+  loading: false,
+
+  /*
+   ** Headers of the page
+   */
+  head: { title: pkg.productName },
+
+  /*
+   ** SPA or Universal
+   */
+  mode: 'spa',
+
+  /*
+   ** Nuxt.js modules
+   */
+  modules: [
+    [
+      '@nuxtjs/vuetify',
+      {
+        materialIcons: false,
+        theme: {
+          primary: '#ff4081',
+          accent: '#ff4081'
+        }
+      }
+    ]
+  ],
+
+  /*
+   ** Plugins to load before mounting the App
+   */
+  plugins: ['~/plugins/filter', '~/plugins/ipc-listener'],
+
+  /*
    ** Router configuration
    */
   router: {
@@ -83,13 +87,6 @@ module.exports = {
    ** Source directory
    */
   srcDir: 'src',
-
-  /*
-   ** Generate configuration
-   */
-  generate: {
-    dir: 'app'
-  },
 
   /*
    ** Vue configuration
