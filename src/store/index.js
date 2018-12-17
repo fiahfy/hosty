@@ -1,8 +1,6 @@
 import createPersistedState from 'vuex-persistedstate'
 import Package from '~~/package.json'
-import Hosty from '~/utils/hosty'
-
-const hosty = new Hosty()
+import hosty from '~/utils/hosty'
 
 export const state = () => ({
   title: Package.productName,
@@ -31,7 +29,7 @@ export const actions = {
       commit('setPermission', { permission: true })
       dispatch('showMessage', {
         color: 'success',
-        text: `Started syncing with hosts (${Hosty.hostsPath})`
+        text: `Started syncing with hosts (${hosty.hostsPath})`
       })
     } catch (e) {
       console.error(e) // eslint-disable-line no-console
@@ -48,8 +46,7 @@ export const actions = {
     }
   },
   sync({ commit, dispatch, state }) {
-    hosty.data = state.group.groups
-    hosty.lazySync((e) => {
+    hosty.lazySync(state.group.groups, (e) => {
       if (e) {
         console.error(e) // eslint-disable-line no-console
         commit('setPermission', { permission: false })
@@ -59,8 +56,8 @@ export const actions = {
   },
   import({ commit, dispatch }, { filepath }) {
     try {
-      hosty.load(filepath)
-      commit('group/setGroups', { groups: hosty.data })
+      const groups = hosty.read(filepath)
+      commit('group/setGroups', { groups })
       dispatch('local/explorer/loadGroups')
       dispatch('showMessage', {
         color: 'success',
@@ -74,8 +71,7 @@ export const actions = {
   },
   export({ dispatch, state }, { filepath }) {
     try {
-      hosty.data = state.group.groups
-      hosty.save(filepath)
+      hosty.write(filepath, state.group.groups)
       dispatch('showMessage', {
         color: 'success',
         text: 'Exported hosty file'

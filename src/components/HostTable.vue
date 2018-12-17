@@ -31,7 +31,7 @@ import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import HostTableHeaderRow from './HostTableHeaderRow'
 import HostTableRow from './HostTableRow'
 import StickyDataTable from './StickyDataTable'
-import ContextMenu from '~/utils/context-menu'
+import contextMenu from '~/utils/context-menu'
 
 export default {
   components: {
@@ -157,7 +157,7 @@ export default {
           enabled: this.canPasteHost
         }
       ]
-      ContextMenu.show(templates)
+      contextMenu.show(templates)
     },
     focusSelectedRow() {
       this.$refs[`row-${this.selectedHostId}`].focus()

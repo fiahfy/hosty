@@ -1,4 +1,4 @@
-import Selector from '~/consts/selector'
+import selector from '~/consts/selector'
 
 export const state = () => ({
   selectedGroupId: 0,
@@ -151,7 +151,7 @@ export const actions = {
     dispatch('sortHosts')
   },
   focusTable({ dispatch }) {
-    dispatch('focus', { selector: Selector.hostTable }, { root: true })
+    dispatch('focus', { selector: selector.HOST_TABLE }, { root: true })
   }
 }
 

@@ -16,7 +16,7 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
-import ContextMenu from '~/utils/context-menu'
+import contextMenu from '~/utils/context-menu'
 
 export default {
   computed: {
@@ -48,7 +48,7 @@ export default {
       })
     },
     onTextContextMenu() {
-      ContextMenu.showSimpleTextMenus()
+      contextMenu.showSimpleTextMenus()
     },
     ...mapActions('local/explorer', ['updateGroup'])
   }
