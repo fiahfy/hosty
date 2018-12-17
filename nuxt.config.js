@@ -65,7 +65,11 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/filter', '~/plugins/ipc-listener'],
+  plugins: [
+    '~/plugins/context-menu',
+    '~/plugins/filter',
+    '~/plugins/ipc-listener'
+  ],
 
   /*
    ** Router configuration

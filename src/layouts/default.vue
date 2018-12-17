@@ -34,7 +34,6 @@ import ActivityBar from '~/components/ActivityBar'
 import AlertBar from '~/components/AlertBar'
 import NotificationBar from '~/components/NotificationBar'
 import TitleBar from '~/components/TitleBar'
-import contextMenu from '~/utils/context-menu'
 
 export default {
   components: {
@@ -57,7 +56,7 @@ export default {
   },
   methods: {
     onContextMenu() {
-      contextMenu.show()
+      this.$contextMenu.show()
     },
     onDrop(e) {
       const files = Array.from(e.dataTransfer.files)

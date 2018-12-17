@@ -85,7 +85,6 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
-import contextMenu from '~/utils/context-menu'
 
 export default {
   props: {
@@ -165,7 +164,7 @@ export default {
     },
     onContextMenu() {
       this.selectHost({ id: this.host.id })
-      const templates = [
+      const template = [
         {
           label: 'New Host',
           click: () => this.createHost(),
@@ -194,7 +193,7 @@ export default {
           accelerator: 'CmdOrCtrl+Backspace'
         }
       ]
-      contextMenu.show(templates)
+      this.$contextMenu.show(template)
     },
     onButtonClick() {
       this.updateHost({
@@ -241,7 +240,11 @@ export default {
       this.updateHost({ id: this.host.id, host: { [key]: value } })
     },
     onTextContextMenu() {
-      contextMenu.showSimpleTextMenus()
+      this.$contextMenu.show([
+        { role: 'cut' },
+        { role: 'copy' },
+        { role: 'paste' }
+      ])
     },
     focus(key = 'ip') {
       this[key] = this.host[key]

@@ -38,7 +38,6 @@
 
 <script>
 import { mapMutations, mapState } from 'vuex'
-import contextMenu from '~/utils/context-menu'
 
 export default {
   computed: {
@@ -60,7 +59,11 @@ export default {
   },
   methods: {
     onTextContextMenu() {
-      contextMenu.showSimpleTextMenus()
+      this.$contextMenu.show([
+        { role: 'cut' },
+        { role: 'copy' },
+        { role: 'paste' }
+      ])
     },
     onTextKeyDown(e) {
       if (

@@ -677,6 +677,11 @@
   resolved "https://registry.yarnpkg.com/@fiahfy/electron-accelerator-formatter/-/electron-accelerator-formatter-0.0.2.tgz#a593cb76c179ec3d5a84adc1f36d5f8d6c6ee028"
   integrity sha512-p3dojNdN70bIl3vliRkXRqWxXTx0kl3YXqgMlWnMJdhzqMraYY4ybQ1ILYhABDfKUxo/GjTzV5FvsusyXW0Mtg==
 
+"@fiahfy/electron-context-menu@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@fiahfy/electron-context-menu/-/electron-context-menu-0.0.1.tgz#a483c0de40f3575887100239e46f6ab36bed9313"
+  integrity sha512-M8iJA4VIEJLrfEeAKWMn7ckBTogAqj7HzCtgmDqcmwHQ0r4e09HQNQnJDDkOWtRn7ZDn7Q0k/3Ryjj6H32xG5Q==
+
 "@fiahfy/icns-convert@^0.0.5":
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/@fiahfy/icns-convert/-/icns-convert-0.0.5.tgz#5ffdd7bbe20955ab3ef7e9828871990b0d6f2d0a"
