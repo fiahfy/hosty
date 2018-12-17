@@ -7,7 +7,7 @@
             <v-toolbar flat dense>
               <v-subheader class="pl-0">{{ headline }}</v-subheader>
             </v-toolbar>
-            <router-view />
+            <nuxt-child />
             <v-divider class="hidden-sm-and-up" />
           </v-layout>
           <v-divider vertical class="hidden-xs-only" />
@@ -39,7 +39,6 @@
 
 <script>
 import { mapState } from 'vuex'
-import { Name } from '~/router'
 import HostCard from '~/components/HostCard'
 import HostTable from '~/components/HostTable'
 import HostToolbar from '~/components/HostToolbar'
@@ -52,10 +51,10 @@ export default {
   },
   computed: {
     hasSidebar() {
-      return this.$route.name !== Name.index
+      return this.$route.path !== '/'
     },
     headline() {
-      return this.$route.name.toUpperCase()
+      return this.$route.name.toUpperCase().split('-')[1]
     },
     ...mapState('local', ['selectedGroupId'])
   }
@@ -63,14 +62,20 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.index > .layout > div:first-child:last-child {
-  flex-basis: 100%;
-  max-width: 100%;
+.index > .layout > .flex {
+  > .layout > .layout > .layout:nth-child(3) {
+    /* prevent flash if page is changed */
+    display: none;
+  }
+  &:first-child:last-child {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
 }
 @media only screen and (max-width: 599px) {
   .index > .layout {
     flex-direction: column;
-    > div {
+    > .flex {
       flex: none;
       &:first-child {
         height: 50%;

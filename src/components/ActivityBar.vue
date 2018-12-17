@@ -21,7 +21,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { Name } from '~/router'
 
 export default {
   data() {
@@ -33,7 +32,7 @@ export default {
           title: 'Explorer',
           badge: false,
           accelerator: 'CmdOrCtrl+Shift+E',
-          location: { name: Name.explorer }
+          path: '/explorer'
         },
         {
           id: 2,
@@ -41,7 +40,7 @@ export default {
           title: 'Search',
           badge: false,
           accelerator: 'CmdOrCtrl+Shift+F',
-          location: { name: Name.search }
+          path: '/search'
         },
         {
           id: 3,
@@ -49,7 +48,7 @@ export default {
           title: 'Problems',
           badge: true,
           accelerator: 'CmdOrCtrl+Shift+M',
-          location: { name: Name.problems }
+          path: '/problems'
         },
         {
           id: 4,
@@ -57,9 +56,7 @@ export default {
           title: 'Settings',
           badge: false,
           accelerator: 'CmdOrCtrl+,',
-          location: {
-            name: Name.settings
-          },
+          path: '/settings',
           style: { position: 'absolute', bottom: 0 }
         }
       ]
@@ -70,17 +67,15 @@ export default {
   },
   methods: {
     onItemClick(e, item) {
-      const location =
-        this.getActive(item) && item.location.name !== Name.settings
-          ? { name: Name.index }
-          : item.location
-      this.$router.push(location)
+      const path =
+        this.getActive(item) && item.path !== '/settings' ? '/' : item.path
+      this.$router.push(path)
     },
     getColor(item) {
       return this.getActive(item) ? 'primary' : null
     },
     getActive(item) {
-      return item.location.name === this.$route.name
+      return item.path === this.$route.path
     }
   }
 }

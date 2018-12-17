@@ -10,7 +10,7 @@
     <v-content class="fill-height">
       <v-layout column fill-height>
         <alert-bar />
-        <router-view />
+        <nuxt />
       </v-layout>
     </v-content>
     <notification-bar />
@@ -30,11 +30,11 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
-import ActivityBar from './components/ActivityBar'
-import AlertBar from './components/AlertBar'
-import NotificationBar from './components/NotificationBar'
-import TitleBar from './components/TitleBar'
-import ContextMenu from './utils/context-menu'
+import ActivityBar from '~/components/ActivityBar'
+import AlertBar from '~/components/AlertBar'
+import NotificationBar from '~/components/NotificationBar'
+import TitleBar from '~/components/TitleBar'
+import ContextMenu from '~/utils/context-menu'
 
 export default {
   components: {
@@ -79,12 +79,9 @@ export default {
 }
 </script>
 
-<style lang="scss">
-@import '~typeface-roboto/index.css';
-@import '~material-design-icons-iconfont/dist/material-design-icons.css';
-@import '~vuetify/dist/vuetify.min.css';
-
-html {
-  overflow-y: hidden;
+<style scoped lang="scss">
+#app .v-content .layout > .container:nth-child(3) {
+  /* prevent flash if page is changed */
+  display: none;
 }
 </style>
