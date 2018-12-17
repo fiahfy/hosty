@@ -44,7 +44,7 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
-import ContextMenu from '~/utils/context-menu'
+import contextMenu from '~/utils/context-menu'
 
 export default {
   props: {
@@ -122,7 +122,7 @@ export default {
           accelerator: 'CmdOrCtrl+Backspace'
         }
       ]
-      ContextMenu.show(templates)
+      contextMenu.show(templates)
     },
     onButtonClick() {
       this.updateGroup({
@@ -157,7 +157,7 @@ export default {
       this.updateGroup({ id: this.group.id, group: { name } })
     },
     onTextContextMenu() {
-      ContextMenu.showSimpleTextMenus()
+      contextMenu.showSimpleTextMenus()
     },
     focus() {
       this.name = this.group.name

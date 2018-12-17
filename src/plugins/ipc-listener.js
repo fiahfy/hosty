@@ -1,6 +1,6 @@
 import { ipcRenderer, remote } from 'electron'
-import Selector from '~/consts/selector'
-import Hosty from '~/utils/hosty'
+import selector from '~/consts/selector'
+import hosty from '~/utils/hosty'
 
 export default ({ store }) => {
   ipcRenderer.on('close', async () => {
@@ -14,8 +14,8 @@ export default ({ store }) => {
     store.commit('setFullScreen', { fullScreen: false })
   })
   ipcRenderer.on('find', () => {
-    store.dispatch('focus', { selector: Selector.queryInput })
-    store.dispatch('select', { selector: Selector.queryInput })
+    store.dispatch('focus', { selector: selector.QUERY_INPUT })
+    store.dispatch('select', { selector: selector.QUERY_INPUT })
   })
   ipcRenderer.on('showExplorer', () => {
     store.$router.push('/explorer')
@@ -24,8 +24,8 @@ export default ({ store }) => {
     store.$router.push('/search')
     // wait dom updated
     setTimeout(() => {
-      store.dispatch('focus', { selector: Selector.queryInput })
-      store.dispatch('select', { selector: Selector.queryInput })
+      store.dispatch('focus', { selector: selector.QUERY_INPUT })
+      store.dispatch('select', { selector: selector.QUERY_INPUT })
     }, 100)
   })
   ipcRenderer.on('showProblems', () => {
@@ -36,7 +36,7 @@ export default ({ store }) => {
   })
   ipcRenderer.on('import', () => {
     const filepathes = remote.dialog.showOpenDialog({
-      filters: [{ name: 'Hosty File', extensions: [Hosty.extension] }]
+      filters: [{ name: 'Hosty File', extensions: [hosty.EXTENSION] }]
     })
     if (!filepathes || !filepathes.length) {
       return
@@ -46,7 +46,7 @@ export default ({ store }) => {
   })
   ipcRenderer.on('export', () => {
     const filepath = remote.dialog.showSaveDialog({
-      filters: [{ name: 'Hosty File', extensions: [Hosty.extension] }]
+      filters: [{ name: 'Hosty File', extensions: [hosty.EXTENSION] }]
     })
     if (!filepath) {
       return

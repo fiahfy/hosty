@@ -1,5 +1,5 @@
 import { remote } from 'electron'
-import Selector from '~/consts/selector'
+import selector from '~/consts/selector'
 
 export const state = () => ({
   scrollTop: 0,
@@ -157,7 +157,7 @@ export const actions = {
     dispatch('sortGroups')
   },
   focusTable({ dispatch }) {
-    dispatch('focus', { selector: Selector.explorerTable }, { root: true })
+    dispatch('focus', { selector: selector.EXPLORER_TABLE }, { root: true })
   }
 }
 
