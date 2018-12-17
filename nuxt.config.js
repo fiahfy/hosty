@@ -6,15 +6,6 @@ module.exports = {
    */
   build: {
     extend(config, ctx) {
-      // Run ESLint on save
-      if (ctx.isDev && ctx.isClient) {
-        config.module.rules.push({
-          enforce: 'pre',
-          test: /\.(js|vue)$/,
-          loader: 'eslint-loader',
-          exclude: /(node_modules)/
-        })
-      }
       // Extend only webpack config for client-bundle
       if (ctx.isClient) {
         config.target = 'electron-renderer'
