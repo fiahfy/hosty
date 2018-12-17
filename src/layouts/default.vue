@@ -10,7 +10,7 @@
     <v-content class="fill-height">
       <v-layout column fill-height>
         <alert-bar />
-        <transition><nuxt /></transition>
+        <nuxt />
       </v-layout>
     </v-content>
     <notification-bar />
@@ -78,3 +78,10 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+#app .v-content .layout > .container:nth-child(3) {
+  /* prevent flash if page is changed */
+  display: none;
+}
+</style>

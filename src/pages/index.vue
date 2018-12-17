@@ -62,14 +62,20 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.index > .layout > div:first-child:last-child {
-  flex-basis: 100%;
-  max-width: 100%;
+.index > .layout > .flex {
+  > .layout > .layout > .layout:nth-child(3) {
+    /* prevent flash if page is changed */
+    display: none;
+  }
+  &:first-child:last-child {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
 }
 @media only screen and (max-width: 599px) {
   .index > .layout {
     flex-direction: column;
-    > div {
+    > .flex {
       flex: none;
       &:first-child {
         height: 50%;
