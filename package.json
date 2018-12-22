@@ -10,7 +10,7 @@
   "dependencies": {
     "@fiahfy/electron-accelerator-formatter": "^0.0.2",
     "@fiahfy/electron-context-menu": "^0.0.2",
-    "@nuxtjs/vuetify": "^0.4.3",
+    "@nuxtjs/vuetify": "^0.5.0",
     "debounce": "^1.2.0",
     "electron-devtools-installer": "^2.2.3",
     "electron-window-state": "^5.0.1",
@@ -25,7 +25,7 @@
     "@fiahfy/icns-convert": "^0.0.5",
     "@fiahfy/ico-convert": "^0.0.4",
     "cross-env": "^5.1.4",
-    "electron": "^3.0.10",
+    "electron": "^4.0.0",
     "electron-builder": "^20.8.1",
     "eslint": "^5.10.0",
     "eslint-config-prettier": "^3.3.0",
