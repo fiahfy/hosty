@@ -86,9 +86,7 @@ export default {
       return this.container.scrollTop
     },
     setScrollTop(value) {
-      this.$nextTick(() => {
-        this.container.scrollTop = value
-      })
+      this.container.scrollTop = value
     },
     getOffsetHeight() {
       return this.container.offsetHeight

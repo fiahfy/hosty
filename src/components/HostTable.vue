@@ -96,7 +96,8 @@ export default {
   },
   methods: {
     onScroll(e) {
-      this.setScrollTop({ scrollTop: e.target.scrollTop })
+      const scrollTop = e.target.scrollTop
+      this.setScrollTop({ scrollTop })
     },
     onKeyDown(e) {
       switch (e.keyCode) {

@@ -7,7 +7,7 @@
             <v-toolbar flat dense>
               <v-subheader class="pl-0">{{ headline }}</v-subheader>
             </v-toolbar>
-            <nuxt-child />
+            <router-view />
             <v-divider class="hidden-sm-and-up" />
           </v-layout>
           <v-divider vertical class="hidden-xs-only" />
@@ -62,15 +62,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.index > .layout > .flex {
-  > .layout > .layout > .layout:nth-child(3) {
-    /* prevent flash if page is changed */
-    display: none;
-  }
-  &:first-child:last-child {
-    flex-basis: 100%;
-    max-width: 100%;
-  }
+.index > .layout > .flex:first-child:last-child {
+  flex-basis: 100%;
+  max-width: 100%;
 }
 @media only screen and (max-width: 599px) {
   .index > .layout {

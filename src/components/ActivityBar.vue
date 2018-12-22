@@ -66,16 +66,16 @@ export default {
     ...mapGetters(['badgeCount'])
   },
   methods: {
-    onItemClick(e, item) {
-      const path =
-        this.getActive(item) && item.path !== '/settings' ? '/' : item.path
-      this.$router.push(path)
-    },
     getColor(item) {
       return this.getActive(item) ? 'primary' : null
     },
     getActive(item) {
       return item.path === this.$route.path
+    },
+    onItemClick(e, item) {
+      const path =
+        this.getActive(item) && item.path !== '/settings' ? '/' : item.path
+      this.$router.push(path)
     }
   }
 }
