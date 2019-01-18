@@ -10,7 +10,7 @@
   "dependencies": {
     "@fiahfy/electron-accelerator-formatter": "^0.0.2",
     "@fiahfy/electron-context-menu": "^0.0.2",
-    "@nuxtjs/vuetify": "^0.4.3",
+    "@nuxtjs/vuetify": "^0.5.1",
     "debounce": "^1.2.0",
     "electron-devtools-installer": "^2.2.3",
     "electron-window-state": "^5.0.1",
@@ -34,7 +34,8 @@
     "node-sass": "^4.11.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^1.15.3",
-    "sass-loader": "^7.1.0"
+    "sass-loader": "^7.1.0",
+    "vuetify-loader": "^1.1.1"
   },
   "keywords": [
     "electron",
