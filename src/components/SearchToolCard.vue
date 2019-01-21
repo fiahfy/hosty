@@ -23,15 +23,6 @@
       >
         RE
       </v-btn>
-      <v-btn
-        :color="filterColor"
-        title="Filter Enabled"
-        flat
-        icon
-        @click="onFilterClick"
-      >
-        <v-icon>filter_list</v-icon>
-      </v-btn>
     </v-toolbar>
   </v-card>
 </template>
@@ -49,13 +40,10 @@ export default {
         this.$store.commit('local/search/setQuery', { query: value })
       }
     },
-    filterColor() {
-      return this.filtered ? 'primary' : ''
-    },
     regExpColor() {
-      return this.regExp ? 'primary' : ''
+      return this.regExpEnabled ? 'primary' : ''
     },
-    ...mapState('local/search', ['filtered', 'regExp'])
+    ...mapState('local/search', ['regExpEnabled'])
   },
   methods: {
     onTextContextMenu() {
@@ -71,16 +59,13 @@ export default {
         ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) &&
         e.keyCode === 82
       ) {
-        this.toggleRegExp()
+        this.toggleRegExpEnabled()
       }
     },
-    onFilterClick() {
-      this.toggleFiltered()
-    },
     onRegExpClick() {
-      this.toggleRegExp()
+      this.toggleRegExpEnabled()
     },
-    ...mapMutations('local/search', ['toggleFiltered', 'toggleRegExp'])
+    ...mapMutations('local/search', ['toggleRegExpEnabled'])
   }
 }
 </script>

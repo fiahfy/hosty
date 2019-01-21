@@ -24,6 +24,10 @@
           <template slot="prepend" slot-scope="{ item }">
             <v-icon :color="getColor(item)">{{ getIcon(item) }}</v-icon>
           </template>
+          <template slot="label" slot-scope="{ item }">
+            <!-- eslint-disable-next-line vue/no-v-html -->
+            <div :title="getText(item)" v-html="getHtml(item)" />
+          </template>
         </v-treeview>
       </v-layout>
       <v-layout v-else>
@@ -81,6 +85,18 @@ export default {
     },
     getIcon(item) {
       return item.type === 'group' ? 'list' : 'error'
+    },
+    getText(item) {
+      if (item.type === 'group' && !item.text) {
+        return '(Untitled)'
+      }
+      return item.text
+    },
+    getHtml(item) {
+      if (item.type === 'group' && !item.text) {
+        return '<span class="grey--text">(Untitled)</span>'
+      }
+      return item.text
     },
     ...mapMutations('local/problems', ['setScrollTop']),
     ...mapActions('local/problems', ['viewResult'])

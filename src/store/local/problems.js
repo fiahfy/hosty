@@ -8,7 +8,7 @@ export const getters = {
       .map((group) => {
         return {
           key: group.id,
-          text: group.name || '(Untitled)',
+          text: group.name,
           type: 'group',
           children: group.hosts
             .reduce((carry, host) => {
