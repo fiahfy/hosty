@@ -16,11 +16,13 @@
     <notification-bar />
     <v-dialog v-model="dialog" persistent max-width="300">
       <v-card>
-        <v-card-title class="headline">Import hosty file?</v-card-title>
+        <v-card-title class="headline" primary-title>
+          Import hosty file?
+        </v-card-title>
         <v-card-text>The current hosts settings will be deleted.</v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="info" flat @click.native="onCancelClick">Cancel</v-btn>
+          <v-btn flat @click.native="onCancelClick">Cancel</v-btn>
           <v-btn color="error" flat @click.native="onOKClick">OK</v-btn>
         </v-card-actions>
       </v-card>
@@ -30,11 +32,10 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
-import ActivityBar from './components/ActivityBar'
-import AlertBar from './components/AlertBar'
-import NotificationBar from './components/NotificationBar'
-import TitleBar from './components/TitleBar'
-import ContextMenu from './utils/context-menu'
+import ActivityBar from '~/components/ActivityBar'
+import AlertBar from '~/components/AlertBar'
+import NotificationBar from '~/components/NotificationBar'
+import TitleBar from '~/components/TitleBar'
 
 export default {
   components: {
@@ -57,7 +58,7 @@ export default {
   },
   methods: {
     onContextMenu() {
-      ContextMenu.show()
+      this.$contextMenu.show()
     },
     onDrop(e) {
       const files = Array.from(e.dataTransfer.files)
@@ -78,13 +79,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-@import '~typeface-roboto/index.css';
-@import '~material-design-icons-iconfont/dist/material-design-icons.css';
-@import '~vuetify/dist/vuetify.min.css';
-
-html {
-  overflow-y: hidden;
-}
-</style>

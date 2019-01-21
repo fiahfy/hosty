@@ -1,7 +1,7 @@
 <template>
   <v-container class="settings">
     <v-subheader class="pl-0">GENERAL</v-subheader>
-    <v-checkbox v-model="darkTheme" class="mt-0" label="Use Dark Theme" />
+    <v-checkbox v-model="darkTheme" class="mt-0" label="Dark Theme" />
     <v-subheader class="pl-0">EXPLORER</v-subheader>
     <v-checkbox
       v-model="deleteConfirmation"

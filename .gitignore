@@ -60,9 +60,15 @@ typings/
 # next.js build output
 .next
 
-# Electron build file
-/app
-/dist
-/main.js
-hosts
+# nuxt.js build output
+.nuxt
+
+# Nuxt generate
+app
+
+# electron builder output
+dist
+
+# Hosty file
 *.hosty
+hosts

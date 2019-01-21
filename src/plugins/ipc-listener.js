@@ -1,9 +1,8 @@
 import { ipcRenderer, remote } from 'electron'
-import { Name } from '~/router'
-import { Selector } from '~/store'
-import Hosty from '~/utils/hosty'
+import selector from '~/consts/selector'
+import hosty from '~/utils/hosty'
 
-export const addIpcRendererListeners = (store) => {
+export default ({ store }) => {
   ipcRenderer.on('close', async () => {
     await store.dispatch('finalize')
     ipcRenderer.send('close')
@@ -15,26 +14,29 @@ export const addIpcRendererListeners = (store) => {
     store.commit('setFullScreen', { fullScreen: false })
   })
   ipcRenderer.on('find', () => {
-    store.dispatch('focus', { selector: Selector.queryInput })
-    store.dispatch('select', { selector: Selector.queryInput })
+    store.dispatch('focus', { selector: selector.QUERY_INPUT })
+    store.dispatch('select', { selector: selector.QUERY_INPUT })
   })
   ipcRenderer.on('showExplorer', () => {
-    store.dispatch('changeRoute', { name: Name.explorer })
+    store.$router.push('/explorer')
   })
   ipcRenderer.on('showSearch', () => {
-    store.dispatch('changeRoute', { name: Name.search })
-    store.dispatch('focus', { selector: Selector.queryInput })
-    store.dispatch('select', { selector: Selector.queryInput })
+    store.$router.push('/search')
+    // wait dom updated
+    setTimeout(() => {
+      store.dispatch('focus', { selector: selector.QUERY_INPUT })
+      store.dispatch('select', { selector: selector.QUERY_INPUT })
+    }, 100)
   })
   ipcRenderer.on('showProblems', () => {
-    store.dispatch('changeRoute', { name: Name.problems })
+    store.$router.push('/problems')
   })
   ipcRenderer.on('showSettings', () => {
-    store.dispatch('changeRoute', { name: Name.settings })
+    store.$router.push('/settings')
   })
   ipcRenderer.on('import', () => {
     const filepathes = remote.dialog.showOpenDialog({
-      filters: [{ name: 'Hosty File', extensions: [Hosty.extension] }]
+      filters: [{ name: 'Hosty File', extensions: [hosty.EXTENSION] }]
     })
     if (!filepathes || !filepathes.length) {
       return
@@ -44,7 +46,7 @@ export const addIpcRendererListeners = (store) => {
   })
   ipcRenderer.on('export', () => {
     const filepath = remote.dialog.showSaveDialog({
-      filters: [{ name: 'Hosty File', extensions: [Hosty.extension] }]
+      filters: [{ name: 'Hosty File', extensions: [hosty.EXTENSION] }]
     })
     if (!filepath) {
       return

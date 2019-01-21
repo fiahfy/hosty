@@ -31,7 +31,6 @@ import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import ExplorerTableHeaderRow from './ExplorerTableHeaderRow'
 import ExplorerTableRow from './ExplorerTableRow'
 import StickyDataTable from './StickyDataTable'
-import ContextMenu from '~/utils/context-menu'
 
 export default {
   components: {
@@ -146,7 +145,7 @@ export default {
       }
     },
     onContextMenu() {
-      const templates = [
+      const template = [
         {
           label: 'New Group',
           click: () => this.createGroup(),
@@ -159,7 +158,7 @@ export default {
           enabled: this.canPasteGroup
         }
       ]
-      ContextMenu.show(templates)
+      this.$contextMenu.show(template)
     },
     focusSelectedRow() {
       this.$refs[`row-${this.selectedGroupId}`].focus()

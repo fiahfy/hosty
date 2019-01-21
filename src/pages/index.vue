@@ -39,7 +39,6 @@
 
 <script>
 import { mapState } from 'vuex'
-import { Name } from '~/router'
 import HostCard from '~/components/HostCard'
 import HostTable from '~/components/HostTable'
 import HostToolbar from '~/components/HostToolbar'
@@ -52,10 +51,10 @@ export default {
   },
   computed: {
     hasSidebar() {
-      return this.$route.name !== Name.index
+      return this.$route.path !== '/'
     },
     headline() {
-      return this.$route.name.toUpperCase()
+      return this.$route.name.toUpperCase().split('-')[1]
     },
     ...mapState('local', ['selectedGroupId'])
   }
@@ -63,14 +62,14 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.index > .layout > div:first-child:last-child {
+.index > .layout > .flex:first-child:last-child {
   flex-basis: 100%;
   max-width: 100%;
 }
 @media only screen and (max-width: 599px) {
   .index > .layout {
     flex-direction: column;
-    > div {
+    > .flex {
       flex: none;
       &:first-child {
         height: 50%;

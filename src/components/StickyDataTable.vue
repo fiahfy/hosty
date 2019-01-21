@@ -74,9 +74,7 @@ export default {
   mounted() {
     this.container = this.$el.querySelector('.v-table__overflow')
     this.container.addEventListener('scroll', this.onScroll)
-    this.$nextTick(() => {
-      this.adjustItems()
-    })
+    this.adjustItems()
   },
   beforeDestroy() {
     this.container.removeEventListener('scroll', this.onScroll)
@@ -86,9 +84,7 @@ export default {
       return this.container.scrollTop
     },
     setScrollTop(value) {
-      this.$nextTick(() => {
-        this.container.scrollTop = value
-      })
+      this.container.scrollTop = value
     },
     getOffsetHeight() {
       return this.container.offsetHeight

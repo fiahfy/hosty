@@ -1,7 +1,7 @@
 <template>
   <v-container class="search-treeview pa-0" fluid>
     <v-container
-      id="scroll-target"
+      id="search-treeview-scroll-target"
       ref="treeview"
       class="pa-0"
       fluid
@@ -11,8 +11,7 @@
       <v-layout v-if="results.length">
         <div v-if="scrolling" class="shadow" />
         <v-treeview
-          v-scroll:#scroll-target="onScroll"
-          class="spacer"
+          v-scroll:#search-treeview-scroll-target="onScroll"
           item-key="key"
           item-text="text"
           open-all
@@ -24,6 +23,10 @@
         >
           <template slot="prepend" slot-scope="{ item }">
             <v-icon :color="getColor(item)">{{ getIcon(item) }}</v-icon>
+          </template>
+          <template slot="label" slot-scope="{ item }">
+            <!-- eslint-disable-next-line vue/no-v-html -->
+            <div :title="getText(item)" v-html="getHtml(item)" />
           </template>
         </v-treeview>
       </v-layout>
@@ -47,7 +50,7 @@ export default {
   computed: {
     ...mapState('settings', ['darkTheme']),
     ...mapState('local/search', ['scrollTop']),
-    ...mapGetters('local/search', ['results'])
+    ...mapGetters('local/search', ['regExp', 'results'])
   },
   watch: {
     active(value) {
@@ -59,7 +62,7 @@ export default {
     },
     results(value) {
       if (!value.length) {
-        this.scrolling = 0
+        this.scrolling = false
       }
     }
   },
@@ -87,6 +90,36 @@ export default {
     getIcon(item) {
       return item.type === 'group' ? 'list' : 'check_circle'
     },
+    getText(item) {
+      if (item.type === 'group' && !item.text) {
+        return '(Untitled)'
+      }
+      let text = item.text
+      if (item.subtext) {
+        text = item.subtext + ' ' + text
+      }
+      return text
+    },
+    getHtml(item) {
+      if (item.type === 'group' && !item.text) {
+        return '<span class="grey--text">(Untitled)</span>'
+      }
+      let html = this.highlight(item.text)
+      if (item.subtext) {
+        html =
+          '<span class="subtext">' +
+          this.highlight(item.subtext) +
+          '</span> ' +
+          html
+      }
+      return html
+    },
+    highlight(text) {
+      return text.replace(
+        this.regExp,
+        `<span class="white--text primary">$1</span>`
+      )
+    },
     ...mapMutations('local/search', ['setScrollTop']),
     ...mapActions('local/search', ['viewResult'])
   }
@@ -104,12 +137,19 @@ export default {
     top: -10px;
     width: 100%;
   }
+  .v-treeview {
+    width: 100%;
+  }
   /deep/ .v-treeview-node__content {
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     .v-treeview-node__label {
       font-size: 13px;
+      .subtext {
+        display: inline-block;
+        min-width: 100px;
+      }
     }
   }
 }

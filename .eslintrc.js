@@ -9,8 +9,8 @@ module.exports = {
     'plugin:vue/recommended'
   ],
   rules: {
-    'vue/max-attributes-per-line': 'off',
     'vue/component-name-in-template-casing': 'off',
+    'vue/max-attributes-per-line': 'off',
     'vue/singleline-html-element-content-newline': 'off'
   }
 }
