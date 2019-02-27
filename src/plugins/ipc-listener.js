@@ -35,13 +35,13 @@ export default ({ store }) => {
     store.$router.push('/settings')
   })
   ipcRenderer.on('import', () => {
-    const filepathes = remote.dialog.showOpenDialog({
+    const filepaths = remote.dialog.showOpenDialog({
       filters: [{ name: 'Hosty File', extensions: [hosty.EXTENSION] }]
     })
-    if (!filepathes || !filepathes.length) {
+    if (!filepaths || !filepaths.length) {
       return
     }
-    const filepath = filepathes[0]
+    const filepath = filepaths[0]
     store.dispatch('import', { filepath })
   })
   ipcRenderer.on('export', () => {
