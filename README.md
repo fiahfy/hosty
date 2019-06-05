@@ -10,19 +10,15 @@
 * Change theme (Light/Dark)
 
 
-## Screenshot
-![screenshot](./build/screenshots/screenshot1.png?raw=true)
-![screenshot](./build/screenshots/screenshot2.png?raw=true)
-![screenshot](./build/screenshots/screenshot3.png?raw=true)
+## Screenshots
+![screenshot](.github/img/screenshot1.png)
+![screenshot](.github/img/screenshot2.png)
+![screenshot](.github/img/screenshot3.png)
 
 
 ## Installation
 1. Download the file for your platform from [releases page](https://github.com/fiahfy/hosty/releases).
-2. Open `.dmg` for OS X, Run `.exe` for Windows.
-
-
-## Download
-https://github.com/fiahfy/hosty/releases
+2. Open `.dmg` for OS X or run `.exe` for Windows.
 
 
 ## Development

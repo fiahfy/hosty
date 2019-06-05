@@ -148,7 +148,10 @@ const createWindow = async () => {
 
   const options = {
     ...windowState,
-    titleBarStyle: 'hidden'
+    titleBarStyle: 'hidden',
+    webPreferences: {
+      nodeIntegration: true
+    }
   }
 
   const path = '#/explorer'
