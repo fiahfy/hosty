@@ -5,7 +5,7 @@
   "author": {
     "name": "fiahfy",
     "email": "d.fiahfy@gmail.com",
-    "url": "http://fiahfy.blogspot.com/"
+    "url": "https://fiahfy.github.io/"
   },
   "dependencies": {
     "@fiahfy/electron-accelerator-formatter": "^0.0.3",
